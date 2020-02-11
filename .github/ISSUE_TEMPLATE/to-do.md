@@ -2,7 +2,7 @@
 name: To do
 about: For sub tasks of bigger to do items
 title: ''
-labels: ''
+labels: 'To do'
 assignees: ''
 
 ---
