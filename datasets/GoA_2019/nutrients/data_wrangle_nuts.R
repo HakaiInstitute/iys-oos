@@ -7,18 +7,20 @@ library(googledrive)
 
 drive_download("https://drive.google.com/open?id=1MQysK1BEp9xcZH64ilq63Sx3ri5SJYCx", path = here("nutrients", "raw_data", "IYS_GoA_2019_Hydro&Chemistry_20190326.xlsx"))
 
-chemistry <- read_excel(here("nutrients", "raw_data", "IYS_GoA_2019_Hydro&Chemistry_20190326"), sheet = "Chemistry_GoA") %>% 
+## Chemistry ---------------------------------------------------------------------
+
+chemistry <- read_excel(here("nutrients", "raw_data", "IYS_GoA_2019_Hydro&Chemistry_20190326.xlsx"), sheet = "Chemistry_GoA") %>% 
   mutate(locationID = paste(Cruise, Station, sep="_"),
          eventID = paste(locationID, `Depth [m]`, sep="_"))
 
-chem_loc <- chemistry %>% 
+nut_loc <- chemistry %>% # Locations in both Chemistry and Hydro are the same
   select(locationID, 
          decimalLatitude = Latitude, 
          decimalLongitude = Longitude, 
          maximumDepthInMeters = `Bot. Depth [m]`) %>% 
   distinct(locationID, .keep_all = TRUE)
 
-write_csv(chem_loc, here("nutrients", "raw_data", "chem_location.csv"))
+write_csv(nut_loc, here("nutrients", "raw_data", "nut_location.csv"))
 
 chem_event <- chemistry %>% 
   select(eventID,
@@ -66,4 +68,43 @@ chem_measurement <- chemistry %>%
   select(measurementID, eventID, measurementType, measurementValue, measurementUnit)
   
 write_csv(chem_measurement, here("nutrients", "raw_data", "chem_measurement.csv"))
-         
+
+
+
+## Temperature & Salinity ----------------------------------------------------
+ts <- read_excel(here("nutrients", "raw_data", "IYS_GoA_2019_Hydro&Chemistry_20190326.xlsx"), sheet = "Hydro_GoA") %>% 
+  mutate(locationID = paste(Cruise, Station, sep="_"),
+         eventID = paste(locationID, `DEPTH`, sep="_"))
+
+# ts_loc <- ts %>% 
+#   select(locationID, 
+#          decimalLatitude = Latitude, 
+#          decimalLongitude = Longitude, 
+#          maximumDepthInMeters = `Bot. Depth`) %>% 
+#   distinct(locationID, .keep_all = TRUE)
+
+# Test to see if locations are the same
+# qc <- full_join(ts_loc, chem_loc, by = "locationID", ignore) %>% 
+#   mutate(qclat = ifelse(round(decimalLatitude.x, digits=4) == round(decimalLatitude.y, digits=4),"ok","error"),
+#          qclong = ifelse(round(decimalLongitude.x, digits=4) == round(decimalLongitude.y, digits=4),"ok","error"),
+#          qcdepth = ifelse(maximumDepthInMeters.x == maximumDepthInMeters.y,"ok","error"))
+# They are!
+
+ts_event <- ts %>% 
+  select(eventID,
+         locationID,
+         depth = `DEPTH`) %>% 
+  distinct(eventID, .keep_all = TRUE)
+
+write_csv(ts_event, here("nutrients", "raw_data", "tempsal_event.csv"))
+
+ts_measurement <- ts %>% 
+  select(eventID, `TEMP_SBE [degC]`, `SAL_SBE [psu]`) %>% 
+  pivot_longer(c(`TEMP_SBE [degC]`, `SAL_SBE [psu]`), names_to = "measurementType", values_to = "measurementValue") %>% 
+  mutate(measurementType = recode(measurementType,
+                                  `TEMP_SBE [degC]` = "temperature",
+                                  `SAL_SBE [psu]` = "salinity"),
+         measurementUnit = case_when(measurementType == "temperature" ~ "C",
+                                     measurementType == "salinity" ~ "PSU"))
+
+write_csv(ts_measurement, here("nutrients", "raw_data", "tempsal_measurement.csv"))
