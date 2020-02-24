@@ -5,7 +5,7 @@ library(here)
 library(parsedate)
 library(googledrive)
 
-drive_download("https://drive.google.com/open?id=1MQysK1BEp9xcZH64ilq63Sx3ri5SJYCx", path = here("nutrients", "raw_data", "IYS_GoA_2019_Hydro&Chemistry_20190326"))
+drive_download("https://drive.google.com/open?id=1MQysK1BEp9xcZH64ilq63Sx3ri5SJYCx", path = here("nutrients", "raw_data", "IYS_GoA_2019_Hydro&Chemistry_20190326.xlsx"))
 
 chemistry <- read_excel(here("nutrients", "raw_data", "IYS_GoA_2019_Hydro&Chemistry_20190326"), sheet = "Chemistry_GoA") %>% 
   mutate(locationID = paste(Cruise, Station, sep="_"),
@@ -25,6 +25,8 @@ chem_event <- chemistry %>%
          locationID,
          depth = `Depth [m]`) %>% 
   distinct(eventID, .keep_all = TRUE)
+
+write_csv(chem_event, here("nutrients", "raw_data", "chem_event.csv"))
 
 chem_measurement <- chemistry %>% 
   select(-c(1:6), -locationID, -...18) %>% 
@@ -63,5 +65,5 @@ chem_measurement <- chemistry %>%
   drop_na(measurementValue) %>% 
   select(measurementID, eventID, measurementType, measurementValue, measurementUnit)
   
-
+write_csv(chem_measurement, here("nutrients", "raw_data", "chem_measurement.csv"))
          
