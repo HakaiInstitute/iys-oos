@@ -6,11 +6,5 @@ Key tehcnologies include:
 
 * [Global Ocean Observation System]("http://www.unesco.org/new/en/natural-sciences/ioc-oceans/sections-and-programmes/ocean-observations-services/global-ocean-observing-system/")
 * [Ocean Biogeographic Information System]("https://obis.org/?query=salmon#/node/9")
-* 
+* [Darwin Core]("http://rs.tdwg.org/dwc/")
 
-
-## GOOS-Global Ocean Observation System
-
-## OBIS-Ocean Biogeographic System
-
-[Oncorhynchus Results oon OBIS](https://obis.org/taxon/126140)
