@@ -38,6 +38,6 @@ vignettes/*.pdf
 # R Environment Variables
 .Renviron
 
-datasets/GoA_2019/chlorophyll/raw_data/
+datasets/GoA_2019/*/raw_data/
 
 *.Rproj
