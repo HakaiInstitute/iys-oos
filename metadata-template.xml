@@ -13,6 +13,11 @@
     -->
     <iso19115File>/xml/dataset-id-here_iso19115.xml</iso19115File>
 
+    <att name="title"></att>
+    <att name="creator_name"></att>
+    <att name="creator_email"></att>
+    <att name="institution"></att>
+
     <!-- must be 'eng' or 'fra' -->
     <att name="language">eng</att>
 
