@@ -54,12 +54,13 @@ chem_measurement <- chemistry %>%
                                   "Oxygen by Rinko [ml/l]" = "oxygen_Rinko"),
          measurementID = case_when(measurementType == "temperature" ~ paste(eventID, "temp", sep="_"),
                                    measurementType == "salinity" ~ paste(eventID, "sal", sep="_"),
+                                   measurementType == "pH" ~ paste(eventID, "pH", sep="_"),
                                    measurementType == "oxygen_sat" ~ paste(eventID, "oxsat"),
                                    measurementType == "BOD_5" ~ paste(eventID, "BOD", sep="_"),
                                    measurementType == "silicate" ~ paste(eventID, "si", sep="_"),
                                    measurementType == "dissolved inorganic P" ~ paste(eventID, "DIP", sep="_"),
                                    measurementType == "dissolved inorganic N" ~ paste(eventID, "DIN", sep="_"),
-                                   measurementType == "nitrogen dioxiode" ~ paste(eventID, "NO2"),
+                                   measurementType == "nitrogen dioxiode" ~ paste(eventID, "NO2", sep="_"),
                                    measurementType == "nitrate" ~ paste(eventID, "NO3", sep="_"),
                                    measurementType == "oxygen_Rinko" ~ paste(eventID, "oxrinko", sep="_")
          )
@@ -108,3 +109,11 @@ ts_measurement <- ts %>%
                                      measurementType == "salinity" ~ "PSU"))
 
 write_csv(ts_measurement, here("nutrients", "raw_data", "tempsal_measurement.csv"))
+
+
+ctd_qc <- chem_measurement %>% 
+  filter(measurementType == "temperature" | measurementType == "salinity") %>% 
+  left_join(ts_measurement, by = c("eventID", "measurementType")) %>% 
+  mutate(match = ifelse(measurementValue.x == measurementValue.y, "yes", "no")) %>% 
+  filter(is.na(match))
+# With the exception of the 0m depths missing from "Hydro", all values are the same between the two tabs
