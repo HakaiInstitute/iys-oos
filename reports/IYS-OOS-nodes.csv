@@ -1,0 +1,16 @@
+Type,Name,Description,Image,Reference,"Category (standard, language, protocol, schema, ontology, controlled vocabulary, file type)",rightsHolder,role,datasetID,license,language
+Technology,ENVO Environment Vocabulary,,,,,,,,,
+Technology,GCMD Keywords Global Change Master Directory,,,https://gcmd.nasa.gov/,ontology,,,,,
+Data Record,2019 High Seas Data Package,Data collected from the 2019 High Seas survey.,,,,public,,,,
+Program,BCSRIF British Columbia Salmon Research and Innovation Fund,,,,,,,,,
+Organization,Tula Foundation,,,https://tula.org/,,,,,,
+Person,Brett Johnson,,,,,,Scientific Data Specialist,,,
+Data Record,Hakai JSP Data,Ongoing time series starting 2015 of the Hakai Institute Juvenile Salmon Program field and lab programs.,,,,public,,http://dx.doi.org/10.21966/1.566666,cc-by-4.0,english
+Program,Hakai Juvenile Salmon Program,,,https://hecate.hakai.org/shiny/JSP/,,,,,,
+Technology,Darwin Core,,,http://rs.tdwg.org/dwc/,schema,,,,,
+Organization,Hakai Institute,,,https://www.hakai.org/,,,,,,
+Person,Mark Saunders,,,,,,Director,,,
+Organization,NPAFC North Pacific Anadromous Fish Comission,,,https://npafc.org/,,,,,,
+Organization,IYS International Year of the Salmon,,,https://yearofthesalmon.org,,,,,,
+Organization,OBIS Ocean Biogeographic Information System,,,https://obis.org/,,,,,,
+Person,Eric Peterson,,,,,,Director,,,

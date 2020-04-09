@@ -1,0 +1,15 @@
+From Type,From Name,Edge,To Type,To Name,Weight
+Program,BCSRIF British Columbia Salmon Research and Innovation Fund,fundedBy,Organization,IYS International Year of the Salmon,1
+Organization,Tula Foundation,fundedBy,Person,Eric Peterson,1
+Person,Brett Johnson,responsibleFor,Data Record,2019 High Seas Data Package,1
+Person,Brett Johnson,partOf,Organization,Hakai Institute,1
+Person,Brett Johnson,partOf,Program,Hakai Juvenile Salmon Program,1
+Person,Brett Johnson,responsibleFor,Data Record,Hakai JSP Data,1
+Program,Hakai Juvenile Salmon Program,partOf,Organization,Hakai Institute,1
+Technology,Darwin Core,partOf,Organization,OBIS Ocean Biogeographic Information System,1
+Organization,Hakai Institute,fundedBy,Organization,Tula Foundation,1
+Person,Mark Saunders,worksWith,Person,Eric Peterson,1
+Person,Mark Saunders,responsibleFor,Organization,IYS International Year of the Salmon,1
+Organization,NPAFC North Pacific Anadromous Fish Comission,worksWith,Organization,IYS International Year of the Salmon,1
+Person,Eric Peterson,responsibleFor,Organization,Tula Foundation,1
+Person,Eric Peterson,responsibleFor,Organization,Hakai Institute,1
