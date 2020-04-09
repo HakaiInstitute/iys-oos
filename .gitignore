@@ -29,3 +29,4 @@ vignettes/*.pdf
 datasets/GoA_2019/*/raw_data/
 *.Rproj
 .DS_Store
+data
