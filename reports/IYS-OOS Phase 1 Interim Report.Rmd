@@ -15,11 +15,11 @@ header-includes:
       
 ---
 
-
 ```{r, include = FALSE}
-knitr::opts_chunk$set(include = FALSE)
+knitr::opts_chunk$set(echo = FALSE, message = FALSE)
 library(here)
 library(tidyverse)
+library(hakaiR)
 options(scipen=999) # This removes scientific notation for inline output ie `r object` in the report text
 ```
 
@@ -108,7 +108,7 @@ An executive-level steering committee will provide technical and strategic advic
 
 ## Development Groups
 
-The development of the data model will rely heavily on input from expedition Chief Scientists, Scientists, project affiliated Scientists, Professors, and others. How exactly teams divide up development tasks will become clearer after tasks are better defined as a result of community engagement.
+The development of the data model will rely heavily on input from expedition Chief Scientists, Scientists, project affiliated Scientists, Professors, and others. Within each scientific domain planned for the 2021 cruise, there should be representation in an adhoc working group tasked with determining international data standards that apply to their domain of expertise
 
 Hakai Staff Available to consult as needed:
 
@@ -118,182 +118,87 @@ Hakai Staff Available to consult as needed:
 * Jennifer Jackson. Physical oceanographer for Hakai.
 * Brian Hunt. A faculty member at UBC and the head of Hakai salmon program
 
+![Graph network of the people, organizations, and data related to the International Year of the Salmon 2019 Expedition](IYS-2019-Overview.png)
 
-```{r network graph, eval=FALSE}
-# Load package
+```{r, network, eval = FALSE}
 library(networkD3)
 
-# Create fake data
-src <- c( "Aleksey Somov",
-          "Brian Hunt",
-          "Brian Riddel",
-          "Camille Jasinski",
-          "Charlie Waters",
-          "Christoph Deeg",
-          "Chrys Neville",
-          "Dick Beamish",
-          "Dion Oxman",
-          "Doug Mecum",
-          "Eric Peterson",
-          "Evgeny Pakhomov",
-          "Gennady Kantakov",
-          "Gerry Kristianson",
-          "Gustavo Bisbal",
-          "Hal Batchelder",
-          "Igor Malnikov",
-          "Jackie King",
-          "Jacques White",
-          "Jason Wong",
-          "Jeonsong Park",
-          "Jim Irvine",
-          "John Field",
-          "Kengo Suzuki" ,
-          "Kristi Miller",
-          "Laura Tessier",
-          "Maycira Costa",
-          "Moronke Harris",
-          "Rae Hull",
-          "Rick Brodeur",
-          "Shigehiko Urawa",
-          "Shunpei Sato",
-          "Skip McKinnel",
-          "Stephanie Taylor",
-          "Suam Kim",
-          "Sventlana Eukenselova",
-          "Terry Beacham",
-          "Vishnu Perumthuruthil Suseelan",
-          "Vladmir Radchenko")
-
-target <- c("TINRO Russian Pacific Federal Fisheries Research Institute",
-"UBC University of British Columbia, IOF Institute of Oceans and Fisheries, Institute of Oceans and Fisheries",
-"PSF Pacific Salmon Foundation",
-"NPAFC North Pacific Anadromous Fisheries Commission",
-"NOAA National Oceanic and Atmospheric Administration",
-"DFO Fisheries and Oceans Canada, UBC University of British Columbia",
-"DFO Fisheries and Oceans Canada",
-"DFO Fisheries and Oceans Canada",
-"ADFG Alaska Department of Fish and Game",
-"NOAA National Oceanic and Atmospheric Administration",
-"Tula Foundation, Hakai Institute",
-"UBC University of British Columbia, IOF Institute of Oceans and Fisheries, Institute of Oceans and Fisheries",
-"TINRO Russian Pacific Federal Fisheries Research Institute",
-"NPAFC North Pacific Anadromous Fisheries Commission",
-"USGS United States Geological Service",
-"PICES Pacific International Council for the Exploration of the Sea",
-"TINRO Russian Pacific Federal Fisheries Research Institute",
-"DFO Fisheries and Oceans Canada",
-"LLTK Long Live the Kings",
-"PSF Pacific Salmon Foundation",
-"NPAFC North Pacific Anadromous Fisheries Commission",
-"DFO Fisheries and Oceans Canada",
-"PSC Pacific Salmon Commission",
-"Hokkaido National Fisheries Research Institute",
-"DFO Fisheries and Oceans Canada",
-"NPAFC North Pacific Anadromous Fisheries Commission",
-"UVic University of Victoria",
-"NPAFC North Pacific Anadromous Fisheries Commission",
-"Unaffiliated",
-"NOAA National Oceanic and Atmospheric Administration",
-"Tohoku National Fisheries Research Institute",
-"Japan National Fisheries Research and Education Center",
-"SalmoForsk",
-"NPAFC North Pacific Anadromous Fisheries Commission",
-"NPAFC North Pacific Anadromous Fisheries Commission",
-"PSF Pacific Salmon Foundation",
-"DFO Fisheries and Oceans Canada",
-"UVic University of Victoria",
-"NPAFC North Pacific Anadromous Fisheries Commission")
-
-networkData <- data.frame(src, target)
-
-# Plot
-simpleNetwork(networkData)
-
-##
-#forceNetwork
-# Load data
-data(MisLinks)
-data(MisNodes)
-
-# Plot
-forceNetwork(Links = MisLinks, Nodes = MisNodes,
-            Source = "source", Target = "target",
-            Value = "value", NodeID = "name",
-            Group = "group", opacity = 0.8)
-
-# Read from Air Table
-download.file("https://airtable-csv-exports-production.s3.amazonaws.com/c1f585fb575d029a/People-Grid%20view.csv?AWSAccessKeyId=AKIAR7KB7OYSMPA2CKCB&Expires=1585847543&Signature=CPbyYK%2FIfnGe069JGc%2BscVRSwHI%3D", destfile = here::here("data", "people.csv"))
-
-people <- read_csv(here("data", "people.csv")) %>% 
-  select(Name, Organization) %>% 
-  as.data.frame()
-
-forceNetwork(Source = people, source = Name, Target = Organization, Links = NULL)
-
 # read graph commons data
+nodes <- read_csv(here("data", "IYS-OOS-nodes.csv")) %>% 
+  select(name = Name,
+         group = Type,
+         size = 1:length(ncol)) %>% 
+  arrange(name)
+
+nodes$node_id <- as.factor(nodes$name)
+nodes$node_id <- as.numeric(nodes$node_id)
+nodes$node_id <- nodes$node_id - 1 # zero index source and target
+
+nodes <- nodes %>% 
+  select(-size)
+
 links <- read_csv(here("data", "IYS-OOS-edges.csv")) %>% 
   select(source = "From Name",
          target = "To Name",
          value = Weight)
-nodes <- read_csv(here("data", "IYS-OOS-nodes.csv")) %>% 
-  select(name = Name,
-         group = Type,
-         size = 1:length(ncol))
+
+source <- inner_join(links, nodes, by = c("source" = "name")) %>% 
+  select(source = node_id)
+
+target <- inner_join(links, nodes, by = c("target" = "name")) %>% 
+  select(target = node_id)
+
+source$source <- as.factor(source$source)
+target$target <- as.factor(target$target)
+links <- data.frame(source$source, target$target)
+
+links$source <- links$source.source
+links$target <- links$target.target
+
+links <- links %>% 
+  select(source, target)
+
+nodes <- data.frame(nodes)
 
 forceNetwork(Links = links, Nodes = nodes,
              Source = "source", Target = "target",
-             Value = "value", NodeID = "name",
-             Group = "group", opacity = 0.8)
-```
+             NodeID = "name",
+             Group = "group", opacity = 1,
+             opacityNoHover = 1, fontSize = 12, 
+             zoom = TRUE, legend = TRUE, bounded = FALSE)
 
-```{r, eval = FALSE}
-# Load igraph
-library(igraph)
-
-# Use igraph to make the graph and find membership
-karate <- make_graph("Zachary")
-wc <- cluster_walktrap(karate)
-members <- membership(wc)
-
-# Convert to object suitable for networkD3
-karate_d3 <- igraph_to_networkD3(karate, group = members)
-
-# Create force directed network plot
-forceNetwork(Links = karate_d3$links, Nodes = karate_d3$nodes, 
-             Source = 'source', Target = 'target', 
-             NodeID = 'name', Group = 'group')
 ```
 
 # Road map for IYS Data Mobilization
 
-Here is a possible road map and timeline which will be refined before finalization for May 30, 2020.
+Here is the proposed road map and timeline which will be refined before finalization for May 30, 2020.
 
-[  ] Produce a comprehensive Data Strategy May 30, 2020
-[  ] Begin Building Data Management and Communication Model	June 1, 2020
-[  ] Bring 2019 Cruise Data into the Correct Repository(s)	TBD	2020
-[  ] Bring 2020 Cruise Data into the Correct Repository(s)	TBD	2020
-[  ] Plan 2021 Cruise Data Management	TBD	2020
-[  ] Integrate 2019, 2020, and 2021 cruise data	TBD	2021
-[  ] Extend GOOS framework into Salmon Ocean Ecology and Integrate with Salmon Activities Catalogue	TBD	2021
+* Produce a comprehensive Data Strategy May 30, 2020
+* Begin Building Data Management and Communication Model	June 1, 2020
+* Bring 2019 Cruise Data into the Correct Repository(s)	TBD	2020
+* Bring 2020 Cruise Data into the Correct Repository(s)	TBD	2020
+* Plan 2021 Cruise Data Management	TBD	2020
+* Integrate 2019, 2020, and 2021 cruise data	TBD	2021
+* Extend GOOS framework into Salmon Ocean Ecology and Integrate with Salmon Activities Catalogue	TBD	2021
 
 # Time Sensitive Challenges
 
-We need to better capture methods used in the field in the metadata associated with the measurements made on the expedition. This includes platform  descriptions, equipment descriptions, calibration files, and expected key variables that will be delivered. This will help in ensuring the scientific integrity of the consolidated data sets. Dataset 'Quality' levels will be assigned based on completeness of metadata collection and integrity of provenance. Development of these guidelines is pressing and there is need to draw together specific domains to discuss these issues.
+We need to better capture methods used in the field in the metadata associated with each dataset produced on the expedition. This includes platform  descriptions, equipment descriptions, calibration files, and expected key variables that will be delivered. This will help in ensuring the scientific integrity of the consolidated data sets. Dataset 'Quality' levels will be assigned based on completeness of metadata collection and integrity of provenance. Development of these guidelines is pressing and there is need to draw together specific domains to discuss these issues.
 
-Trawl catch data has not yet been received. Current understanding indicates that the  dataset structure is under development, and that expedition Scientists are working on this. Please understand that access to raw outputs and the detailed processing steps that occur to transform data are needed for complete data provenance. Keeping track of changes to raw data is important for reproducibility, and becoming commonly required in similar life sciences journals despite it being a high bar to aim for. Using a change log that you maintain manually ensures that reproducibility can be achieved when data cleaning is performed ad hoc such as removing outliers during quality control procedures, etc. Otherwise, using automated version control, scripted data transformations and distributed version control help scientists collaborate on common data and analyses.
+Trawl catch data has not yet been received. My current understanding indicates that the  dataset structure is under development, and that expedition Scientists are working on this. Please understand that access to raw outputs and the detailed processing steps that occur to transform data are needed for complete data provenance. Keeping track of changes to raw data is important for reproducibility, and becoming commonly required in life sciences journals despite it being a high bar to aim for. Using a change log that you maintain manually ensures that reproducibility can be achieved when data cleaning is performed ad hoc such as removing outliers during quality control procedures, etc. Otherwise, we reccommend moving to using automated version control, scripted data transformations and distributed version control help scientists collaborate on common data and analyses.
 
-We recommend the adhoc development of data standards group comprised of representatives of each research domain (physical oceanography, salmon feeding ecology etc.) and representation from as many member nations as possible. 
+Translation of data is still needed for some datasets, including Juday Net zooplankton hauls. Translators with domain specific knowledge of the data need to be identified. There are also a number of questions we have related to specific data sets that we keep track of [here](https://github.com/HakaiInstitute/iys-oos/issues) for data providers to view and respond to. We recommend the adhoc development of data standards group ASAP. A core group comprised of representatives of each research domain (physical oceanography, salmon feeding ecology etc.) and representation from as many member nations, and stakeholders as feasible. 
 
 # Next Steps
 
-Produce a Data Strategy Document
-This will:
+### Produce a Data Strategy Document that will:
 
 * Identify project milestones for 2020, 2021, and 2022 and requisite steps to success
 * Describe the foundation for a new best-practice approach to provide open and FAIR access to salmon, oceanographic, and climatic data integrated from numerous sources.
 * Propose a survey of key data providers to deepen engagement.
 
-Begin Building Data Management & Communication Framework
+### Begin Building Data Management & Communication Framework
+
 Start building a data management and communication framework that initially comprises:
 
 * A web-based IYS Data Portal. We propose to follow the lead of DFO/CIOOS and implement a cloud-based solution with Amazon Web Services, utilizing the Montreal data centre to host a data catalogue/portal.
@@ -309,11 +214,9 @@ Start building a data management and communication framework that initially comp
 # Links and Resources
 
 * [IYS-OOS GitHub Repository](https://github.com/HakaiInstitute/iys-oos)
+* [Please comment on this document issues in github](https://github.com/HakaiInstitute/iys-oos/issues)
 * [Temporary 'AirTable' IYS-OOS Database](https://airtable.com/invite/l?inviteId=invsmpqvzHUggckwg&inviteToken=53431b316c148356785d2c470a1605bc91103f8fe8189250563d929747ca2124)
 * [Template CKAN Catalogue](https://catalogue.cioospacific.ca/)
 * [Global Ocean Observation System](https://www.goosocean.org/)
 * [OBIS ENV-DATA Darwin Core Archive Data Structure](https://obis.org/manual/dataformat/)
 
-# References
-
-The Global Ocean Observing System 2030 Strategy. IOC, Paris, 2019, IOC Brochure 2019-5 (IOC/BRO/2019/5 rev.2), GOOS Report No.239
