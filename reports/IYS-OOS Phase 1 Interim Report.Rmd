@@ -23,7 +23,7 @@ library(hakaiR)
 options(scipen=999) # This removes scientific notation for inline output ie `r object` in the report text
 ```
 
-# _International Year of the Sal mom Data Mobilization Interim Report_
+# _International Year of the Salmon Data Mobilization Interim Report_
 
 `March 31, 2020`
 
