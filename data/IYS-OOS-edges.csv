@@ -1,0 +1,75 @@
+From Type,From Name,Edge,To Type,To Name,Weight
+Person,Bruce Patten,partOf,Organization,DFO Department of Fisheries and Oceans Canada,1
+Person,Shigehiko Urawa,partOf,Organization,Tohoku National Fisheries Research Institute,1
+Person,Shigehiko Urawa,responsibleFor,Dataset,Chum stock ID,1
+Person,Eric Peterson,responsibleFor,Organization,Hakai Institute,1
+Person,Eric Peterson,responsibleFor,Organization,Tula Foundation,1
+Person,Sventlana Eukenselova,partOf,Organization,PSF Pacific Salmon Foundation,1
+Person,Sventlana Eukenselova,responsibleFor,Dataset,Fish Trawl Abundance,1
+Person,Evgeny Pakhomov,partOf,Organization,Institute of Oceans and Fisheries,1
+Person,Evgeny Pakhomov,partOf,Organization,UBC University of British Columbia,1
+Person,Evgeny Pakhomov,responsibleFor,Dataset,Hydroacoustic ,1
+Person,Evgeny Pakhomov,responsibleFor,Dataset,Chlorophyll-a,1
+Person,Evgeny Pakhomov,responsibleFor,Dataset,Phytoplankton Biomass,1
+Person,Evgeny Pakhomov,responsibleFor,Dataset,Zooplankton [Bongo Net],1
+Person,Mark Saunders,responsibleFor,Organization,IYS International Year of the Salmon,1
+Person,Brett Johnson,partOf,Organization,Hakai Institute,1
+Person,Brian Hunt,partOf,Organization,UBC University of British Columbia,1
+Person,Brian Hunt,partOf,Organization,Institute of Oceans and Fisheries,1
+Person,Brian Hunt,partOf,Organization,Hakai Institute,1
+Person,Brian Hunt,responsibleFor,Dataset,Salmon diet data,1
+Person,Brian Hunt,responsibleFor,Dataset,Fish energy density,1
+Person,Brian Hunt,responsibleFor,Dataset,Chlorophyll-a,1
+Person,Brian Hunt,responsibleFor,Dataset,Zooplankton [Bongo Net],1
+Person,Brian Hunt,responsibleFor,Dataset,Phytoplankton Biomass,1
+Person,Christoph Deeg,responsibleFor,Dataset,Sockeye stock ID,1
+Person,Christoph Deeg,responsibleFor,Dataset,Pathogens,1
+Person,Christoph Deeg,responsibleFor,Dataset,Coho stock ID,1
+Person,Christoph Deeg,responsibleFor,Dataset,eDNA,1
+Person,Christoph Deeg,responsibleFor,Dataset,Real-time Coho stock ID,1
+Person,Christoph Deeg,responsibleFor,Dataset,Chinook stock ID,1
+Person,Ward Appletans,partOf,Organization,UNESCO,1
+Person,Ward Appletans,partOf,Organization,OBIS Ocean Biogeographic Information System,1
+Person,Maycira Costa,partOf,Organization,UVic University of Victoria,1
+Person,Maycira Costa,responsibleFor,Dataset,HPLC,1
+Person,Gennady Kantakov,partOf,Organization,TINRO - Russian Pacific Federal Fisheries Research Institute,1
+Person,Gennady Kantakov,responsibleFor,Dataset,Plastics,1
+Person,Kristi Miller,partOf,Organization,DFO Department of Fisheries and Oceans Canada,1
+Person,Kristi Miller,responsibleFor,Dataset,Pathogens,1
+Person,Kristi Miller,responsibleFor,Dataset,eDNA,1
+Person,Vladmir Radchenko,partOf,Organization,NPAFC North Pacific Anadromous Fish Comission,1
+Person,Vladmir Radchenko,responsibleFor,Dataset,Fish Trawl Abundance,1
+Person,Terry Beacham,partOf,Organization,DFO Department of Fisheries and Oceans Canada,1
+Person,Terry Beacham,responsibleFor,Dataset,Chum stock ID,1
+Person,Chrys Neville,partOf,Organization,DFO Department of Fisheries and Oceans Canada,1
+Person,Chrys Neville,responsibleFor,Dataset,Fish Trawl Abundance,1
+Person,Chrys Neville,responsibleFor,Dataset,Fish energy density,1
+Person,Chrys Neville,responsibleFor,Dataset,Coho stock ID,1
+Person,Chrys Neville,responsibleFor,Dataset,Sockeye stock ID,1
+Person,Chrys Neville,responsibleFor,Dataset,Chinook stock ID,1
+Person,Vishnu Perumthuruthil Suseelan,partOf,Organization,UVic University of Victoria,1
+Person,Vishnu Perumthuruthil Suseelan,partOf,Person,Maycira Costa,1
+Person,Vishnu Perumthuruthil Suseelan,partOf,Organization,IYS International Year of the Salmon,1
+Person,Vishnu Perumthuruthil Suseelan,responsibleFor,Dataset,Satellite chl-a,1
+Person,Charlie Waters,partOf,Organization,NOAA National Oceanic and Atmospheric Association,1
+Person,Charlie Waters,responsibleFor,Dataset,Fish energy density,1
+Person,Charlie Waters,responsibleFor,Dataset,Pink stock ID,1
+Organization,NPAFC North Pacific Anadromous Fish Comission,worksWith,Organization,IYS International Year of the Salmon,1
+Organization,MBON Marine Biodiversity Observation Network,partOf,Organization,GOOS Global Ocean Observation System,1
+Organization,NASCO North Atlantic Salmon Conservation Organization,partOf,Organization,IYS International Year of the Salmon,1
+Organization,CIOOS Pacific,partOf,Organization,CIOOS,1
+Organization,Ocean Best Practices,partOf,Organization,GOOS Global Ocean Observation System,1
+Organization,Hakai Institute,partOf,Organization,IYS International Year of the Salmon,1
+Organization,Hakai Institute,partOf,Organization,CIOOS Pacific,1
+Organization,GOOS Global Ocean Observation System,partOf,Organization,IOC Intergovernmental Oceanographic Commission,1
+Organization,Tohoku National Fisheries Research Institute,partOf,Organization,IYS International Year of the Salmon,1
+Organization,PICES North Pacific Marine Sciences Organization,worksWith,Organization,NPAFC North Pacific Anadromous Fish Comission,1
+Organization,OBIS Ocean Biogeographiv Information System,worksWith,Organization,GOOS Global Ocean Observation System,1
+Organization,TINRO - Russian Pacific Federal Fisheries Research Institute,partOf,Organization,IYS International Year of the Salmon,1
+Organization,ONC Ocean Networks Canada,partOf,Organization,CIOOS Pacific,1
+Organization,OBIS Ocean Biogeographic Information System,partOf,Organization,GOOS Global Ocean Observation System,1
+Organization,GBIF Global Biodiversity Information Facility,worksWith,Organization,GOOS Global Ocean Observation System,1
+Organization,DFO Department of Fisheries and Oceans Canada,partOf,Organization,IYS International Year of the Salmon,1
+Organization,CIOOS,partOf,Organization,GOOS Global Ocean Observation System,1
+Organization,UNESCO,responsibleFor,Organization,IOC Intergovernmental Oceanographic Commission,1
+Organization,UNESCO,responsibleFor,Organization,UN - United Nations,1
