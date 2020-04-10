@@ -1,10 +1,5 @@
 # International Year of the Salmon Ocean Observation System
 
-This is ground zero for the collaboration between the International Year of the Salmon, the North Pacific Anadranous Fish Comission, the Global and Canadian Integrated Ocean Observation Systems, and the Hakai Institue--a program of the Tula Foundation. We're working together to strengthen the salmon research network and ingtegrate with wider international and global networks.
+The North Pacific Anadromous Fish Commission (NPAFC) is implementing a five-year International Year of the Salmon (IYS) collaborative project through 2022 to set the conditions for the resilience of salmon and people in a rapidly changing world. Partners are collaborating for a Pan-Pacific Expedition in March 2021 with up to five vessels simultaneously surveying the North Pacific. Multi-disciplinary programs across at least a dozen institutions and agencies will generate a complex set of data in the 2021 surveys.  Success will ultimately demand that standardized and integrated data are available to researchers involved in the work at sea and those who will work with it into the future. It is also important that these data are open, readily accessible to all, and comply with the principles of FAIR data.  The NPAFC and the Hakai Institute with support from the BC Salmon Restoration and Innovation Fund and the Tula Foundation are conducting a review of approaches to data standardization and acquisition to support the standards, collection methods, storage, and analysis of data collected during the five-vessel survey. Brett Johnson will serve as the Technical Lead under direction from a Steering Committee and lead a small development team based at the Hakai Institute Quadra Island Ecological Observatory. 
 
-Key tehcnologies include: 
-
-* [Global Ocean Observation System]("http://www.unesco.org/new/en/natural-sciences/ioc-oceans/sections-and-programmes/ocean-observations-services/global-ocean-observing-system/")
-* [Ocean Biogeographic Information System]("https://obis.org/?query=salmon#/node/9")
-* [Darwin Core]("http://rs.tdwg.org/dwc/")
-
+The objective of this repository is track changes of data and code, host important reference documents, track issues with data sets, and transform data.
