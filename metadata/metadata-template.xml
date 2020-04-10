@@ -1,0 +1,36 @@
+    <!--
+        This is a guide to adding metadata required to get a CIOOS-compatible dataset into ERDDAP
+        This example is for an english language dataset. For french use language=fra, title_eng, summary_eng etc
+    
+        For entire list of supported attributes, see https://github.com/cioos-siooc/metadata-xml
+    -->
+    
+    <!--
+        This setting is required to get our custom CIOOS ISO XML served by ERDDAP 
+        The dataset ID is found in the top line of the dataset's definition <dataset type=... datasetID=...> 
+        The XML file doesn't need to exist on your computer.
+        Example: <iso19115File>/xml/HakaiQuadraWeather5min_iso19115.xml</iso19115File>
+    -->
+    <iso19115File>/xml/dataset-id-here_iso19115.xml</iso19115File>
+
+    <att name="title"></att>
+    <att name="creator_name"></att>
+    <att name="creator_email"></att>
+    <att name="institution"></att>
+
+    <!-- must be 'eng' or 'fra' -->
+    <att name="language">eng</att>
+
+    <!-- If theres a 'depth' field in the dataset these two are auto-populated so you must remove these lines -->
+    <att name="geospatial_vertical_min"></att>
+    <att name="geospatial_vertical_max"></att>
+
+    <att name="publisher_name"></att>
+    <att name="publisher_email"></att>
+
+    <att name="title_fra">title in french</att>
+    <att name="summary_fra">summary in french</att>
+
+    <!-- Must include at least one from this list, can also include anything else: -->
+    <att name="keywords">oxygen, nutrients, nitrate, phosphate, silicate, inorganicCarbon, dissolvedOrganicCarbon, seaSurfaceHeight, seawaterDensity, potentialTemperature, potentialDensity, speedOfSound, seaIce, seaState, seaSurfaceSalinity, seaSurfaceTemperature, subSurfaceCurrents, subSurfaceSalinity, subSurfaceTemperature, surfaceCurrents</att>
+    <att name="keywords_fra">keywords, in french, can be anything</att>
