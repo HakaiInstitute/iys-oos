@@ -23,11 +23,11 @@ library(hakaiR)
 options(scipen=999) # This removes scientific notation for inline output ie `r object` in the report text
 ```
 
-# _International Year of the Salmon Data Mobilization Interim Report_
+# _International Year of the Salmon Ocean Observation System Phase 1 Interim Report_
 
 `March 31, 2020`
 
-`Brett Johnson`
+`Brett Johnson and the IYS-OOS Steering Committee`
 
 `Hakai Institute`
 
@@ -38,9 +38,9 @@ An agreement was signed between the Hakai Institute and the North Pacific Anadro
 
 We recommend that the International Year of the Salmon collaborative project adopt, implement, and extend the Global Ocean Observation System for measuring Essential Ocean Variables. The Global Ocean Observation System is a project of the United Nation’s Intergovernmental Oceanographic Commission and unifies networks of scientists around the world. Adopting international standards such as the Ocean Biogeographic Information System, and FAIR (Findable, Accessible, Interoperable, Reusable) Data principles that are widely recognized will ensure a multilateral approach to the standardization of salmon ocean ecology data. 
 
-Data collected by the 2019 research cruise is currently being processed and reviewed by expedition team members. The goal is to have data centrally accessible in an International Year of the Salmon Ocean Observation System. Our first step was collecting metadata from the expedition Scientists. Next, we aim to publish metadata records in a Catalogue which will make the datasets 'Findable'. In due time and process, datasets will be made 'Accessible' from the metadata catalogue record by providing a link to download  data. Currently, we have access to roughly half of the expedition data sets. We conducted a thorough review of the 2019 data we had access to and noted issues and missing metadata. We also developed a Dataset Submission Form for expedition data holders to upload datasets with a complete suite of metadata that describes collection protocols so critical for data integration. 
+Data collected by the 2019 research cruise is currently being processed and reviewed by expedition team members. The goal is to have data centrally accessible in an International Year of the Salmon Ocean Observation System. Our first step was collecting metadata from the expedition Scientists. Next, we aim to publish metadata records in a Catalogue which will make the datasets 'Findable'. After dur process, datasets will be made 'Accessible' from a metadata catalogue record by providing a link to download  data. We conducted a thorough review of the 2019 data we had access to, which is roughly half, and noted issues and missing metadata. We also developed a Dataset Submission Form for expedition data holders (see link below) to upload datasets with a complete suite of metadata that describes collection protocols so critical for data integration. 
 
-The core components of the Data Management and Communications model include: 1) a Data Catalogue that centralizes data access through a web portal; 2) Catalogue records compliant with ISO 19115 that make the datasets broadly discoverable; 3) Open-access licensing; 4) Open Data Access Protocols (OpenDAP), specifically ERDDAP data servers, where necessary and; 4) Controlled Vocabularies that define the variables, methods, units, and measurement types used in salmon ocean ecology adhering to ‘Ocean Best Practices’ maintained by the Global Ocean Observation System. 
+The core components of the Data Management and Communications model include: 1) a Data Catalogue that centralizes data access through a web portal; 2) Catalogue records compliant with ISO 19115 that make the datasets broadly discoverable; 3) Open-access licensing; 4) Open Data Access Protocols, specifically ERDDAP data servers, where necessary and; 4) Controlled Vocabularies that define the variables, methods, units, and measurement types used in salmon ocean ecology adhering to ‘Ocean Best Practices’ maintained by the Global Ocean Observation System. 
 
 # Introduction
 
@@ -57,13 +57,13 @@ For every data element, method, platform, and variable produced by the IYS High 
 * Process. Work closely with the data provider to bring fully validated and standardized copies of data elements into the appropriate repositories.
 * Communicate. Representatives from each scientific discipline involved with the IYS should connect through a working group that disseminates and advocates for best-practices.
 
-For the 2021 cruise to be successful, the establishment of a data standards science team made up of relevant representation of stakeholders needs to be established as soon as possible to begin to prioritize every data element, method, platform, and variable they plan to collect.
+For the 2021 cruise to be successful, the establishment of a data standards science-team made up of a relevant representation of stakeholders needs to be established as soon as possible to begin to prioritize and establish common data standards.
 
 # Progress 
 
 ## Data Processing
 
-A number of datasets were delivered to Hakai from holdings that Drs. Evgeny Pakhomov and Brian Hunt had access to. A Google Drive folder was set up to hold data for the short-term. To receive data more efficiently,  a [Dataset Submission Google Form](https://forms.gle/BvMCLTGSjKsm42cS7) and a [static Word doc]("reports/IYS-GoA Dataset Submission Form.docx"). form were created to capture the accurate metadata. A number of these need to be filled out still (Table 1.) are necessary for researchers fill to out.We’ve looked through all of the 2019 data we have access to at this time, which is less than half of the expected datasets. Through this we noted issues and missing metadata for the 2019 data, so that we could get ahead in understanding gaps and challenges for the 2020 cruise.
+A number of datasets were delivered to Hakai from holdings that Drs. Evgeny Pakhomov and Brian Hunt had access to. A Google Drive folder was set up to hold data for the short-term. To receive data more efficiently,  a [Dataset Submission Google Form](https://forms.gle/BvMCLTGSjKsm42cS7) and a [static Word doc]("reports/IYS-GoA Dataset Submission Form.docx"). form were created to capture metadata. A number of these need to be filled out still (Table 1.). We’ve looked through all of the 2019 data we have access to at this time, which is less than half of the expected datasets. We noted issues and missing metadata for the 2019 data and are now soliciting feedback and collaboration with expedition scientists. 
 
 ```{r, include = FALSE}
 # Go to airtable IYS-OOS 2019 Datasets to download and update this file
@@ -85,11 +85,11 @@ knitr::kable(data_summary_2019)
 
 ### North Pacific Steering Committee
 
-We presented the idea of using the GOOS framework first at the North Pacific Steering Committee meeting in Vancouver, BC. on February 26 and 27. We received great feedback  including consensus from everyone that the data should generally be considered 'Open'. Next was whether or not there would need to be further discussion on more specific data licenses. Timelines and deadlines for data publication need to be established for post docs and students utilizing these data 1-2 year embargo period. Modelling data access after a PICES/ICES standard was suggested and seems appropriate. Further to that, the point was brought up that we should be thinking about the legacy of these types of systems for which there was general consensus that no one wanted another database to maintain. This was an opportunity to highlight the 'federated' approach we plan to take with data storage. Federating in this sense means having a record in the IYS metadata catalogue that sometimes points to the data in an externally established and certified repository that we don't maintain. The question of when data should be made public came up, and it was noted that some datasets will have embargo periods but that metadata could be published immediately in most cases. Lastly, the question of who will maintain the data long term was asked. A Data Synthesis centre was proposed which is one option. The development of some sort of cross-cutting community of organizations in partnership is another.
+We presented the idea of applying the GOOS framework to the IYS first at the North Pacific Steering Committee meeting in Vancouver, BC. on February 26 and 27. We received good feedback  including consensus from everyone that the data should generally be considered 'Open'. Next was whether or not there would need to be further discussion on more specific data licenses. Timelines and deadlines for data publication need to be established for post docs and students utilizing these data 1-2 year embargo period. Modelling data access after a PICES/ICES standard was suggested and seems appropriate. Further to that, the point was brought up that we should be thinking about the legacy of these types of systems for which there was general consensus that no one wanted another database to maintain. This was an opportunity to highlight the 'federated' approach we plan to take with data storage. Federating in this sense means having a record in the IYS metadata catalogue that sometimes points to the data in an externally established and certified repository that we don't maintain. The question of when data should be made public came up, and it was noted that some datasets will have embargo periods but that metadata could be published immediately in most cases. Lastly, the question of who will maintain the data long term was asked. A Data Synthesis centre was proposed which is one option. The development of a community of organizations networked in partnership.
 
 ### North Pacific Working Group
 
-We discussed the need for user stories from scientists related to sharing data. A survey for the expedition participants and others was suggested. Vladimir highlighted that the timing of the wrap-up symposium was perhaps too close to the final survey. I agree with  Vladimir's concern and I think it would be wise to view the success of this  project as the establishment of a best-practice. The demonstration of data collection, consolidation, quality control, analysis, and knowledge generation in near real-time for the symposium may only be for a subset of data, depending on the stage of standardization each research domain is able to achieve. The major highlight was the decision to propose a 1-year 'Data Standards Study Group' with participation either directly or indirectly from scientists from each country and each Research Domain identified for the 2021 Expedition. Those Research Domains include: Physical/biogeochemical Oceanography, Biological Oceanography, Modelling, Feeding Ecology and Energetics, Salmon distribution, abundance and migration, Genomics and Stock ID, and Micro plastics.
+We discussed the need for user stories from scientists related to sharing data. A survey for the expedition participants and others was suggested. Vladimir highlighted that the timing of the wrap-up symposium was perhaps too close to the final survey. I agree with  Vladimir's concern and I think it would be wise to view the success of this  project as the establishment of best-practice. The demonstration of data collection, consolidation, quality control, analysis, and knowledge generation in near real-time for the symposium may only be for a subset of data, depending on the stage of standardization each research domain is able to achieve. The major highlight was the decision to propose a 1-year 'Data Standards Study Group' under the umberella of the NPAFC with participation either directly or indirectly from scientists from each country and each Research Domain identified for the 2021 Expedition. Those Research Domains include: Physical/biogeochemical Oceanography, Biological Oceanography, Modelling, Feeding Ecology and Energetics, Salmon distribution, Abundance and Migration, Genomics and Stock ID, and Micro plastics.
 
 ## Development of a Data Strategy
 
@@ -100,7 +100,7 @@ Beyond the recommendation of technical infrastructure and standards, there needs
 
 ## Steering Committee 
 
-An executive-level steering committee will provide technical and strategic advice on the project while Hakai and NPAFC will retain administrative oversight of the project. Steering Committee participants will include:
+An executive-level steering committee will provide technical and strategic advice on the project while Hakai and NPAFC will retain administrative oversight. Steering Committee participants will include:
 
 * Eric Peterson/Brett Johnson – Hakai Institute
 * Mark Saunders/Stephanie Taylor– NPAFC
@@ -112,7 +112,7 @@ An executive-level steering committee will provide technical and strategic advic
 
 ## Development Groups
 
-The development of the data model will rely heavily on input from expedition scientists, project affiliated Scientists, Professors, and others. Within each scientific domain planned for the 2021 cruise, there should be representation in an ad hoc working group tasked with determining international data standards that apply to their domain of expertise
+The development of the data model will rely heavily on input from expedition scientists, project affiliated Scientists, Professors, and others. Within each scientific domain planned for the 2021 cruise, there should be representation in working group tasked with determining international data standards that apply to their domain of expertise.
 
 Hakai Staff and affiliates to consult as needed:
 
@@ -188,11 +188,11 @@ Here is the proposed road map and timeline which will be refined before finaliza
 
 # Time Sensitive Challenges
 
-Some methods used in the field need better documentation in the metadata associated with each dataset produced on the expedition. This includes equipment and platform descriptions,  calibration files, instructions for how data were summarized or aggregated, and any caveats for data interpretation etc... This will help in ensuring the scientific integrity of the consolidated data sets. Dataset 'Quality' levels will eventually be assigned based on completeness of metadata collection and integrity of provenance. Development of these guidelines among research domains is pressing.
+Methods used in the field need better documentation in the metadata associated with each dataset produced on the expedition. Many metadata records are still missing. Metadata includes information such as equipment and platform descriptions,  calibration files, instructions for how data were summarized or aggregated, and any caveats for data interpretation etc... This will help in ensuring the scientific integrity of the consolidated data sets. Dataset 'Quality' levels will eventually be assigned based on completeness of metadata collection and integrity of data provenance. Development of these guidelines among research domains is pressing.
 
-Trawl catch data has not yet been received. My current understanding indicates that the  dataset structure is under development, and that expedition Scientists are working on this. Please understand that access to raw outputs and the detailed processing steps that occur to transform data are needed for complete data provenance. Keeping track of changes to raw data will help us ensure reproducibility, which is becoming commonly required in life sciences journals despite it being a high bar to aim for. Using a change log that you maintain manually ensures that reproducibility can be achieved when data cleaning is performed ad hoc such as removing outliers during quality control procedures, etc. Otherwise, we recommend moving to using automated version control, scripted data transformations and distributed version control help scientists collaborate on common data and analyses.
+Trawl catch data has not yet been received. My current understanding indicates that the  dataset structure is under development, and that expedition Scientists are working on this. Please understand that access to raw outputs and the detailed processing steps that occur to transform data are needed for complete data provenance. Keeping track of changes to raw data will help us ensure reproducibility, which is becoming commonly required in life sciences journals despite it being a high bar to aim for. Using a change log to manually document changes ensures that reproducibility can be achieved when data cleaning is performed ad hoc such as removing outliers during quality control procedures, etc. Otherwise, we recommend moving to using automated version control, scripted data transformations and a metadata standard that canonically defines variables. This will help scientists collaborate on common data and analyses using modern cyber infrastructure that is already in place.
 
-Translation of data is still needed for some datasets, including Juday Net zooplankton hauls. Translators with domain specific knowledge of the data need to be identified. There are also a number of questions we have related to specific data sets that we keep track of [here](https://github.com/HakaiInstitute/iys-oos/issues) for data providers to view and respond to. We recommend the ad hoc development of data standards group ASAP. A core group comprised of representatives of each research domain (physical oceanography, salmon feeding ecology etc.) and representation from as many member nations, and stakeholders as feasible. 
+Translation of data is still needed for some datasets, including Juday Net zooplankton hauls. Translators with domain specific knowledge of the data need to be identified. There are also a number of questions we have related to specific data sets that we keep track of [here](https://github.com/HakaiInstitute/iys-oos/issues) for expedition scientists/data providers to view and respond to. We recommend the ad hoc development of data standards group, in advance of formnal designation from overseeing bodies ASAP. We advocate for a core group comprised of representatives of each research domain (physical oceanography, salmon feeding ecology etc.) and representation from as many member nations and stakeholders as feasible. 
 
 # Next Steps
 
@@ -225,4 +225,3 @@ Start building a data management and communication framework that initially comp
 * [Global Ocean Observation System](https://www.goosocean.org/)
 * [OBIS ENV-DATA Darwin Core Archive Data Structure](https://obis.org/manual/dataformat/)
 * [Good enough practices in scientific computing](https://doi.org/10.1371/journal.pcbi.1005510)
-
