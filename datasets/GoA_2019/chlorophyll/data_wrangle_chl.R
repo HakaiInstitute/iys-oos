@@ -17,22 +17,26 @@ library(googledrive)
 library(uuid)
 
 drive_download("https://drive.google.com/open?id=1y0obUAsdWeYp2nFOB596B5rGQzNyQxwN", 
-               path = here::here("chlorophyll", "raw_data", "IYSchl_Hunt&Pakhomov.xlsx"),
+               path = here::here("./datasets/GoA_2019/chlorophyll/raw_data/", 
+                                 "IYSchl_Hunt&Pakhomov.xlsx"),
                overwrite = TRUE)
 
-chl <- read_excel(here("chlorophyll", "raw_data", "IYSchl_Hunt&Pakhomov.xlsx"), 
+chl <- read_excel(here("./datasets/GoA_2019/chlorophyll/raw_data/", 
+                       "IYSchl_Hunt&Pakhomov.xlsx"), 
                   sheet = "Chl data") %>% 
   # Convert the standalone time value (UTC+12) into ISO8601 extended format
+  # and add column `Cruise` 
   mutate(Time = format(Time, format = "%H:%M:%S"),
          dateTime = format_iso_8601(as.POSIXct(paste(Date, Time), 
                                                format="%Y-%m-%d %H:%M:%S", 
-                                               tz="Asia/Kamchatka")),
-         dateTime = str_replace(dateTime, "\\+00:00", "Z")
+                                               tz="Asia/Kamchatka",
+                                               usetz = TRUE)),
+         Cruise = "GoA2019"
          ) 
 
 # Rename columns to fit OBIS Darwin Core terminology (https://obis.org/manual/dataformat/)
-names(chl)[names(chl) == "Latitude"] <- "decimalLatitude"
-names(chl)[names(chl) == "Longitude"] <- "decimalLongitude"
+chl <- dplyr::rename(chl, decimalLongitude = Longitude)
+chl <- dplyr::rename(chl, decimalLatitude = Latitude)
 
 # Create two distinct dataframes: Event and extended MeasurementOrFact (eMoF)
 # In this dataset we are only dealing with a-biotic data, and measurements can be 
@@ -67,7 +71,7 @@ chl_2$minimumDepthInMeters <- " "
 chl_2$maximumDepthInMeters <- " "
 
 chl_total <- rbind(chl_event, chl_2) %>%
-  mutate(basisOfRecord = "MachineObservation") # add missing required field
+  mutate(basisOfRecord = "event") # add missing required field
 
 # Though dataframes are now joined, the rows with Station-specific data are
 # listed at the bottom, so to restructure the dataframe:
@@ -95,8 +99,8 @@ chl_event_fnl <- chl_event_fnl %>%
                           grepl("_Depth_", eventID) ~ "Sample"))         
 
 # Output .csv file in local folder and upload to GoogleDrive. 
-write_csv(chl_event_fnl, here("chlorophyll", "raw_data", "chl_event_fnl.csv"))
-drive_upload("./chlorophyll/raw_data/chl_event_fnl.csv",
+write_csv(chl_event_fnl, here("./datasets/GoA_2019/chlorophyll/raw_data/", "chl_event_fnl.csv"))
+drive_upload("./datasets/GoA_2019/chlorophyll/raw_data/chl_event_fnl.csv",
              path = "https://drive.google.com/drive/folders/1TqGK3ih2b7hPWUion5utDgxIEVLYRm5W",
              name = "Chlorophyll_a_event.csv",
              overwrite = TRUE)
@@ -112,10 +116,6 @@ chl_measurement$eventID <- ifelse(grepl("_Depth_", chl_measurement$eventID),
                              chl_measurement$eventID, NA) 
 chl_measurement <- chl_measurement %>% 
    tidyr::drop_na(eventID)
-
-# Duplicate each row so we can associate a measurementID for each measured parameter
-# to each depth subsample. 
-chl_measurement <- chl_measurement[rep(1:nrow(chl_measurement), each = 2),]
 
 chl_measurement_2 <- chl %>%
   # Gather Chl and Phe into measurement types
@@ -142,8 +142,8 @@ chl_measurement_fnl <- cbind(chl_measurement, chl_measurement_2) %>%
          measurementValue, measurementUnit, measurementUnitID)
 
 # Write up .csv file and upload to GoogleDrive folder
-write_csv(chl_measurement_fnl, here("chlorophyll", "raw_data", "chl_measurement_fnl.csv"))
-drive_upload("./chlorophyll/raw_data/chl_measurement_fnl.csv",
+write_csv(chl_measurement_fnl, here("./datasets/GoA_2019/chlorophyll/raw_data/", "chl_measurement_fnl.csv"))
+drive_upload("./datasets/GoA_2019/chlorophyll/raw_data/chl_measurement_fnl.csv",
              path = "https://drive.google.com/drive/folders/1TqGK3ih2b7hPWUion5utDgxIEVLYRm5W",
              name = "Chlorophyll_a_measurement.csv",
              overwrite = TRUE)
@@ -151,4 +151,4 @@ drive_upload("./chlorophyll/raw_data/chl_measurement_fnl.csv",
 # Location of sampling event
 chl_loc <- chl %>% 
   distinct(parentEventID, Region, decimalLatitude, decimalLongitude)
-write_csv(chl_loc, here("chlorophyll", "raw_data", "chl_location.csv"))
+write_csv(chl_loc, here("./datasets/GoA_2019/chlorophyll/raw_data/", "chl_location.csv"))
