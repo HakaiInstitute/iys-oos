@@ -45,7 +45,7 @@ ctd_event$bottomDepthInMeters <- sheet2$`Bot. Depth`
 
 ## Assumption: -------------------------------------------------------------------
 # The assumption that we make here for the eventID is that NO.Trawl is the Station 
-# number(!!).However, if that's the case, what is the column NO.(ST) in refernce to? 
+# number(!!).However, if that's the case, what is the column NO.(ST) in reference to? 
 # Will need confirmation/clarification.
 ## -------------------------------------------------------------------------------
 
@@ -83,7 +83,7 @@ for (row in 1:length(ctd_event_2$parentEventID)) {
 ctd_event_new <- ctd_event_2 %>% ungroup(parentEventID, bottomDepthInMeters) %>% 
   mutate(parentEventID = ifelse(parentEventID == eventID,
    (parentEventID <- str_replace(parentEventID, "\\_CTD_.*", "")),
-   (parentEventID <- ctd_event_fnl$parentEventID)))
+   (parentEventID <- ctd_event_2$parentEventID)))
 
 ## Tip for future use -----------------------------------------------------------
 # The "\\_CTD_.*" is referred to as a 'wildcard', using the .* at the end of the 
@@ -132,7 +132,6 @@ final_ctd_event$decimalLatitude[final_ctd_event$minimumDepthInMeters==1] <- NA
 final_ctd_event$decimalLongitude[final_ctd_event$minimumDepthInMeters==1] <- NA
 final_ctd_event$bottomDepthInMeters[final_ctd_event$minimumDepthInMeters==1] <- NA
 
-# Replace NAs
 final_ctd_event[is.na(final_ctd_event)] <- ''
 
 # Save locally and in GoogleDrive
