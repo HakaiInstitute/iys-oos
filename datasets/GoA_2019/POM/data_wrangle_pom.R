@@ -109,7 +109,7 @@ pom_measurement <- sheet1 %>%
                                        measurementType == "total C" ~ "",
                                        measurementType == "total N" ~ ""),
          measurementUnit = case_when(measurementType == "volume filtered" ~ "L",
-                                     measurementType %in% c("d13C_VPDB", "d15N_air") ~ "‰",
+                                     measurementType %in% c("d13C_VPDB", "d15N_air") ~ "ppt",
                                      measurementType %in% c("total C", "total N") ~ "ug"),
          measurementUnitID = case_when(measurementUnit == "L" ~ "http://vocab.nerc.ac.uk/collection/P06/current/ULIT/",
                                        measurementUnit == "‰" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UPPT/",
