@@ -49,13 +49,13 @@ pom_ndepth <- sheet1 %>%
          minimumDepthInMetres = `Sample depth`,
          maximumDepthInMetres = `Sample depth`) %>% 
   distinct(eventID, .keep_all = TRUE) %>% 
-  mutate(type = "niskin")
+  mutate(type = "sample")
 
 pom_sample <- sheet1 %>% 
   select(eventID = sample,
          parentEventID = ndepth) %>% 
   distinct(eventID, .keep_all = TRUE) %>% 
-  mutate(type = "sample")
+  mutate(type = "subsample")
 
 pom_event <- bind_rows(pom_cruise, pom_station, pom_cast, pom_ndepth, pom_sample) %>% 
   select(eventID, parentEventID:maximumDepthInMetres, type) %>% 
@@ -132,7 +132,7 @@ pom_measurementOrFact <- bind_rows(pom_botdepth, pom_measurement) %>%
   
 
 write_csv(pom_measurementOrFact, here("POM", "tidy_data", "pom_measurementOrFact.csv"))
-drive_upload(here("POM", "tidy_data", "pom_event.csv"),
+drive_upload(here("POM", "tidy_data", "pom_measurementOrFact.csv"),
              path = "https://drive.google.com/drive/folders/1WMsDahUdt9dKXGcoi2gcrjNmpGBgHOSB",
              name = "POM_measurementOrFact.csv",
              overwrite = TRUE)
