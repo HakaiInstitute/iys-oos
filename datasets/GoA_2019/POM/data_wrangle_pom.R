@@ -7,8 +7,7 @@ library(here)
 
 drive_download("https://drive.google.com/open?id=1vecoPwVLsP5rpZ8pj-H4xjOld4otCD7O", path = here("POM", "raw_data", "POM_tidy.xlsx"))
 
-
-### Event ----------------
+### Setup ---------------
 sheet1 <- read_excel(here("POM", "raw_data", "POM_tidy.xlsx"), sheet = "Sheet1") %>%
   mutate(Time = format(Time, "%H:%M:%S"),
          eventDate = format_iso_8601(as.POSIXct(paste(Date, Time),
@@ -23,6 +22,7 @@ sheet1 <- read_excel(here("POM", "raw_data", "POM_tidy.xlsx"), sheet = "Sheet1")
          sample = paste(ndepth, `Sample ID`, sep=":")
   )
 
+### Event ----------------
 pom_cruise <- sheet1 %>% 
   select(eventID = cruise) %>% 
   distinct(eventID) %>% 
@@ -108,11 +108,11 @@ pom_measurement <- sheet1 %>%
                                        measurementType == "d15N_air" ~ "http://vocab.nerc.ac.uk/collection/P01/current/D15NMTP1/",
                                        measurementType == "total C" ~ "",
                                        measurementType == "total N" ~ ""),
-         measurementUnit = case_when(measurementType == "volume filtered" ~ "L",
+         measurementUnit = case_when(measurementType == "volume filtered" ~ "mL",
                                      measurementType %in% c("d13C_VPDB", "d15N_air") ~ "ppt",
                                      measurementType %in% c("total C", "total N") ~ "ug"),
-         measurementUnitID = case_when(measurementUnit == "L" ~ "http://vocab.nerc.ac.uk/collection/P06/current/ULIT/",
-                                       measurementUnit == "‰" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UPPT/",
+         measurementUnitID = case_when(measurementUnit == "mL" ~ "http://vocab.nerc.ac.uk/collection/P06/current/VVML/",
+                                       measurementUnit == "ppt" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UPPT/",
                                        measurementUnit == "ug" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UGUG/")
   )
 
