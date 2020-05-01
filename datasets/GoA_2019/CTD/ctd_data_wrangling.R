@@ -1,6 +1,6 @@
 # ---
 #  title: CTD measurements 2019 Gulf of Alaska expedition
-#  author: Julian Gan & Tim van der Stap, Hakai Institute
+#  authors: Julian Gan & Tim van der Stap, Hakai Institute
 #  date: April 29, 2020
 #  objective: Data wrangling of CTD data collected on the GoA 2019 cruise, 
 #  according to Darwin Core Archive (DwC-A) standards. 
@@ -15,21 +15,25 @@ library(parsedate)
 library(googledrive)
 
 drive_download("https://drive.google.com/open?id=1-onECiDW02DJRIX6g4dXywtzLEqCGyce", 
-               path = here("./datasets/GoA_2019/CTD/raw_data/", "Data_IYS_conbined_Final.xlsx"))
+               path = here::here("./datasets/GoA_2019/CTD/raw_data/", "Data_IYS_conbined_Final.xlsx"))
 
 sheet1 <- read_excel(here("./datasets/GoA_2019/CTD/raw_data/", "Data_IYS_conbined_Final.xlsx"), sheet = "Sheet1")
 sheet2 <- read_excel(here("./datasets/GoA_2019/CTD/raw_data/", "Data_IYS_conbined_Final.xlsx"), sheet = "Sheet2")
 
 # Update the timezone for the Event Core:
 ctd <- sheet2 %>%
-  select(`NO.Trawl`, `NO.(CTD)`, `NO.(ST)`, DEPTH, 
+  select(`NO.Trawl`, `NO.(CTD)`, `NO.(ST)`, `Bot. Depth`, DEPTH, 
          LON, LAT, YEAR, MONTH, DAY, `TIME(ship time)`, `MIN(ship time)`) %>%
   mutate(eventDate_text = str_c(YEAR, MONTH, DAY, `TIME(ship time)`, `MIN(ship time)`, sep="-"),
          eventDate = ymd_hm(eventDate_text, tz = "Asia/Kamchatka")) %>%
   mutate(eventDate = format_iso_8601(as.POSIXct(eventDate,
                                                 format = "%Y-%m-%d %H:%M%:S",
-                                                tz="Asia/Kamchatka",
-                                                usetz = TRUE)))
+                                                tz="Asia/Kamchatka")),
+         eventDate = str_replace(eventDate, "\\+00:00", "Z")
+         )
+
+# In our case, the recorded longitude values should be negative: 
+ctd$LON <- -ctd$LON
 
 ctd <- ctd %>%
   mutate(cruise = "GoA2019",
@@ -42,13 +46,14 @@ ctd_cruise <- ctd %>%
   distinct(eventID) %>%
   mutate(type = "cruise")
 
-# Join date to station
+# Join date and bottom depth to station
 ctd_station <- ctd %>%
   select(eventID = station,
          parentEventID = cruise,
          eventDate,
          decimalLatitude = LAT,
-         decimalLongitude = LON) %>% 
+         decimalLongitude = LON,
+         bottomDepth = `Bot. Depth`) %>% 
   distinct(eventID, .keep_all = TRUE) %>% 
   mutate(type = "station")
 
@@ -67,8 +72,7 @@ ctd_ndepth <- ctd %>%
   mutate(type = "sample")
 
 ctd_event <- bind_rows(ctd_cruise, ctd_station, ctd_cast, ctd_ndepth) %>% 
-  select(eventID, parentEventID:maximumDepthInMetres, type) %>% 
-  mutate(basisOfRecord = "Event")
+  select(eventID, parentEventID:maximumDepthInMetres, type) 
 
 # Re-order the Event Core:
 order <- stringr::str_sort(ctd_event$eventID, numeric=TRUE)
@@ -97,6 +101,9 @@ ctd_measurement <- ctd_measurement[, -which(names(ctd_measurement) == "EC25 [uS/
                values_to = "measurementValue",
                values_ptypes = list(measurementValue = 'character')
   )
+
+# Have to clarify whether `bottom depth` should be associated with event table
+# or with the measurementOrFact table. 
 
 ctd_measurement <- ctd_measurement %>% # Should "NO.Trawl" here be "NO.(ST)"?
   mutate(measurementID = case_when(measurementType == "TEM_S" ~ paste(eventID,"TEM_S",sep="_"),
@@ -190,8 +197,7 @@ ctd_measurement <- ctd_measurement %>% # Should "NO.Trawl" here be "NO.(ST)"?
                                        measurementType == "Dissolved oxygen [Lab]" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UMLL/",
                                        measurementType == "BOD in 5m depth [Lab]" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UMLL/",
                                        measurementType == "Percent oxygen saturation" ~ "http://vocab.nerc.ac.uk/collection/P01/current/OXYSZZ01/",
-                                       measurementType == "EC25" ~ "http://vocab.nerc.ac.uk/collection/P06/current/MSCM/"),
-         occurrenceID = " "
+                                       measurementType == "EC25" ~ "http://vocab.nerc.ac.uk/collection/P06/current/MSCM/")
   ) %>%
   select(measurementID, measurementType, measurementTypeID,
          measurementValue, measurementUnit, measurementUnitID)
