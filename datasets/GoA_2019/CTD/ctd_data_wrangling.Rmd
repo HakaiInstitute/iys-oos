@@ -1,26 +1,38 @@
-# ---
-#  title: CTD measurements 2019 Gulf of Alaska expedition
-#  authors: Julian Gan & Tim van der Stap, Hakai Institute
-#  date: April 29, 2020
-#  objective: Data wrangling of CTD data collected on the GoA 2019 cruise, 
-#  according to Darwin Core Archive (DwC-A) standards. 
-# ---
+---
+title: "CTD Data wrangle"
+author: "Tim van der Stap & Julian Gan"
+date: "5/1/2020"
+output: html_document
+---
 
-# Load required packages:
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+First load required packages:
+``` {r packages, eval = FALSE}
 library(tidyverse)
 library(lubridate)
 library(readxl)
 library(here)
 library(parsedate)
 library(googledrive)
+```
 
+Download the raw data from GoogleDrive, and read from local folder:
+``` {r file download, eval = FALSE}
 drive_download("https://drive.google.com/open?id=1-onECiDW02DJRIX6g4dXywtzLEqCGyce", 
                path = here::here("./datasets/GoA_2019/CTD/raw_data/", "Data_IYS_conbined_Final.xlsx"))
 
 sheet1 <- read_excel(here("./datasets/GoA_2019/CTD/raw_data/", "Data_IYS_conbined_Final.xlsx"), sheet = "Sheet1")
 sheet2 <- read_excel(here("./datasets/GoA_2019/CTD/raw_data/", "Data_IYS_conbined_Final.xlsx"), sheet = "Sheet2")
+```
 
-# Update the timezone for the Event Core:
+## EventCore 
+
+The reported date / time has to get formatted to UTC in the ISO8601 extended format.
+
+``` {r time formatting, eval = FALSE}
 ctd <- sheet2 %>%
   select(`NO.Trawl`, `NO.(CTD)`, `NO.(ST)`, `Bot. Depth`, DEPTH, 
          LON, LAT, YEAR, MONTH, DAY, `TIME(ship time)`, `MIN(ship time)`) %>%
@@ -31,11 +43,17 @@ ctd <- sheet2 %>%
                                                 tz="Asia/Kamchatka")),
          eventDate = str_replace(eventDate, "\\+00:00", "Z")
          )
+```
 
-# In our case, the recorded longitude values should be negative (as determined through QC,
-# and cross-referencing with other datasets from the same cruise): 
+The longitude was recorded as 'positive' values, however, after QC and cross-reference to other data recorded during the same cruise, it is clear that the values should be negative.
+
+``` {r QC Longitude, eval = FALSE}
 ctd$LON <- -ctd$LON
+```
 
+To wrangle the data into a tidy format that follows the Darwin Core Archive (DwC-A) standards and hierarchical structure, it's important to determine how many layers of eventID (and, consequently, parentEventID) the data has. In the CTD dataset, the data has four layers: cruise, station, cast, and the depth at which the  measurements were taken. For each of these layers, a data frame is created with unique eventIDs, associated parentEventIDs, and associated unique characteristics. In our data, we join the date to the station level, as all station-specific data was collected on a day. 
+
+``` {r ctd wrangle, eval = FALSE}
 ctd <- ctd %>%
   mutate(cruise = "GoA2019",
          station = paste(cruise, `NO.Trawl`, sep="_Stn"),
@@ -71,7 +89,11 @@ ctd_ndepth <- ctd %>%
          maximumDepthInMetres = DEPTH) %>% 
   distinct(eventID, .keep_all = TRUE) %>% 
   mutate(type = "sample")
+```
 
+Finally, these tables get joined, and re-ordered based on eventID, to create the Event Core. This table gets saved locally and in the correct GoogleDrive folder.
+
+``` {r ctd event, eval = FALSE}
 ctd_event <- bind_rows(ctd_cruise, ctd_station, ctd_cast, ctd_ndepth) %>% 
   select(eventID, parentEventID:maximumDepthInMetres, type) 
 
@@ -85,9 +107,13 @@ drive_upload("./datasets/GoA_2019/CTD/raw_data/CTD_event.csv",
              path = "https://drive.google.com/drive/u/0/folders/1-XXOPhMN4-BmhI3owM2hvaMKXEy6hEYL",
              name = "draft_CTD_event.csv",
              overwrite = TRUE)
+```
 
-## MeasurementOrFact  ----------------------------------------------------
+## MeasurementOrFact 
 
+After creating the Event Core, we create an extended MeasurementOrFact (eMoF) table. An occurrence table is not created as the datasets only contain abiotic data. In the wrangling for the measurement table, we create specific eventIDs that we can associate measurement values to at a later stage. Also, DwC-A standards work with "long" format, rather than the wide format, so we need to transpose the data. 
+
+``` {r measurement wrangle, eval = FALSE}
 # Create eMoF table, first from sheet1 (data collected only at specific depths),
 # as this computes faster (smaller dataset) 
 
@@ -102,10 +128,13 @@ ctd_measurement <- ctd_measurement[, -which(names(ctd_measurement) == "EC25 [uS/
                values_to = "measurementValue",
                values_ptypes = list(measurementValue = 'character')
   )
+```
 
-# Have to clarify whether `bottom depth` should be associated with event table
-# or with the measurementOrFact table. 
+__Note: in the previous chunk we got our data from sheet1 - this is data collected at discrete depths. To create a measurement table for sheet2, simply replace sheet1 with sheet2.__
 
+Assign the correct NERC controlled vocabulary to the variables and the measurement units. 
+
+``` {r CTD, eval = FALSE}
 ctd_measurement <- ctd_measurement %>% # Should "NO.Trawl" here be "NO.(ST)"?
   mutate(measurementID = case_when(measurementType == "TEM_S" ~ paste(eventID,"TEM_S",sep="_"),
                                    measurementType == "TEM_R" ~ paste(eventID,"TEM_R",sep="_"),
@@ -202,18 +231,15 @@ ctd_measurement <- ctd_measurement %>% # Should "NO.Trawl" here be "NO.(ST)"?
   ) %>%
   select(measurementID, measurementType, measurementTypeID,
          measurementValue, measurementUnit, measurementUnitID)
+```
 
+Finally, the eMoF table gets saved locally and on GoogleDrive. 
+
+``` {r CTD save, eval = FALSE}
 # Save locally and on GoogleDrive: 
 write_csv(ctd_measurement, here("./datasets/GoA_2019/CTD/raw_data/", "CTD_measurement.csv"))
 drive_upload("./datasets/GoA_2019/CTD/raw_data/CTD_measurement.csv",
              path = "https://drive.google.com/drive/u/0/folders/1-XXOPhMN4-BmhI3owM2hvaMKXEy6hEYL",
              name = "draft_CTD_measurement.csv",
              overwrite = TRUE)
-
-# Comments/things to consider ----------------------------------------------------------------------- 
-# 1. Salinity can - alternatively - be measured in ppt. "For all practical purposes, salinity in PSS
-# or PSU (which is dimensionless) has the same numerical value as salinity in ppt." 
-# 2. Have to check whether the measurementUnit standard for turbidity is NTU or FTU.  
-# 3. Have to determine whether measurementUnit for Chl-a is mg m-3 or ug/L [technically the same].
-# 4. Should BOD5 be measured in mg/L instead of ml/L?
-# ---------------------------------------------------------------------------------------------------
+```
