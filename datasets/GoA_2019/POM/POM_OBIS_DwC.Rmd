@@ -1,0 +1,174 @@
+---
+title: "Transforming POM Data to OBIS-DwC"
+author: "Julian Gan"
+date: "30/04/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(lubridate)
+library(readxl)
+library(parsedate)
+library(googledrive)
+library(here)
+```
+
+## Getting started
+
+The following line only needs to be run once to download the tidied data from Google Drive to your computer's hard drive
+
+```{r drive_download, eval = FALSE}
+# Make sure your folder path exists already (e.g. ./POM/raw_data)
+
+drive_download("https://drive.google.com/open?id=1vecoPwVLsP5rpZ8pj-H4xjOld4otCD7O", path = here("POM", "raw_data", "POM_tidy.xlsx"))
+```
+
+Now, we need to read in the Excel sheet we want to work with. We need to first populate the `eventDate` column by combining the `Date` and `Time` columns from the spreadsheet and convert it into ISO8601 format and standardize the timezone to UTC. No timezone was included with the initial dataset submission. Since the time values are the same as the ones in the Chlorophyll dataset, and the Chl metadata stated the time zone was in UTC+12, I assumed that this dataset had the same offset.
+
+Next, we are going to create new columns that will eventually become our `eventID`s. We are going to have 5 different types of `eventID`s, in order of descending hierarchy: "cruise", "station", "cast", "ndepth" (depth at which the sample was taken with a niskin), and "sample" (two different samples were taken from each niskin collection). The eventIDs follow a sematic model that describes the hierarchical nature of each event type.
+
+```{r excel_wrangle, eval = FALSE}
+sheet1 <- read_excel(here("POM", "raw_data", "POM_tidy.xlsx"), sheet = "Sheet1") %>%
+  mutate(Time = format(Time, "%H:%M:%S"),
+         eventDate = format_iso_8601(as.POSIXct(paste(Date, Time),
+                                                format="%Y-%m-%d %H:%M:%S",
+                                                tz = "Asia/Kamchatka")), 
+         eventDate = str_replace(eventDate, "\\+00:00", "Z"),
+         cruise = "GoA2019",
+         station = paste(cruise, station, sep = "_Stn"),
+         cast = paste(station, "cast1", sep = ":"),
+         ndepth = paste(cast, `Sample depth`, sep=":niskin:"),
+         sample = paste(ndepth, `Sample ID`, sep=":")
+  )
+```
+
+## Create the Event core
+
+Each type of record in the Event core has different properties (columns) associated with it, but they ultimately all get nested under a single file. Therefore, I create a separate data frame for each type of Event record; this allows us to create populate rows with distinct records of each type and fill the relevant columns with data. Once all the event type data frames are created, they can be concatenated to form the Event core.
+
+```{r event, eval = FALSE}
+pom_cruise <- sheet1 %>% 
+  select(eventID = cruise) %>% 
+  distinct(eventID) %>% 
+  mutate(type = "cruise")
+
+pom_station <- sheet1 %>% 
+  select(eventID = station,
+         parentEventID = cruise,
+         eventDate,
+         decimalLatitude = Latitude,
+         decimalLongitude = Longitude) %>% 
+  distinct(eventID, .keep_all = TRUE) %>% 
+  mutate(type = "station")
+
+pom_cast <- sheet1 %>% 
+  select(eventID = cast,
+         parentEventID = station) %>% 
+  distinct(eventID, .keep_all = TRUE) %>% 
+  mutate(type = "cast")
+
+pom_ndepth <- sheet1 %>% 
+  select(eventID = ndepth,
+         parentEventID = cast,
+         minimumDepthInMetres = `Sample depth`,
+         maximumDepthInMetres = `Sample depth`) %>% 
+  distinct(eventID, .keep_all = TRUE) %>% 
+  mutate(type = "sample")
+
+pom_sample <- sheet1 %>% 
+  select(eventID = sample,
+         parentEventID = ndepth) %>% 
+  distinct(eventID, .keep_all = TRUE) %>% 
+  mutate(type = "subsample")
+
+pom_event <- bind_rows(pom_cruise, pom_station, pom_cast, pom_ndepth, pom_sample) %>% 
+  select(eventID, parentEventID:maximumDepthInMetres, type)
+
+# The .gitignore file has been configured to ignore all files in the tidy_data folder so no data gets pushed to the Git repository.
+write_csv(pom_event, here("POM", "tidy_data", "pom_event.csv"))
+
+# drive_upload can't overwrite files based on name alone, so if you're re-running this script after creating the first file, make sure to delete the older version from Google Drive.
+drive_upload(here("POM", "tidy_data", "pom_event.csv"),
+             path = "https://drive.google.com/drive/folders/1WMsDahUdt9dKXGcoi2gcrjNmpGBgHOSB",
+             name = "POM_event.csv")
+```
+
+## Create the ExtendedMeasurementorFact extension
+
+The eMoF extension links measurement records with records in the Event core table. Since this dataset is comprised only of environmental abiotic data, there is no `occurrenceID` column and records are linked by `eventID` instead. The `measurementTypeID` for seafloor depth is defined as "Bridge log sheets" until there is more information about how bottom depth was determined/measured (e.g., by bathymetric sensors, charts, etc.)
+
+```{r seafloor depth, eval = FALSE}
+# Seafloor (bottom) depth is a measurement of the niskin cast.
+pom_botdepth <- sheet1 %>%
+  select(eventID = cast, Depth) %>% 
+  pivot_longer(cols = Depth, names_to = "measurementType", values_to = "measurementValue") %>%
+  mutate(measurementValue = as.character((measurementValue)),
+         measurementID = paste(eventID, "depth", sep = ":"),
+         measurementType = recode(measurementType,
+                                  Depth = "seafloor depth"),
+         measurementTypeID = "http://vocab.nerc.ac.uk/collection/C00/current/BRIDGE/",
+         measurementUnit = "m",
+         measurementUnitID = "http://vocab.nerc.ac.uk/collection/P06/current/ULAA/"
+         ) %>% 
+  select(measurementID, eventID, measurementType, measurementTypeID, measurementValue, measurementUnit, measurementUnitID)
+
+# These are measurements taken from the niskin water samples. For each niskin collection, two samples were processed; one sample was acidified, and the other was  Some `measurementTypeIDs` were left blank ("") because I could not find any appropriate NERC vocab based on the current information available.
+pom_measurement <- sheet1 %>% 
+  select(eventID = sample,
+         `Volume filtered`,
+         acidified = Acidified,
+         d13C_VPDB = `d13CVPDB (‰)`, 
+         `Total C (µg)`,
+         d15N_air = `d15NAir (‰)`,
+         `Total N (µg)`) %>% 
+  mutate_all(as.character) %>% 
+  pivot_longer(cols = `Volume filtered`:`Total N (µg)`, names_to = "measurementType", values_to = "measurementValue") %>% 
+  mutate(measurementType = recode(measurementType,
+                                  `Volume filtered` = "volume filtered",
+                                  `Total C (µg)` = "total C",
+                                  `Total N (µg)` = "total N"),
+         measurementID = case_when(measurementType == "volume filtered" ~ paste(eventID, "vol", sep = ":"),
+                                   measurementType == "acidified" ~ paste(eventID, "acid", sep = ":"),
+                                   measurementType == "d13C_VPDB" ~ paste(eventID, "d13C", sep = ":"),
+                                   measurementType == "d15N_air" ~ paste(eventID, "d15N", sep = ":"),
+                                   measurementType == "total C" ~ paste(eventID, "Ctot", sep = ":"),
+                                   measurementType == "total N" ~ paste(eventID, "Ntot", sep = ":")
+                                   ),
+         measurementTypeID = case_when(measurementType == "volume filtered" ~ "http://vocab.nerc.ac.uk/collection/S03/current/S0393/",
+                                       measurementType == "acidified" ~ "http://vocab.nerc.ac.uk/collection/S03/current/S0366",
+                                       measurementType == "d13C_VPDB" ~ "", # TBD
+                                       measurementType == "d15N_air" ~ "http://vocab.nerc.ac.uk/collection/P01/current/D15NMTP1/",
+                                       measurementType == "total C" ~ "",
+                                       measurementType == "total N" ~ ""),
+         measurementUnit = case_when(measurementType == "volume filtered" ~ "mL",
+                                     measurementType %in% c("d13C_VPDB", "d15N_air") ~ "ppt",
+                                     measurementType %in% c("total C", "total N") ~ "ug"),
+         measurementUnitID = case_when(measurementUnit == "mL" ~ "http://vocab.nerc.ac.uk/collection/P06/current/VVML/",
+                                       measurementUnit == "ppt" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UPPT/",
+                                       measurementUnit == "ug" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UGUG/")
+  )
+
+# The sample comments needed to be tidied separately (not part of the above pipe sequence) because they belong in the measurementRemarks column. I need to recreate measurementID so that the two data frames can be joined.
+pom_measurementRemarks <- sheet1 %>% 
+  select(eventID = sample, ends_with("Comment")) %>% 
+  pivot_longer(cols = ends_with("Comment"), values_to = "measurementRemarks") %>% 
+  mutate(measurementID = case_when(name == "C Comment" ~ paste(eventID, "Ctot", sep = ":"),
+                                   name == "N Comment" ~ paste(eventID, "Ntot", sep = ":")
+                                   )
+  ) %>% 
+  select(measurementID, measurementRemarks)
+
+pom_measurementOrFact <- bind_rows(pom_botdepth, pom_measurement) %>% 
+  left_join(pom_measurementRemarks) %>% 
+  select(measurementID, eventID, measurementType, measurementTypeID, measurementValue, measurementUnit, measurementUnitID, measurementRemarks)
+  
+
+write_csv(pom_measurementOrFact, here("POM", "tidy_data", "pom_measurementOrFact.csv"))
+drive_upload(here("POM", "tidy_data", "pom_measurementOrFact.csv"),
+             path = "https://drive.google.com/drive/folders/1WMsDahUdt9dKXGcoi2gcrjNmpGBgHOSB",
+             name = "POM_measurementOrFact.csv",
+             overwrite = TRUE)
+```
+
