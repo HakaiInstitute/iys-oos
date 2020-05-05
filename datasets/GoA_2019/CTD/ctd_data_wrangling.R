@@ -15,10 +15,10 @@ library(parsedate)
 library(googledrive)
 
 drive_download("https://drive.google.com/open?id=1-onECiDW02DJRIX6g4dXywtzLEqCGyce", 
-               path = here::here("./datasets/GoA_2019/CTD/raw_data/", "Data_IYS_conbined_Final.xlsx"))
+               path = here::here("CTD", "raw_data", "Data_IYS_conbined_Final.xlsx"))
 
-sheet1 <- read_excel(here("./datasets/GoA_2019/CTD/raw_data/", "Data_IYS_conbined_Final.xlsx"), sheet = "Sheet1")
-sheet2 <- read_excel(here("./datasets/GoA_2019/CTD/raw_data/", "Data_IYS_conbined_Final.xlsx"), sheet = "Sheet2")
+sheet1 <- read_excel(here("CTD", "raw_data", "Data_IYS_conbined_Final.xlsx"), sheet = "Sheet1")
+sheet2 <- read_excel(here("CTD", "raw_data", "Data_IYS_conbined_Final.xlsx"), sheet = "Sheet2")
 
 # Update the timezone for the Event Core:
 ctd <- sheet2 %>%

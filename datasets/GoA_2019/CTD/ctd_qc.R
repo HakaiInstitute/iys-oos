@@ -45,7 +45,7 @@ ctd_event$bottomDepthInMeters <- sheet2$`Bot. Depth`
 
 ## Assumption: -------------------------------------------------------------------
 # The assumption that we make here for the eventID is that NO.Trawl is the Station 
-# number(!!).However, if that's the case, what is the column NO.(ST) in reference to? 
+# number(!!). However, if that's the case, what is the column NO.(ST) in reference to? 
 # Will need confirmation/clarification.
 ## -------------------------------------------------------------------------------
 
@@ -56,8 +56,8 @@ ctd_event_2 <- ctd_event %>%
   select(eventID, parentEventID, eventDate, decimalLongitude, decimalLatitude,
          minimumDepthInMeters, maximumDepthInMeters, bottomDepthInMeters, basisOfRecord)
 
-## Next, in our dataframe we're going to add layers of EventIDs, based on the unique
-# parentEventIDs of the row below:
+## Next, in our dataframe we're going to add layers of EventIDs and parentEventIDs,
+# based on the unique parentEventIDs of the row below:
 ctd_event_2 <- ctd_event_2 %>% group_by(parentEventID, bottomDepthInMeters) %>% 
   do(add_row(., .before = 0))
 
@@ -66,20 +66,14 @@ for (row in 1:length(ctd_event_2$eventID)) {
     ctd_event_2$eventID[row] = ctd_event_2$parentEventID[row+1]
     ctd_event_2$bottomDepthInMeters[row] = ctd_event_2$bottomDepthInMeters[row+1]
   }
-}
-
-# parentEventIDs in the new created row are currently labeled NA. Given that at a 
-# later stage we are going to be adding another layer of EventIDs, we need to fill
-# in these NAs right now as well:
-for (row in 1:length(ctd_event_2$parentEventID)) {
   if(is.na(ctd_event_2$parentEventID[row]) == TRUE) {
     ctd_event_2$parentEventID[row] = ctd_event_2$eventID[row]
   }
 }
 
 # In the previous `block of code`, we made parentEventIDs similar to eventIDs
-# but we have to change this, to add another layer of eventID based on unique
-# values in the parentEventID column:
+# but we have to change this, because later we are going to add another layer 
+# of eventID based on unique values in the parentEventID column:
 ctd_event_new <- ctd_event_2 %>% ungroup(parentEventID, bottomDepthInMeters) %>% 
   mutate(parentEventID = ifelse(parentEventID == eventID,
    (parentEventID <- str_replace(parentEventID, "\\_CTD_.*", "")),
@@ -95,9 +89,10 @@ ctd_event_new <- ctd_event_2 %>% ungroup(parentEventID, bottomDepthInMeters) %>%
 
 # Finally, we need to add a new layer above all parentEventIDs that do not
 # contain `CTD` (only the Station #), and then merge this back to the main 
-# data frame. 
-subset <- ctd_event_new[!grepl("CTD", ctd_event_new$parentEventID),]
-subset <- subset %>% group_by(parentEventID, bottomDepthInMeters) %>% 
+# data frame, making sure that the eventDate and decimal coordinates get 
+# associated with the correct eventID layer:
+subset <- ctd_event_new[!grepl("CTD", ctd_event_new$parentEventID),] %>%
+  group_by(parentEventID, bottomDepthInMeters) %>%
   do(add_row(., .before = 0))
 
 for (row in 1:length(subset$eventID)) {
@@ -106,8 +101,6 @@ for (row in 1:length(subset$eventID)) {
   }
 }
 
-# Merge the subset to the new event dataframe, sort by eventID, and make sure that 
-# eventDate and decimal coordinates get associated with the correct eventID layer:
 full_ctd <- full_join(ctd_event_new, subset)
 order <- stringr::str_sort(full_ctd$eventID, numeric=TRUE)
 final_ctd_event <- full_ctd[match(order, full_ctd$eventID),]
@@ -120,8 +113,8 @@ for (row in 1:length(final_ctd_event$parentEventID)) {
   }
 }
 
-# As eventDate, decimalLatitude and decimalLongitude are duplicated throughout the eventIDs,
-# these are removed: 
+# As eventDate, decimalLatitude, decimalLongitude and bottomDepthInMeters are 
+# duplicated throughout the eventIDs, these are removed: 
 final_ctd_event[duplicated(final_ctd_event[, c('eventDate', 'decimalLatitude', 'decimalLongitude', 'bottomDepthInMeters')]), 
    c('eventDate', 'decimalLatitude', 'decimalLongitude', 'bottomDepthInMeters')] <- NA
 
@@ -147,41 +140,34 @@ drive_upload("./datasets/GoA_2019/CTD/raw_data/CTD_event.csv",
 
 # First, EC25 is measured in microSiemens/cm, which is not (yet) in NERCs controlled 
 # vocabulary. Therefore, we convert this column to milliSiemens/cm:
-sheet1 <- sheet1 %>% mutate(`EC25 [mS/cm]_R` = as.numeric(`EC25 [uS/cm]_R`) / 1000)
-
 ctd_measurement <- sheet1 %>% 
-  # Select all the relevant measured parameters for data wrangling: 
-  select(c(NO.Trawl, `NO.(CTD)`, `DEPTH`, `TEM_S`, `SAL_S`, 
-           `TEM_R`, `TEM_S`,`SAL_R`, `SAL_S`,`Cond. [mS/cm]_R`, `pH`, `O2 [ml/l]`, `EC25 [mS/cm]_R`, 
-           `Density [kg/m^3]_R`, `SigmaT [ ]_R`,`Chl-Flu. [ppb]_R`, `Chl-a [ug/l]_R`, `Turb-M [FTU]_R`, 
-           `DO [mg/l]_R`, `Batt. [V]_R`,`BOD5[ml/l]`, `DO [%]_R`)) 
-
-ctd_measurement <- ctd_measurement %>%
-  pivot_longer(c(`TEM_R`, `SAL_R`, `TEM_S`, `SAL_S`, `Cond. [mS/cm]_R`, `pH`, `O2 [ml/l]`, `EC25 [mS/cm]_R`, 
-                 `Density [kg/m^3]_R`, `SigmaT [ ]_R`,`Chl-Flu. [ppb]_R`, `Chl-a [ug/l]_R`, `Turb-M [FTU]_R`, 
-                 `DO [mg/l]_R`, `Batt. [V]_R`,`BOD5[ml/l]`, `DO [%]_R`), 
-               names_to = "measurementType", 
+  mutate(`EC25 [mS/cm]_R` = as.numeric(`EC25 [uS/cm]_R`) / 1000,
+         eventID = paste("NO.Trawl",NO.Trawl, `NO.(CTD)`,"D",DEPTH, sep = "_"))
+ctd_measurement <- ctd_measurement[, -which(names(ctd_measurement) == "EC25 [uS/cm]_R")] %>%
+  pivot_longer(`TEM_S`:`EC25 [mS/cm]_R`,
+               names_to = "measurementType",
                values_to = "measurementValue",
-               values_ptypes = list(measurementValue = 'character'))
+               values_ptypes = list(measurementValue = 'character')
+               )
 
 ctd_measurement <- ctd_measurement %>% # Should "NO.Trawl" here be "NO.(ST)"?
-  mutate(measurementID = case_when(measurementType == "TEM_S" ~ paste("NO.Trawl",NO.Trawl,`NO.(CTD)`,"D",DEPTH, "TEM_S",sep="_"),
-                                   measurementType == "TEM_R" ~ paste("NO.Trawl",NO.Trawl,`NO.(CTD)`,"D",DEPTH, "TEM_R",sep="_"),
-                                   measurementType == "SAL_S" ~ paste("NO.Trawl",NO.Trawl,`NO.(CTD)`,"D",DEPTH, "SAL_S",sep="_"),
-                                   measurementType == "SAL_R" ~ paste("NO.Trawl",NO.Trawl,`NO.(CTD)`,"D",DEPTH, "SAL_R",sep="_"),
-                                   measurementType == "Cond. [mS/cm]_R" ~ paste("NO.Trawl",NO.Trawl,`NO.(CTD)`,"D",DEPTH, "Cond. [mS/cm]_R", sep="_"),
-                                   measurementType == "Density [kg/m^3]_R" ~ paste("NO.Trawl",NO.Trawl,`NO.(CTD)`,"D",DEPTH,"Density", sep="_"),
-                                   measurementType == "SigmaT [ ]_R" ~ paste("NO.Trawl",NO.Trawl,`NO.(CTD)`,"D",DEPTH, "Sigma",sep="_"),
-                                   measurementType == "Chl-Flu. [ppb]_R" ~ paste("NO.Trawl",NO.Trawl,`NO.(CTD)`,"D",DEPTH, "Chl-Flu", sep="_"),
-                                   measurementType == "Chl-a [ug/l]_R" ~ paste("NO.Trawl",NO.Trawl,`NO.(CTD)`,"D",DEPTH, "Chl-a", sep="_"),
-                                   measurementType == "Turb-M [FTU]_R" ~ paste("NO.Trawl",NO.Trawl,`NO.(CTD)`,"D",DEPTH, "Turbidity",sep="_"),
-                                   measurementType == "DO [mg/l]_R" ~ paste("NO.Trawl",NO.Trawl,`NO.(CTD)`,"D",DEPTH, "DO",sep="_"),
-                                   measurementType == "Batt. [V]_R" ~ paste("NO.Trawl",NO.Trawl,`NO.(CTD)`,"D",DEPTH, "Batt", sep="_"),
-                                   measurementType == "pH" ~ paste("NO.Trawl",NO.Trawl,`NO.(CTD)`,"D",DEPTH, "pH",sep="_"),
-                                   measurementType == "O2 [ml/l]" ~ paste("NO.Trawl",NO.Trawl,`NO.(CTD)`,"D",DEPTH,"O2 [ml/l]",sep="_"),
-                                   measurementType == "BOD5[ml/l]" ~ paste("NO.Trawl",NO.Trawl,`NO.(CTD)`,"D",DEPTH,"BOD5[ml/l]",sep="_"),
-                                   measurementType == "DO [%]_R" ~ paste("NO.Trawl",NO.Trawl,`NO.(CTD)`,"D",DEPTH,"BOD5[ml/l]",sep="_"),
-                                   measurementType == "EC25 [mS/cm]_R" ~ paste("NO.Trawl",NO.Trawl,`NO.(CTD)`,"D",DEPTH,"EC25 [mS/cm]_R",sep="_")),
+  mutate(measurementID = case_when(measurementType == "TEM_S" ~ paste(eventID,"TEM_S",sep="_"),
+                                   measurementType == "TEM_R" ~ paste(eventID,"TEM_R",sep="_"),
+                                   measurementType == "SAL_S" ~ paste(eventID,"SAL_S",sep="_"),
+                                   measurementType == "SAL_R" ~ paste(eventID,"SAL_R",sep="_"),
+                                   measurementType == "Cond. [mS/cm]_R" ~ paste(eventID,"Cond. [mS/cm]_R", sep="_"),
+                                   measurementType == "Density [kg/m^3]_R" ~ paste(eventID,"Density", sep="_"),
+                                   measurementType == "SigmaT [ ]_R" ~ paste(eventID,"Sigma",sep="_"),
+                                   measurementType == "Chl-Flu. [ppb]_R" ~ paste(eventID,"Chl-Flu", sep="_"),
+                                   measurementType == "Chl-a [ug/l]_R" ~ paste(eventID,"Chl-a", sep="_"),
+                                   measurementType == "Turb-M [FTU]_R" ~ paste(eventID,"Turbidity",sep="_"),
+                                   measurementType == "DO [mg/l]_R" ~ paste(eventID,"DO",sep="_"),
+                                   measurementType == "Batt. [V]_R" ~ paste(eventID,"Batt", sep="_"),
+                                   measurementType == "pH" ~ paste(eventID,"pH",sep="_"),
+                                   measurementType == "O2 [ml/l]" ~ paste(eventID,"O2 [ml/l]",sep="_"),
+                                   measurementType == "BOD5[ml/l]" ~ paste(eventID,"BOD5[ml/l]",sep="_"),
+                                   measurementType == "DO [%]_R" ~ paste(eventID,"BOD5[ml/l]",sep="_"),
+                                   measurementType == "EC25 [mS/cm]_R" ~ paste(eventID,"EC25 [mS/cm]_R",sep="_")),
          
          measurementType = recode(measurementType, 
                                   `TEM_S` = "Sea Water Temperature [Sea-Bird]",
@@ -210,8 +196,8 @@ ctd_measurement <- ctd_measurement %>% # Should "NO.Trawl" here be "NO.(ST)"?
                                     "Sea Water Electrical Conductivity" = "http://vocab.nerc.ac.uk/collection/P02/current/CNDC/",
                                     "Sea Water Density" = "http://vocab.nerc.ac.uk/collection/P04/current/G990/",
                                     "Sea Water Sigma T" = "http://vocab.nerc.ac.uk/collection/OG1/current/SIGTHETA/",     
-                                    "Chlorophyll - Flu" = " ",
-                                    "Chlorophyll-a" = "http://vocab.nerc.ac.uk/collection/P02/current/CPWC/",
+                                    "Chlorophyll - Flu" = "http://vocab.nerc.ac.uk/collection/P07/current/CFSN0705/",
+                                    "Chlorophyll-a" = "http://vocab.nerc.ac.uk/collection/P07/current/CFSN0705/",
                                     "Turbidity" = "http://vocab.nerc.ac.uk/collection/P25/current/TURB/",
                                     "Dissolved oxygen" = "http://vocab.nerc.ac.uk/collection/P35/current/EPC00002/",
                                     "Battery voltage" = "http://vocab.nerc.ac.uk/collection/S06/current/S0600163/",
