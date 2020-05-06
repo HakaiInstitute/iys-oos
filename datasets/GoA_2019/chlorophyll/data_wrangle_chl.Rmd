@@ -7,10 +7,6 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-```
-
-First load required packages:
-``` {r, eval=FALSE}
 library(tidyverse)
 library(lubridate)
 library(readxl)
@@ -20,21 +16,22 @@ library(googledrive)
 library(uuid)
 ```
 
-The raw data is stored on GoogleDrive. The first step is to download the file to a local folder. 
+The raw data is stored on GoogleDrive. The first step is to download the file from Google Drive to a local folder on your computer's hard drive. 
 
-``` {r file download, eval = FALSE}
+``` {r file_download, eval = FALSE}
+# Make sure your folder path exists already (e.g. ./chlorophyll/raw_data)
 drive_download("https://drive.google.com/open?id=1y0obUAsdWeYp2nFOB596B5rGQzNyQxwN", 
-               path = here::here("./datasets/GoA_2019/chlorophyll/raw_data/", 
+               path = here::here("chlorophyll", "raw_data", 
                                  "IYSchl_Hunt&Pakhomov.xlsx"),
                overwrite = TRUE)
 ```
 
 ## EventCore 
 
-The reported date / time has to get formatted to UTC in the ISO8601 extended format.
+Next, we read in the Excel sheet that we are working with. The reported date / time has to be concatenated to a column `eventDate`. This column will need to get formatted to UTC in the ISO8601 extended format.
 
 ``` {r time format, eval = FALSE}
-chl <- read_excel(here("./datasets/GoA_2019/chlorophyll/raw_data/", 
+chl <- read_excel(here("chlorophyll", "raw_data", 
                        "IYSchl_Hunt&Pakhomov.xlsx"), 
                   sheet = "Chl data") %>% 
   # Convert the standalone time value (UTC+12) into ISO8601 extended format
@@ -46,14 +43,20 @@ chl <- read_excel(here("./datasets/GoA_2019/chlorophyll/raw_data/",
   ) 
 ```
 
-To wrangle the data into a tidy format that follows the Darwin Core Archive (DwC-A) standards and hierarchical structure, it's important to determine how many layers of eventID (and, consequently, parentEventID) the data has. In our dataset, the data has three layers: cruise, station, and the depth at which the chlorophyll and phaeopigment concentration was measured. For each of these layers, a data frame is created with unique eventIDs, associated parentEventIDs, and associated unique characteristics. In our data, we join the date to the station level, as all station-specific data was collected on a day. If data at a station was collected over multiple days, the date would be joined to a different layer.  
+To wrangle the data into a tidy format that follows the Darwin Core Archive (DwC-A) standards and hierarchical structure, it's important to determine how many layers of `eventID` (and, consequently, `parentEventID`) the data has. In our dataset, the data has three different types of `eventID`, in order of descending hierarchy: "cruise", "station", and "ndepth" - the depth at which the chlorophyll and phaeopigment concentration was measured. For each of these layers, a data frame is created with unique eventIDs, associated parentEventIDs, and associated unique characteristics. In our data, we join the date to the station level, as all station-specific data was collected on a day. If data at a station was collected over multiple days, the date would be joined to a different layer. `eventID` follows a sematic model that describes the hierarchical nature of each event type.   
 
-``` {r data wrangle, eval = FALSE}
+``` {r data_wrangle, eval = FALSE}
 chl <- chl %>%
   mutate(cruise = "GoA2019",
          station = paste(cruise, Station, sep="_Stn"),
          ndepth = paste(station, Depth, sep=":"))
+```
 
+Each type of record in the Event core (in our case, cruise, station, sample) has different properties (columns) associated with it, but they ultimately all get nested under a single file. Therefore, separate data frame for each type of Event record are created; this allows us to populate rows with distinct records of each type and fill the relevant columns with data. Once all the event type data frames are created, they can be concatenated to form the Event core. 
+
+Finally, these tables get joined, and re-ordered based on `eventID`. This table gets saved locally and in the correct GoogleDrive folder. 
+
+``` {r chl_event, eval = FALSE}
 chl_cruise <- chl %>% 
   select(eventID = cruise) %>%
   distinct(eventID) %>%
@@ -76,19 +79,16 @@ chl_ndepth <- chl %>%
          maximumDepthInMetres = Depth) %>% 
   distinct(eventID, .keep_all = TRUE) %>% 
   mutate(type = "sample")
-```
 
-Finally, these tables get joined, and re-ordered based on eventID, to create the Event Core. This table gets saved locally and in the correct GoogleDrive folder. 
-
-``` {r chl event, eval = FALSE}
 chl_event <- bind_rows(chl_cruise, chl_station, chl_ndepth) %>% 
   select(eventID, parentEventID:maximumDepthInMetres, type) 
 
 order <- stringr::str_sort(chl_event$eventID, numeric=TRUE)
 chl_event <- chl_event[match(order, chl_event$eventID),]
 
-write_csv(chl_event, here("./datasets/GoA_2019/chlorophyll/raw_data/", "chl_event_fnl.csv"))
-drive_upload("./datasets/GoA_2019/chlorophyll/raw_data/chl_event_fnl.csv",
+# Make sure the folder path exists already (e.g. ./chlorophyll/tidy_data)
+write_csv(chl_event, here("chlorophyll", "tidy_data", "chl_event_fnl.csv"))
+drive_upload(here("chlorophyll", "tidy_data", "chl_event_fnl.csv"),
              path = "https://drive.google.com/drive/folders/1TqGK3ih2b7hPWUion5utDgxIEVLYRm5W",
              name = "Chlorophyll_a_event.csv",
              overwrite = TRUE)
@@ -96,18 +96,18 @@ drive_upload("./datasets/GoA_2019/chlorophyll/raw_data/chl_event_fnl.csv",
 
 ## eMoF
 
-After creating the Event Core, we create an extended MeasurementOrFact (eMoF) table. An occurrence table is not created as the datasets only contain abiotic data. The first step in creating the eMoF, is adding columns with each of the different eventID layers (see chunk #5).
+After creating the Event Core, we create an extended MeasurementOrFact (eMoF) table. The eMoF extension links measurement records with records in the Event core table. An occurrence table is not created as the datasets only contain abiotic data, and therefore the measurement records are linked directly to `eventID`. The first step in creating the eMoF, is adding columns with each of the different `eventID` layers (see chunk #5).
 
-``` {r, eval = FALSE}
+``` {r eventIDs, eval = FALSE}
 chl_measurement <- chl %>% 
   mutate(cruise = "GoA2019",
          station = paste(cruise, Station, sep= "_Stn"),
          ndepth = paste(station, Depth, sep=":"))
 ```
 
-The Darwin Core Archive (DwC-A) works with "long" datatables, whereas usually data get recorded in a wide format. Therefore, the next step is to transpose the data into a long format, and assign the correct NERC controlled vocabulary to the variables and the measurement units. 
+The Darwin Core Archive (DwC-A) works with "long" datatables, whereas usually data get recorded in a wide format. Therefore, the next step is to transpose the data into a long format, and assign the correct NERC controlled vocabulary to the variables and the measurement units. Finally, the eMoF tables gets saved locally and on GoogleDrive. 
 
-``` {r chl measurement wrangle, eval = FALSE}
+``` {r chl_measurement, eval = FALSE}
 chl_measurement <- chl_measurement %>%
   pivot_longer(c(`Chl`, `Phe`), names_to = "measurementType", 
                values_to = "measurementValue") %>% 
@@ -127,23 +127,19 @@ chl_measurement <- chl_measurement %>%
   ) %>%
   select(measurementID, measurementType, measurementTypeID,
          measurementValue, measurementUnit, measurementUnitID)
-```
 
-Finally, the eMoF tables gets saved locally and on GoogleDrive. 
-
-```{r chl measurement, eval = FALSE}
-write_csv(chl_measurement, here("./datasets/GoA_2019/chlorophyll/raw_data/", "chl_measurement_fnl.csv"))
-drive_upload("./datasets/GoA_2019/chlorophyll/raw_data/chl_measurement_fnl.csv",
+write_csv(chl_measurement, here("chlorophyll","tidy_data", "chl_measurement_fnl.csv"))
+drive_upload(here("chlorophyll", "tidy_data",  "chl_measurement_fnl.csv",
              path = "https://drive.google.com/drive/folders/1TqGK3ih2b7hPWUion5utDgxIEVLYRm5W",
              name = "Chlorophyll_a_measurement.csv",
              overwrite = TRUE)
 ```
 
-Optionally, a specific "Locations" table can be created as well: 
+Optionally, a specific "Locations" table can be created as well, but this does not have to be uploaded to Google Drive.  
 
-``` {r location, eval = FALSE}
+``` {r chl_location, eval = FALSE}
 chl_loc <- chl %>% 
   distinct(parentEventID, Region, decimalLatitude, decimalLongitude)
-write_csv(chl_loc, here("./datasets/GoA_2019/chlorophyll/raw_data/", "chl_location.csv"))
+write_csv(chl_loc, here("chlorophyll", "tidy_data", "chl_location.csv"))
 ```
 

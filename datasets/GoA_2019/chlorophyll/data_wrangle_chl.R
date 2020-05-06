@@ -16,11 +16,11 @@ library(googledrive)
 library(uuid)
 
 drive_download("https://drive.google.com/open?id=1y0obUAsdWeYp2nFOB596B5rGQzNyQxwN", 
-               path = here::here("./datasets/GoA_2019/chlorophyll/raw_data/", 
+               path = here::here("chlorophyll", "raw_data", 
                                  "IYSchl_Hunt&Pakhomov.xlsx"),
                overwrite = TRUE)
 
-chl <- read_excel(here("./datasets/GoA_2019/chlorophyll/raw_data/", 
+chl <- read_excel(here("chlorophyll", "raw_data", 
                        "IYSchl_Hunt&Pakhomov.xlsx"), 
                   sheet = "Chl data") %>% 
   # Convert the standalone time value (UTC+12) into ISO8601 extended format
