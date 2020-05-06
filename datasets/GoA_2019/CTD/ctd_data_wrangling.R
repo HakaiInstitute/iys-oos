@@ -80,8 +80,8 @@ order <- stringr::str_sort(ctd_event$eventID, numeric=TRUE)
 ctd_event <- ctd_event[match(order, ctd_event$eventID),]
 
 # Save locally and in GoogleDrive
-write_csv(ctd_event, here("./datasets/GoA_2019/CTD/raw_data/", "CTD_event.csv"))
-drive_upload("./datasets/GoA_2019/CTD/raw_data/CTD_event.csv",
+write_csv(ctd_event, here("CTD", "tidy_data", "CTD_event.csv"))
+drive_upload("CTD", "tidy_data", "CTD_event.csv",
              path = "https://drive.google.com/drive/u/0/folders/1-XXOPhMN4-BmhI3owM2hvaMKXEy6hEYL",
              name = "draft_CTD_event.csv",
              overwrite = TRUE)
@@ -204,16 +204,8 @@ ctd_measurement <- ctd_measurement %>% # Should "NO.Trawl" here be "NO.(ST)"?
          measurementValue, measurementUnit, measurementUnitID)
 
 # Save locally and on GoogleDrive: 
-write_csv(ctd_measurement, here("./datasets/GoA_2019/CTD/raw_data/", "CTD_measurement.csv"))
-drive_upload("./datasets/GoA_2019/CTD/raw_data/CTD_measurement.csv",
+write_csv(ctd_measurement, here("CTD", "tidy_data", "CTD_measurement.csv"))
+drive_upload(here("CTD", "tidy_data", "CTD_measurement.csv",
              path = "https://drive.google.com/drive/u/0/folders/1-XXOPhMN4-BmhI3owM2hvaMKXEy6hEYL",
              name = "draft_CTD_measurement.csv",
-             overwrite = TRUE)
-
-# Comments/things to consider ----------------------------------------------------------------------- 
-# 1. Salinity can - alternatively - be measured in ppt. "For all practical purposes, salinity in PSS
-# or PSU (which is dimensionless) has the same numerical value as salinity in ppt." 
-# 2. Have to check whether the measurementUnit standard for turbidity is NTU or FTU.  
-# 3. Have to determine whether measurementUnit for Chl-a is mg m-3 or ug/L [technically the same].
-# 4. Should BOD5 be measured in mg/L instead of ml/L?
-# ---------------------------------------------------------------------------------------------------
+             overwrite = TRUE))
