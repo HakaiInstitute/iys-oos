@@ -108,6 +108,7 @@ The eMoF extension links measurement records with records in the Event core tabl
 # Seafloor (bottom) depth is a measurement of the niskin cast.
 pom_botdepth <- sheet1 %>%
   select(eventID = cast, Depth) %>%
+  distinct(eventID, .keep_all = TRUE)
   pivot_longer(cols = Depth,
                names_to = "measurementType",
                values_to = "measurementValue") %>%
@@ -213,7 +214,7 @@ write_csv(pom_measurementOrFact,
 drive_upload(
   here("POM", "tidy_data", "pom_measurementOrFact.csv"),
   path = "https://drive.google.com/drive/folders/1WMsDahUdt9dKXGcoi2gcrjNmpGBgHOSB",
-  name = "POM_measurementOrFact.csv",
+  name = "POM_eMoF.csv",
   overwrite = TRUE
 )
 ```
