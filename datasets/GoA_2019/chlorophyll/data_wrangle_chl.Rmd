@@ -129,7 +129,7 @@ chl_measurement <- chl_measurement %>%
          measurementValue, measurementUnit, measurementUnitID)
 
 write_csv(chl_measurement, here("chlorophyll","tidy_data", "chl_measurement_fnl.csv"))
-drive_upload(here("chlorophyll", "tidy_data",  "chl_measurement_fnl.csv",
+drive_upload(here("chlorophyll", "tidy_data",  "chl_measurement_fnl.csv"),
              path = "https://drive.google.com/drive/folders/1TqGK3ih2b7hPWUion5utDgxIEVLYRm5W",
              name = "Chlorophyll_a_measurement.csv",
              overwrite = TRUE)
@@ -139,7 +139,7 @@ Optionally, a specific "Locations" table can be created as well, but this does n
 
 ``` {r chl_location, eval = FALSE}
 chl_loc <- chl %>% 
-  distinct(parentEventID, Region, decimalLatitude, decimalLongitude)
+  distinct(Station, Region, Latitude, Longitude)
 write_csv(chl_loc, here("chlorophyll", "tidy_data", "chl_location.csv"))
 ```
 

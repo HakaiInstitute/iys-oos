@@ -67,8 +67,8 @@ order <- stringr::str_sort(chl_event$eventID, numeric=TRUE)
 chl_event <- chl_event[match(order, chl_event$eventID),]
 
 # Output .csv file in local folder and upload to GoogleDrive. 
-write_csv(chl_event, here("./datasets/GoA_2019/chlorophyll/raw_data/", "chl_event_fnl.csv"))
-drive_upload("./datasets/GoA_2019/chlorophyll/raw_data/chl_event_fnl.csv",
+write_csv(chl_event, here("chlorophyll", "tidy_data", "chl_event_fnl.csv"))
+drive_upload(here("chlorophyll", "tidy_data", "chl_event_fnl.csv"),
              path = "https://drive.google.com/drive/folders/1TqGK3ih2b7hPWUion5utDgxIEVLYRm5W",
              name = "Chlorophyll_a_event.csv",
              overwrite = TRUE)
@@ -101,13 +101,13 @@ chl_measurement <- chl_measurement %>%
          measurementValue, measurementUnit, measurementUnitID)
 
 # Write up csv file and upload to GoogleDrive folder
-write_csv(chl_measurement, here("./datasets/GoA_2019/chlorophyll/raw_data/", "chl_measurement_fnl.csv"))
-drive_upload("./datasets/GoA_2019/chlorophyll/raw_data/chl_measurement_fnl.csv",
+write_csv(chl_measurement, here("chlorophyll", "tidy_data", "chl_measurement_fnl.csv"))
+drive_upload(here("chlorophyll", "tidy_data", "chl_measurement_fnl.csv"),
              path = "https://drive.google.com/drive/folders/1TqGK3ih2b7hPWUion5utDgxIEVLYRm5W",
              name = "Chlorophyll_a_measurement.csv",
              overwrite = TRUE)
 
 # Location of sampling event
 chl_loc <- chl %>% 
-  distinct(parentEventID, Region, decimalLatitude, decimalLongitude)
-write_csv(chl_loc, here("./datasets/GoA_2019/chlorophyll/raw_data/", "chl_location.csv"))
+  distinct(Station, Region, Latitude, Longitude)
+write_csv(chl_loc, here("chlorophyll", "tidy_data", "chl_location.csv"))
