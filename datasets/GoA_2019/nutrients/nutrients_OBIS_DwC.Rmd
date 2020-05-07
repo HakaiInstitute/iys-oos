@@ -1,0 +1,216 @@
+---
+title: "Transforming Nutrient Data to OBIS-DwC"
+author: "Julian Gan"
+date: "06/05/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
+library(tidyverse)
+library(lubridate)
+library(readxl)
+library(parsedate)
+library(googledrive)
+library(here)
+```
+
+## Getting started
+
+The following line only needs to be run once to download the data from Google Drive to your computer's hard drive
+
+```{r drive_download}
+drive_download("https://drive.google.com/open?id=1MQysK1BEp9xcZH64ilq63Sx3ri5SJYCx", path = here("nutrients", "raw_data", "IYS_GoA_2019_Hydro&Chemistry_20190326.xlsx"))
+```
+
+The Excel file contains two tabs: `Hydro_GoA` contains temperature and salinity measurements collected by the Sea-bird CTD at discrete depths. The `Chemistry-GoA` file contains the actual nutrient data (Si, DIP, DIN, NO<sub>2</sub>, and NO<sub>3</sub>), along with oxygen measurements and pH. This script focuses on only transforming the nutrient data to OBIS-DwC. Dates, however, will be pulled from the `Hydro_GoA` tab because there is no temporal data in `Chemistry_GoA`.
+
+Next, we are going to create new columns that will eventually become our `eventID`s. We are going to have 5 different types of `eventID`s, in order of descending hierarchy: "cruise", "station", "cast", "ndepth" (depth at which the sample was taken with a niskin), and "sample" (one sample per niskin collection). The eventIDs follow a sematic model that describes the hierarchical nature of each event type. Each sample is given an `eventID` because the "niskin" `eventID` should be interoperable with other datasets.
+
+```{r excel_wrangle}
+# Create a primary key in the Hydro_GoA sheet so that the date column can be joined to Chemistry_GoA
+hydro <-
+  read_excel(
+    here(
+      "nutrients",
+      "raw_data",
+      "IYS_GoA_2019_Hydro&Chemistry_20190326.xlsx"
+    ),
+    sheet = "Hydro_GoA"
+  ) %>%
+  mutate(station = paste("GoA2019", Station, sep = "_Stn"))
+
+# Create columns for eventIDs in Chemistry_GoA
+chemistry <-
+  read_excel(
+    here(
+      "nutrients",
+      "raw_data",
+      "IYS_GoA_2019_Hydro&Chemistry_20190326.xlsx"
+    ),
+    sheet = "Chemistry_GoA"
+  ) %>%
+  mutate(
+    cruise = "GoA2019",
+    station = paste(cruise, Station, sep = "_Stn"),
+    cast = paste(station, "cast1", sep = ":"),
+    ndepth = paste(cast, `Depth [m]`, sep = ":niskin:"),
+    sample = paste(ndepth, "N1", sep = ":")
+  )
+```
+
+
+## Create the Event core
+
+```{r event}
+nut_cruise <- chemistry %>%
+  select(eventID = cruise) %>%
+  distinct(eventID) %>%
+  mutate(type = "cruise")
+
+# eventDate is an attribute associated with the "station" record type
+nut_station <- chemistry %>%
+  left_join(select(hydro,
+                   station,
+                   date)) %>%
+  select(
+    eventID = station,
+    parentEventID = cruise,
+    eventDate = date,
+    decimalLatitude = Latitude,
+    decimalLongitude = Longitude
+  ) %>%
+  distinct(eventID, .keep_all = TRUE) %>%
+  mutate(type = "station")
+
+nut_cast <- chemistry %>%
+  select(eventID = cast,
+         parentEventID = station) %>%
+  distinct(eventID, .keep_all = TRUE) %>%
+  mutate(type = "cast")
+
+nut_ndepth <- chemistry %>%
+  select(
+    eventID = ndepth,
+    parentEventID = cast,
+    minimumDepthInMetres = `Depth [m]`,
+    maximumDepthInMetres = `Depth [m]`
+  ) %>%
+  distinct(eventID, .keep_all = TRUE) %>%
+  mutate(type = "sample")
+
+nut_sample <- chemistry %>%
+  select(eventID = sample,
+         parentEventID = ndepth) %>%
+  distinct(eventID, .keep_all = TRUE) %>%
+  mutate(type = "subsample")
+
+nut_event <-
+  bind_rows(nut_cruise, nut_station, nut_cast, nut_ndepth, nut_sample) %>%
+  select(eventID, parentEventID:maximumDepthInMetres, type)
+
+# The .gitignore file has been configured to ignore all files in the tidy_data folder so no data gets pushed to the Git repository.
+write_csv(nut_event, here("nutrients", "tidy_data", "nut_event.csv"))
+
+# drive_upload can't overwrite files based on name alone, so if you're re-running this script after creating the first file, make sure to delete the older version from Google Drive.
+drive_upload(here("nutrients", "tidy_data", "nut_event.csv"),
+             path = "https://drive.google.com/drive/u/0/folders/1M0JRuzW_rxwz9jZPVV-oDv5AARUS2K2w",
+             name = "nutrient_event.csv")
+```
+
+
+## Create the ExtendedMeasurementorFact extension 
+
+The eMoF extension links measurement records with records in the Event core table. Since this dataset is comprised only of environmental abiotic data, there is no `occurrenceID` column and records are linked by `eventID` instead. The `measurementTypeID` for seafloor depth is defined as "Bridge log sheets" until there is more information about how bottom depth was determined/measured (e.g., by bathymetric sensors, charts, etc.). The measurement unit for all variables was specified in the raw data file as "mkM/l"; this was determined to be a Russian equivalent of "umol/L" ([Vyunova et al .2016](https://www.researchgate.net/publication/311473228_Synacton_and_individual_activity_of_synthetic_and_natural_corticotropins)). Where no specific NERC vocabulary exists for a particular measurement type, I used a broader or related term, as annotated in the code below.
+
+```{r measurements}
+# Seafloor (bottom) depth is a measurement of the niskin cast.
+nut_botdepth <- chemistry %>%
+  select(eventID = cast, `Bot. Depth [m]`) %>%
+  distinct(eventID, .keep_all = TRUE) %>%
+  pivot_longer(cols = `Bot. Depth [m]`,
+               names_to = "measurementType",
+               values_to = "measurementValue") %>%
+  mutate(
+    measurementValue = as.numeric((measurementValue)),
+    measurementID = paste(eventID, "depth", sep = ":"),
+    measurementType = recode(measurementType,
+                             "Bot. Depth [m]" = "seafloor depth"),
+    measurementTypeID = "http://vocab.nerc.ac.uk/collection/C00/current/BRIDGE/",
+    measurementUnit = "m",
+    measurementUnitID = "http://vocab.nerc.ac.uk/collection/P06/current/ULAA/"
+  ) %>%
+  select(
+    measurementID,
+    eventID,
+    measurementType,
+    measurementTypeID,
+    measurementValue,
+    measurementUnit,
+    measurementUnitID
+  )
+
+
+# These are measurements taken from the niskin water samples.
+nut_measurement <- chemistry %>%
+  select(eventID = sample,
+         `Si [mkM/l]`:`NO3  [mkM/l]`) %>%
+  pivot_longer(
+    cols = `Si [mkM/l]`:`NO3  [mkM/l]`,
+    names_to = "measurementType",
+    values_to = "measurementValue"
+  ) %>%
+  mutate(
+    measurementType = recode(
+      measurementType,
+      "Si [mkM/l]" = "silicate",
+      "DIP [mkM/l]" = "dissolved inorganic P",
+      "DIN [mkM/l]" = "dissolved inorganic N",
+      "NO2  [mkM/l]" = "nitrogen dioxiode",
+      "NO3  [mkM/l]" = "nitrate",
+    ),
+    measurementTypeID = case_when(
+      measurementType == "silicate" ~ "http://vocab.nerc.ac.uk/collection/P01/current/SLCAZZXX/",
+      measurementType == "dissolved inorganic P" ~ "http://vocab.nerc.ac.uk/collection/P01/current/PHOSXXDZ/",
+      # Cannot find NERC vocab for DIP; only PO4
+      measurementType == "dissolved inorganic N" ~ "http://vocab.nerc.ac.uk/collection/P01/current/DINXZZZZ/",
+      measurementType == "nitrogen dioxiode" ~ "http://vocab.nerc.ac.uk/collection/S27/current/CS003170/",
+      # No NERC vocab for concentration of NO2 per unit volume of the water body; only of atmosphere
+      measurementType == "nitrate" ~ "http://vocab.nerc.ac.uk/collection/P01/current/NTRAXXDZ/"
+    ),
+    measurementUnit = "umol/L",
+    measurementUnitID = "http://vocab.nerc.ac.uk/collection/P06/current/UPOX/",
+    measurementID = case_when(
+      measurementType == "silicate" ~ paste(eventID, "si", sep = ":"),
+      measurementType == "dissolved inorganic P" ~ paste(eventID, "DIP", sep =
+                                                           ":"),
+      measurementType == "dissolved inorganic N" ~ paste(eventID, "DIN", sep =
+                                                           ":"),
+      measurementType == "nitrogen dioxiode" ~ paste(eventID, "NO2", sep =
+                                                       ":"),
+      measurementType == "nitrate" ~ paste(eventID, "NO3", sep =
+                                             ":"),
+    )
+  )
+
+nut_measurementOrFact <-
+  bind_rows(nut_botdepth, nut_measurement) %>%
+  select(
+    measurementID,
+    eventID,
+    measurementType,
+    measurementTypeID,
+    measurementValue,
+    measurementUnit,
+    measurementUnitID
+  )
+
+write_csv(nut_measurementOrFact,
+          here("nutrients", "tidy_data", "nut_measurement.csv"))
+drive_upload(
+  here("nutrients", "tidy_data", "nut_measurement.csv"),
+  path = "https://drive.google.com/drive/u/0/folders/1M0JRuzW_rxwz9jZPVV-oDv5AARUS2K2w",
+  name = "nutrient_eMoF.csv"
+)
+```
+
