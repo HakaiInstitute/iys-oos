@@ -27,8 +27,7 @@ vignettes/*.pdf
 # R Environment Variables
 .Renviron
 datasets/GoA_2019/*/raw_data/
+datasets/GoA_2019/*/tidy_data/
 *.Rproj
 .DS_Store
 data
-# Data files downloaded from Google Drive for tidying & creation of transformed files to upload back to Google Drive
-datasets/GoA_2019/*/tidy_data
