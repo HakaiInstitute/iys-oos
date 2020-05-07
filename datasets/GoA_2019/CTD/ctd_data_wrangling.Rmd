@@ -18,11 +18,10 @@ library(googledrive)
 Download the raw data from GoogleDrive, and read from local folder:
 
 ``` {r file_download, eval = FALSE}
-drive_download("https://drive.google.com/open?id=1-onECiDW02DJRIX6g4dXywtzLEqCGyce", 
-               path = here::here("CTD", "raw_data", "Data_IYS_conbined_Final.xlsx"))
+drive_download("https://drive.google.com/open?id=1-onECiDW02DJRIX6g4dXywtzLEqCGyce", path = here::here("CTD", "raw_data", "Data_IYS_conbined_Final.xlsx"))
 
-sheet1 <- read_excel(here("./datasets/GoA_2019/CTD/raw_data/", "Data_IYS_conbined_Final.xlsx"), sheet = "Sheet1")
-sheet2 <- read_excel(here("./datasets/GoA_2019/CTD/raw_data/", "Data_IYS_conbined_Final.xlsx"), sheet = "Sheet2")
+sheet1 <- read_excel(here("CTD", "raw_data", "Data_IYS_conbined_Final.xlsx"), sheet = "Sheet1")
+sheet2 <- read_excel(here("CTD", "raw_data", "Data_IYS_conbined_Final.xlsx"), sheet = "Sheet2")
 ```
 
 ## EventCore 
@@ -42,7 +41,7 @@ ctd <- sheet2 %>%
          )
 ```
 
-The longitude was recorded as 'positive' values, however, after QC and cross-reference to other data recorded during the same cruise, it is clear that the values should be negative.
+The longitude was recorded as positive values, however, after QC and cross-reference to other data recorded during the same cruise, it is clear that the values should be negative.
 
 ``` {r QC_Longitude, eval = FALSE}
 ctd$LON <- -ctd$LON
@@ -98,10 +97,10 @@ ctd_event <- ctd_event[match(order, ctd_event$eventID),]
 
 # Save locally and in GoogleDrive
 write_csv(ctd_event, here("CTD", "tidy_data", "CTD_event.csv"))
-drive_upload(here("CTD", "tidy_data", "CTD_event.csv",
+drive_upload(here("CTD", "tidy_data", "CTD_event.csv"),
              path = "https://drive.google.com/drive/u/0/folders/1-XXOPhMN4-BmhI3owM2hvaMKXEy6hEYL",
-             name = "draft_CTD_event.csv",
-             overwrite = TRUE))
+             name = "CTD_event.csv",
+             overwrite = TRUE)
 ```
 
 ## MeasurementOrFact 
@@ -109,12 +108,9 @@ drive_upload(here("CTD", "tidy_data", "CTD_event.csv",
 After creating the Event Core, we create an extended MeasurementOrFact (eMoF) table. An occurrence table is not created as the datasets only contain abiotic data, therefore, measurements are linked to eventIDs. DwC-A standards work with "long" format, rather than the wide format, so we need to transpose the data. 
 
 ``` {r measurement data_wrangle, eval = FALSE}
-# Create eMoF table, first from sheet1 (data collected only at specific depths),
-# as this computes faster (smaller dataset) 
 
-# First, EC25 is measured in microSiemens/cm, which is not (yet) in NERCs controlled 
-# vocabulary. Therefore, we convert this column to milliSiemens/cm:
-ctd_measurement <- sheet1 %>% 
+# First, EC25 is measured in microSiemens/cm, which is not (yet) in NERCs controlled vocabulary. Therefore, we convert this column to milliSiemens/cm:
+ctd_measurement <- sheet2 %>% 
   mutate(`EC25 [mS/cm]_R` = as.numeric(`EC25 [uS/cm]_R`) / 1000,
          eventID = paste("NO.Trawl",NO.Trawl, `NO.(CTD)`,"D",DEPTH, sep = "_"))
 ctd_measurement <- ctd_measurement[, -which(names(ctd_measurement) == "EC25 [uS/cm]_R")] %>%
@@ -125,7 +121,7 @@ ctd_measurement <- ctd_measurement[, -which(names(ctd_measurement) == "EC25 [uS/
   )
 ```
 
-__Note: in the previous chunk we got our data from sheet1 - this is data collected at discrete depths (so a subset from the data presented in sheet2). To create a measurement table for sheet2, simply replace sheet1 with sheet2.__
+__Note: in the previous chunk we got our data from sheet2 - this is data collected at continuous depths. To create a measurement table for sheet1 (discrete depth measurements), simply replace sheet1 with sheet2 in chunk of code above.__
 
 Assign NERC controlled vocabulary to the variables and the measurement units. Finally, save the eMoF table locally and on GoogleDrive in the correct folder.  
 
@@ -229,8 +225,8 @@ ctd_measurement <- ctd_measurement %>% # Should "NO.Trawl" here be "NO.(ST)"?
 
 # Save locally and on GoogleDrive: 
 write_csv(ctd_measurement, here("CTD", "tidy_data", "CTD_measurement.csv"))
-drive_upload(here("CTD", "tidy_data", "CTD_measurement.csv",
+drive_upload(here("CTD", "tidy_data", "CTD_measurement.csv"),
              path = "https://drive.google.com/drive/u/0/folders/1-XXOPhMN4-BmhI3owM2hvaMKXEy6hEYL",
-             name = "draft_CTD_measurement.csv",
-             overwrite = TRUE))
+             name = "CTD_measurement.csv",
+             overwrite = TRUE)
 ```

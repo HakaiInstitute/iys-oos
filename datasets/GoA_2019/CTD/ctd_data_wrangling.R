@@ -81,19 +81,16 @@ ctd_event <- ctd_event[match(order, ctd_event$eventID),]
 
 # Save locally and in GoogleDrive
 write_csv(ctd_event, here("CTD", "tidy_data", "CTD_event.csv"))
-drive_upload("CTD", "tidy_data", "CTD_event.csv",
+drive_upload(here("CTD", "tidy_data", "CTD_event.csv"),
              path = "https://drive.google.com/drive/u/0/folders/1-XXOPhMN4-BmhI3owM2hvaMKXEy6hEYL",
-             name = "draft_CTD_event.csv",
+             name = "CTD_event.csv",
              overwrite = TRUE)
 
 ## MeasurementOrFact  ----------------------------------------------------
 
-# Create eMoF table, first from sheet1 (data collected only at specific depths),
-# as this computes faster (smaller dataset) 
-
 # First, EC25 is measured in microSiemens/cm, which is not (yet) in NERCs controlled 
 # vocabulary. Therefore, we convert this column to milliSiemens/cm:
-ctd_measurement <- sheet1 %>% 
+ctd_measurement <- sheet2 %>% 
   mutate(`EC25 [mS/cm]_R` = as.numeric(`EC25 [uS/cm]_R`) / 1000,
          eventID = paste("NO.Trawl",NO.Trawl, `NO.(CTD)`,"D",DEPTH, sep = "_"))
 ctd_measurement <- ctd_measurement[, -which(names(ctd_measurement) == "EC25 [uS/cm]_R")] %>%
@@ -103,6 +100,8 @@ ctd_measurement <- ctd_measurement[, -which(names(ctd_measurement) == "EC25 [uS/
                values_ptypes = list(measurementValue = 'character')
   )
 
+# To create a measurement table for only the measurement taken at specific depths,
+# change sheet2 to sheet1 in the above chunk of code.
 # Have to clarify whether `bottom depth` should be associated with event table
 # or with the measurementOrFact table. 
 
@@ -205,7 +204,7 @@ ctd_measurement <- ctd_measurement %>% # Should "NO.Trawl" here be "NO.(ST)"?
 
 # Save locally and on GoogleDrive: 
 write_csv(ctd_measurement, here("CTD", "tidy_data", "CTD_measurement.csv"))
-drive_upload(here("CTD", "tidy_data", "CTD_measurement.csv",
+drive_upload(here("CTD", "tidy_data", "CTD_measurement.csv"),
              path = "https://drive.google.com/drive/u/0/folders/1-XXOPhMN4-BmhI3owM2hvaMKXEy6hEYL",
-             name = "draft_CTD_measurement.csv",
-             overwrite = TRUE))
+             name = "CTD_measurement.csv",
+             overwrite = TRUE)
