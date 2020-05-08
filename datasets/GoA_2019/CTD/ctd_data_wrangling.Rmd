@@ -26,51 +26,46 @@ sheet2 <- read_excel(here("CTD", "raw_data", "Data_IYS_conbined_Final.xlsx"), sh
 
 ## EventCore 
 
-The reported date / time has to get formatted to UTC in the ISO8601 extended format.
+The reported date / time has to get formatted to UTC in the ISO8601 extended format. Additionally, to wrangle the data into a tidy format that follows the Darwin Core Archive (DwC-A) standards and hierarchical structure, it's important to determine how many layers of `eventID` (and, consequently, `parentEventID`) the data has. In the CTD dataset, the data has four layers: "cruise", "station", "cast", and the depth at which the measurements were taken ("ndepth"). Additional columns for each of these layers are created. 
 
 ``` {r time_formatting, eval = FALSE}
-ctd <- sheet2 %>%
-  select(`NO.Trawl`, `NO.(CTD)`, `NO.(ST)`, `Bot. Depth`, DEPTH, 
-         LON, LAT, YEAR, MONTH, DAY, `TIME(ship time)`, `MIN(ship time)`) %>%
+sheet2 <- sheet2 %>%
   mutate(eventDate_text = str_c(YEAR, MONTH, DAY, `TIME(ship time)`, `MIN(ship time)`, sep="-"),
          eventDate = ymd_hm(eventDate_text, tz = "Asia/Kamchatka")) %>%
   mutate(eventDate = format_iso_8601(as.POSIXct(eventDate,
                                                 format = "%Y-%m-%d %H:%M%:S",
                                                 tz="Asia/Kamchatka")),
          eventDate = str_replace(eventDate, "\\+00:00", "Z")
-         )
+         ) %>%
+  mutate(cruise = "GoA2019",
+         station = paste(cruise, `NO.Trawl`, sep="_Stn"),
+         cast = paste(station, "cast1", sep = ":"),
+         ndepth = paste(cast, DEPTH, sep=":ctd:"))
 ```
 
 The longitude was recorded as positive values, however, after QC and cross-reference to other data recorded during the same cruise, it is clear that the values should be negative.
 
 ``` {r QC_Longitude, eval = FALSE}
-ctd$LON <- -ctd$LON
+sheet2$LON <- -sheet2$LON
 ```
 
-To wrangle the data into a tidy format that follows the Darwin Core Archive (DwC-A) standards and hierarchical structure, it's important to determine how many layers of `eventID` (and, consequently, `parentEventID`) the data has. In the CTD dataset, the data has four layers: "cruise", "station", "cast", and the depth at which the  measurements were taken ("ndepth"). For each of these layers, a data frame is created with unique eventIDs, associated parentEventIDs, and associated unique characteristics. In our data, we join the date to the station level, as all station-specific data was collected on a day. 
+For each of the layers of `eventID`, a data frame is created with unique eventIDs, associated parentEventIDs, and associated unique characteristics. In our data, we join the date to the station level, as all station-specific data was collected on a day. 
 
 Finally, these tables get joined, and re-ordered based on `eventID`, to create the Event Core. This table gets saved locally and in the correct GoogleDrive folder.
 
 ``` {r ctd_event, eval = FALSE}
-ctd <- ctd %>%
-  mutate(cruise = "GoA2019",
-         station = paste(cruise, `NO.Trawl`, sep="_Stn"),
-         cast = paste(station, "cast1", sep = ":"),
-         ndepth = paste(cast, DEPTH, sep=":ctd:"))
-
 ctd_cruise <- ctd %>% 
   select(eventID = cruise) %>%
   distinct(eventID) %>%
   mutate(type = "cruise")
 
-# Join date and bottom depth to station
+# Join date to station
 ctd_station <- ctd %>%
   select(eventID = station,
          parentEventID = cruise,
          eventDate,
          decimalLatitude = LAT,
-         decimalLongitude = LON,
-         bottomDepth = `Bot. Depth`) %>% 
+         decimalLongitude = LON) %>% 
   distinct(eventID, .keep_all = TRUE) %>% 
   mutate(type = "station")
 
@@ -107,23 +102,43 @@ drive_upload(here("CTD", "tidy_data", "CTD_event.csv"),
 
 After creating the Event Core, we create an extended MeasurementOrFact (eMoF) table. An occurrence table is not created as the datasets only contain abiotic data, therefore, measurements are linked to eventIDs. DwC-A standards work with "long" format, rather than the wide format, so we need to transpose the data. 
 
-``` {r measurement data_wrangle, eval = FALSE}
+Our first step however is to add the column of bottom depth at each station to the extension measurementOrFact table. Please note that the `measurementTypeID` for seafloor depth is defined as "Bridge log sheets" until there is more information about how bottom depth was determined/measured (e.g., by bathymetric sensors, charts, etc.). 
 
-# First, EC25 is measured in microSiemens/cm, which is not (yet) in NERCs controlled vocabulary. Therefore, we convert this column to milliSiemens/cm:
+``` {r seafloor, eval = FALSE}
+ctd_botdepth <- sheet2 %>% 
+  select(eventID = cast, `Bot. Depth`) %>%
+  distinct(eventID, .keep_all = TRUE) %>%
+  pivot_longer(cols = `Bot. Depth`,
+               names_to = "measurementType",
+               values_to = "measurementValue") %>%
+  mutate(measurementValue = as.character(measurementValue),
+         measurementID = paste(eventID, "depth", sep = ":"),
+         measurementType = recode(measurementType,
+                                  `Bot. Depth` = "seafloor depth"),
+         measurementTypeID = "http://vocab.nerc.ac.uk/collection/C00/current/BRIDGE/",
+         measurementUnit = "m",
+         measurementUnitID = "http://vocab.nerc.ac.uk/collection/P06/current/ULAA/" ) %>%
+  select(measurementID, eventID, measurementType, measurementTypeID, measurementValue,
+         measurementUnit, measurementUnitID)
+```
+
+Next, we select the appropriate columns and use the pivot_longer function to transpose the data. As EC25 is measured in microSiemens/cm, which is not (yet) in NERCs controlled vocabulary, we convert this column to milliSiemens/cm. 
+
+``` {r measurement data_wrangle, eval = FALSE}
 ctd_measurement <- sheet2 %>% 
-  mutate(`EC25 [mS/cm]_R` = as.numeric(`EC25 [uS/cm]_R`) / 1000,
-         eventID = paste("NO.Trawl",NO.Trawl, `NO.(CTD)`,"D",DEPTH, sep = "_"))
+  select(eventID = ndepth, 
+         `TEM_S`:`BOD5[ml/l]`) %>%
+  mutate(`EC25 [mS/cm]_R` = as.numeric(`EC25 [uS/cm]_R`) / 1000) %>%
+  mutate_all(as.character)
 ctd_measurement <- ctd_measurement[, -which(names(ctd_measurement) == "EC25 [uS/cm]_R")] %>%
   pivot_longer(`TEM_S`:`EC25 [mS/cm]_R`,
                names_to = "measurementType",
-               values_to = "measurementValue",
-               values_ptypes = list(measurementValue = 'character')
-  )
+               values_to = "measurementValue")
 ```
 
-__Note: in the previous chunk we got our data from sheet2 - this is data collected at continuous depths. To create a measurement table for sheet1 (discrete depth measurements), simply replace sheet1 with sheet2 in chunk of code above.__
+__Note: in the previous chunk we got our data from sheet2 - this is data collected at continuous depths [every meter]. To create a measurement table for sheet1 (discrete depth measurements), simply replace sheet2 with sheet1.__
 
-Assign NERC controlled vocabulary to the variables and the measurement units. Finally, save the eMoF table locally and on GoogleDrive in the correct folder.  
+Assign NERC controlled vocabulary to the variables and the measurement units. Finally, join the two dataframes and save the eMoF table locally and on GoogleDrive in the correct folder.  
 
 ``` {r CTD, eval = FALSE}
 ctd_measurement <- ctd_measurement %>% # Should "NO.Trawl" here be "NO.(ST)"?
@@ -223,8 +238,13 @@ ctd_measurement <- ctd_measurement %>% # Should "NO.Trawl" here be "NO.(ST)"?
   select(measurementID, measurementType, measurementTypeID,
          measurementValue, measurementUnit, measurementUnitID)
 
+# Join the dataframes: 
+ctd_measurementOrFact <- bind_rows(ctd_botdepth, ctd_measurement) %>%
+  select(measurementID, eventID, measurementType, measurementTypeID,
+         measurementValue, measurementUnit, measurementUnitID)
+
 # Save locally and on GoogleDrive: 
-write_csv(ctd_measurement, here("CTD", "tidy_data", "CTD_measurement.csv"))
+write_csv(ctd_measurementOrFact, here("CTD", "tidy_data", "CTD_measurement.csv"))
 drive_upload(here("CTD", "tidy_data", "CTD_measurement.csv"),
              path = "https://drive.google.com/drive/u/0/folders/1-XXOPhMN4-BmhI3owM2hvaMKXEy6hEYL",
              name = "CTD_measurement.csv",

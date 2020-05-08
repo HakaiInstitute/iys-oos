@@ -18,53 +18,47 @@ drive_download("https://drive.google.com/open?id=1-onECiDW02DJRIX6g4dXywtzLEqCGy
                path = here::here("CTD", "raw_data", "Data_IYS_conbined_Final.xlsx"))
 
 sheet1 <- read_excel(here("CTD", "raw_data", "Data_IYS_conbined_Final.xlsx"), sheet = "Sheet1")
-sheet2 <- read_excel(here("CTD", "raw_data", "Data_IYS_conbined_Final.xlsx"), sheet = "Sheet2")
 
 # Update the timezone for the Event Core:
-ctd <- sheet2 %>%
-  select(`NO.Trawl`, `NO.(CTD)`, `NO.(ST)`, `Bot. Depth`, DEPTH, 
-         LON, LAT, YEAR, MONTH, DAY, `TIME(ship time)`, `MIN(ship time)`) %>%
+sheet2 <- read_excel(here("CTD", "raw_data", "Data_IYS_conbined_Final.xlsx"), sheet = "Sheet2") %>%
   mutate(eventDate_text = str_c(YEAR, MONTH, DAY, `TIME(ship time)`, `MIN(ship time)`, sep="-"),
          eventDate = ymd_hm(eventDate_text, tz = "Asia/Kamchatka")) %>%
   mutate(eventDate = format_iso_8601(as.POSIXct(eventDate,
                                                 format = "%Y-%m-%d %H:%M%:S",
                                                 tz="Asia/Kamchatka")),
          eventDate = str_replace(eventDate, "\\+00:00", "Z")
-         )
-
-# In our case, the recorded longitude values should be negative (as determined through QC,
-# and cross-referencing with other datasets from the same cruise): 
-ctd$LON <- -ctd$LON
-
-ctd <- ctd %>%
+         ) %>%
   mutate(cruise = "GoA2019",
          station = paste(cruise, `NO.Trawl`, sep="_Stn"),
          cast = paste(station, "cast1", sep = ":"),
          ndepth = paste(cast, DEPTH, sep=":ctd:"))
 
-ctd_cruise <- ctd %>% 
+# In our case, the recorded longitude values should be negative (as determined through QC,
+# and cross-referencing with other datasets from the same cruise): 
+sheet2$LON <- -sheet2$LON
+
+ctd_cruise <- sheet2 %>% 
   select(eventID = cruise) %>%
   distinct(eventID) %>%
   mutate(type = "cruise")
 
-# Join date and bottom depth to station
-ctd_station <- ctd %>%
+# Join date to station
+ctd_station <- sheet2 %>%
   select(eventID = station,
          parentEventID = cruise,
          eventDate,
          decimalLatitude = LAT,
-         decimalLongitude = LON,
-         bottomDepth = `Bot. Depth`) %>% 
+         decimalLongitude = LON) %>% 
   distinct(eventID, .keep_all = TRUE) %>% 
   mutate(type = "station")
 
-ctd_cast <- ctd %>% 
+ctd_cast <- sheet2 %>% 
   select(eventID = cast,
          parentEventID = station) %>% 
   distinct(eventID, .keep_all = TRUE) %>% 
   mutate(type = "cast")
 
-ctd_ndepth <- ctd %>% 
+ctd_ndepth <- sheet2 %>% 
   select(eventID = ndepth,
          parentEventID = cast,
          minimumDepthInMetres = DEPTH,
@@ -88,22 +82,37 @@ drive_upload(here("CTD", "tidy_data", "CTD_event.csv"),
 
 ## MeasurementOrFact  ----------------------------------------------------
 
+ctd_botdepth <- sheet2 %>% 
+  select(eventID = cast, `Bot. Depth`) %>%
+  distinct(eventID, .keep_all = TRUE) %>%
+  pivot_longer(cols = `Bot. Depth`,
+               names_to = "measurementType",
+               values_to = "measurementValue") %>%
+  mutate(measurementValue = as.character(measurementValue),
+         measurementID = paste(eventID, "depth", sep = ":"),
+         measurementType = recode(measurementType,
+                                  `Bot. Depth` = "seafloor depth"),
+         measurementTypeID = "http://vocab.nerc.ac.uk/collection/C00/current/BRIDGE/",
+         measurementUnit = "m",
+         measurementUnitID = "http://vocab.nerc.ac.uk/collection/P06/current/ULAA/" ) %>%
+  select(measurementID, eventID, measurementType, measurementTypeID, measurementValue,
+         measurementUnit, measurementUnitID)
+
+
 # First, EC25 is measured in microSiemens/cm, which is not (yet) in NERCs controlled 
 # vocabulary. Therefore, we convert this column to milliSiemens/cm:
 ctd_measurement <- sheet2 %>% 
-  mutate(`EC25 [mS/cm]_R` = as.numeric(`EC25 [uS/cm]_R`) / 1000,
-         eventID = paste("NO.Trawl",NO.Trawl, `NO.(CTD)`,"D",DEPTH, sep = "_"))
+  select(eventID = ndepth, 
+         `TEM_S`:`BOD5[ml/l]`) %>%
+  mutate(`EC25 [mS/cm]_R` = as.numeric(`EC25 [uS/cm]_R`) / 1000) %>%
+  mutate_all(as.character)
 ctd_measurement <- ctd_measurement[, -which(names(ctd_measurement) == "EC25 [uS/cm]_R")] %>%
   pivot_longer(`TEM_S`:`EC25 [mS/cm]_R`,
                names_to = "measurementType",
-               values_to = "measurementValue",
-               values_ptypes = list(measurementValue = 'character')
-  )
+               values_to = "measurementValue")
 
 # To create a measurement table for only the measurement taken at specific depths,
 # change sheet2 to sheet1 in the above chunk of code.
-# Have to clarify whether `bottom depth` should be associated with event table
-# or with the measurementOrFact table. 
 
 ctd_measurement <- ctd_measurement %>% # Should "NO.Trawl" here be "NO.(ST)"?
   mutate(measurementID = case_when(measurementType == "TEM_S" ~ paste(eventID,"TEM_S",sep="_"),
@@ -202,8 +211,13 @@ ctd_measurement <- ctd_measurement %>% # Should "NO.Trawl" here be "NO.(ST)"?
   select(measurementID, measurementType, measurementTypeID,
          measurementValue, measurementUnit, measurementUnitID)
 
+# Join the dataframes: 
+ctd_measurementOrFact <- bind_rows(ctd_botdepth, ctd_measurement) %>%
+  select(measurementID, eventID, measurementType, measurementTypeID,
+         measurementValue, measurementUnit, measurementUnitID)
+
 # Save locally and on GoogleDrive: 
-write_csv(ctd_measurement, here("CTD", "tidy_data", "CTD_measurement.csv"))
+write_csv(ctd_measurementOrFact, here("CTD", "tidy_data", "CTD_measurement.csv"))
 drive_upload(here("CTD", "tidy_data", "CTD_measurement.csv"),
              path = "https://drive.google.com/drive/u/0/folders/1-XXOPhMN4-BmhI3owM2hvaMKXEy6hEYL",
              name = "CTD_measurement.csv",
