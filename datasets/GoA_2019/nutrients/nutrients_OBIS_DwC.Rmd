@@ -81,7 +81,8 @@ nut_station <- chemistry %>%
     decimalLongitude = Longitude
   ) %>%
   distinct(eventID, .keep_all = TRUE) %>%
-  mutate(type = "station")
+  mutate(decimalLongitude = decimalLongitude-360,
+         type = "station")
 
 nut_cast <- chemistry %>%
   select(eventID = cast,

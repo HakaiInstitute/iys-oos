@@ -426,7 +426,8 @@ nut_station &lt;- chemistry %&gt;%
     decimalLongitude = Longitude
   ) %&gt;%
   distinct(eventID, .keep_all = TRUE) %&gt;%
-  mutate(type = &quot;station&quot;)
+  mutate(decimalLongitude = decimalLongitude-360,
+         type = &quot;station&quot;)
 
 nut_cast &lt;- chemistry %&gt;%
   select(eventID = cast,
