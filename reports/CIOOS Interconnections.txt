@@ -1,0 +1,17 @@
+CIOOS Metadata Profile: 
+Keywords:
+L05 Device Category Make and Models
+GCMD
+CF Names
+Canada Federal Place Names
+
+GCMD - NASA keywords
+Seavox - Instrument type
+Seavox - Platform codes
+ISO 19157 can be used to describe and summarize data quality information. Could be expressed in the data record to flag data quality level that we can map to existing data catalogue flags. Ie. Automated QA conducted, Automated data QC, summary checks,   .
+Variables: gaps, missing fields, 
+
+QARTOD only for real time sensors?
+
+Providers responsibility to map their data quality flags to ISO 19157. Perhaps necessary to map some big institutions standards.
+
