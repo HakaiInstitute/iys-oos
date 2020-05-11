@@ -28,13 +28,13 @@ chl <- read_excel(here("chlorophyll", "raw_data",
          dateTime = format_iso_8601(as.POSIXct(paste(Date, Time), 
                                                format="%Y-%m-%d %H:%M:%S", 
                                                tz="Asia/Kamchatka")),
-         dateTime = str_replace(dateTime, "\\+00:00", "Z")
-  ) 
-
-chl <- chl %>%
-  mutate(cruise = "GoA2019",
+         dateTime = str_replace(dateTime, "\\+00:00", "Z"),
+         cruise = "GoA2019",
          station = paste(cruise, Station, sep="_Stn"),
-         ndepth = paste(station, Depth, sep=":"))
+         ndepth = paste(station, Depth, sep=":"),
+         sample = paste(ndepth, "T", sep=":"),
+         sample = paste(sample, Tube, sep="")
+  ) 
 
 chl_cruise <- chl %>% 
   select(eventID = cruise) %>%
@@ -59,7 +59,13 @@ chl_ndepth <- chl %>%
   distinct(eventID, .keep_all = TRUE) %>% 
   mutate(type = "sample")
 
-chl_event <- bind_rows(chl_cruise, chl_station, chl_ndepth) %>% 
+chl_sample <- chl %>%
+  select(eventID = sample,
+         parentEventID = ndepth) %>%
+  distinct(eventID, .keep_all = TRUE) %>%
+  mutate(type = "subsample")
+  
+chl_event <- bind_rows(chl_cruise, chl_station, chl_ndepth, chl_sample) %>% 
   select(eventID, parentEventID:maximumDepthInMetres, type) 
 
 # Re-order the Event Core:
@@ -74,17 +80,14 @@ drive_upload(here("chlorophyll", "tidy_data", "chl_event_fnl.csv"),
              overwrite = TRUE)
 
 ## MeasurementOrFact -----------------------------------------------
-chl_measurement <- chl %>% 
-  mutate(cruise = "GoA2019",
-         station = paste(cruise, Station, sep= "_Stn"),
-         ndepth = paste(station, Depth, sep=":"))
-
-chl_measurement <- chl_measurement %>%
+chl_measurement <- chl %>%
+  select(eventID = sample, 
+         Chl:Phe) %>%
   # Gather Chl and Phe into measurement types
   pivot_longer(c(`Chl`, `Phe`), names_to = "measurementType", 
                values_to = "measurementValue") %>% 
-  mutate(measurementID = case_when(measurementType == "Chl" ~ paste(ndepth,"tube",Tube,"chl", sep="_"),
-                                   measurementType == "Phe" ~ paste(ndepth,"tube",Tube,"phe", sep="_")),
+  mutate(measurementID = case_when(measurementType == "Chl" ~ paste(eventID,"chl", sep="_"),
+                                   measurementType == "Phe" ~ paste(eventID,"phe", sep="_")),
          measurementType = recode(measurementType, 
                                   Chl = "Concentration of Chlorophyll a",
                                   Phe = "Concentration of Phaeopigments"),

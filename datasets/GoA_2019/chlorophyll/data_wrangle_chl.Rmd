@@ -43,13 +43,15 @@ chl <- read_excel(here("chlorophyll", "raw_data",
   ) 
 ```
 
-To wrangle the data into a tidy format that follows the Darwin Core Archive (DwC-A) standards and hierarchical structure, it's important to determine how many layers of `eventID` (and, consequently, `parentEventID`) the data has. In our dataset, the data has three different types of `eventID`, in order of descending hierarchy: "cruise", "station", and "ndepth" - the depth at which the chlorophyll and phaeopigment concentration was measured. For each of these layers, a data frame is created with unique eventIDs, associated parentEventIDs, and associated unique characteristics. In our data, we join the date to the station level, as all station-specific data was collected on a day. If data at a station was collected over multiple days, the date would be joined to a different layer. `eventID` follows a sematic model that describes the hierarchical nature of each event type.   
+To wrangle the data into a tidy format that follows the Darwin Core Archive (DwC-A) standards and hierarchical structure, it's important to determine how many layers of `eventID` (and, consequently, `parentEventID`) the data has. In our dataset, the data has three different types of `eventID`, in order of descending hierarchy: "cruise", "station", "ndepth" - the depth at which the chlorophyll and phaeopigment concentration was measured, and "sample" - so that we create a unique eventID for each parameter measurement at a specific depth. For each of these layers, a data frame is created with unique eventIDs, associated parentEventIDs, and associated unique characteristics. In our data, we join the date to the station level, as all station-specific data was collected on a day. If data at a station was collected over multiple days, the date would be joined to a different layer. `eventID` follows a semantic model that describes the hierarchical nature of each event type.   
 
 ``` {r data_wrangle, eval = FALSE}
 chl <- chl %>%
   mutate(cruise = "GoA2019",
          station = paste(cruise, Station, sep="_Stn"),
-         ndepth = paste(station, Depth, sep=":"))
+         ndepth = paste(station, Depth, sep=":"),
+         sample = paste(ndepth, "T", sep=":"),
+         sample = paste(sample, Tube, sep= ""))
 ```
 
 Each type of record in the Event core (in our case, cruise, station, sample) has different properties (columns) associated with it, but they ultimately all get nested under a single file. Therefore, separate data frame for each type of Event record are created; this allows us to populate rows with distinct records of each type and fill the relevant columns with data. Once all the event type data frames are created, they can be concatenated to form the Event core. 
@@ -80,6 +82,12 @@ chl_ndepth <- chl %>%
   distinct(eventID, .keep_all = TRUE) %>% 
   mutate(type = "sample")
 
+chl_sample <- chl %>%
+  select(eventID = sample,
+         parentEventID = ndepth) %>%
+  distinct(eventID, .keep_all = TRUE) %>%
+  mutate(type = "subsample")
+
 chl_event <- bind_rows(chl_cruise, chl_station, chl_ndepth) %>% 
   select(eventID, parentEventID:maximumDepthInMetres, type) 
 
@@ -98,17 +106,13 @@ drive_upload(here("chlorophyll", "tidy_data", "chl_event_fnl.csv"),
 
 After creating the Event Core, we create an extended MeasurementOrFact (eMoF) table. The eMoF extension links measurement records with records in the Event core table. An occurrence table is not created as the datasets only contain abiotic data, and therefore the measurement records are linked directly to `eventID`. The first step in creating the eMoF, is adding columns with each of the different `eventID` layers (see chunk #5).
 
-``` {r eventIDs, eval = FALSE}
-chl_measurement <- chl %>% 
-  mutate(cruise = "GoA2019",
-         station = paste(cruise, Station, sep= "_Stn"),
-         ndepth = paste(station, Depth, sep=":"))
-```
-
 The Darwin Core Archive (DwC-A) works with "long" datatables, whereas usually data get recorded in a wide format. Therefore, the next step is to transpose the data into a long format, and assign the correct NERC controlled vocabulary to the variables and the measurement units. Finally, the eMoF tables gets saved locally and on GoogleDrive. 
 
 ``` {r chl_measurement, eval = FALSE}
-chl_measurement <- chl_measurement %>%
+# Select the correct eventID layer and the parameters measured
+chl_measurement <- chl %>%
+  select(eventID = sample,
+         Chl:Phe) %>%
   pivot_longer(c(`Chl`, `Phe`), names_to = "measurementType", 
                values_to = "measurementValue") %>% 
   mutate(measurementID = case_when(measurementType == "Chl" ~ paste(ndepth,"tube",Tube,"chl", sep="_"),
