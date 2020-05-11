@@ -29,9 +29,9 @@ options(scipen=999) # This removes scientific notation for inline output ie `r o
 
 `Brett Johnson and the IYS-OOS Steering Committee`
 
-`Hakai Institute`
+`brett.johnson@hakai.org`
 
-`1713 Hyacinthe Bay Road, Heriot Bay, BC, Canada`
+`Hakai Institute, 1713 Hyacinthe Bay Road, Heriot Bay, BC, Canada`
 
 # Executive Summary
 An agreement was signed between the Hakai Institute and the North Pacific Anadromous Fish Commission on February 3rd, 2020 for Hakai to scope and review the requirements of data management for data collected by the International Year of the Salmon high seas research expeditions in the North Pacific in 2019, 2020, and hopefully 2021. This report summarizes progress made during the 2019/20 fiscal period towards mobilizing 2019 data, and defining a Data Management & Communications Model for future expeditions. 

@@ -1,0 +1,35 @@
+# Things Matt Needs Re IYS CKAN
+
+## New EOVs
+Particulate matter
+Phytoplankton biomass and diversity
+Zooplankton biomass and diversity
+Fish abundance and distribution
+Microbe biomass and diversity  (*emerging)
+
+## Roles
+
+Point of Contact (Person or organization?)
+possible roles: pointOfContact, originator, resourceProvider, custodian, distributor, principal Investigator, publisher, author, coinvestigator, licensor, researchassistant, metadata contact
+
+Responsible Party (Person or organization?)
+possible roles: originator, principalInvestigator, author, coinvestigator.
+
+example:
+
+Point of Contact: (Aleksey Somov / role <- c(pointOfContact, author, originator), Hakai Institute, role <- c(distributor, metadataContact)
+		  )
+
+Responsible Party: Aleksey Somov / role <- c(pointOfContact, author, originator)
+
+# Questions for Matt:
+
+Can you have multiple point of contacts/responsiblePartys? Can Point of Contact or Responsible Party have multiple roles?
+
+Citation Identifiers for Metadata (UUIDs) and Data (DOIs)
+
+# Questions for Mark
+
+What languages do we need to support? Metadata in all languages?
+
+
