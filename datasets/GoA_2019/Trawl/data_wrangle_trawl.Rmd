@@ -34,19 +34,6 @@ trawl <- read_excel(here("Trawl", "raw_data", "2019_GoA_Fish_data_Hakai.xlsx")) 
          cruise = "GoA2019", 
          station = paste(cruise, NUMBER, sep="_Stn"),
          trawl = paste(station, "trawl1", sep=":"))
-
-# Check for the number of unique NUMBERs with associated Lat/Long:
-unique_trawl <- unique(trawl[c("NUMBER","X","Y")])
-```
-
-As noted before, there are 63 unique NUMBERs recorded, with unique lat and longs. Later, these coordinates will be plotted and cross-referenced to station coordinates recorded in other data sets to understand any discrepancies. Therefore, a .csv table is created with unique coordinates:
-
-``` {r trawl_location}
-trawl_loc <- unique_trawl %>%
-  dplyr::rename(Station = NUMBER,
-                Longitude = X,
-                Latitude = Y)
-write_csv(trawl_loc, here("Trawl", "tidy_data", "trawl_loc.csv"))
 ```
 
 ## Event Core 
