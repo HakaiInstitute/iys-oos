@@ -92,16 +92,14 @@ length(unique_spp)
 # So a total of 46 unique species have been caught throughout the expedition.
 # For each trawl, note for each of these species whether it was present or absent:
 
-trawl_occ <- trawl %>% tidyr::complete(NUMBER, Species, 
-                                       fill = list(PIECES=0)) %>%
-  as.data.frame()
-trawl_occ <- trawl_occ %>% group_by(NUMBER) %>% fill(trawl) %>%
-  fill(trawl, .direction = "up") %>% ungroup(NUMBER)
-
-# Add present or absent depending on whether "Pieces > 0"
-trawl_occ <- trawl_occ %>% 
+trawl_occ <- trawl %>% 
+  tidyr::complete(NUMBER, Species, fill = list(PIECES = 0)) %>%
+  group_by(NUMBER) %>% 
+  fill(trawl, .direction = "downup") %>% 
+  ungroup(NUMBER) %>% 
+  # Add present or absent depending on whether "Pieces > 0"
   mutate(occurrenceStatus = ifelse(PIECES > 0, "present", "absent")) %>%
-  dplyr::rename(scientificName = Species) %>%
+  rename(scientificName = Species) %>%
   select(eventID = trawl, 
          scientificName, occurrenceStatus)
 ```
