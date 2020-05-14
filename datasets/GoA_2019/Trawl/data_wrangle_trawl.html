@@ -501,7 +501,8 @@ drive_upload(here(&quot;Trawl&quot;, &quot;tidy_data&quot;, &quot;trawl_event.cs
 
 # We will create a separate data frame for the proper occurrence table. The `trawl_sp_wrangle` data frame will be used in the next chunk to create the extended MeasurementOrFact extension.
 trawl_occ &lt;- trawl_sp_wrangle %&gt;% 
-  select(eventID, occurrenceID, scientificName, scientificNameID, occurrenceStatus)</code></pre>
+  select(eventID, occurrenceID, scientificName, scientificNameID, occurrenceStatus) %&gt;% 
+  mutate(basisOfRecord = &quot;HumanObservation&quot;)</code></pre>
 <p>Finally, we just want to do a quick check to make sure that all the unique species are included in the trawl_occ dataframe, at each station (<code>eventID</code>)! We need to make sure that the output is TRUE. If confirmed, the Occurrence table can be saved locally and in the correct Google Drive folder.</p>
 <pre class="r"><code>check_spp &lt;- trawl_occ %&gt;% group_by(eventID) %&gt;%
   summarise(count = n_distinct(scientificNameID)) 
