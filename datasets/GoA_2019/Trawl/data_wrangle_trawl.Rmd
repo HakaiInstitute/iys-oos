@@ -186,3 +186,75 @@ drive_upload(here("Trawl", "tidy_data", "trawl_occ.csv"),
              name = "trawl_occ.csv",
              overwrite = TRUE)
 ```
+
+
+## Extended MeasurementOrFact Extension
+
+Although there exist Darwin Core terms related to class _Occurrence_ such as individualCount, organismQuantity, lifeStage, etc., OBIS recommends adding all measurements to the eMoF extension (De Pooter et al. 2007). There are three benefits of storing measurements in the eMoF extension instead of in the Occurrence core:
+
+1. Individual counts and derived quantifications (abundance or biomass) can be captured without needing to create duplicate occurrence records
+2. The measurementTypeID field enables reference to external controlled vocabularies (e.g. NERC server), rather than maintaining a vocabulary within OBIS, and
+3. Allows an unlimited number of measurement parameters to be stored without altering table structure
+
+```{r eMoF}
+trawl_emof <- trawl_sp_wrangle %>% 
+  filter(occurrenceStatus == "present") %>% 
+  mutate(LMIN = format(LMIN, digits = 2),
+         LMAX = format(LMAX, digits = 2),
+         PIECES = as.character(PIECES),
+         MASSCATCH = format(MASSCATCH, digits = 4)
+         ) %>% 
+  pivot_longer(cols = Group:MASSCATCH, names_to = "measurementType", values_to = "measurementValue") %>% 
+  mutate(measurementType = recode(measurementType,
+                                  "Group" = "age class",
+                                  "LMIN" = "minimum length",
+                                  "LMAX" = "maximum length",
+                                  "PIECES" = "number of individuals",
+                                  "MASSCATCH" = "catch biomass"
+                                  ),
+         measurementTypeID = case_when(
+           measurementType == "minimum length" ~ "http://vocab.nerc.ac.uk/collection/P01/current/OBSMINLX/",
+           measurementType == "maximum length" ~ "http://vocab.nerc.ac.uk/collection/P01/current/OBSMAXLX/",
+           measurementType == "number of individuals" ~ "http://vocab.nerc.ac.uk/collection/S06/current/S0600008/",
+           measurementType == "catch biomass" ~ "http://vocab.nerc.ac.uk/collection/S06/current/S0600088/"
+           ),
+         measurementValue = recode(measurementValue,
+                                   "(juv.)" = "juvenile",
+                                   "(immature)" = "immature",
+                                   "(mature)" = "mature"
+                                   ),
+         measurementValueID = case_when(
+           measurementValue == "juvenile" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1127/",
+           measurementValue == "immature" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1171/",
+           measurementValue == "mature" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1116/"
+           ),
+         measurementUnit = case_when(
+           measurementType == "number of individuals" ~ "individuals",
+           measurementType == "minimum length" ~ "cm",
+           measurementType == "maximum length" ~ "cm",
+           measurementType == "catch biomass" ~ "kg"
+           ),
+         measurementUnitID = case_when(
+           measurementUnit == "individuals" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UUUU/",
+           measurementUnit == "cm" ~ "http://vocab.nerc.ac.uk/collection/P06/current/ULCM/",
+           measurementUnit == "kg" ~ "http://vocab.nerc.ac.uk/collection/P06/current/KGXX/"
+         )
+  ) %>% 
+  select(eventID, 
+         occurrenceID, 
+         measurementType, 
+         measurementTypeID, 
+         measurementValue, 
+         measurementValueID,
+         measurementUnit,
+         measurementUnitID) %>% 
+  drop_na(measurementValue)
+
+write_csv(trawl_emof, here("Trawl", "tidy_data", "trawl_eMoF.csv"))
+drive_upload(here("Trawl", "tidy_data", "trawl_occ.csv"),
+             path = "https://drive.google.com/drive/folders/1MQ6XJQqnWk2puDaBTfHn7wXITjDSeLR7",
+             name = "trawl_eMoF.csv",
+             overwrite = TRUE)
+```
+
+
