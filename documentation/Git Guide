@@ -1,0 +1,32 @@
+# Agile Dev
+
+* Sprints (miletsones): Issues nest under milestones. They're specific deliverables over a timeline. Issues should be specific and 'closable'
+
+* Epics: 
+
+* Story points
+
+* Tags:
+
+## Pipelines (ZenHub feature)
+
+New -> backlog -> In progress -> Review / QA -> Done for now -> Closed
+
+Backlog is next to move into In Progress
+
+Note: Link issues with your pull requests when you're making PRs. Only for granular to do or data set levels. 
+
+Move things to done for now or Review QA/QC if you don't want to close something prematurely.
+
+
+## Making or Editing Github Issues 
+
+* Story points:
+  - 1 clear path to completion with no unknowns complete in about an hour
+  - 5 units of complexity: Eg. easy data set transformation
+  - 8 units: medium data set transformation
+  - 13 units: hard data set transformation
+  - 21 units: bordlerine too complex.
+  - 40 means way to complex
+  
+Difficulty defined by source languagge (russian?) metadata completeness, tidyness, number of people you have to talk to to work through things.
