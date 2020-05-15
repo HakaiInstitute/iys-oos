@@ -1,0 +1,242 @@
+---
+title: "User Manual"
+author: "Brett Johnson, Julian Gan, Tim van der Stap"
+date: "5/13/2020"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+In this user manual or "How To", the steps are written out on how to data has been wrangled for the International Year of the Salmon ([IYS](https://yearofthesalmon.org/)) project, which software tools are used, issues encountered, lessons learned and important links shared to understand how and why certain software and platforms are used.
+
+Why do we do this? Coordinated, large-scale biodiversity monitoring, linked to environmental data, is needed for a comprehensive global efforts. Current efforts are hampered by a lack of access to high quality observations, and therefore there is a need for more integrated, efficient and interoperable data. This interoperability and public accessibility of collected data is a vision that the Hakai Institute shares.
+
+It is important to note that this is a living document, and changes get made regularly. 
+
+--- TO DO ---
+[ ] Add screenshots for clarification where possible. 
+[ ] Discuss proper layout of document - missing any information?
+?? Suggested order ??
+ - Software Tools (GoogleDrive, GitHub, ZenHub, RStudio, AirTable)
+ - Data transformation (Darwin Core Archive (DwC-A) standard, OBIS)
+ - metaData (CKAN, iys.hakai)
+ - future goals..? (ERDDAP, CIOOS/GOOS, OBIS, GBIF)
+[ ] Add chapter numbers?
+[ ] For some chapters, maybe add book recommendations?
+
+
+## 1. GoogleDrive
+
+For the IYS project, all the raw data for the collected data gets stored on GoogleDrive, so that it is publicly accessible. The raw data can be found [here](https://drive.google.com/drive/u/0/folders/0AHNahA4cmbSJUk9PVA). It is also in these GoogleDrive folders that we store the tidy versions of the data, in which the data is formatted and standardized based on the Darwin Core standard.
+
+## 2. GitHub
+
+Few important links to get started with GitHub, and linking it to RStudio, the statistical software program that we often use for analyses:
+
+[Happy Git with R](https://happygitwithr.com/)
+
+Additionally, a few important GitHub repositories to be mindful of: 
+[IYS-OOS](https://github.com/HakaiInstitute/iys-oos)
+[Bio Data Guide](https://github.com/ioos/bio_data_guide/tree/master/docs/Standardizing%20Marine%20Biological%20Data) - This is where information gets stored regarding the Standardizing Marine Biological Data workshops/meetings that are held every month. 
+
+Below are listed some important command lines within GitHub that can be useful to e.g. push, pull or clone a repository locally or to the remote. The Hakai Institute public IYS-OOS repository (`repo`) can be found [here](https://github.com/HakaiInstitute/iys-oos). This repo consists of a `master` branch, a `develop` branch, and multiple `feature` branches. The practice currently adopted is that we write the .R and .Rmd files for each separate dataset in these `feature` branches, along with a ChangeLog. In the ChangeLog (.md) we record any changes made to the raw data.
+
+__Please note: If any changes are made to the raw data, save these under a different file name__
+
+The .R script contains the code used to transform or 'tidy' the data to follow Darwin Core standards, whereas the .Rmd contains the script along with a more thorough description of why certain functions were used. Including both these files increases the reproducibility of the script for other users. The .R, .Rmd and ChangeLog file get saved in the IYS-OOS repo in GitHub, whereas the tidied datasets get saved on GoogleDrive (.csv). 
+
+When working with GitHub, the first step is to `clone` the repository you'll be working from. A clone is basically a duplicate of another repository, getting your own copy of someone else's code. The command line for this is: 
+
+> $ git clone https://github.com/HakaiInstitute/iys-oos.git
+>
+
+This clones the master branch and all associated develop and feature branches. A new `feature` branch can be created in RStudio but also through a command line in Git. Branches can be created locally as well as on the remote. To create a new feature branch (e.g. feature/ctd, on which the CTD data gets wrangled), the command line is: 
+
+> $ git checkout -b feature/ctd
+>
+
+Git checkout is used often to switch between branches. The added `-b` means that a new branch is created at the same time. This branch is created _locally_ based on the branch you were on (HEAD). Using this command line, you not only create that branch but also switch over to it.
+
+To see which branc you are currently on: 
+
+> $ git branch -a
+>
+
+This lists all the branches, and a green asterisk (*) will indicate which branch you are currently on. To checkout the branch you want to use: 
+
+To checkout the branch you want to use:
+
+> $ git checkout <branch_name>
+>
+
+The checkout command lets you navigate and switch between the branches. Checkout works to switch between versions of code already on the local system. Confirm you are now working on the correct branch: 
+
+> $ git branch
+>
+
+Now a new feature branch, called "ctd" is created _locally_. You can now freely work in this branch. Any saves you make will be saved to your local workstation, _not_ to GitHub. To save the changes to the remote, the first step is to `commit` your changes. This can be done through RStudio, or alternatively, by using the following command line:
+
+> $ git add [name of the file]
+>
+
+If you want to add all files you modified, you can either select all these files in RStudio, or use:
+
+> $ git add . 
+>
+
+Please note that this commits your changes, they are not yet 'pushed' to GitHub. When you commit, make sure to add a message so that your collaborators know what changes you have made to the file. You can make as many commits as you want, but it is recommended to only push once or twice a day (right?). By pushing your commits, they will be saved on GitHub. You can push your commits through RStudio, or using:
+
+> $ git push <repo name> <branch name>
+>
+
+So if we've been working on the .R script which we want to push to the feature/ctd branch of our iys-oos repo, the syntax would be:
+
+> $ git push origin feature/ctd
+>
+
+The `origin` is a shorthand name for the remote repository that a project was originally cloned from (in this case, iys-oos). More precisely, it is used instead of that original repository's URL, making referencing much easier.
+Once pushed, the commits made to the scripts can be found on GitHub, and then be 'pulled' by other collaborators if they wish to make contributions or modifications to the code. A `pull` is useful to make sure you have the latest modifications / version from GitHub, and keep your code updated with whatever changes may have been applied to the original. 
+
+The difference between `git fetch` and `git pull` is that `git fetch` tells your local git to retrieve the latest information, but doesn't transfer anything - it basically tells you whether any changes have been made. `git pull` does that _and_ also copies those changes from the remote repository.
+
+To retrieve the latest information from e.g. the feature/ctd branch, a fetch can be done using the command line (and through RStudio?): 
+
+> $ git fetch feature/ctd
+>
+
+A pull can be done through RStudio, or using the command line: 
+
+> $ git pull feature/ctd
+>
+
+Rather than use the `pull` feature, [this webblog](https://longair.net/blog/2009/04/16/git-fetch-and-merge/) recommends using the fetch and merge function, although I'm not sure to what extent that is possible in RStudio (is perhaps the `pull` function sufficient for us?).
+
+Once commits have been pushed to the e.g. a feature branch, and various collaborators have done quality control (QC) on it, a `pull request` can be made to the "parent" branch, in our case "develop". The phrase `pull request` might seem counter-intuitive; but basically what you're asking is whether the operator of the develop branch can pull your script/modifications into the develop branch, review it, and then merge it.
+
+To delete a branch locally, use the command line:
+
+> $ git branch -D <branch_name>
+>
+
+To delete a branch in the remote, use the command line:
+
+> $ git push origin --delete <branch_name>
+>
+
+## 3. ZenHub
+
+[ZenHub](https://www.zenhub.com/) is a tool built into GitHub that allows a team to plan roadmaps, use taskboards and gain insight in the progress made on an `Epic` or a `Project`. ZenHub allows issues created in GitHub to be placed in one of seven columns: "New Issues", "Icebox", "Backlog", "In Progress", "Review/QA", "Done for now", "Closed". When creating an issue in GitHub [see ...], a tag can be added to indicate to which column the issue belongs. 
+
+A description of the columns:
+ * New Issues: Newly created issues will (by default) be placed under "New Issues". 
+ * Icebox:
+ * Backlog:
+ * In Progress: 
+ * Review/QA:
+ * Done for now:
+ * Closed:
+ 
+The issues can also be `labeled` (i.e., "help wanted", "to do", "question"), which makes it easier to filter for specific labels or categorize them. Multiple labels can be attached to a single issue. Additionally, `story points` get attached to an issue. Story points are unitless scales of measurement which are sized in relation to other tasks. The number of storypoints within each column gives an indication how big (and therefore perhaps, as a proxy, how time-consuming) the issues are.
+ 
+The ZenHub tool allows us to keep track of the progress made through Epics and Projects, and provides an overview of the issues related to a certain stage of the project. 
+
+## 4. OBIS
+
+The Ocean Biogeographic Information System (OBIS) is a global open-access data and information clearing-house on marine biodiversity for science, conservation and sustainable development. OBIS' mission is to collaborate with scientific communities globally to facilitate free and open access to, and application of, biodiversity and biogeographic data and information on marine life. The datasets integrated to OBIS need to adhere to specific lingo to make the interoperable. This user manual describes steps taken, lessons learned and issues encountered (and, hopefully, overcome!) in wrangling data collected for the International Year of the Salmon (IYS) project into OBIS.
+
+Few important links: 
+[OBIS Manual](https://obis.org/manual/)
+[de Pooter et al.2017](https://bdj.pensoft.net/article/10989/instance/3385377/)
+[Darwin Core Quick Reference Guide](dwc.tdwg.org/terms/)
+[Robis vignette](https://cran.r-project.org/web/packages/robis/robis.pdf)
+[Controlled Vocabulary](https://docs.google.com/spreadsheets/d/1SDbtZxEzg0t10OSNDPJN0XSye6mMOTTCIBH3xh-HUYA/edit#gid=0)
+
+Because OBIS seeks global interoperability between datasets, it has championed the use international standards for biogeographic data. OBIS uses the following standards: Darwin Core, Ecological Metadata Language (EML), and Darwin Core Archive (DwC-A) and dataset structure. Darwin Core is a body of standards for biodiversity informatics. It provides stable terms and vocabularies for sharing biodiversity data. Darwin Core Archive (DwC-A) is the standard for packaging and publishing biodiversity data using Darwin Core terms. It is the preferred format for publishing data in OBIS and Global Biodiversity Information Facility (GBIF). 
+
+Important thing to note: DwC uses related terms which are grouped in classes: `Taxon`, `Identification`, `Occurrence`, `Record Level`, `Location`, `Event` and `MaterialSample`. The format that OBIS uses does _not_ use these classes, but instead groups terms under three "Cores" or extensions: `Event`, `Occurrence` and `extended measurementOrFact`. OBIS uses the DwC terms to populate the cores. However, sometimes there is discrepancy between how the terms are used by OBIS and how they are used in the DwC convention. As a standard, the vocabulary or convention as adopted by OBIS is used, see the [OBIS manual](https://obis.org/manual/) and the paper by [de Pooter et al. 2017](https://bdj.pensoft.net/article/10989/instance/3385377/). Deviations from the rule will be listed.
+
+## 5. Darwin Core Archive (DwC-A) format
+
+Darwin Core Archive (DwC-A) is a standard for publishing biodiversity data using Darwin Core. Darwin Core archive contain text files which are logically arranged in a star schema. This means that there is one *core file* and (optionally) multiple *extension files*. OBIS accepts two types of core files: Event Core and Occurrence Core. A minimum of one of these cores is required for submission to OBIS. 
+
+By wrangling the data to the DwC-A standard, biological and environmental datasets can be combined in a *OBIS-ENV-DATA* schema. By linking the rows in the Event, Occurrence and eMoF cores (i.e., "nesting" them) occurrences and samples nested under a similar eventID can be analyzed. 
+
+*When to use Event Core:*
+ - When specific details are known about how the biological sample was taken and processed (such as date and coordinates)
+ - When the data set contains abiotic measurements, or other biological measurements which are related to a sample (no single specimen).
+ 
+ *When to use Occurrence Core:*
+ - When the data set does not result from sampling activities (i.e. museum collections, individual sightings, citations from literature)
+ - Data sets which do result from sampling activities, but information on how the data was sampled or processed was lost. 
+ - No abiotic measurements are taken or provided.
+ - Biological measurements are made on individual specimens (each specimen is a single occurrence record).
+
+  ~~ IMPORTANT: Is there a difference in how classes and cores are termed in DwC-A and in OBIS? If so, discuss this! ~~
+
+To host data on OBIS, the data needs to be standardized and formatted to the Darwin Core Archive (DwC-A) format. This typically means that three "Cores" or tables are created: `Event`, `Occurrence` and `extension measurementOrFact (eMoF)`. OBIS currently has 8 required DwC terms: `occurrenceID`, `eventDate`, `decimalLongitude`, `decimalLatitude`, `scientificName`, `scientificNameID`, `occurrenceStatus` and `basisOfRecord`. The required DwC terms should correspond to the column names of your dataset.
+
+__Event__: Three of these required DwC terms are nested under the __Event__ table: `eventDate`, `decimalLatitude` and `decimalLongitude`. Please note that `decimalLongitude` should always be a number between -180 and 180, inclusive, and `decimalLatitude` should always be a number between -90 and 90, inclusive. 
+
+`eventDate` needs to be in the ISO 8601 format, and in the UTC timezone. It should follow the format, e.g.: "2019-02-19T05:00:00Z", whereby date and time are separated by a "T" and the time is followed by a "Z". If only the date is provided, and no time, wrangling it in the ISO 8601 format will auto-populate it with a 00:00:00. The [lubridate](https://cran.r-project.org/web/packages/lubridate/lubridate.pdf) package in R is very useful to assist in any date-time wrangling. It is important to know in which timezone the data was collected (unless the time was already recorded in UTC). Time zones are stored in system specific database, so are not guaranteed to be the same on every system. A complete list of timezones that can be assigned under the lubridate package can be found in RStudio using OlsonNames().  
+
+Another interesting column within the Event Core is `type`. There was confusion as to how to interpret this column, as within the DwC-A standard there was controlled vocabulary available for `type`, whereas there was no defined controlled vocabulary under OBIS, and `type` was more description (e.g. "cruis", "sample", "subsample" etc). At a meeting with the Standardizing Marine Biological Data group on May 13, 2020, it was agreed to follow the DwC-A standard, and use controlled vocabulary for this term. However, type is not a required term. 
+
+__Location__: Location is _not_ a required table or Core for OBIS (although it is listed as a class in DwC-A), however, it is useful and good practice to create, and save, a separate file pertaining the information on sampling locations. Typically, a dataframe consisting of the columns "Station", "decimalLatitude" and "decimalLongitude" suffices. This dataframe can be saved locally as .xlsx or .csv file, and will prove useful at a later stage when entering the spatial extent in the metadata [see metaData].
+
+__Occurrence__: Five of the required DwC terms are nested under the __Occurrence__ core: `occurrenceID`, `occurrenceStatus`, `basisOfRecord`, `scientificName` and `scientificNameID`. A unique `occurrenceID` gets nested under an `eventID`, so that at a later stage the rows can be joined.  `basisOfRecord` describes how the observation was done, and is nested in the `Occurrence` table. Therefore, no `basisOfRecord` column is required for abiotic datasets (i.e., CTD, chlorophyll or Nutrient dataset). `basisOfRecord` has controlled vocabulary, but remains sometimes difficult to determine. More information on this term and its controlled vocabulary can be found [here](https://www.idigbio.org/content/darwin-core-hour-even-simple-hard). An occurrence core is not required when the dataset only contains abiotic data.
+
+One of the required terms within the Occurrence Core is `occurrenceStatus`, indicating whether a species was present or absent. This posed a bit of a 'hick-up', as it was unsure how to handle the Fish Trawl Abundance data. A total of 46 unique fish species were recorded in the entire dataset, but at each station only the species caught (present) were recorded. It was unclear to us whether in our data wrangling process, each Station should be completed with the remaining unique fish species that were not caught (absent). This raised two concerns:
+* A non-detection of a species does not necessarily imply that the species was absent in that geographic region, merely that it was not captured. 
+* Was the goal of the study to see what species can be observed at each station and, if _not_, the methodology used in the sampling might not be appropriate to determine local biodiversity. 
+
+It would be best to discuss with the data provider / scientist exactly what they would like out of the wrangled dataset. As we are unsure what the scientists want to do with the data, the solution that we have come up with now is that we complete / fill every station to include all the fish species captured throughout the expedition, and assign, per station, whether the species was captured (number caught >= 1), or absent (number caught = 0). However, as the expedition was set out to samples _salmon_, we filter out the absence data for every species _excluding_ the 5 Pacific Salmon species. After this, the occurrenceIDs are created. This is an arbitrarily chosen solution, and one that may change in the future.   
+
+If species occurrence data is collected, the species names are listed in the column `scientificName`. However, species aren't always recorded the same way (i.e., Chinook Salmon or Oncorhynchus tshawytscha). Therefore, another required column is added to the Occurrence table: `scientificNameID`, where each unique species in the data gets assigned a unique LSID number, found in the World Register of Marine Species [WoRMS](http://www.marinespecies.org/). OBIS will use this identifier to pull the taxonomic information from WoRMS into OBIS, such as the taxonomic classification and the accepted name in case of invalid names or synonyms. LSIDs are persistent, location-independent, resource identifiers for uniquely naming biologically significant resources. It is important to thoroughly check whether the status of the naming convention is accepted on WoRMS, and if not, choose the accepted version and make note of this. OBIS makes use of the standardized scientificNameIDs, thereby making sure that minor spelling mistakes can be overlooked. 
+
+Some other DwC terms or conventions are 'overruled' by OBIS manual, such as e.g.: `individualCount`, `organismQuantity`, `organismQuantityType`, `sex` and `lifeStage`. For these terms, OBIS recommends that the measurements get added to the eMoF table. It is typically good practice to keep the Occurrence table as _clean as possible_.
+
+__eMoF__: 
+
+In the extension measurement or fact (eMoF) Core is where information pertaining to measurements, facts, characteristics and / or assertions are stored. The MeasurementOrFact terms `measurementType`, `measurementValue` and `measurementUnit` are completely unconstrained and can be populated with free text annotation. The inevitable semantic heterogeneity (e.g. of spelling or wording) became a major challenge for effective data integration and analysis. Hence, OBIS added 3 new terms: `measurementTypeID`, `measurementValueID` and `measurementUnitID` to standardise the measurement types, values and units. Note that `measurementValueID` is not used for standardizing numeric measurements. The three new terms should be populated using controlled vocabularies referenced using Unique Resource Identifiers (URIs). OBIS recommends to use the internationally recognized NERC Vocabulary Server, developed by the British Oceanographic Data Centre (BODC), see [NERC Vocabulary](https://www.bodc.ac.uk/resources/vocabularies/vocabulary_search/).
+
+__measurementTypeID__
+Vocabulary for BODC Parameter Usage can be found: http://vocab.nerc.ac.uk/collection/P01/current/
+Vocabulary for OBIS sampling instruments and method attributes:
+http://vocab.nerc.ac.uk/collection/Q01/current/
+
+__measurementUnitID__
+Vocabulary for measurement units (i.e., m, kg m-3, etc) can be found:
+http://vocab.nerc.ac.uk/collection/P06/current
+
+
+An optional column in the Event Core is `lifeStage`, which is defined as the age class or life stage of the biological individual(s) at the time the Occurrence was recorded. Following OBIS, measurements of `lifeStage` are added to the eMoF table (see [here] https://obis.org/manual/darwincore/). There is controlled vocabulary for the `lifeStage` term, to be found [here](http://vocab.nerc.ac.uk/collection/S11/current/). 
+
+As per OBIS' recommendations, the number of individuals caught per species is listed in the `eMoF` table. This is confusing, as the Darwin Core terms seem to list it under the `Occurrence` class, under e.g. individualCount or organismQuantity. We are following OBIS' recommendations. As is stated in the paper by [De Pooter et al. 2017](https://bdj.pensoft.net/article/10989/instance/3385377/):
+
+> "Organism quantifications: Although the Occurrence Extension includes the terms organismQuantityType and organismQuantity, storing the quantification in the eMoF has several advantages. It allows capturing both individual counts and derived quantifications (abundance or biomass) without the need to duplicate occurrence records, as discussed in several previous sections. Furthermore, the eMoF Extension, through the measurementTypeID field, enables reference to external controlled vocabularies to standardize parameters, rather than maintaining a vocabulary within OBIS. The eMoF Extension removes limits on the number of parameters stored, enabling inclusion of all relevant parameters."
+>
+>
+
+This is echoed by [OceanTeacher](https://classroom.oceanteacher.org/), which states _Data sets formatted in Occurrence Core, should use the eMoF (Extended Measurements or Fact extension) to record any abundances, biomass, and other biotic measurements or facts which may be present._
+
+## 6. AirTable
+
+[AirTable](https://airtable.com/) is a platform on which our CKAN metadata is stored. Metadata is defined as a set of data that describes and gives information about other data. AirTable allows different tables and columns to be linked, and is an excellent platform for storing metadata for each of the datasets. Metadata is stored under different tables, e.g. People, Organization and 2019 Datasets. It is typically good practice to store and organize dataset-specific metadata in AirTable before hosting it on another platform, as this could allow us to discover discrepancies between datasets. 
+
+## 7. metaData
+
+Metadata is defined as a set of data that describes and gives information about other data. 
+
+CKAN metadata:
+We (initially) host the metadata of our datasets [here](https://iys.hakai.org/organization/iys). Consistency in metadata entry here is key. 
+Example: The format in which the data is published is not a dropdown menu, and is therefore prone to minor discrepancies. We have currently decided on listing our data as `CSV, XLSX` (all capitalized, and together). The default locale (language) of the metadata will likely be English(?), however, currently a French title, description and keywords are required. Until further notice, we copy the English versions in here. Additionally, consensus needs to be reached as to how accurate the keyword provided are. 
+
+For the spatial extent of our dataset, we use the unique coordinates associated to the stations sampled to draw a GeoJSON polygon, and then plot the polygon coordinates in the metadata. To create a GeoJSON polygon, please see [how to create GeoJSON polygon](https://docs.google.com/document/d/1QR1z-eVHNqUk6-L6DLYnYkNAvNNaE_tpgkESCBjAOfs/edit) for a step-by-step description.
+
+- Status: refers to the status of the data collection / the dataset. In our case, this is likely either complete, planned or on going. It does not pertain to the status of the metadata catalogue entry. 
+
+A description of the "roles" listed under Responsible Party and Point of Contact can be found [here](http://wiki.esipfed.org/index.php/ISO_19115-3_Codelists#CI_RoleCode)
