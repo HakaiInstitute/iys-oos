@@ -54,10 +54,9 @@ trawl_trawl <- trawl %>%
 trawl_event <- bind_rows(trawl_cruise, trawl_station, trawl_trawl) %>% 
   select(eventID, parentEventID:decimalLongitude, type)
 
-# Re-order the Event Core:
-order <- stringr::str_sort(trawl_event$eventID, numeric=TRUE)
-trawl_event <- trawl_event[match(order, trawl_event$eventID),] %>%
-  mutate(basisOfRecord = "HumanObservation")
+# Re-order the Event Core if required:
+# order <- stringr::str_sort(trawl_event$eventID, numeric=TRUE)
+# trawl_event <- trawl_event[match(order, trawl_event$eventID),] 
 
 write_csv(trawl_event, here("Trawl", "tidy_data", "trawl_event.csv"))
 drive_upload(here("Trawl", "tidy_data", "trawl_event.csv"),
@@ -68,30 +67,25 @@ drive_upload(here("Trawl", "tidy_data", "trawl_event.csv"),
 ### Occurrence ----------------
 
 # Create one column for species:
-trawl <- trawl %>%
-  mutate(Species = paste(FISH1, FISH2, sep = " "))
-
-# Determine the unique species caught throughout the entire expedition, to 
-# determine whether these are present or absent at each station. 
-unique_spp <- unique(trawl$Species)
-length(unique_spp)
-
-trawl_occ <- trawl %>% tidyr::complete(NUMBER, Species, 
-                                       fill = list(PIECES=0)) %>%
-  as.data.frame()
-trawl_occ <- trawl_occ %>% group_by(NUMBER) %>% fill(trawl) %>%
-  fill(trawl, .direction = "up") %>% ungroup(NUMBER)
-
+trawl_sp_wrangle <- trawl %>%
+  mutate(Species = paste(FISH1, FISH2, sep = " ")) %>%
+  tidyr::complete(NUMBER, Species, fill = list(PIECES=0)) %>%
+  group_by(NUMBER) %>% 
+  fill(trawl, .direction = "downup") %>% 
+  ungroup(NUMBER) %>%
 # Add present or absent depending on whether "Pieces > 0"
-trawl_occ <- trawl_occ %>% 
   mutate(occurrenceStatus = ifelse(PIECES > 0, "present", "absent")) %>%
-  dplyr::rename(scientificName = Species) %>%
-  select(eventID = trawl, 
-         scientificName, occurrenceStatus)
-
+  dplyr::rename(scientificName = Species,
+                eventID = trawl) %>%
+  select(eventID, scientificName, occurrenceStatus, Group)
 # Two columns have to be added and populated: occurrenceID and scientificNameID:
-trawl_occ <- trawl_occ %>% 
-  mutate(occurrenceID = paste("occ", row_number(), sep = "_"),
+  filter(scientificName %in% c("Oncorhynchus gorbuscha",
+                               "Oncorhynchus keta",
+                               "Oncorhynchus kisutch",
+                               "Oncorhynchus nerka",
+                               "Oncorhynchus tschawytscha") |
+                               occurrenceStatus == "present") %>%
+  mutate(occurrenceID = paste("IYS_GoA2019_occ", row_number(), sep = ""),
          scientificNameID = case_when(
            scientificName == "Abraliopsis felis" ~ "urn:lsid:marinespecies.org:taxname:341849",
            scientificName == "Aequorea sp." ~ "urn:lsid:marinespecies.org:taxname:116998",
@@ -148,17 +142,24 @@ trawl_occ <- trawl_occ %>%
            scientificName == "Zaprora silenus" ~ "urn:lsid:marinespecies.org:taxname:254353"
 # Please take into account whether or not the Status of the species on WoRMS is 
 # accepted or not!
-         )) %>%
-  select(eventID, occurrenceID, scientificName, scientificNameID, occurrenceStatus)
+         )) 
+
+trawl_occ <- trawl_sp_wrangle %>% 
+  select(eventID, occurrenceID, scientificName, scientificNameID, occurrenceStatus) %>% 
+  mutate(basisOfRecord = "HumanObservation")
 
 # Confirm whether each station in trawl_occ contains all unique_spp:
-check_spp <- trawl_occ %>% group_by(eventID) %>%
-  summarise(count = n_distinct(scientificNameID)) 
-if(check_spp$count[i] == length(unique_spp)) {
-    print("TRUE") 
-  } else {
-    print("FALSE")
-  }
+# check_spp <- trawl_occ %>% group_by(eventID) %>%
+#  summarise(count = n_distinct(scientificNameID)) 
+
+# unique_spp <- unique(trawl_sp_wrangle$scientificName)
+# length(unique_spp)
+
+# if(check_spp$count[i] == length(unique_spp)) {
+#    print("TRUE") 
+#  } else {
+#    print("FALSE")
+#  }
 
 write_csv(trawl_occ, here("Trawl", "tidy_data", "trawl_occ.csv"))
 drive_upload(here("Trawl", "tidy_data", "trawl_occ.csv"),
@@ -167,3 +168,72 @@ drive_upload(here("Trawl", "tidy_data", "trawl_occ.csv"),
              overwrite = TRUE)
 
 ### measurementOrFact  ----------------
+
+trawl_emof_wrangle <- trawl_sp_wrangle %>% 
+  filter(occurrenceStatus == "present")
+  # Rename trawl column in dataframe `trawl` to `eventID` and use merge()
+  # measurements are found in the trawl dataframe, so we need to transform that
+  # dataframe slightly and merge it with the newly created trawl_emof:
+trawl <- trawl %>% mutate(Species = paste(FISH1, FISH2, sep = " ")) %>%
+  dplyr::rename(scientificName = Species,
+                eventID = trawl)
+trawl_emof <- merge(trawl_emof_wrangle, trawl, by = c("eventID", "scientificName", "Group")) %>%
+  mutate(LMIN = format(LMIN, digits = 2),
+         LMAX = format(LMAX, digits = 2),
+         MASSCATCH = format(MASSCATCH, digits = 4)
+  ) %>% mutate_all(as.character) %>%
+  pivot_longer(cols = c("Group","LMIN","LMAX","PIECES","MASSCATCH"),
+               names_to = "measurementType", values_to = "measurementValue") %>% 
+  # Added mutate_all as I was getting the error that there was no common 
+  # type for `Group` and `NUMBER` - not sure if there's an easy/easier way 
+  # around this?
+  mutate(measurementType = recode(measurementType,
+                                  "Group" = "age class",
+                                  "LMIN" = "minimum length",
+                                  "LMAX" = "maximum length",
+                                  "PIECES" = "number of individuals",
+                                  "MASSCATCH" = "catch biomass"
+  ),
+  measurementTypeID = case_when(
+    measurementType == "minimum length" ~ "http://vocab.nerc.ac.uk/collection/P01/current/OBSMINLX/",
+    measurementType == "maximum length" ~ "http://vocab.nerc.ac.uk/collection/P01/current/OBSMAXLX/",
+    measurementType == "number of individuals" ~ "http://vocab.nerc.ac.uk/collection/S06/current/S0600008/",
+    measurementType == "catch biomass" ~ "http://vocab.nerc.ac.uk/collection/S06/current/S0600088/"
+  ),
+  measurementValue = recode(measurementValue,
+                            "(juv.)" = "juvenile",
+                            "(immature)" = "immature",
+                            "(mature)" = "mature"
+  ),
+  measurementValueID = case_when(
+    measurementValue == "juvenile" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1127/",
+    measurementValue == "immature" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1171/",
+    measurementValue == "mature" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1116/"
+  ),
+  measurementUnit = case_when(
+    measurementType == "number of individuals" ~ "individuals",
+    measurementType == "minimum length" ~ "cm",
+    measurementType == "maximum length" ~ "cm",
+    measurementType == "catch biomass" ~ "kg"
+  ),
+  measurementUnitID = case_when(
+    measurementUnit == "individuals" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UUUU/",
+    measurementUnit == "cm" ~ "http://vocab.nerc.ac.uk/collection/P06/current/ULCM/",
+    measurementUnit == "kg" ~ "http://vocab.nerc.ac.uk/collection/P06/current/KGXX/"
+  )
+  ) %>% 
+  select(eventID, 
+         occurrenceID, 
+         measurementType, 
+         measurementTypeID, 
+         measurementValue, 
+         measurementValueID,
+         measurementUnit,
+         measurementUnitID) %>% 
+  drop_na(measurementValue)
+
+write_csv(trawl_emof, here("Trawl", "tidy_data", "trawl_eMoF.csv"))
+drive_upload(here("Trawl", "tidy_data", "trawl_occ.csv"),
+             path = "https://drive.google.com/drive/folders/1MQ6XJQqnWk2puDaBTfHn7wXITjDSeLR7",
+             name = "trawl_eMoF.csv",
+             overwrite = TRUE)

@@ -36,11 +36,24 @@ trawl <- read_excel(here("Trawl", "raw_data", "2019_GoA_Fish_data_Hakai.xlsx")) 
          trawl = paste(station, "trawl1", sep=":"))
 ```
 
+Create a separate dataframe with the location of the stations. We check for the unique NUMBERs (we assume that these are synonymous with "Station") with associated Lat/Long. We need to confirm that this is the case, as there are a reported 63 unique trawl numbers, whereas there are only 60 stations?
+
+``` {r location, eval = FALSE}
+unique_trawl <- unique(trawl[c("NUMBER","X","Y")])
+
+## Location ---
+trawl_loc <- unique_trawl %>%
+  dplyr::rename(Station = NUMBER,
+                Longitude = X,
+                Latitude = Y)
+write_csv(trawl_loc, here("Trawl", "tidy_data", "trawl_loc.csv"))
+```
+
 ## Event Core 
 
-Next, dataframes are created for each unique `eventID` layer, with unique associated columns. Eventually, the data frames get joined, and the event table gets saved locally and in Google Drive. 
+Next, dataframes are created for each unique `eventID` layer, with unique associated columns. Eventually, the data frames get joined, and the event table gets saved locally and in Google Drive. The column `type` is not a required column, and currently only contains descriptive information. In the DwC-A standard this column has controlled vocabulary, but we need to discuss whether to include it.
 
-``` {r trawl_event}
+``` {r trawl_event, eval = FALSE}
 trawl_cruise <- trawl %>% 
   select(eventID = cruise) %>% 
   distinct(eventID) %>% 
@@ -64,10 +77,9 @@ trawl_trawl <- trawl %>%
 trawl_event <- bind_rows(trawl_cruise, trawl_station, trawl_trawl) %>% 
   select(eventID, parentEventID:decimalLongitude, type)
 
-# Re-order the Event Core:
-order <- stringr::str_sort(trawl_event$eventID, numeric=TRUE)
-trawl_event <- trawl_event[match(order, trawl_event$eventID),] %>%
-  mutate(basisOfRecord = "HumanObservation")
+# Re-order the Event Core if required:
+# order <- stringr::str_sort(trawl_event$eventID, numeric=TRUE)
+# trawl_event <- trawl_event[match(order, trawl_event$eventID),] 
 
 write_csv(trawl_event, here("Trawl", "tidy_data", "trawl_event.csv"))
 drive_upload(here("Trawl", "tidy_data", "trawl_event.csv"),
@@ -80,7 +92,7 @@ drive_upload(here("Trawl", "tidy_data", "trawl_event.csv"),
 
 As the trawl data consists of biotic data, an occurrence table has to be created as well, whereby unique species `occurrenceIDs` get linked to the `eventID`. As genus and species level were recorded in separate columns, these first get joined. A required column for the Occurrence table is the term, `occurrenceStatus`, which is used for presence/absence data. We initially considered creating a cruise-wide list of all unique species observed, and create "absent" records for each species not observed in a particular trawl (i.e., `PIECES` = 0). We decided not to do this for all species, and create absent records only for the five Pacific salmon species, because we did not want to interpolate the data to assume "truely" absentee status for species for which the trawls were not designed to catch (i.e., creating false negatives for species occurrence at a station). 
 
-Next, `occurrenceID` - unique to each species at each station - and `scientificNameID` are populated. For the `scientificNameID`, we look up the species on the WoRMS website (http://www.marinespecies.org/). It is important to take into account whether or not a species name has been "accepted" by WoRMS or not, and, should this not be the case, what is the correct name and species identifier.
+Next, `occurrenceID` - unique to each species _and each group (i.e. adult or juvenile)_ at each station - and `scientificNameID` are populated. For the `scientificNameID`, we look up the species on the WoRMS website (http://www.marinespecies.org/). It is important to take into account whether or not a species name has been "accepted" by WoRMS or not, and, should this not be the case, what is the correct name and species identifier.
 
 ``` {r trawl_occ}
 trawl_sp_wrangle <- trawl %>%
@@ -94,6 +106,7 @@ trawl_sp_wrangle <- trawl %>%
   mutate(occurrenceStatus = ifelse(PIECES > 0, "present", "absent")) %>% # What to do if PIECES = NA?
   rename(eventID = trawl,
          scientificName = Species) %>%
+  select(eventID, scientificName, occurrenceStatus, Group) %>%
   # Filter only for present species, with the exception of the 5 Pacific salmon species
   filter(scientificName %in% c("Oncorhynchus gorbuscha",
                                "Oncorhynchus keta",
@@ -166,7 +179,7 @@ trawl_occ <- trawl_sp_wrangle %>%
   mutate(basisOfRecord = "HumanObservation")
 ```
 
-Finally, we just want to do a quick check to make sure that all the unique species are included in the trawl_occ dataframe, at each station (`eventID`)! We need to make sure that the output is TRUE. If confirmed, the Occurrence table can be saved locally and in the correct Google Drive folder. 
+_The chunk of code below is only required if we work with a complete table of present/absent species at each station!_ We can do a quick check to make sure that all the unique species are included in the trawl_occ dataframe, at each station (`eventID`)! We need to make sure that the output is TRUE. If confirmed, the Occurrence table can be saved locally and in the correct Google Drive folder. 
 
 ``` {r trawl_occ_check}
 check_spp <- trawl_occ %>% group_by(eventID) %>%
@@ -197,15 +210,24 @@ Although there exist Darwin Core terms related to class _Occurrence_ such as ind
 2. The measurementTypeID field enables reference to external controlled vocabularies (e.g. NERC server), rather than maintaining a vocabulary within OBIS, and
 3. Allows an unlimited number of measurement parameters to be stored without altering table structure
 
+From the Occurrence table, we filter for occurrenceStatus == "present", as these have the unique occurrenceIDs that have measurements associated to them. Next, we have to merge it with the trawl df, as that's where the measurements are stored. To merge these dataframes, we rename a few columns in the trawl df so we can merge by specific columns.
+
 ```{r eMoF}
-trawl_emof <- trawl_sp_wrangle %>% 
-  filter(occurrenceStatus == "present") %>% 
+trawl_emof_wrangle <- trawl_sp_wrangle %>% 
+  filter(occurrenceStatus == "present")
+  # Rename trawl column in dataframe `trawl` to `eventID` and use merge()
+  # measurements are found in the trawl dataframe, so we need to transform that
+  # dataframe slightly and merge it with the newly created trawl_emof:
+trawl <- trawl %>% mutate(Species = paste(FISH1, FISH2, sep = " ")) %>%
+  dplyr::rename(scientificName = Species,
+                eventID = trawl)
+trawl_emof <- merge(trawl_emof_wrangle, trawl, by = c("eventID", "scientificName", "Group")) %>%
   mutate(LMIN = format(LMIN, digits = 2),
          LMAX = format(LMAX, digits = 2),
-         PIECES = as.character(PIECES),
          MASSCATCH = format(MASSCATCH, digits = 4)
-         ) %>% 
-  pivot_longer(cols = Group:MASSCATCH, names_to = "measurementType", values_to = "measurementValue") %>% 
+         ) %>% mutate_all(as.character) %>%
+  pivot_longer(cols = c("Group","LMIN","LMAX","PIECES","MASSCATCH"),
+               names_to = "measurementType", values_to = "measurementValue") %>% 
   mutate(measurementType = recode(measurementType,
                                   "Group" = "age class",
                                   "LMIN" = "minimum length",
@@ -252,7 +274,7 @@ trawl_emof <- trawl_sp_wrangle %>%
   drop_na(measurementValue)
 
 write_csv(trawl_emof, here("Trawl", "tidy_data", "trawl_eMoF.csv"))
-drive_upload(here("Trawl", "tidy_data", "trawl_occ.csv"),
+drive_upload(here("Trawl", "tidy_data", "trawl_emof.csv"),
              path = "https://drive.google.com/drive/folders/1MQ6XJQqnWk2puDaBTfHn7wXITjDSeLR7",
              name = "trawl_eMoF.csv",
              overwrite = TRUE)
