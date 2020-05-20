@@ -43,9 +43,9 @@ Additionally, a few important GitHub repositories to be mindful of:
 [IYS-OOS](https://github.com/HakaiInstitute/iys-oos)
 [Bio Data Guide](https://github.com/ioos/bio_data_guide/tree/master/docs/Standardizing%20Marine%20Biological%20Data) - This is where information gets stored regarding the Standardizing Marine Biological Data workshops/meetings that are held every month. 
 
-Below are listed some important command lines within GitHub that can be useful to e.g. push, pull or clone a repository locally or to the remote. The Hakai Institute public IYS-OOS repository (`repo`) can be found [here](https://github.com/HakaiInstitute/iys-oos). This repo consists of a `master` branch, a `develop` branch, and multiple `feature` branches. The practice currently adopted is that we write the .R and .Rmd files for each separate dataset in these `feature` branches, along with a ChangeLog. In the ChangeLog (.md) we record any changes made to the raw data.
+Below are listed some important command lines within GitHub that can be useful to e.g. push, pull or clone a repository locally or to the remote. The Hakai Institute public IYS-OOS repository (`repo`) can be found [here](https://github.com/HakaiInstitute/iys-oos). This repo consists of a `master` branch, a `develop` branch, and multiple `feature` branches. The practice currently adopted is that we write the .R and .Rmd files for each separate dataset in these `feature` branches, along with a ChangeLog. In the ChangeLog (.md) we record any changes made to the raw data, and what the output files are for each transformed dataset. 
 
-__Please note: If any changes are made to the raw data, save these under a different file name__
+__Please note: We should try and limit any changes made to the raw data. If any changes are made to the raw data, save these under a different file name and work from that.__
 
 The .R script contains the code used to transform or 'tidy' the data to follow Darwin Core standards, whereas the .Rmd contains the script along with a more thorough description of why certain functions were used. Including both these files increases the reproducibility of the script for other users. The .R, .Rmd and ChangeLog file get saved in the IYS-OOS repo in GitHub, whereas the tidied datasets get saved on GoogleDrive (.csv). 
 
@@ -133,7 +133,7 @@ To delete a branch in the remote, use the command line:
 
 A description of the columns:
  * New Issues: Newly created issues will (by default) be placed under "New Issues". 
- * Icebox:
+ * Icebox: Issues that are currently put "on hold" 
  * Backlog:
  * In Progress: 
  * Review/QA:
@@ -222,6 +222,8 @@ As per OBIS' recommendations, the number of individuals caught per species is li
 >
 
 This is echoed by [OceanTeacher](https://classroom.oceanteacher.org/), which states _Data sets formatted in Occurrence Core, should use the eMoF (Extended Measurements or Fact extension) to record any abundances, biomass, and other biotic measurements or facts which may be present._
+
+As a final step, these three different Cores are combined into a single table that will be hosted on [ERDDAP](https://coastwatch.pfeg.noaa.gov/erddap/index.html). Whilst the data in the Core tables has to be provided in a long format, ERDDAP requires the tables to be in a wide view. Therefore, the combined table is transposed into a wide format before being hosted on ERDDAP. From ERDDAP, users can select the columns that they are interested in . 
 
 ## 6. AirTable
 
