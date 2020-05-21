@@ -197,7 +197,13 @@ It would be best to discuss with the data provider / scientist exactly what they
 
 If species occurrence data is collected, the species names are listed in the column `scientificName`. However, species aren't always recorded the same way (i.e., Chinook Salmon or Oncorhynchus tshawytscha). Therefore, another required column is added to the Occurrence table: `scientificNameID`, where each unique species in the data gets assigned a unique LSID number, found in the World Register of Marine Species [WoRMS](http://www.marinespecies.org/). OBIS will use this identifier to pull the taxonomic information from WoRMS into OBIS, such as the taxonomic classification and the accepted name in case of invalid names or synonyms. LSIDs are persistent, location-independent, resource identifiers for uniquely naming biologically significant resources. It is important to thoroughly check whether the status of the naming convention is accepted on WoRMS, and if not, choose the accepted version and make note of this. OBIS makes use of the standardized scientificNameIDs, thereby making sure that minor spelling mistakes can be overlooked. 
 
-Some other DwC terms or conventions are 'overruled' by OBIS manual, such as e.g.: `individualCount`, `organismQuantity`, `organismQuantityType`, `sex` and `lifeStage`. For these terms, OBIS recommends that the measurements get added to the eMoF table. It is typically good practice to keep the Occurrence table as _clean as possible_.
+Some other DwC terms or conventions are 'overruled' by OBIS manual, such as e.g.: `individualCount`, `organismQuantity`, `organismQuantityType`, `sex` and `lifeStage`. For these terms, OBIS recommends that the measurements get added to the eMoF table. There are three benefits of storing measurements in the eMoF extension instead of in the Occurrence core:
+
+1. Individual counts and derived quantifications (abundance or biomass) can be captured without needing to create duplicate occurrence records
+2. The measurementTypeID field enables reference to external controlled vocabularies (e.g. NERC server), rather than maintaining a vocabulary within OBIS, and
+3. Allows an unlimited number of measurement parameters to be stored without altering table structure.
+
+It is typically good practice to keep the Occurrence table as _clean as possible_.
 
 __eMoF__: 
 
@@ -223,7 +229,9 @@ As per OBIS' recommendations, the number of individuals caught per species is li
 
 This is echoed by [OceanTeacher](https://classroom.oceanteacher.org/), which states _Data sets formatted in Occurrence Core, should use the eMoF (Extended Measurements or Fact extension) to record any abundances, biomass, and other biotic measurements or facts which may be present._
 
-As a final step, these three different Cores are combined into a single table that will be hosted on [ERDDAP](https://coastwatch.pfeg.noaa.gov/erddap/index.html). Whilst the data in the Core tables has to be provided in a long format, ERDDAP requires the tables to be in a wide view. Therefore, the combined table is transposed into a wide format before being hosted on ERDDAP. From ERDDAP, users can select the columns that they are interested in . 
+**Please note: typically in an Occurrence table for species (presence/absence) data, there would be a unique OccurrenceID for each fish individual. In the eMoF table there would then be the associated measured parameters connected to this individual/occurrenceID. However, in the trawl data we received from 2019 has no individual-specific measurements, only measurements associated to species-level.**
+
+As a final step, these three different Cores are combined into a single table that will be hosted on [ERDDAP](https://coastwatch.pfeg.noaa.gov/erddap/index.html). Whilst the data in the Core tables has to be provided in a long format, ERDDAP requires the tables to be in a wide view. Therefore, the combined table is transposed into a wide format before being hosted on ERDDAP. From ERDDAP, users can select the columns that they are interested in.
 
 ## 6. AirTable
 
