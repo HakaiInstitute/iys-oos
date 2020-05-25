@@ -83,7 +83,7 @@ trawl_event <- bind_rows(trawl_cruise, trawl_station, trawl_trawl) %>%
 
 write_csv(trawl_event, here("Trawl", "tidy_data", "trawl_event.csv"))
 drive_upload(here("Trawl", "tidy_data", "trawl_event.csv"),
-             path = "",
+             path = "https://drive.google.com/drive/folders/1MQ6XJQqnWk2puDaBTfHn7wXITjDSeLR7",
              name = "trawl_event.csv",
              overwrite = TRUE)
 ```
@@ -193,7 +193,9 @@ if(check_spp$count[]i == length(unique_spp)) {
   } else {
     print("FALSE")
   }
+```
 
+``` {r save_data, eval = FALSE}
 write_csv(trawl_occ, here("Trawl", "tidy_data", "trawl_occ.csv"))
 drive_upload(here("Trawl", "tidy_data", "trawl_occ.csv"),
              path = "https://drive.google.com/drive/folders/1MQ6XJQqnWk2puDaBTfHn7wXITjDSeLR7",
@@ -222,6 +224,7 @@ trawl <- trawl %>% mutate(Species = paste(FISH1, FISH2, sep = " ")) %>%
   dplyr::rename(scientificName = Species,
                 eventID = trawl)
 trawl_emof <- merge(trawl_emof_wrangle, trawl, by = c("eventID", "scientificName", "Group")) %>%
+  # We have to merge by Group as well because otherwise similar occIDs will be created for different lifestages within a single trawl set (i.e., if both adult and juvenile Chinook salmon are caught these will be given the same occID if it's only done by scientificName).
   mutate(LMIN = format(LMIN, digits = 2),
          LMAX = format(LMAX, digits = 2),
          MASSCATCH = format(MASSCATCH, digits = 4)

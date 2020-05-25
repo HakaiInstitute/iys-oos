@@ -60,89 +60,89 @@ trawl_event <- bind_rows(trawl_cruise, trawl_station, trawl_trawl) %>%
 
 write_csv(trawl_event, here("Trawl", "tidy_data", "trawl_event.csv"))
 drive_upload(here("Trawl", "tidy_data", "trawl_event.csv"),
-             path = "https://drive.google.com/drive/u/0/folders/1MQ6XJQqnWk2puDaBTfHn7wXITjDSeLR7",
+             path = "https://drive.google.com/drive/folders/1MQ6XJQqnWk2puDaBTfHn7wXITjDSeLR7",
              name = "trawl_event.csv",
              overwrite = TRUE)
-
 ### Occurrence ----------------
 
 # Create one column for species:
 trawl_sp_wrangle <- trawl %>%
-  mutate(Species = paste(FISH1, FISH2, sep = " ")) %>%
-  tidyr::complete(NUMBER, Species, fill = list(PIECES=0)) %>%
+  mutate(Species = paste(FISH1, FISH2, sep = " ")) %>% 
+  # For each trawl, note for each of these species whether it was present or absent:
+  complete(NUMBER, Species, fill = list(PIECES = 0)) %>%
   group_by(NUMBER) %>% 
   fill(trawl, .direction = "downup") %>% 
-  ungroup(NUMBER) %>%
-# Add present or absent depending on whether "Pieces > 0"
-  mutate(occurrenceStatus = ifelse(PIECES > 0, "present", "absent")) %>%
-  dplyr::rename(scientificName = Species,
-                eventID = trawl) %>%
-  select(eventID, scientificName, occurrenceStatus, Group)
-# Two columns have to be added and populated: occurrenceID and scientificNameID:
+  ungroup(NUMBER) %>% 
+  # Add present or absent depending on whether "Pieces > 0"
+  mutate(occurrenceStatus = ifelse(PIECES > 0, "present", "absent")) %>% # What to do if PIECES = NA?
+  rename(eventID = trawl,
+         scientificName = Species) %>%
+  select(eventID, scientificName, occurrenceStatus, Group) %>%
+  # Filter only for present species, with the exception of the 5 Pacific salmon species
   filter(scientificName %in% c("Oncorhynchus gorbuscha",
                                "Oncorhynchus keta",
                                "Oncorhynchus kisutch",
                                "Oncorhynchus nerka",
                                "Oncorhynchus tschawytscha") |
-                               occurrenceStatus == "present") %>%
-  mutate(occurrenceID = paste("IYS_GoA2019_occ", row_number(), sep = ""),
-         scientificNameID = case_when(
-           scientificName == "Abraliopsis felis" ~ "urn:lsid:marinespecies.org:taxname:341849",
-           scientificName == "Aequorea sp." ~ "urn:lsid:marinespecies.org:taxname:116998",
-           scientificName == "Anotopterus nikparini" ~ "urn:lsid:marinespecies.org:taxname:272040",
-           scientificName == "Aptocyclus ventricosus" ~ "urn:lsid:marinespecies.org:taxname:254299",
-           scientificName == "Aurelia labiata" ~ "urn:lsid:marinespecies.org:taxname:287213",
-           scientificName == "Aurelia limbata" ~ "urn:lsid:marinespecies.org:taxname:158199",
-           scientificName == "Belonella borealis" ~ "urn:lsid:marinespecies.org:taxname:410406",
-           scientificName == "Boreoteuthis borealis" ~ "urn:lsid:marinespecies.org:taxname:342326",
-           # Different genus name to what was provided: Gonatopsis vs. Boreoteuthis
-           scientificName == "Calycopsis sp." ~ "urn:lsid:marinespecies.org:taxname:117028",
-           scientificName == "Chiroteuthis calyx" ~ "urn:lsid:marinespecies.org:taxname:341796",
-           scientificName == "Chrysaora melonaster" ~ "urn:lsid:marinespecies.org:taxname:287209",
-           # Slightly different spelling of species name
-           scientificName == "Corolla calceola" ~ "urn:lsid:marinespecies.org:taxname:532663",
-           scientificName == "Diaphus theta" ~ "urn:lsid:marinespecies.org:taxname:272694",
-           scientificName == "Gasterosteus aculeatus" ~ "urn:lsid:marinespecies.org:taxname:126505",
-           scientificName == "Gonatidae sp." ~ "urn:lsid:marinespecies.org:taxname:11743",
-           scientificName == "Gonatus madokai" ~ "urn:lsid:marinespecies.org:taxname:341858",
-           scientificName == "Gonatus onyx" ~ "urn:lsid:marinespecies.org:taxname:341859",
-           scientificName == "Gonatus sp." ~ "urn:lsid:marinespecies.org:taxname:138036",
-           scientificName == "Hormiphora cucumis" ~ "urn:lsid:marinespecies.org:taxname:106382",
-           scientificName == "Icichthys lockingtoni" ~ "urn:lsid:marinespecies.org:taxname:279354",
-           scientificName == "Japetella diaphana" ~ "urn:lsid:marinespecies.org:taxname:138849",
-           scientificName == "Lestidium ringens" ~ "urn:lsid:marinespecies.org:taxname:272096",
-           # slightly different accepted name than what was recorded
-           scientificName == "Lipolagus ochotensis" ~ "urn:lsid:marinespecies.org:taxname:281374",
-           scientificName == "Microstomus pacificus" ~ "urn:lsid:marinespecies.org:taxname:274294",
-           scientificName == "Moroteuthis robusta" ~ "urn:lsid:marinespecies.org:taxname:410385",
-           # different genus name than what was recorded
-           scientificName == "Oncorhynchus gorbuscha" ~ "urn:lsid:marinespecies.org:taxname:127182",
-           scientificName == "Oncorhynchus keta" ~ "urn:lsid:marinespecies.org:taxname:127183",
-           scientificName == "Oncorhynchus kisutch" ~ "urn:lsid:marinespecies.org:taxname:127184",
-           scientificName == "Oncorhynchus nerka" ~ "urn:lsid:marinespecies.org:taxname:254569",
-           scientificName == "Oncorhynchus tschawytscha" ~ "urn:lsid:marinespecies.org:taxname:158075",
-           scientificName == "Onychoteuthis borealijaponica" ~ "urn:lsid:marinespecies.org:taxname:342069",
-           scientificName == "Paralepididae gen. sp." ~ "urn:lsid:marinespecies.org:taxname:125447",
-           scientificName == "Periphylla periphylla" ~ "urn:lsid:marinespecies.org:taxname:135294",
-           scientificName == "Phacellophora camtshchatica" ~ "urn:lsid:marinespecies.org:taxname:135309",
-           # Slightly different spelling
-           scientificName == "Salpa sp." ~ "urn:lsid:marinespecies.org:taxname:137233",
-           scientificName == "Sebastes melanops" ~ "urn:lsid:marinespecies.org:taxname:274817",
-           scientificName == "Sergestes similis" ~ "urn:lsid:marinespecies.org:taxname:514127",
-           # Different accepted genus name
-           scientificName == "Siphonophora sp." ~ "urn:lsid:marinespecies.org:taxname:1371",
-           scientificName == "Squalus acanthias" ~ "urn:lsid:marinespecies.org:taxname:105923",
-           scientificName == "Stenobrachius leucopsarus" ~ "urn:lsid:marinespecies.org:taxname:254363",
-           scientificName == "Symbolophorus californiense" ~ "urn:lsid:marinespecies.org:taxname:272733",
-           # Slightly different species name spelling
-           scientificName == "Tarletonbeania crenularis" ~ "urn:lsid:marinespecies.org:taxname:282927",
-           scientificName == "Thalassenchelys coheni" ~ "urn:lsid:marinespecies.org:taxname:282952",
-           scientificName == "Thetys vagina" ~ "urn:lsid:marinespecies.org:taxname:137281",
-           scientificName == "Thysanoessa spinifera" ~ "urn:lsid:marinespecies.org:taxname:237874",
-           scientificName == "Zaprora silenus" ~ "urn:lsid:marinespecies.org:taxname:254353"
-# Please take into account whether or not the Status of the species on WoRMS is 
-# accepted or not!
-         )) 
+           occurrenceStatus == "present") %>% 
+  mutate(
+    occurrenceID = paste("IYS_GoA2019_occ", row_number(),sep = ""),
+    scientificNameID = case_when(
+      scientificName == "Abraliopsis felis" ~ "urn:lsid:marinespecies.org:taxname:341849",
+      scientificName == "Aequorea sp." ~ "urn:lsid:marinespecies.org:taxname:116998",
+      scientificName == "Anotopterus nikparini" ~ "urn:lsid:marinespecies.org:taxname:272040",
+      scientificName == "Aptocyclus ventricosus" ~ "urn:lsid:marinespecies.org:taxname:254299",
+      scientificName == "Aurelia labiata" ~ "urn:lsid:marinespecies.org:taxname:287213",
+      scientificName == "Aurelia limbata" ~ "urn:lsid:marinespecies.org:taxname:158199",
+      scientificName == "Belonella borealis" ~ "urn:lsid:marinespecies.org:taxname:410406",
+      scientificName == "Boreoteuthis borealis" ~ "urn:lsid:marinespecies.org:taxname:342326",
+      # Different genus name to what was provided: Gonatopsis vs. Boreoteuthis
+      scientificName == "Calycopsis sp." ~ "urn:lsid:marinespecies.org:taxname:117028",
+      scientificName == "Chiroteuthis calyx" ~ "urn:lsid:marinespecies.org:taxname:341796",
+      scientificName == "Chrysaora melonaster" ~ "urn:lsid:marinespecies.org:taxname:287209",
+      # Slightly different spelling of species name
+      scientificName == "Corolla calceola" ~ "urn:lsid:marinespecies.org:taxname:532663",
+      scientificName == "Diaphus theta" ~ "urn:lsid:marinespecies.org:taxname:272694",
+      scientificName == "Gasterosteus aculeatus" ~ "urn:lsid:marinespecies.org:taxname:126505",
+      scientificName == "Gonatidae sp." ~ "urn:lsid:marinespecies.org:taxname:11743",
+      scientificName == "Gonatus madokai" ~ "urn:lsid:marinespecies.org:taxname:341858",
+      scientificName == "Gonatus onyx" ~ "urn:lsid:marinespecies.org:taxname:341859",
+      scientificName == "Gonatus sp." ~ "urn:lsid:marinespecies.org:taxname:138036",
+      scientificName == "Hormiphora cucumis" ~ "urn:lsid:marinespecies.org:taxname:106382",
+      scientificName == "Icichthys lockingtoni" ~ "urn:lsid:marinespecies.org:taxname:279354",
+      scientificName == "Japetella diaphana" ~ "urn:lsid:marinespecies.org:taxname:138849",
+      scientificName == "Lestidium ringens" ~ "urn:lsid:marinespecies.org:taxname:272096",
+      # slightly different accepted name than what was recorded
+      scientificName == "Lipolagus ochotensis" ~ "urn:lsid:marinespecies.org:taxname:281374",
+      scientificName == "Microstomus pacificus" ~ "urn:lsid:marinespecies.org:taxname:274294",
+      scientificName == "Moroteuthis robusta" ~ "urn:lsid:marinespecies.org:taxname:410385",
+      # different genus name than what was recorded
+      scientificName == "Oncorhynchus gorbuscha" ~ "urn:lsid:marinespecies.org:taxname:127182",
+      scientificName == "Oncorhynchus keta" ~ "urn:lsid:marinespecies.org:taxname:127183",
+      scientificName == "Oncorhynchus kisutch" ~ "urn:lsid:marinespecies.org:taxname:127184",
+      scientificName == "Oncorhynchus nerka" ~ "urn:lsid:marinespecies.org:taxname:254569",
+      scientificName == "Oncorhynchus tschawytscha" ~ "urn:lsid:marinespecies.org:taxname:158075",
+      scientificName == "Onychoteuthis borealijaponica" ~ "urn:lsid:marinespecies.org:taxname:342069",
+      scientificName == "Paralepididae gen. sp." ~ "urn:lsid:marinespecies.org:taxname:125447",
+      scientificName == "Periphylla periphylla" ~ "urn:lsid:marinespecies.org:taxname:135294",
+      scientificName == "Phacellophora camtshchatica" ~ "urn:lsid:marinespecies.org:taxname:135309",
+      # Slightly different spelling
+      scientificName == "Salpa sp." ~ "urn:lsid:marinespecies.org:taxname:137233",
+      scientificName == "Sebastes melanops" ~ "urn:lsid:marinespecies.org:taxname:274817",
+      scientificName == "Sergestes similis" ~ "urn:lsid:marinespecies.org:taxname:514127",
+      # Different accepted genus name
+      scientificName == "Siphonophora sp." ~ "urn:lsid:marinespecies.org:taxname:1371",
+      scientificName == "Squalus acanthias" ~ "urn:lsid:marinespecies.org:taxname:105923",
+      scientificName == "Stenobrachius leucopsarus" ~ "urn:lsid:marinespecies.org:taxname:254363",
+      scientificName == "Symbolophorus californiense" ~ "urn:lsid:marinespecies.org:taxname:272733",
+      # Slightly different species name spelling
+      scientificName == "Tarletonbeania crenularis" ~ "urn:lsid:marinespecies.org:taxname:282927",
+      scientificName == "Thalassenchelys coheni" ~ "urn:lsid:marinespecies.org:taxname:282952",
+      scientificName == "Thetys vagina" ~ "urn:lsid:marinespecies.org:taxname:137281",
+      scientificName == "Thysanoessa spinifera" ~ "urn:lsid:marinespecies.org:taxname:237874",
+      scientificName == "Zaprora silenus" ~ "urn:lsid:marinespecies.org:taxname:254353"
+    )
+  ) 
 
 trawl_occ <- trawl_sp_wrangle %>% 
   select(eventID, occurrenceID, scientificName, scientificNameID, occurrenceStatus) %>% 
@@ -171,22 +171,20 @@ drive_upload(here("Trawl", "tidy_data", "trawl_occ.csv"),
 
 trawl_emof_wrangle <- trawl_sp_wrangle %>% 
   filter(occurrenceStatus == "present")
-  # Rename trawl column in dataframe `trawl` to `eventID` and use merge()
-  # measurements are found in the trawl dataframe, so we need to transform that
-  # dataframe slightly and merge it with the newly created trawl_emof:
+# Rename trawl column in dataframe `trawl` to `eventID` and use merge()
+# measurements are found in the trawl dataframe, so we need to transform that
+# dataframe slightly and merge it with the newly created trawl_emof:
 trawl <- trawl %>% mutate(Species = paste(FISH1, FISH2, sep = " ")) %>%
   dplyr::rename(scientificName = Species,
                 eventID = trawl)
 trawl_emof <- merge(trawl_emof_wrangle, trawl, by = c("eventID", "scientificName", "Group")) %>%
+  # We have to merge by Group as well because otherwise similar occIDs will be created for different lifestages within a single trawl set (i.e., if both adult and juvenile Chinook salmon are caught these will be given the same occID if it's only done by scientificName).
   mutate(LMIN = format(LMIN, digits = 2),
          LMAX = format(LMAX, digits = 2),
          MASSCATCH = format(MASSCATCH, digits = 4)
   ) %>% mutate_all(as.character) %>%
   pivot_longer(cols = c("Group","LMIN","LMAX","PIECES","MASSCATCH"),
                names_to = "measurementType", values_to = "measurementValue") %>% 
-  # Added mutate_all as I was getting the error that there was no common 
-  # type for `Group` and `NUMBER` - not sure if there's an easy/easier way 
-  # around this?
   mutate(measurementType = recode(measurementType,
                                   "Group" = "age class",
                                   "LMIN" = "minimum length",
@@ -233,7 +231,7 @@ trawl_emof <- merge(trawl_emof_wrangle, trawl, by = c("eventID", "scientificName
   drop_na(measurementValue)
 
 write_csv(trawl_emof, here("Trawl", "tidy_data", "trawl_eMoF.csv"))
-drive_upload(here("Trawl", "tidy_data", "trawl_occ.csv"),
+drive_upload(here("Trawl", "tidy_data", "trawl_emof.csv"),
              path = "https://drive.google.com/drive/folders/1MQ6XJQqnWk2puDaBTfHn7wXITjDSeLR7",
              name = "trawl_eMoF.csv",
              overwrite = TRUE)
