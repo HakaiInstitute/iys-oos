@@ -130,7 +130,7 @@ To delete a branch in the remote, use the command line:
 > $ git push origin --delete <branch_name>
 >
 
-Once you are happy with the changes made on either a `feature` branch or in your own repository, you can ask these changes to be incorporated in the "parent" branch (i.e., the 'parent' branch of the `feature` branch is the `develop` branch, whereas the 'parent' branch of the `develop` branch is the `master` branch). To do this, you have to submit a _pull request_. This naming convention might seem a little confusing, but you are requesting the 'parent' branch to pull the changes into their branch. 
+Once you are happy with the changes made on either a `feature` branch or in your own repository, you can ask these changes to be incorporated in the "parent" branch (i.e., the 'parent' branch of the `feature` branch is the `develop` branch, whereas the 'parent' branch of the `develop` branch is the `master` branch). To do this, you have to submit a _pull request_. This naming convention might seem a little confusing, but you are requesting the 'parent' branch to pull the changes into their branch. A pull request is not static. This means that should you have an open pull request, you can still make commits and pushes to e.g. the feature branch. These changes will be visible to whoever inspect the pull request. There is no need to close a pull request only to re-open it with the additional changes!
 
 ## RStudio
 
