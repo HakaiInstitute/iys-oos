@@ -29,7 +29,7 @@ sheet2 <- read_excel(here("CTD", "raw_data", "Data_IYS_conbined_Final.xlsx"), sh
 The reported date / time has to get formatted to UTC in the ISO8601 extended format. Additionally, to wrangle the data into a tidy format that follows the Darwin Core Archive (DwC-A) standards and hierarchical structure, it's important to determine how many layers of `eventID` (and, consequently, `parentEventID`) the data has. In the CTD dataset, the data has four layers: "cruise", "station", "cast", and the depth at which the measurements were taken ("ndepth"). Additional columns for each of these layers are created. 
 
 ``` {r time_formatting, eval = FALSE}
-sheet2 <- sheet2 %>%
+sheet2 <- read_excel(here("CTD", "raw_data", "Data_IYS_conbined_Final.xlsx"), sheet = "Sheet2") %>%
   mutate(eventDate_text = str_c(YEAR, MONTH, DAY, `TIME(ship time)`, `MIN(ship time)`, sep="-"),
          eventDate = ymd_hm(eventDate_text, tz = "Asia/Kamchatka")) %>%
   mutate(eventDate = format_iso_8601(as.POSIXct(eventDate,
@@ -54,13 +54,13 @@ For each of the layers of `eventID`, a data frame is created with unique eventID
 Finally, these tables get joined, and re-ordered based on `eventID`, to create the Event Core. This table gets saved locally and in the correct GoogleDrive folder.
 
 ``` {r ctd_event, eval = FALSE}
-ctd_cruise <- ctd %>% 
+ctd_cruise <- sheet2 %>% 
   select(eventID = cruise) %>%
   distinct(eventID) %>%
   mutate(type = "cruise")
 
 # Join date to station
-ctd_station <- ctd %>%
+ctd_station <- sheet2 %>%
   select(eventID = station,
          parentEventID = cruise,
          eventDate,
@@ -69,13 +69,13 @@ ctd_station <- ctd %>%
   distinct(eventID, .keep_all = TRUE) %>% 
   mutate(type = "station")
 
-ctd_cast <- ctd %>% 
+ctd_cast <- sheet2 %>% 
   select(eventID = cast,
          parentEventID = station) %>% 
   distinct(eventID, .keep_all = TRUE) %>% 
   mutate(type = "cast")
 
-ctd_ndepth <- ctd %>% 
+ctd_ndepth <- sheet2 %>% 
   select(eventID = ndepth,
          parentEventID = cast,
          minimumDepthInMetres = DEPTH,
@@ -84,11 +84,11 @@ ctd_ndepth <- ctd %>%
   mutate(type = "sample")
 
 ctd_event <- bind_rows(ctd_cruise, ctd_station, ctd_cast, ctd_ndepth) %>% 
-  select(eventID, parentEventID:maximumDepthInMetres, type) 
+  select(eventID, parentEventID:maximumDepthInMetres, type)  
 
-# Re-order the Event Core:
-order <- stringr::str_sort(ctd_event$eventID, numeric=TRUE)
-ctd_event <- ctd_event[match(order, ctd_event$eventID),]
+# If you wish to re-order the Event Core, use the following code:
+# order <- stringr::str_sort(ctd_event$eventID, numeric=TRUE)
+# ctd_event <- ctd_event[match(order, ctd_event$eventID),]
 
 # Save locally and in GoogleDrive
 write_csv(ctd_event, here("CTD", "tidy_data", "CTD_event.csv"))
