@@ -20,7 +20,7 @@ The raw data is stored on GoogleDrive. The first step is to download the file fr
 
 ``` {r file_download, eval = FALSE}
 # Make sure your folder path exists already (e.g. ./chlorophyll/raw_data)
-drive_download("https://drive.google.com/open?id=1y0obUAsdWeYp2nFOB596B5rGQzNyQxwN", 
+drive_download("https://drive.google.com/file/d/131MbPdsbAoggip5SVxkGbkyWXX4r5U-V/view", 
                path = here::here("chlorophyll", "raw_data", 
                                  "IYSchl_Hunt&Pakhomov.xlsx"),
                overwrite = TRUE)
@@ -30,7 +30,9 @@ drive_download("https://drive.google.com/open?id=1y0obUAsdWeYp2nFOB596B5rGQzNyQx
 
 Next, we read in the Excel sheet that we are working with. The reported date / time has to be concatenated to a column `eventDate`. This column will need to get formatted to UTC in the ISO8601 extended format.
 
-``` {r time format, eval = FALSE}
+To wrangle the data into a tidy format that follows the Darwin Core Archive (DwC-A) standards and hierarchical structure, it's important to determine how many layers of `eventID` (and, consequently, `parentEventID`) the data has. In our dataset, the data has three different types of `eventID`, in order of descending hierarchy: "cruise", "station", "ndepth" - the depth at which the chlorophyll and phaeopigment concentration was measured, and "sample" - so that we create a unique eventID for each parameter measurement at a specific depth. For each of these layers, a data frame is created with unique eventIDs, associated parentEventIDs, and associated unique characteristics. In our data, we join the date to the station level, as all station-specific data was collected on a day. If data at a station was collected over multiple days, the date would be joined to a different layer. `eventID` follows a semantic model that describes the hierarchical nature of each event type.
+
+``` {r data wrangle, eval = FALSE}
 chl <- read_excel(here("chlorophyll", "raw_data", 
                        "IYSchl_Hunt&Pakhomov.xlsx"), 
                   sheet = "Chl data") %>% 
@@ -39,19 +41,13 @@ chl <- read_excel(here("chlorophyll", "raw_data",
          dateTime = format_iso_8601(as.POSIXct(paste(Date, Time), 
                                                format="%Y-%m-%d %H:%M:%S", 
                                                tz="Asia/Kamchatka")),
-         dateTime = str_replace(dateTime, "\\+00:00", "Z")
-  ) 
-```
-
-To wrangle the data into a tidy format that follows the Darwin Core Archive (DwC-A) standards and hierarchical structure, it's important to determine how many layers of `eventID` (and, consequently, `parentEventID`) the data has. In our dataset, the data has three different types of `eventID`, in order of descending hierarchy: "cruise", "station", "ndepth" - the depth at which the chlorophyll and phaeopigment concentration was measured, and "sample" - so that we create a unique eventID for each parameter measurement at a specific depth. For each of these layers, a data frame is created with unique eventIDs, associated parentEventIDs, and associated unique characteristics. In our data, we join the date to the station level, as all station-specific data was collected on a day. If data at a station was collected over multiple days, the date would be joined to a different layer. `eventID` follows a semantic model that describes the hierarchical nature of each event type.   
-
-``` {r data_wrangle, eval = FALSE}
-chl <- chl %>%
-  mutate(cruise = "GoA2019",
+         dateTime = str_replace(dateTime, "\\+00:00", "Z"),
+         cruise = "GoA2019",
          station = paste(cruise, Station, sep="_Stn"),
          ndepth = paste(station, Depth, sep=":"),
          sample = paste(ndepth, "T", sep=":"),
-         sample = paste(sample, Tube, sep= ""))
+         sample = paste(sample, Tube, sep="")
+  )
 ```
 
 Each type of record in the Event core (in our case, cruise, station, sample) has different properties (columns) associated with it, but they ultimately all get nested under a single file. Therefore, separate data frame for each type of Event record are created; this allows us to populate rows with distinct records of each type and fill the relevant columns with data. Once all the event type data frames are created, they can be concatenated to form the Event core. 
@@ -88,11 +84,9 @@ chl_sample <- chl %>%
   distinct(eventID, .keep_all = TRUE) %>%
   mutate(type = "subsample")
 
-chl_event <- bind_rows(chl_cruise, chl_station, chl_ndepth) %>% 
-  select(eventID, parentEventID:maximumDepthInMetres, type) 
-
-order <- stringr::str_sort(chl_event$eventID, numeric=TRUE)
-chl_event <- chl_event[match(order, chl_event$eventID),]
+# If you wish to re-order the Event Core, use the following code:
+# order <- stringr::str_sort(chl_event$eventID, numeric=TRUE)
+# chl_event <- chl_event[match(order, chl_event$eventID),]
 
 # Make sure the folder path exists already (e.g. ./chlorophyll/tidy_data)
 write_csv(chl_event, here("chlorophyll", "tidy_data", "chl_event_fnl.csv"))
@@ -111,12 +105,13 @@ The Darwin Core Archive (DwC-A) works with "long" datatables, whereas usually da
 ``` {r chl_measurement, eval = FALSE}
 # Select the correct eventID layer and the parameters measured
 chl_measurement <- chl %>%
-  select(eventID = sample,
+  select(eventID = sample, 
          Chl:Phe) %>%
+  # Gather Chl and Phe into measurement types
   pivot_longer(c(`Chl`, `Phe`), names_to = "measurementType", 
                values_to = "measurementValue") %>% 
-  mutate(measurementID = case_when(measurementType == "Chl" ~ paste(ndepth,"tube",Tube,"chl", sep="_"),
-                                   measurementType == "Phe" ~ paste(ndepth,"tube",Tube,"phe", sep="_")),
+  mutate(measurementID = case_when(measurementType == "Chl" ~ paste(eventID,"chl", sep="_"),
+                                   measurementType == "Phe" ~ paste(eventID,"phe", sep="_")),
          measurementType = recode(measurementType, 
                                   Chl = "Concentration of Chlorophyll a",
                                   Phe = "Concentration of Phaeopigments"),
@@ -132,8 +127,9 @@ chl_measurement <- chl %>%
   select(measurementID, measurementType, measurementTypeID,
          measurementValue, measurementUnit, measurementUnitID)
 
-write_csv(chl_measurement, here("chlorophyll","tidy_data", "chl_measurement_fnl.csv"))
-drive_upload(here("chlorophyll", "tidy_data",  "chl_measurement_fnl.csv"),
+# Write up csv file and upload to GoogleDrive folder
+write_csv(chl_measurement, here("chlorophyll", "tidy_data", "chl_measurement_fnl.csv"))
+drive_upload(here("chlorophyll", "tidy_data", "chl_measurement_fnl.csv"),
              path = "https://drive.google.com/drive/folders/1TqGK3ih2b7hPWUion5utDgxIEVLYRm5W",
              name = "Chlorophyll_a_measurement.csv",
              overwrite = TRUE)

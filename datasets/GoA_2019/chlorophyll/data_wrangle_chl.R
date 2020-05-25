@@ -15,7 +15,7 @@ library(parsedate)
 library(googledrive)
 library(uuid)
 
-drive_download("https://drive.google.com/open?id=1y0obUAsdWeYp2nFOB596B5rGQzNyQxwN", 
+drive_download("https://drive.google.com/file/d/131MbPdsbAoggip5SVxkGbkyWXX4r5U-V/view", 
                path = here::here("chlorophyll", "raw_data", 
                                  "IYSchl_Hunt&Pakhomov.xlsx"),
                overwrite = TRUE)
@@ -64,11 +64,11 @@ chl_sample <- chl %>%
          parentEventID = ndepth) %>%
   distinct(eventID, .keep_all = TRUE) %>%
   mutate(type = "subsample")
-  
+
 chl_event <- bind_rows(chl_cruise, chl_station, chl_ndepth, chl_sample) %>% 
   select(eventID, parentEventID:maximumDepthInMetres, type) 
 
-# Re-order the Event Core:
+# If you wish to re-order the Event Core, use the following code:
 order <- stringr::str_sort(chl_event$eventID, numeric=TRUE)
 chl_event <- chl_event[match(order, chl_event$eventID),]
 
