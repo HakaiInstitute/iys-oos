@@ -54,14 +54,17 @@ When working with GitHub, the first step is to `clone` the repository you'll be 
 > $ git clone https://github.com/HakaiInstitute/iys-oos.git
 >
 
-This clones the master branch and all associated develop and feature branches. A new `feature` branch can be created in RStudio but also through a command line in Git. Branches can be created locally as well as on the remote. To create a new feature branch (e.g. feature/ctd, on which the CTD data gets wrangled), the command line is: 
+This clones the master branch and all associated develop and feature branches. A good practice is to create a `feature` branch on which you can work without directly affecting the `develop` or `master` branch. A new `feature` branch can be created in RStudio but also through a command line in Git. Branches can be created locally as well as on the remote. To create a new feature branch (e.g. feature/ctd, on which the CTD data gets wrangled), the command line is: 
 
 > $ git checkout -b feature/ctd
 >
 
-Git checkout is used often to switch between branches. The added `-b` means that a new branch is created at the same time. This branch is created _locally_ based on the branch you were on (HEAD). Using this command line, you not only create that branch but also switch over to it.
+Git checkout is used often to switch between branches. The added `-b` means that a new branch is created at the same time. This branch is created _locally_ based on the branch you were on (HEAD). Using this command line, you not only create that branch but also switch over to it. 
 
-To see which branc you are currently on: 
+> Alternatively, you can also `fork` (i.e., copy) the repository to your own GitHub, if you have created one. Forking allows you to freely experiment with changes without affecting the original repository. To do this, go to the GitHub repository you want to fork and select `fork` in the top right. Now whenever you'd like your changes to be incorporated in the original repository, you'll to do a `pull request` (see below). 
+>
+
+To see which branch you are currently on: 
 
 > $ git branch -a
 >
@@ -73,7 +76,7 @@ To checkout the branch you want to use:
 > $ git checkout <branch_name>
 >
 
-The checkout command lets you navigate and switch between the branches. Checkout works to switch between versions of code already on the local system. Confirm you are now working on the correct branch: 
+The checkout command lets you navigate and switch between the branches. Checkout works to switch between versions of code already on the local system. __Important: when you make changes in an R script that nests under a specific feature branch (e.g. CTD-wrangling script under feature/ctd), make sure to commit (and push?) this first before switching to another (feature) branch to work on a different R script. Otherwise changes you made to the CTD R script will also be committed and pushed onto a subsequent branch you're working on.__ To confirm you are now working on the correct branch: 
 
 > $ git branch
 >
@@ -126,6 +129,30 @@ To delete a branch in the remote, use the command line:
 
 > $ git push origin --delete <branch_name>
 >
+
+Once you are happy with the changes made on either a `feature` branch or in your own repository, you can ask these changes to be incorporated in the "parent" branch (i.e., the 'parent' branch of the `feature` branch is the `develop` branch, whereas the 'parent' branch of the `develop` branch is the `master` branch). To do this, you have to submit a _pull request_. This naming convention might seem a little confusing, but you are requesting the 'parent' branch to pull the changes into their branch. 
+
+## RStudio
+
+[RStudio](https://rstudio.com/) is the statistical software program mainly used for analysis and code wrangling. By linking / syncing RStudio with GitHub, it also allows any changes made to scripts to directly be committed and pushed onto GitHub. It is recommended that a Project be created in RStudio for each unique 'project', which usually correlates to a unique repository in GitHub. __It is good practice to only have 1 .Rproj file for each repo, and not have an .Rproj file within another .Rproj.__ 
+
+To create a Project in RStudio and link it with an *existing* repository, use the following steps:
+
+1) Go to the correct HakaiInstitute repository (ex. open-data-mgmt)
+2) Click the green icon `Clone or download` and copy the URL
+3) Open RStudio, and select File - New Project - Version Control - Git (clone a Project from a Git repository)
+4.1) Enter the copied URL under `Repository URL`
+4.2) Project directory name is name of the repository (in our case: open-data-mgmt)
+4.3) Make sure you place the Project in a location that you can easily navigate to. Mine for instance is: C:/Users/Tim/Desktop/GitHub/
+5) Select "Create Project"
+6) Check if the files are saved locally in the folder you specified under step 4.3 (i.e., in our case: C:/Users/Tim/Desktop/GitHub/open-data-mgmt). This folder should also contain the R project file.
+7) In RStudio, in the top right you can select the Project (open-data-mgmt), and then see all the files associated to this Project in the bottom-right panel. You should be able to navigate to all the files within the repository this way, and also navigate between branches in the repository.
+
+__When naming branches, files and folders and committing/pushing it to the remote, it is good practice to make sure these are as concise as possible, and hyphenated.
+
+
+
+## RMarkdown
 
 ## 3. ZenHub
 
