@@ -100,7 +100,7 @@ drive_upload(here("CTD", "tidy_data", "CTD_event.csv"),
 
 ## MeasurementOrFact 
 
-After creating the Event Core, we create an extended MeasurementOrFact (eMoF) table. An occurrence table is not created as the datasets only contain abiotic data, therefore, measurements are linked to eventIDs. DwC-A standards work with "long" format, rather than the wide format, so we need to transpose the data. 
+After creating the Event Core, we create an extended MeasurementOrFact (eMoF) table. An occurrence table is not created as the datasets only contain abiotic data. Therefore, measurements are linked to eventIDs. DwC-A standards work with "long" format, rather than the wide format, so we need to transpose the data. 
 
 Our first step however is to add the column of bottom depth at each station to the extension measurementOrFact table. Please note that the `measurementTypeID` for seafloor depth is defined as "Bridge log sheets" until there is more information about how bottom depth was determined/measured (e.g., by bathymetric sensors, charts, etc.). 
 
