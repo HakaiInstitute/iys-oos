@@ -57,7 +57,7 @@ Finally, these tables get joined, and re-ordered based on `eventID`, to create t
 ctd_cruise <- sheet2 %>% 
   select(eventID = cruise) %>%
   distinct(eventID) %>%
-  mutate(type = "cruise")
+  mutate(eventRemarks = "cruise")
 
 # Join date to station
 ctd_station <- sheet2 %>%
@@ -67,13 +67,13 @@ ctd_station <- sheet2 %>%
          decimalLatitude = LAT,
          decimalLongitude = LON) %>% 
   distinct(eventID, .keep_all = TRUE) %>% 
-  mutate(type = "station")
+  mutate(eventRemarks = "station")
 
 ctd_cast <- sheet2 %>% 
   select(eventID = cast,
          parentEventID = station) %>% 
   distinct(eventID, .keep_all = TRUE) %>% 
-  mutate(type = "cast")
+  mutate(eventRemarks = "cast")
 
 ctd_ndepth <- sheet2 %>% 
   select(eventID = ndepth,
@@ -81,10 +81,10 @@ ctd_ndepth <- sheet2 %>%
          minimumDepthInMetres = DEPTH,
          maximumDepthInMetres = DEPTH) %>% 
   distinct(eventID, .keep_all = TRUE) %>% 
-  mutate(type = "sample")
+  mutate(eventRemarks = "sample")
 
 ctd_event <- bind_rows(ctd_cruise, ctd_station, ctd_cast, ctd_ndepth) %>% 
-  select(eventID, parentEventID:maximumDepthInMetres, type)  
+  select(eventID, parentEventID:maximumDepthInMetres, eventRemarks)  
 
 # If you wish to re-order the Event Core, use the following code:
 # order <- stringr::str_sort(ctd_event$eventID, numeric=TRUE)
