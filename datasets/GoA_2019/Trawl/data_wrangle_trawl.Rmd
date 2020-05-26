@@ -51,7 +51,7 @@ write_csv(trawl_loc, here("Trawl", "tidy_data", "trawl_loc.csv"))
 
 ## Event Core 
 
-Next, dataframes are created for each unique `eventID` layer, with unique associated columns. Eventually, the data frames get joined, and the event table gets saved locally and in Google Drive. The column `type` is not a required column, and currently only contains descriptive information. In the DwC-A standard this column has controlled vocabulary, but we need to discuss whether to include it.
+Next, dataframes are created for each unique `eventID` layer, with unique associated columns. Eventually, the data frames get joined, and the event table gets saved locally and in Google Drive. The column `eventRemarks` is not a required column, and currently only contains descriptive information. In the DwC-A standard this column has controlled vocabulary, but we need to discuss whether to include it.
 
 ``` {r trawl_event, eval = FALSE}
 trawl_cruise <- trawl %>% 
