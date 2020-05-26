@@ -58,7 +58,7 @@ Finally, these tables get joined, and re-ordered based on `eventID`. This table 
 chl_cruise <- chl %>% 
   select(eventID = cruise) %>%
   distinct(eventID) %>%
-  mutate(type = "cruise")
+  mutate(eventRemarks = "cruise")
 
 # Join date to station
 chl_station <- chl %>%
@@ -68,7 +68,7 @@ chl_station <- chl %>%
          decimalLatitude = Latitude,
          decimalLongitude = Longitude) %>% 
   distinct(eventID, .keep_all = TRUE) %>% 
-  mutate(type = "station")
+  mutate(eventRemarks = "station")
 
 chl_ndepth <- chl %>% 
   select(eventID = ndepth,
@@ -76,16 +76,16 @@ chl_ndepth <- chl %>%
          minimumDepthInMetres = Depth,
          maximumDepthInMetres = Depth) %>% 
   distinct(eventID, .keep_all = TRUE) %>% 
-  mutate(type = "sample")
+  mutate(eventRemarks = "sample")
 
 chl_sample <- chl %>%
   select(eventID = sample,
          parentEventID = ndepth) %>%
   distinct(eventID, .keep_all = TRUE) %>%
-  mutate(type = "subsample")
+  mutate(eventRemarks = "subsample")
 
 chl_event <- bind_rows(chl_cruise, chl_station, chl_ndepth) %>% 
-  select(eventID, parentEventID:maximumDepthInMetres, type) 
+  select(eventID, parentEventID:maximumDepthInMetres, eventRemarks) 
 
 # If you wish to re-order the Event Core, use the following code:
 # order <- stringr::str_sort(chl_event$eventID, numeric=TRUE)
