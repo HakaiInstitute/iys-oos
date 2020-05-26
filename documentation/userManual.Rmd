@@ -210,7 +210,9 @@ __Event__: Three of these required DwC terms are nested under the __Event__ tabl
 
 `eventDate` needs to be in the ISO 8601 format, and in the UTC timezone. It should follow the format, e.g.: "2019-02-19T05:00:00Z", whereby date and time are separated by a "T" and the time is followed by a "Z". If only the date is provided, and no time, wrangling it in the ISO 8601 format will auto-populate it with a 00:00:00. The [lubridate](https://cran.r-project.org/web/packages/lubridate/lubridate.pdf) package in R is very useful to assist in any date-time wrangling. It is important to know in which timezone the data was collected (unless the time was already recorded in UTC). Time zones are stored in system specific database, so are not guaranteed to be the same on every system. A complete list of timezones that can be assigned under the lubridate package can be found in RStudio using OlsonNames().  
 
-Another interesting column within the Event Core is `type`. There was confusion as to how to interpret this column, as within the DwC-A standard there was controlled vocabulary available for `type`, whereas there was no defined controlled vocabulary under OBIS, and `type` was more description (e.g. "cruis", "sample", "subsample" etc). At a meeting with the Standardizing Marine Biological Data group on May 13, 2020, it was agreed to follow the DwC-A standard, and use controlled vocabulary for this term. However, type is not a required term. 
+Another interesting column within the Event Core is `type`. There was confusion as to how to interpret this column, as within the DwC-A standard there was controlled vocabulary available for `type`, whereas there was no defined controlled vocabulary under OBIS, and `type` was more description (e.g. "cruise", "sample", "subsample" etc). At a meeting with the Standardizing Marine Biological Data group on May 13, 2020, it was agreed to follow the DwC-A standard, and use controlled vocabulary for this term. However, type is not a required term.
+
+Update __May 26, 2020__: it seems the column `type` in the Event Core has been replaced by `eventRemarks`. Whilst it is still not a required term in the Event table, it can be useful to categorize and structure your data. 
 
 __Location__: Location is _not_ a required table or Core for OBIS (although it is listed as a class in DwC-A), however, it is useful and good practice to create, and save, a separate file pertaining the information on sampling locations. Typically, a dataframe consisting of the columns "Station", "decimalLatitude" and "decimalLongitude" suffices. This dataframe can be saved locally as .xlsx or .csv file, and will prove useful at a later stage when entering the spatial extent in the metadata [see metaData].
 
@@ -234,17 +236,31 @@ It is typically good practice to keep the Occurrence table as _clean as possible
 
 __eMoF__: 
 
-In the extension measurement or fact (eMoF) Core is where information pertaining to measurements, facts, characteristics and / or assertions are stored. The MeasurementOrFact terms `measurementType`, `measurementValue` and `measurementUnit` are completely unconstrained and can be populated with free text annotation. The inevitable semantic heterogeneity (e.g. of spelling or wording) became a major challenge for effective data integration and analysis. Hence, OBIS added 3 new terms: `measurementTypeID`, `measurementValueID` and `measurementUnitID` to standardise the measurement types, values and units. Note that `measurementValueID` is not used for standardizing numeric measurements. The three new terms should be populated using controlled vocabularies referenced using Unique Resource Identifiers (URIs). OBIS recommends to use the internationally recognized NERC Vocabulary Server, developed by the British Oceanographic Data Centre (BODC), see [NERC Vocabulary](https://www.bodc.ac.uk/resources/vocabularies/vocabulary_search/).
+In the extension measurement or fact (eMoF) Core is where information pertaining to measurements, facts, characteristics and / or assertions are stored. The MeasurementOrFact terms `measurementType`, `measurementValue` and `measurementUnit` are completely unconstrained and can be populated with free text annotation. The inevitable semantic heterogeneity (e.g. of spelling or wording) became a major challenge for effective data integration and analysis. Hence, OBIS added 3 new terms: `measurementTypeID`, `measurementValueID` and `measurementUnitID` to standardise the measurement types, values and units. Note that `measurementValueID` is not used for standardizing *numeric* measurements. The three new terms should be populated using controlled vocabularies referenced using Unique Resource Identifiers (URIs). OBIS recommends to use the internationally recognized NERC Vocabulary Server, developed by the British Oceanographic Data Centre (BODC), see [NERC Vocabulary](https://www.bodc.ac.uk/resources/vocabularies/vocabulary_search/). A description of the 6 main columsn in the eMoF core is provided below. 
+
+__measurementID__
+The measurementID is what links the measurements to their respective `eventID`. To populate the column of `measurementID` it is therefore imperative to include the associated `eventID`.
+
+__measurementType__
+Consistency is key. For consistency purposes, we have decided that ":" be used as a delimiter between different layers of `eventID` in the Event, Occurrence and eMoF cores (i.e.: GoA2019:Stn1:ctd:1), and that an underscore gets used to separate words. Additionally, `measurementType` will be done in lowercase, unless it refers to chemical symbols or proper abbreviations (DO, BOD5, pH etc).
 
 __measurementTypeID__
 Vocabulary for BODC Parameter Usage can be found: http://vocab.nerc.ac.uk/collection/P01/current/
 Vocabulary for OBIS sampling instruments and method attributes:
 http://vocab.nerc.ac.uk/collection/Q01/current/
 
-__measurementUnitID__
-Vocabulary for measurement units (i.e., m, kg m-3, etc) can be found:
-http://vocab.nerc.ac.uk/collection/P06/current
+__measurementValue__
+Present the measurement values here as provided in the raw data. OBIS does not make any recommendations as far as we know regarding the number of digits recorded in the measurements. `measurementValue` does not necessarily have to be a numerical value, but can also be descriptive, such as "sheet-like red" or "filamentous brown". 
 
+__measurementValueID__
+This column is not required if the measurements are solely numerical measurements.Examples of `measurementValueIDs` are provided [here](https://obis.org/manual/dataformat/).
+
+__measurementUnit__
+As `measurementUnit` we use the syntax e.g. kg/m^3, rather than kg m^-3.
+
+__measurementUnitID__
+Vocabulary for measurement units (i.e., m, kg/m^3, etc) can be found:
+http://vocab.nerc.ac.uk/collection/P06/current
 
 An optional column in the Event Core is `lifeStage`, which is defined as the age class or life stage of the biological individual(s) at the time the Occurrence was recorded. Following OBIS, measurements of `lifeStage` are added to the eMoF table (see [here] https://obis.org/manual/darwincore/). There is controlled vocabulary for the `lifeStage` term, to be found [here](http://vocab.nerc.ac.uk/collection/S11/current/). 
 
