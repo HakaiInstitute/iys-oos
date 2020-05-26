@@ -57,7 +57,7 @@ Next, dataframes are created for each unique `eventID` layer, with unique associ
 trawl_cruise <- trawl %>% 
   select(eventID = cruise) %>% 
   distinct(eventID) %>% 
-  mutate(type = "cruise")
+  mutate(eventRemarks = "cruise")
 
 trawl_station <- trawl %>% 
   select(eventID = station,
@@ -66,16 +66,16 @@ trawl_station <- trawl %>%
          decimalLatitude = Y,
          decimalLongitude = X) %>% 
   distinct(eventID, .keep_all = TRUE) %>% 
-  mutate(type = "station")
+  mutate(eventRemarks = "station")
 
 trawl_trawl <- trawl %>% 
   select(eventID = trawl,
          parentEventID = station) %>% 
   distinct(eventID, .keep_all = TRUE) %>% 
-  mutate(type = "trawl")
+  mutate(eventRemarks = "trawl")
 
 trawl_event <- bind_rows(trawl_cruise, trawl_station, trawl_trawl) %>% 
-  select(eventID, parentEventID:decimalLongitude, type)
+  select(eventID, parentEventID:decimalLongitude, eventRemarks)
 
 # Re-order the Event Core if required:
 # order <- stringr::str_sort(trawl_event$eventID, numeric=TRUE)
