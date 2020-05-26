@@ -49,7 +49,7 @@ The longitude was recorded as positive values, however, after QC and cross-refer
 sheet2$LON <- -sheet2$LON
 ```
 
-For each of the layers of `eventID`, a data frame is created with unique eventIDs, associated parentEventIDs, and associated unique characteristics. In our data, we join the date to the station level, as all station-specific data was collected on a day. 
+For each of the layers of `eventID`, a data frame is created with unique eventIDs, associated parentEventIDs, and associated unique characteristics such as `eventRemarks`. In our data, we join the date to the station level, as all station-specific data was collected on a day. 
 
 Finally, these tables get joined, and re-ordered based on `eventID`, to create the Event Core. This table gets saved locally and in the correct GoogleDrive folder.
 
