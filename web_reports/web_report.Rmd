@@ -1,0 +1,22 @@
+---
+title: "Git Webpage Template"
+author: "Brett Johnson"
+date: '`r date()`'
+output: github_document
+---
+
+
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, error = FALSE)
+library(hakaiR)
+library(tidyverse)
+library(lubridate)
+library(here)
+```
+
+# Make a plot
+
+```{r}
+plot(cars)
+```
