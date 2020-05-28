@@ -85,7 +85,8 @@ chl_sample <- chl %>%
   mutate(eventRemarks = "subsample")
 
 chl_event <- bind_rows(chl_cruise, chl_station, chl_ndepth) %>% 
-  select(eventID, parentEventID:maximumDepthInMetres, eventRemarks) 
+  select(eventID, parentEventID:maximumDepthInMetres, eventRemarks) %>%
+  mutate(type = "Event")
 
 # If you wish to re-order the Event Core, use the following code:
 # order <- stringr::str_sort(chl_event$eventID, numeric=TRUE)
