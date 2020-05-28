@@ -115,7 +115,7 @@ ctd_botdepth <- sheet2 %>%
          measurementID = paste(eventID, "depth", sep = ":"),
          measurementType = recode(measurementType,
                                   `Bot. Depth` = "seafloor depth"),
-         measurementTypeID = "http://vocab.nerc.ac.uk/collection/C00/current/BRIDGE/",
+         measurementTypeID = "http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/",
          measurementUnit = "m",
          measurementUnitID = "http://vocab.nerc.ac.uk/collection/P06/current/ULAA/" ) %>%
   select(measurementID, eventID, measurementType, measurementTypeID, measurementValue,
@@ -124,8 +124,18 @@ ctd_botdepth <- sheet2 %>%
 
 Next, we select the appropriate columns and use the pivot_longer function to transpose the data. As EC25 is measured in microSiemens/cm, which is not (yet) in NERCs controlled vocabulary, we convert this column to milliSiemens/cm. 
 
+Additionally, turbidity is measured in FTU. From personal communication with Anna Vazhova, _FTU is the Formazine Turbidity Unit. According to ISO 7027 (Water quality - Determination of turbidity), the turbidity unit is FNU (Formazine Nephelometric Unit). The United States Environmental Protection Agency (U.S. EPA) and the World Health Organization (WHO) use the NTU (Nephelometric Turbidity Unit). The ratio between the main units of turbidity is as follows: 1 FTU (EMF in Russia) = 1 FNU = 1 NTU_. As FTU is currently not a `measurementUnit` in the NERC vocab, we have changed this `measurementUnit` to NTU.
+
 ``` {r measurement data_wrangle, eval = FALSE}
-ctd_measurement <- ctd_measurement %>% # Should "NO.Trawl" here be "NO.(ST)"?
+ctd_measurement <- sheet2 %>% 
+  select(eventID = ndepth, `TEM_S`:`BOD5[ml/l]`) %>%
+  distinct(eventID, .keep_all = TRUE) %>%
+  mutate(`EC25 [mS/cm]_R` = as.numeric(`EC25 [uS/cm]_R`) / 1000) %>%
+  dplyr::select(-`EC25 [uS/cm]_R`) %>%
+  mutate_all(as.character) %>%
+  pivot_longer(cols = `TEM_S`:`EC25 [mS/cm]_R`,
+               names_to = "measurementType",
+               values_to = "measurementValue") %>% 
   mutate(measurementID = case_when(measurementType == "TEM_S" ~ paste(eventID,"temp_s",sep=":"),
                                    measurementType == "TEM_R" ~ paste(eventID,"temp_r",sep=":"),
                                    measurementType == "SAL_S" ~ paste(eventID,"sal_s",sep=":"),
@@ -192,7 +202,7 @@ ctd_measurement <- ctd_measurement %>% # Should "NO.Trawl" here be "NO.(ST)"?
                                      measurementType == "chlorophyll_flu" ~ "ppb",
                                      measurementType == "chlorophyll_a" ~ "ug/L",
                                      # Alternatively, chlorophyll-a concentration can be reported in mg.m-3. Conversion = 1:1.
-                                     measurementType == "turbidity" ~ "FTU",
+                                     measurementType == "turbidity" ~ "NTU",
                                      measurementType == "battery_voltage" ~ "V",
                                      measurementType == "dissolved_oxygen" ~ "mg/L",
                                      measurementType == "dissolved_oxygen_lab" ~ "ml/L ",
