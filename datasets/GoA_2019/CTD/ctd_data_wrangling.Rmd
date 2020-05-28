@@ -84,7 +84,8 @@ ctd_ndepth <- sheet2 %>%
   mutate(eventRemarks = "sample")
 
 ctd_event <- bind_rows(ctd_cruise, ctd_station, ctd_cast, ctd_ndepth) %>% 
-  select(eventID, parentEventID:maximumDepthInMetres, eventRemarks)  
+  select(eventID, parentEventID:maximumDepthInMetres, eventRemarks) %>%
+  mutate(type = "Event")
 
 # If you wish to re-order the Event Core, use the following code:
 # order <- stringr::str_sort(ctd_event$eventID, numeric=TRUE)
