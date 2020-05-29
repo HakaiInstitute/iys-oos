@@ -479,8 +479,8 @@ nut_botdepth &lt;- chemistry %&gt;%
     measurementValue = as.numeric((measurementValue)),
     measurementID = paste(eventID, &quot;depth&quot;, sep = &quot;:&quot;),
     measurementType = recode(measurementType,
-                             &quot;Bot. Depth [m]&quot; = &quot;seafloor depth&quot;),
-    measurementTypeID = &quot;http://vocab.nerc.ac.uk/collection/C00/current/BRIDGE/&quot;,
+                             &quot;Bot. Depth [m]&quot; = &quot;seafloor_depth&quot;),
+    measurementTypeID = &quot;http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/&quot;,
     measurementUnit = &quot;m&quot;,
     measurementUnitID = &quot;http://vocab.nerc.ac.uk/collection/P06/current/ULAA/&quot;
   ) %&gt;%
@@ -507,37 +507,31 @@ nut_measurement &lt;- chemistry %&gt;%
   mutate(
     measurementType = recode(
       measurementType,
-      &quot;Si [mkM/l]&quot; = &quot;silicate&quot;,
-      &quot;DIP [mkM/l]&quot; = &quot;dissolved inorganic P&quot;,
-      &quot;DIN [mkM/l]&quot; = &quot;dissolved inorganic N&quot;,
-      &quot;NO2  [mkM/l]&quot; = &quot;nitrogen dioxiode&quot;,
-      &quot;NO3  [mkM/l]&quot; = &quot;nitrate&quot;,
+      &quot;Si [mkM/l]&quot; = &quot;silicates&quot;,
+      &quot;DIP [mkM/l]&quot; = &quot;dissolved_inorganic_P&quot;,
+      &quot;DIN [mkM/l]&quot; = &quot;dissolved_inorganic_N&quot;,
+      &quot;NO2  [mkM/l]&quot; = &quot;nitrites&quot;,
+      &quot;NO3  [mkM/l]&quot; = &quot;nitrates&quot;,
     ),
     measurementTypeID = case_when(
-      measurementType == &quot;silicate&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P01/current/SLCAZZXX/&quot;,
-      measurementType == &quot;dissolved inorganic P&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P01/current/PHOSXXDZ/&quot;,
-      # Cannot find NERC vocab for DIP; only PO4
-      measurementType == &quot;dissolved inorganic N&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P01/current/DINXZZZZ/&quot;,
-      measurementType == &quot;nitrogen dioxiode&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/S27/current/CS003170/&quot;,
-      # No NERC vocab for concentration of NO2 per unit volume of the water body; only of atmosphere
-      measurementType == &quot;nitrate&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P01/current/NTRAXXDZ/&quot;
+      measurementType == &quot;silicates&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P01/current/SLCAAATX/&quot;,
+      measurementType == &quot;dissolved_inorganic_P&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P01/current/PHOSAATX/&quot;,
+      measurementType == &quot;dissolved_inorganic_N&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P01/current/DINXZZZZ/&quot;,
+      measurementType == &quot;nitrites&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P01/current/NTRIAATX/&quot;,
+      measurementType == &quot;nitrates&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P01/current/CHEMM012/&quot;
     ),
     measurementUnit = &quot;umol/L&quot;,
     measurementUnitID = &quot;http://vocab.nerc.ac.uk/collection/P06/current/UPOX/&quot;,
     measurementID = case_when(
-      measurementType == &quot;silicate&quot; ~ paste(eventID, &quot;si&quot;, sep = &quot;:&quot;),
-      measurementType == &quot;dissolved inorganic P&quot; ~ paste(eventID, &quot;DIP&quot;, sep =
-                                                           &quot;:&quot;),
-      measurementType == &quot;dissolved inorganic N&quot; ~ paste(eventID, &quot;DIN&quot;, sep =
-                                                           &quot;:&quot;),
-      measurementType == &quot;nitrogen dioxiode&quot; ~ paste(eventID, &quot;NO2&quot;, sep =
-                                                       &quot;:&quot;),
-      measurementType == &quot;nitrate&quot; ~ paste(eventID, &quot;NO3&quot;, sep =
-                                             &quot;:&quot;),
+      measurementType == &quot;silicates&quot; ~ paste(eventID, &quot;si&quot;, sep = &quot;:&quot;),
+      measurementType == &quot;dissolved_inorganic_P&quot; ~ paste(eventID, &quot;DIP&quot;, sep = &quot;:&quot;),
+      measurementType == &quot;dissolved_inorganic_N&quot; ~ paste(eventID, &quot;DIN&quot;, sep = &quot;:&quot;),
+      measurementType == &quot;nitrites&quot; ~ paste(eventID, &quot;NO2&quot;, sep = &quot;:&quot;),
+      measurementType == &quot;nitrates&quot; ~ paste(eventID, &quot;NO3&quot;, sep = &quot;:&quot;),
     )
   )
 
-nut_measurementOrFact &lt;-
+nut_eMoF &lt;-
   bind_rows(nut_botdepth, nut_measurement) %&gt;%
   select(
     measurementID,
@@ -548,7 +542,7 @@ nut_measurementOrFact &lt;-
     measurementUnit,
     measurementUnitID
   )</code></pre>
-<pre class="r"><code>write_csv(nut_measurementOrFact,
+<pre class="r"><code>write_csv(nut_eMoF,
           here(&quot;nutrients&quot;, &quot;tidy_data&quot;, &quot;nut_eMoF.csv&quot;))
 
 drive_upload(

@@ -142,8 +142,8 @@ nut_botdepth <- chemistry %>%
     measurementValue = as.numeric((measurementValue)),
     measurementID = paste(eventID, "depth", sep = ":"),
     measurementType = recode(measurementType,
-                             "Bot. Depth [m]" = "seafloor depth"),
-    measurementTypeID = "http://vocab.nerc.ac.uk/collection/C00/current/BRIDGE/",
+                             "Bot. Depth [m]" = "seafloor_depth"),
+    measurementTypeID = "http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/",
     measurementUnit = "m",
     measurementUnitID = "http://vocab.nerc.ac.uk/collection/P06/current/ULAA/"
   ) %>%
@@ -170,37 +170,31 @@ nut_measurement <- chemistry %>%
   mutate(
     measurementType = recode(
       measurementType,
-      "Si [mkM/l]" = "silicate",
-      "DIP [mkM/l]" = "dissolved inorganic P",
-      "DIN [mkM/l]" = "dissolved inorganic N",
-      "NO2  [mkM/l]" = "nitrogen dioxiode",
-      "NO3  [mkM/l]" = "nitrate",
+      "Si [mkM/l]" = "silicates",
+      "DIP [mkM/l]" = "dissolved_inorganic_P",
+      "DIN [mkM/l]" = "dissolved_inorganic_N",
+      "NO2  [mkM/l]" = "nitrites",
+      "NO3  [mkM/l]" = "nitrates",
     ),
     measurementTypeID = case_when(
-      measurementType == "silicate" ~ "http://vocab.nerc.ac.uk/collection/P01/current/SLCAZZXX/",
-      measurementType == "dissolved inorganic P" ~ "http://vocab.nerc.ac.uk/collection/P01/current/PHOSXXDZ/",
-      # Cannot find NERC vocab for DIP; only PO4
-      measurementType == "dissolved inorganic N" ~ "http://vocab.nerc.ac.uk/collection/P01/current/DINXZZZZ/",
-      measurementType == "nitrogen dioxiode" ~ "http://vocab.nerc.ac.uk/collection/S27/current/CS003170/",
-      # No NERC vocab for concentration of NO2 per unit volume of the water body; only of atmosphere
-      measurementType == "nitrate" ~ "http://vocab.nerc.ac.uk/collection/P01/current/NTRAXXDZ/"
+      measurementType == "silicates" ~ "http://vocab.nerc.ac.uk/collection/P01/current/SLCAAATX/",
+      measurementType == "dissolved_inorganic_P" ~ "http://vocab.nerc.ac.uk/collection/P01/current/PHOSAATX/",
+      measurementType == "dissolved_inorganic_N" ~ "http://vocab.nerc.ac.uk/collection/P01/current/DINXZZZZ/",
+      measurementType == "nitrites" ~ "http://vocab.nerc.ac.uk/collection/P01/current/NTRIAATX/",
+      measurementType == "nitrates" ~ "http://vocab.nerc.ac.uk/collection/P01/current/CHEMM012/"
     ),
     measurementUnit = "umol/L",
     measurementUnitID = "http://vocab.nerc.ac.uk/collection/P06/current/UPOX/",
     measurementID = case_when(
-      measurementType == "silicate" ~ paste(eventID, "si", sep = ":"),
-      measurementType == "dissolved inorganic P" ~ paste(eventID, "DIP", sep =
-                                                           ":"),
-      measurementType == "dissolved inorganic N" ~ paste(eventID, "DIN", sep =
-                                                           ":"),
-      measurementType == "nitrogen dioxiode" ~ paste(eventID, "NO2", sep =
-                                                       ":"),
-      measurementType == "nitrate" ~ paste(eventID, "NO3", sep =
-                                             ":"),
+      measurementType == "silicates" ~ paste(eventID, "si", sep = ":"),
+      measurementType == "dissolved_inorganic_P" ~ paste(eventID, "DIP", sep = ":"),
+      measurementType == "dissolved_inorganic_N" ~ paste(eventID, "DIN", sep = ":"),
+      measurementType == "nitrites" ~ paste(eventID, "NO2", sep = ":"),
+      measurementType == "nitrates" ~ paste(eventID, "NO3", sep = ":"),
     )
   )
 
-nut_measurementOrFact <-
+nut_eMoF <-
   bind_rows(nut_botdepth, nut_measurement) %>%
   select(
     measurementID,
@@ -214,7 +208,7 @@ nut_measurementOrFact <-
 ```
 
 ```{r save eMoF}
-write_csv(nut_measurementOrFact,
+write_csv(nut_eMoF,
           here("nutrients", "tidy_data", "nut_eMoF.csv"))
 
 drive_upload(
