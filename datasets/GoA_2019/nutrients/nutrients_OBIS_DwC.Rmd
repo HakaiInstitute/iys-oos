@@ -62,11 +62,13 @@ chemistry <-
 
 ## Create the Event core
 
+To help distinguish the different hierarchical event levels, we use the column `eventRemarks`. The column `type` is is a Record-class term to describe the nature of the data resoure, but is not required by OBIS.
+
 ```{r event}
 nut_cruise <- chemistry %>%
   select(eventID = cruise) %>%
   distinct(eventID) %>%
-  mutate(type = "cruise")
+  mutate(eventRemarks = "cruise")
 
 # eventDate is an attribute associated with the "station" record type
 nut_station <- chemistry %>%
@@ -82,13 +84,13 @@ nut_station <- chemistry %>%
   ) %>%
   distinct(eventID, .keep_all = TRUE) %>%
   mutate(decimalLongitude = decimalLongitude-360,
-         type = "station")
+         eventRemarks = "station")
 
 nut_cast <- chemistry %>%
   select(eventID = cast,
          parentEventID = station) %>%
   distinct(eventID, .keep_all = TRUE) %>%
-  mutate(type = "cast")
+  mutate(eventRemarks = "cast")
 
 nut_ndepth <- chemistry %>%
   select(
@@ -98,18 +100,21 @@ nut_ndepth <- chemistry %>%
     maximumDepthInMetres = `Depth [m]`
   ) %>%
   distinct(eventID, .keep_all = TRUE) %>%
-  mutate(type = "sample")
+  mutate(eventRemarks = "sample")
 
 nut_sample <- chemistry %>%
   select(eventID = sample,
          parentEventID = ndepth) %>%
   distinct(eventID, .keep_all = TRUE) %>%
-  mutate(type = "subsample")
+  mutate(eventRemarks = "subsample")
 
 nut_event <-
   bind_rows(nut_cruise, nut_station, nut_cast, nut_ndepth, nut_sample) %>%
-  select(eventID, parentEventID:maximumDepthInMetres, type)
+  select(eventID, parentEventID:maximumDepthInMetres, eventRemarks) %>% 
+  mutate(type = "Event")
+```
 
+```{r save event}
 # The .gitignore file has been configured to ignore all files in the tidy_data folder so no data gets pushed to the Git repository.
 write_csv(nut_event, here("nutrients", "tidy_data", "nut_event.csv"))
 
@@ -205,13 +210,15 @@ nut_measurementOrFact <-
     measurementUnit,
     measurementUnitID
   )
+```
 
+```{r save eMoF}
 write_csv(nut_measurementOrFact,
-          here("nutrients", "tidy_data", "nut_measurement.csv"))
+          here("nutrients", "tidy_data", "nut_eMoF.csv"))
+
 drive_upload(
-  here("nutrients", "tidy_data", "nut_measurement.csv"),
+  here("nutrients", "tidy_data", "nut_eMoF.csv"),
   path = "https://drive.google.com/drive/u/0/folders/1M0JRuzW_rxwz9jZPVV-oDv5AARUS2K2w",
   name = "nutrient_eMoF.csv"
 )
 ```
-
