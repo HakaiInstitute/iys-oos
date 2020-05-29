@@ -21,7 +21,7 @@ Download the raw data from GoogleDrive, and read from local folder:
 drive_download("https://drive.google.com/open?id=1-onECiDW02DJRIX6g4dXywtzLEqCGyce", path = here::here("CTD", "raw_data", "Data_IYS_conbined_Final.xlsx"))
 
 sheet1 <- read_excel(here("CTD", "raw_data", "Data_IYS_conbined_Final.xlsx"), sheet = "Sheet1")
-sheet2 <- read_excel(here("CTD", "raw_data", "Data_IYS_conbined_Final.xlsx"), sheet = "Sheet2")
+sheet2 <- read_excel(here("CTD", "raw_data", "Data_IYS_conbined_Final.xlsx"), sheet = "Sheet2", guess_max = 60000)
 ```
 
 ## EventCore 
@@ -29,7 +29,7 @@ sheet2 <- read_excel(here("CTD", "raw_data", "Data_IYS_conbined_Final.xlsx"), sh
 The reported date / time has to get formatted to UTC in the ISO8601 extended format. Additionally, to wrangle the data into a tidy format that follows the Darwin Core Archive (DwC-A) standards and hierarchical structure, it's important to determine how many layers of `eventID` (and, consequently, `parentEventID`) the data has. In the CTD dataset, the data has four layers: "cruise", "station", "cast", and the depth at which the measurements were taken ("ndepth"). Additional columns for each of these layers are created. 
 
 ``` {r time_formatting, eval = FALSE}
-sheet2 <- read_excel(here("CTD", "raw_data", "Data_IYS_conbined_Final.xlsx"), sheet = "Sheet2") %>%
+sheet2 <- sheet2 %>%
   mutate(eventDate_text = str_c(YEAR, MONTH, DAY, `TIME(ship time)`, `MIN(ship time)`, sep="-"),
          eventDate = ymd_hm(eventDate_text, tz = "Asia/Kamchatka")) %>%
   mutate(eventDate = format_iso_8601(as.POSIXct(eventDate,
@@ -40,7 +40,8 @@ sheet2 <- read_excel(here("CTD", "raw_data", "Data_IYS_conbined_Final.xlsx"), sh
   mutate(cruise = "GoA2019",
          station = paste(cruise, `NO.Trawl`, sep="_Stn"),
          cast = paste(station, "cast1", sep = ":"),
-         ndepth = paste(cast, DEPTH, sep=":ctd:"))
+         ndepth = paste(cast, DEPTH, sep=":ctd:"),
+         sample = paste(ndepth, "C1", sep = ":"))
 ```
 
 The longitude was recorded as positive values, however, after QC and cross-reference to other data recorded during the same cruise, it is clear that the values should be negative.
@@ -82,6 +83,12 @@ ctd_ndepth <- sheet2 %>%
          maximumDepthInMetres = DEPTH) %>% 
   distinct(eventID, .keep_all = TRUE) %>% 
   mutate(eventRemarks = "sample")
+
+ctd_sample <- sheet2 %>%
+  select(eventID = sample,
+         parentEventID = ndepth) %>%
+  distinct(eventID, .keep_all = TRUE) %>%
+  mutate(eventRemarks = "subsample")
 
 ctd_event <- bind_rows(ctd_cruise, ctd_station, ctd_cast, ctd_ndepth) %>% 
   select(eventID, parentEventID:maximumDepthInMetres, eventRemarks) %>%
