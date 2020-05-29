@@ -44,7 +44,8 @@ chl <- read_excel(here("chlorophyll", "raw_data",
          dateTime = str_replace(dateTime, "\\+00:00", "Z"),
          cruise = "GoA2019",
          station = paste(cruise, Station, sep="_Stn"),
-         ndepth = paste(station, Depth, sep=":"),
+         cast = paste(station, "cast1", sep=":"),
+         ndepth = paste(station, Depth, sep=":niskin:"),
          sample = paste(ndepth, "T", sep=":"),
          sample = paste(sample, Tube, sep="")
   )
@@ -92,8 +93,7 @@ chl_sample <- chl %>%
   distinct(eventID, .keep_all = TRUE) %>%
   mutate(eventRemarks = "subsample")
 
-chl_event <- bind_rows(chl_cruise, chl_station, chl_cast, chl_ndepth, chl_sample) %>% 
-  select(eventID, parentEventID:maximumDepthInMetres, eventRemarks) %>%
+chl_event <- bind_rows(chl_cruise, chl_station, chl_cast, chl_ndepth, chl_sample) %>%   select(eventID, parentEventID:maximumDepthInMetres, eventRemarks) %>%
   mutate(type = "Event")
 
 # If you wish to re-order the Event Core, use the following code:
