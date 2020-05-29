@@ -45,7 +45,7 @@ chl <- read_excel(here("chlorophyll", "raw_data",
          cruise = "GoA2019",
          station = paste(cruise, Station, sep="_Stn"),
          cast = paste(station, "cast1", sep=":"),
-         ndepth = paste(station, Depth, sep=":niskin:"),
+         ndepth = paste(cast, Depth, sep=":niskin:"),
          sample = paste(ndepth, "T", sep=":"),
          sample = paste(sample, Tube, sep="")
   )
