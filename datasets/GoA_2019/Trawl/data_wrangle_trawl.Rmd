@@ -75,7 +75,8 @@ trawl_trawl <- trawl %>%
   mutate(eventRemarks = "trawl")
 
 trawl_event <- bind_rows(trawl_cruise, trawl_station, trawl_trawl) %>% 
-  select(eventID, parentEventID:decimalLongitude, eventRemarks)
+  select(eventID, parentEventID:decimalLongitude, eventRemarks) %>%
+  mutate(type = "Event")
 
 # Re-order the Event Core if required:
 # order <- stringr::str_sort(trawl_event$eventID, numeric=TRUE)
