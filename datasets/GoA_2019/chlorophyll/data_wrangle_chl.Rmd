@@ -50,7 +50,9 @@ chl <- read_excel(here("chlorophyll", "raw_data",
   )
 ```
 
-Each type of record in the Event core (in our case, cruise, station, sample) has different properties (columns) associated with it, but they ultimately all get nested under a single file. Therefore, separate data frame for each type of Event record are created; this allows us to populate rows with distinct records of each type and fill the relevant columns with data. Once all the event type data frames are created, they can be concatenated to form the Event core. 
+Each type of record in the Event core (in our case, cruise, station, cast, sample and subsample) has different properties (columns) associated with it, but they ultimately all get nested under a single file. Therefore, separate data frame for each type of Event record are created; this allows us to populate rows with distinct records of each type and fill the relevant columns with data. Once all the event type data frames are created, they can be concatenated to form the Event core. 
+
+The "station" event category exists to tie casts and trawl data together. eventDate, decimalLatitude and decimalLongitude are attributes associated with the "cast" record type, because sampling times and cast and trawl coordinates differ amongst datasets
 
 Finally, these tables get joined, and re-ordered based on `eventID`. This table gets saved locally and in the correct GoogleDrive folder. 
 
@@ -63,16 +65,22 @@ chl_cruise <- chl %>%
 # Join date to station
 chl_station <- chl %>%
   select(eventID = station,
-         parentEventID = cruise,
-         eventDate = dateTime,
-         decimalLatitude = Latitude,
-         decimalLongitude = Longitude) %>% 
+         parentEventID = cruise) %>% 
   distinct(eventID, .keep_all = TRUE) %>% 
   mutate(eventRemarks = "station")
 
+chl_cast <- chl %>%
+  select(eventID = cast,
+         parenteventID = station,
+         eventDate = dateTime,
+         decimalLatitude = Latitude,
+         decimalLongitude = Longitude) %>%
+  distinct(eventID, .keep_all = TRUE) %>%
+  mutate(eventRemarks = "cast")
+
 chl_ndepth <- chl %>% 
   select(eventID = ndepth,
-         parentEventID = station,
+         parentEventID = cast,
          minimumDepthInMetres = Depth,
          maximumDepthInMetres = Depth) %>% 
   distinct(eventID, .keep_all = TRUE) %>% 
@@ -84,7 +92,7 @@ chl_sample <- chl %>%
   distinct(eventID, .keep_all = TRUE) %>%
   mutate(eventRemarks = "subsample")
 
-chl_event <- bind_rows(chl_cruise, chl_station, chl_ndepth) %>% 
+chl_event <- bind_rows(chl_cruise, chl_station, chl_cast, chl_ndepth, chl_sample) %>% 
   select(eventID, parentEventID:maximumDepthInMetres, eventRemarks) %>%
   mutate(type = "Event")
 
