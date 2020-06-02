@@ -91,7 +91,9 @@ pom_event <-
   bind_rows(pom_cruise, pom_station, pom_cast, pom_ndepth, pom_sample) %>%
   select(eventID, parentEventID:maximumDepthInMetres, eventRemarks) %>% 
   mutate(type = "Event")
+```
 
+```{r event save}
 # The .gitignore file has been configured to ignore all files in the tidy_data folder so no data gets pushed to the Git repository.
 write_csv(pom_event, here("POM", "tidy_data", "pom_event.csv"))
 
@@ -100,6 +102,7 @@ drive_upload(here("POM", "tidy_data", "pom_event.csv"),
              path = "https://drive.google.com/drive/folders/1WMsDahUdt9dKXGcoi2gcrjNmpGBgHOSB",
              name = "POM_event.csv")
 ```
+
 
 ## Create the ExtendedMeasurementorFact extension
 
@@ -208,15 +211,19 @@ pom_measurementOrFact <-
     measurementUnitID,
     measurementRemarks
   )
+```
 
-
+```{r eMoF save}
 write_csv(pom_measurementOrFact,
-          here("POM", "tidy_data", "pom_measurementOrFact.csv"))
+          here("POM", "tidy_data", "pom_eMoF.csv"))
 drive_upload(
-  here("POM", "tidy_data", "pom_measurementOrFact.csv"),
+  here("POM", "tidy_data", "pom_eMoF.csv"),
   path = "https://drive.google.com/drive/folders/1WMsDahUdt9dKXGcoi2gcrjNmpGBgHOSB",
   name = "POM_eMoF.csv",
   overwrite = TRUE
 )
 ```
+
+
+
 
