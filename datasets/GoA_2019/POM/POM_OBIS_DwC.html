@@ -452,7 +452,7 @@ drive_upload(here(&quot;POM&quot;, &quot;tidy_data&quot;, &quot;pom_event.csv&qu
 <pre class="r"><code># Seafloor (bottom) depth is a measurement of the niskin cast.
 pom_botdepth &lt;- sheet1 %&gt;%
   select(eventID = cast, Depth) %&gt;%
-  distinct(eventID, .keep_all = TRUE)
+  distinct(eventID, .keep_all = TRUE) %&gt;% 
   pivot_longer(cols = Depth,
                names_to = &quot;measurementType&quot;,
                values_to = &quot;measurementValue&quot;) %&gt;%
@@ -494,31 +494,30 @@ pom_measurement &lt;- sheet1 %&gt;%
   mutate(
     measurementType = recode(
       measurementType,
-      `Volume filtered` = &quot;volume filtered&quot;,
-      `Total C (µg)` = &quot;total C&quot;,
-      `Total N (µg)` = &quot;total N&quot;
+      `Volume filtered` = &quot;volume_filtered&quot;,
+      `Total C (µg)` = &quot;total_C&quot;,
+      `Total N (µg)` = &quot;total_N&quot;
     ),
     measurementID = case_when(
-      measurementType == &quot;volume filtered&quot; ~ paste(eventID, &quot;vol&quot;, sep = &quot;:&quot;),
+      measurementType == &quot;volume_filtered&quot; ~ paste(eventID, &quot;vol&quot;, sep = &quot;:&quot;),
       measurementType == &quot;acidified&quot; ~ paste(eventID, &quot;acid&quot;, sep = &quot;:&quot;),
       measurementType == &quot;d13C_VPDB&quot; ~ paste(eventID, &quot;d13C&quot;, sep = &quot;:&quot;),
       measurementType == &quot;d15N_air&quot; ~ paste(eventID, &quot;d15N&quot;, sep = &quot;:&quot;),
-      measurementType == &quot;total C&quot; ~ paste(eventID, &quot;Ctot&quot;, sep = &quot;:&quot;),
-      measurementType == &quot;total N&quot; ~ paste(eventID, &quot;Ntot&quot;, sep = &quot;:&quot;)
+      measurementType == &quot;total_C&quot; ~ paste(eventID, &quot;Ctot&quot;, sep = &quot;:&quot;),
+      measurementType == &quot;total_N&quot; ~ paste(eventID, &quot;Ntot&quot;, sep = &quot;:&quot;)
     ),
     measurementTypeID = case_when(
-      measurementType == &quot;volume filtered&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/S03/current/S0393/&quot;,
+      measurementType == &quot;volume_filtered&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/S03/current/S0393/&quot;,
       measurementType == &quot;acidified&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/S03/current/S0366&quot;,
-      measurementType == &quot;d13C_VPDB&quot; ~ &quot;&quot;,
-      # TBD
-      measurementType == &quot;d15N_air&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P01/current/D15NMTP1/&quot;,
-      measurementType == &quot;total C&quot; ~ &quot;&quot;,
-      measurementType == &quot;total N&quot; ~ &quot;&quot;
+      measurementType == &quot;d13C_VPDB&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P01/current/D13COPXX/&quot;, # No specific NERC vocab for measurement relative to VPDB
+      measurementType == &quot;d15N_air&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P01/current/D15NOPXX/&quot;,
+      measurementType == &quot;total_C&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P01/current/MDMAP011/&quot;,
+      measurementType == &quot;total_N&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P01/current/MDMAP013/&quot;
     ),
     measurementUnit = case_when(
-      measurementType == &quot;volume filtered&quot; ~ &quot;mL&quot;,
+      measurementType == &quot;volume_filtered&quot; ~ &quot;mL&quot;,
       measurementType %in% c(&quot;d13C_VPDB&quot;, &quot;d15N_air&quot;) ~ &quot;ppt&quot;,
-      measurementType %in% c(&quot;total C&quot;, &quot;total N&quot;) ~ &quot;ug&quot;
+      measurementType %in% c(&quot;total_C&quot;, &quot;total_N&quot;) ~ &quot;ug&quot;
     ),
     measurementUnitID = case_when(
       measurementUnit == &quot;mL&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P06/current/VVML/&quot;,
@@ -552,6 +551,7 @@ pom_measurementOrFact &lt;-
   )</code></pre>
 <pre class="r"><code>write_csv(pom_measurementOrFact,
           here(&quot;POM&quot;, &quot;tidy_data&quot;, &quot;pom_eMoF.csv&quot;))
+
 drive_upload(
   here(&quot;POM&quot;, &quot;tidy_data&quot;, &quot;pom_eMoF.csv&quot;),
   path = &quot;https://drive.google.com/drive/folders/1WMsDahUdt9dKXGcoi2gcrjNmpGBgHOSB&quot;,

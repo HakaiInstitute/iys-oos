@@ -120,7 +120,7 @@ The eMoF extension links measurement records with records in the Event core tabl
 # Seafloor (bottom) depth is a measurement of the niskin cast.
 pom_botdepth <- sheet1 %>%
   select(eventID = cast, Depth) %>%
-  distinct(eventID, .keep_all = TRUE)
+  distinct(eventID, .keep_all = TRUE) %>% 
   pivot_longer(cols = Depth,
                names_to = "measurementType",
                values_to = "measurementValue") %>%
@@ -165,31 +165,30 @@ pom_measurement <- sheet1 %>%
   mutate(
     measurementType = recode(
       measurementType,
-      `Volume filtered` = "volume filtered",
-      `Total C (µg)` = "total C",
-      `Total N (µg)` = "total N"
+      `Volume filtered` = "volume_filtered",
+      `Total C (µg)` = "total_C",
+      `Total N (µg)` = "total_N"
     ),
     measurementID = case_when(
-      measurementType == "volume filtered" ~ paste(eventID, "vol", sep = ":"),
+      measurementType == "volume_filtered" ~ paste(eventID, "vol", sep = ":"),
       measurementType == "acidified" ~ paste(eventID, "acid", sep = ":"),
       measurementType == "d13C_VPDB" ~ paste(eventID, "d13C", sep = ":"),
       measurementType == "d15N_air" ~ paste(eventID, "d15N", sep = ":"),
-      measurementType == "total C" ~ paste(eventID, "Ctot", sep = ":"),
-      measurementType == "total N" ~ paste(eventID, "Ntot", sep = ":")
+      measurementType == "total_C" ~ paste(eventID, "Ctot", sep = ":"),
+      measurementType == "total_N" ~ paste(eventID, "Ntot", sep = ":")
     ),
     measurementTypeID = case_when(
-      measurementType == "volume filtered" ~ "http://vocab.nerc.ac.uk/collection/S03/current/S0393/",
+      measurementType == "volume_filtered" ~ "http://vocab.nerc.ac.uk/collection/S03/current/S0393/",
       measurementType == "acidified" ~ "http://vocab.nerc.ac.uk/collection/S03/current/S0366",
-      measurementType == "d13C_VPDB" ~ "",
-      # TBD
-      measurementType == "d15N_air" ~ "http://vocab.nerc.ac.uk/collection/P01/current/D15NMTP1/",
-      measurementType == "total C" ~ "",
-      measurementType == "total N" ~ ""
+      measurementType == "d13C_VPDB" ~ "http://vocab.nerc.ac.uk/collection/P01/current/D13COPXX/", # No specific NERC vocab for measurement relative to VPDB
+      measurementType == "d15N_air" ~ "http://vocab.nerc.ac.uk/collection/P01/current/D15NOPXX/",
+      measurementType == "total_C" ~ "http://vocab.nerc.ac.uk/collection/P01/current/MDMAP011/",
+      measurementType == "total_N" ~ "http://vocab.nerc.ac.uk/collection/P01/current/MDMAP013/"
     ),
     measurementUnit = case_when(
-      measurementType == "volume filtered" ~ "mL",
+      measurementType == "volume_filtered" ~ "mL",
       measurementType %in% c("d13C_VPDB", "d15N_air") ~ "ppt",
-      measurementType %in% c("total C", "total N") ~ "ug"
+      measurementType %in% c("total_C", "total_N") ~ "ug"
     ),
     measurementUnitID = case_when(
       measurementUnit == "mL" ~ "http://vocab.nerc.ac.uk/collection/P06/current/VVML/",
@@ -226,6 +225,7 @@ pom_measurementOrFact <-
 ```{r eMoF_save}
 write_csv(pom_measurementOrFact,
           here("POM", "tidy_data", "pom_eMoF.csv"))
+
 drive_upload(
   here("POM", "tidy_data", "pom_eMoF.csv"),
   path = "https://drive.google.com/drive/folders/1WMsDahUdt9dKXGcoi2gcrjNmpGBgHOSB",
