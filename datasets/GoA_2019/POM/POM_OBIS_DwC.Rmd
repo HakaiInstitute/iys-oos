@@ -52,7 +52,7 @@ Each type of record in the Event core has different properties (columns) associa
 pom_cruise <- sheet1 %>%
   select(eventID = cruise) %>%
   distinct(eventID) %>%
-  mutate(type = "cruise")
+  mutate(eventRemarks = "cruise")
 
 pom_station <- sheet1 %>%
   select(
@@ -63,13 +63,13 @@ pom_station <- sheet1 %>%
     decimalLongitude = Longitude
   ) %>%
   distinct(eventID, .keep_all = TRUE) %>%
-  mutate(type = "station")
+  mutate(eventRemarks = "station")
 
 pom_cast <- sheet1 %>%
   select(eventID = cast,
          parentEventID = station) %>%
   distinct(eventID, .keep_all = TRUE) %>%
-  mutate(type = "cast")
+  mutate(eventRemarks = "cast")
 
 pom_ndepth <- sheet1 %>%
   select(
@@ -79,17 +79,18 @@ pom_ndepth <- sheet1 %>%
     maximumDepthInMetres = `Sample depth`
   ) %>%
   distinct(eventID, .keep_all = TRUE) %>%
-  mutate(type = "sample")
+  mutate(eventRemarks = "sample")
 
 pom_sample <- sheet1 %>%
   select(eventID = sample,
          parentEventID = ndepth) %>%
   distinct(eventID, .keep_all = TRUE) %>%
-  mutate(type = "subsample")
+  mutate(eventRemarks = "subsample")
 
 pom_event <-
   bind_rows(pom_cruise, pom_station, pom_cast, pom_ndepth, pom_sample) %>%
-  select(eventID, parentEventID:maximumDepthInMetres, type)
+  select(eventID, parentEventID:maximumDepthInMetres, eventRemarks) %>% 
+  mutate(type = "Event")
 
 # The .gitignore file has been configured to ignore all files in the tidy_data folder so no data gets pushed to the Git repository.
 write_csv(pom_event, here("POM", "tidy_data", "pom_event.csv"))
