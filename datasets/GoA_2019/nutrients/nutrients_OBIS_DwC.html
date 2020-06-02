@@ -408,32 +408,34 @@ chemistry &lt;-
 </div>
 <div id="create-the-event-core" class="section level2">
 <h2>Create the Event core</h2>
+<p>To help distinguish the different hierarchical event levels, we use the column <code>eventRemarks</code>. The column <code>type</code> is is a Record-class term to describe the nature of the data resoure, but is not required by OBIS.</p>
 <pre class="r"><code>nut_cruise &lt;- chemistry %&gt;%
   select(eventID = cruise) %&gt;%
   distinct(eventID) %&gt;%
-  mutate(type = &quot;cruise&quot;)
+  mutate(eventRemarks = &quot;cruise&quot;)
 
-# eventDate is an attribute associated with the &quot;station&quot; record type
+# The &quot;station&quot; event category exists to tie casts and trawl data together.
 nut_station &lt;- chemistry %&gt;%
+  select(
+    eventID = station,
+    parentEventID = cruise
+  ) %&gt;%
+  distinct(eventID, .keep_all = TRUE) %&gt;%
+  mutate(eventRemarks = &quot;station&quot;)
+
+# eventDate, decimalLatitude and decimalLongitude are attributes associated with the &quot;cast&quot; record type, because sampling times and cast and trawl coordinates differ amongst datasets.
+nut_cast &lt;- chemistry %&gt;%
   left_join(select(hydro,
                    station,
                    date)) %&gt;%
-  select(
-    eventID = station,
-    parentEventID = cruise,
-    eventDate = date,
-    decimalLatitude = Latitude,
-    decimalLongitude = Longitude
-  ) %&gt;%
+  select(eventID = cast,
+         parentEventID = station,
+         eventDate = date,
+         decimalLatitude = Latitude,
+         decimalLongitude = Longitude) %&gt;%
   distinct(eventID, .keep_all = TRUE) %&gt;%
   mutate(decimalLongitude = decimalLongitude-360,
-         type = &quot;station&quot;)
-
-nut_cast &lt;- chemistry %&gt;%
-  select(eventID = cast,
-         parentEventID = station) %&gt;%
-  distinct(eventID, .keep_all = TRUE) %&gt;%
-  mutate(type = &quot;cast&quot;)
+         eventRemarks = &quot;cast&quot;)
 
 nut_ndepth &lt;- chemistry %&gt;%
   select(
@@ -443,19 +445,19 @@ nut_ndepth &lt;- chemistry %&gt;%
     maximumDepthInMetres = `Depth [m]`
   ) %&gt;%
   distinct(eventID, .keep_all = TRUE) %&gt;%
-  mutate(type = &quot;sample&quot;)
+  mutate(eventRemarks = &quot;sample&quot;)
 
 nut_sample &lt;- chemistry %&gt;%
   select(eventID = sample,
          parentEventID = ndepth) %&gt;%
   distinct(eventID, .keep_all = TRUE) %&gt;%
-  mutate(type = &quot;subsample&quot;)
+  mutate(eventRemarks = &quot;subsample&quot;)
 
 nut_event &lt;-
   bind_rows(nut_cruise, nut_station, nut_cast, nut_ndepth, nut_sample) %&gt;%
-  select(eventID, parentEventID:maximumDepthInMetres, type)
-
-# The .gitignore file has been configured to ignore all files in the tidy_data folder so no data gets pushed to the Git repository.
+  select(eventID, parentEventID:maximumDepthInMetres, eventRemarks) %&gt;% 
+  mutate(type = &quot;Event&quot;)</code></pre>
+<pre class="r"><code># The .gitignore file has been configured to ignore all files in the tidy_data folder so no data gets pushed to the Git repository.
 write_csv(nut_event, here(&quot;nutrients&quot;, &quot;tidy_data&quot;, &quot;nut_event.csv&quot;))
 
 # drive_upload can&#39;t overwrite files based on name alone, so if you&#39;re re-running this script after creating the first file, make sure to delete the older version from Google Drive.
@@ -477,8 +479,8 @@ nut_botdepth &lt;- chemistry %&gt;%
     measurementValue = as.numeric((measurementValue)),
     measurementID = paste(eventID, &quot;depth&quot;, sep = &quot;:&quot;),
     measurementType = recode(measurementType,
-                             &quot;Bot. Depth [m]&quot; = &quot;seafloor depth&quot;),
-    measurementTypeID = &quot;http://vocab.nerc.ac.uk/collection/C00/current/BRIDGE/&quot;,
+                             &quot;Bot. Depth [m]&quot; = &quot;seafloor_depth&quot;),
+    measurementTypeID = &quot;http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/&quot;,
     measurementUnit = &quot;m&quot;,
     measurementUnitID = &quot;http://vocab.nerc.ac.uk/collection/P06/current/ULAA/&quot;
   ) %&gt;%
@@ -505,37 +507,31 @@ nut_measurement &lt;- chemistry %&gt;%
   mutate(
     measurementType = recode(
       measurementType,
-      &quot;Si [mkM/l]&quot; = &quot;silicate&quot;,
-      &quot;DIP [mkM/l]&quot; = &quot;dissolved inorganic P&quot;,
-      &quot;DIN [mkM/l]&quot; = &quot;dissolved inorganic N&quot;,
-      &quot;NO2  [mkM/l]&quot; = &quot;nitrogen dioxiode&quot;,
-      &quot;NO3  [mkM/l]&quot; = &quot;nitrate&quot;,
+      &quot;Si [mkM/l]&quot; = &quot;silicates&quot;,
+      &quot;DIP [mkM/l]&quot; = &quot;dissolved_inorganic_P&quot;,
+      &quot;DIN [mkM/l]&quot; = &quot;dissolved_inorganic_N&quot;,
+      &quot;NO2  [mkM/l]&quot; = &quot;nitrites&quot;,
+      &quot;NO3  [mkM/l]&quot; = &quot;nitrates&quot;,
     ),
     measurementTypeID = case_when(
-      measurementType == &quot;silicate&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P01/current/SLCAZZXX/&quot;,
-      measurementType == &quot;dissolved inorganic P&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P01/current/PHOSXXDZ/&quot;,
-      # Cannot find NERC vocab for DIP; only PO4
-      measurementType == &quot;dissolved inorganic N&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P01/current/DINXZZZZ/&quot;,
-      measurementType == &quot;nitrogen dioxiode&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/S27/current/CS003170/&quot;,
-      # No NERC vocab for concentration of NO2 per unit volume of the water body; only of atmosphere
-      measurementType == &quot;nitrate&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P01/current/NTRAXXDZ/&quot;
+      measurementType == &quot;silicates&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P01/current/SLCAAATX/&quot;,
+      measurementType == &quot;dissolved_inorganic_P&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P01/current/PHOSAATX/&quot;,
+      measurementType == &quot;dissolved_inorganic_N&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P01/current/DINXZZZZ/&quot;,
+      measurementType == &quot;nitrites&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P01/current/NTRIAATX/&quot;,
+      measurementType == &quot;nitrates&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P01/current/CHEMM012/&quot;
     ),
     measurementUnit = &quot;umol/L&quot;,
     measurementUnitID = &quot;http://vocab.nerc.ac.uk/collection/P06/current/UPOX/&quot;,
     measurementID = case_when(
-      measurementType == &quot;silicate&quot; ~ paste(eventID, &quot;si&quot;, sep = &quot;:&quot;),
-      measurementType == &quot;dissolved inorganic P&quot; ~ paste(eventID, &quot;DIP&quot;, sep =
-                                                           &quot;:&quot;),
-      measurementType == &quot;dissolved inorganic N&quot; ~ paste(eventID, &quot;DIN&quot;, sep =
-                                                           &quot;:&quot;),
-      measurementType == &quot;nitrogen dioxiode&quot; ~ paste(eventID, &quot;NO2&quot;, sep =
-                                                       &quot;:&quot;),
-      measurementType == &quot;nitrate&quot; ~ paste(eventID, &quot;NO3&quot;, sep =
-                                             &quot;:&quot;),
+      measurementType == &quot;silicates&quot; ~ paste(eventID, &quot;si&quot;, sep = &quot;:&quot;),
+      measurementType == &quot;dissolved_inorganic_P&quot; ~ paste(eventID, &quot;DIP&quot;, sep = &quot;:&quot;),
+      measurementType == &quot;dissolved_inorganic_N&quot; ~ paste(eventID, &quot;DIN&quot;, sep = &quot;:&quot;),
+      measurementType == &quot;nitrites&quot; ~ paste(eventID, &quot;NO2&quot;, sep = &quot;:&quot;),
+      measurementType == &quot;nitrates&quot; ~ paste(eventID, &quot;NO3&quot;, sep = &quot;:&quot;),
     )
   )
 
-nut_measurementOrFact &lt;-
+nut_eMoF &lt;-
   bind_rows(nut_botdepth, nut_measurement) %&gt;%
   select(
     measurementID,
@@ -545,12 +541,12 @@ nut_measurementOrFact &lt;-
     measurementValue,
     measurementUnit,
     measurementUnitID
-  )
+  )</code></pre>
+<pre class="r"><code>write_csv(nut_eMoF,
+          here(&quot;nutrients&quot;, &quot;tidy_data&quot;, &quot;nut_eMoF.csv&quot;))
 
-write_csv(nut_measurementOrFact,
-          here(&quot;nutrients&quot;, &quot;tidy_data&quot;, &quot;nut_measurement.csv&quot;))
 drive_upload(
-  here(&quot;nutrients&quot;, &quot;tidy_data&quot;, &quot;nut_measurement.csv&quot;),
+  here(&quot;nutrients&quot;, &quot;tidy_data&quot;, &quot;nut_eMoF.csv&quot;),
   path = &quot;https://drive.google.com/drive/u/0/folders/1M0JRuzW_rxwz9jZPVV-oDv5AARUS2K2w&quot;,
   name = &quot;nutrient_eMoF.csv&quot;
 )</code></pre>

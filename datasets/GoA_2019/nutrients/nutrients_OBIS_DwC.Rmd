@@ -62,33 +62,36 @@ chemistry <-
 
 ## Create the Event core
 
+To help distinguish the different hierarchical event levels, we use the column `eventRemarks`. The column `type` is is a Record-class term to describe the nature of the data resoure, but is not required by OBIS.
+
 ```{r event}
 nut_cruise <- chemistry %>%
   select(eventID = cruise) %>%
   distinct(eventID) %>%
-  mutate(type = "cruise")
+  mutate(eventRemarks = "cruise")
 
-# eventDate is an attribute associated with the "station" record type
+# The "station" event category exists to tie casts and trawl data together.
 nut_station <- chemistry %>%
+  select(
+    eventID = station,
+    parentEventID = cruise
+  ) %>%
+  distinct(eventID, .keep_all = TRUE) %>%
+  mutate(eventRemarks = "station")
+
+# eventDate, decimalLatitude and decimalLongitude are attributes associated with the "cast" record type, because sampling times and cast and trawl coordinates differ amongst datasets.
+nut_cast <- chemistry %>%
   left_join(select(hydro,
                    station,
                    date)) %>%
-  select(
-    eventID = station,
-    parentEventID = cruise,
-    eventDate = date,
-    decimalLatitude = Latitude,
-    decimalLongitude = Longitude
-  ) %>%
+  select(eventID = cast,
+         parentEventID = station,
+         eventDate = date,
+         decimalLatitude = Latitude,
+         decimalLongitude = Longitude) %>%
   distinct(eventID, .keep_all = TRUE) %>%
   mutate(decimalLongitude = decimalLongitude-360,
-         type = "station")
-
-nut_cast <- chemistry %>%
-  select(eventID = cast,
-         parentEventID = station) %>%
-  distinct(eventID, .keep_all = TRUE) %>%
-  mutate(type = "cast")
+         eventRemarks = "cast")
 
 nut_ndepth <- chemistry %>%
   select(
@@ -98,18 +101,21 @@ nut_ndepth <- chemistry %>%
     maximumDepthInMetres = `Depth [m]`
   ) %>%
   distinct(eventID, .keep_all = TRUE) %>%
-  mutate(type = "sample")
+  mutate(eventRemarks = "sample")
 
 nut_sample <- chemistry %>%
   select(eventID = sample,
          parentEventID = ndepth) %>%
   distinct(eventID, .keep_all = TRUE) %>%
-  mutate(type = "subsample")
+  mutate(eventRemarks = "subsample")
 
 nut_event <-
   bind_rows(nut_cruise, nut_station, nut_cast, nut_ndepth, nut_sample) %>%
-  select(eventID, parentEventID:maximumDepthInMetres, type)
+  select(eventID, parentEventID:maximumDepthInMetres, eventRemarks) %>% 
+  mutate(type = "Event")
+```
 
+```{r save event}
 # The .gitignore file has been configured to ignore all files in the tidy_data folder so no data gets pushed to the Git repository.
 write_csv(nut_event, here("nutrients", "tidy_data", "nut_event.csv"))
 
@@ -136,8 +142,8 @@ nut_botdepth <- chemistry %>%
     measurementValue = as.numeric((measurementValue)),
     measurementID = paste(eventID, "depth", sep = ":"),
     measurementType = recode(measurementType,
-                             "Bot. Depth [m]" = "seafloor depth"),
-    measurementTypeID = "http://vocab.nerc.ac.uk/collection/C00/current/BRIDGE/",
+                             "Bot. Depth [m]" = "seafloor_depth"),
+    measurementTypeID = "http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/",
     measurementUnit = "m",
     measurementUnitID = "http://vocab.nerc.ac.uk/collection/P06/current/ULAA/"
   ) %>%
@@ -164,37 +170,31 @@ nut_measurement <- chemistry %>%
   mutate(
     measurementType = recode(
       measurementType,
-      "Si [mkM/l]" = "silicate",
-      "DIP [mkM/l]" = "dissolved inorganic P",
-      "DIN [mkM/l]" = "dissolved inorganic N",
-      "NO2  [mkM/l]" = "nitrogen dioxiode",
-      "NO3  [mkM/l]" = "nitrate",
+      "Si [mkM/l]" = "silicates",
+      "DIP [mkM/l]" = "dissolved_inorganic_P",
+      "DIN [mkM/l]" = "dissolved_inorganic_N",
+      "NO2  [mkM/l]" = "nitrites",
+      "NO3  [mkM/l]" = "nitrates",
     ),
     measurementTypeID = case_when(
-      measurementType == "silicate" ~ "http://vocab.nerc.ac.uk/collection/P01/current/SLCAZZXX/",
-      measurementType == "dissolved inorganic P" ~ "http://vocab.nerc.ac.uk/collection/P01/current/PHOSXXDZ/",
-      # Cannot find NERC vocab for DIP; only PO4
-      measurementType == "dissolved inorganic N" ~ "http://vocab.nerc.ac.uk/collection/P01/current/DINXZZZZ/",
-      measurementType == "nitrogen dioxiode" ~ "http://vocab.nerc.ac.uk/collection/S27/current/CS003170/",
-      # No NERC vocab for concentration of NO2 per unit volume of the water body; only of atmosphere
-      measurementType == "nitrate" ~ "http://vocab.nerc.ac.uk/collection/P01/current/NTRAXXDZ/"
+      measurementType == "silicates" ~ "http://vocab.nerc.ac.uk/collection/P01/current/SLCAAATX/",
+      measurementType == "dissolved_inorganic_P" ~ "http://vocab.nerc.ac.uk/collection/P01/current/PHOSAATX/",
+      measurementType == "dissolved_inorganic_N" ~ "http://vocab.nerc.ac.uk/collection/P01/current/DINXZZZZ/",
+      measurementType == "nitrites" ~ "http://vocab.nerc.ac.uk/collection/P01/current/NTRIAATX/",
+      measurementType == "nitrates" ~ "http://vocab.nerc.ac.uk/collection/P01/current/CHEMM012/"
     ),
     measurementUnit = "umol/L",
     measurementUnitID = "http://vocab.nerc.ac.uk/collection/P06/current/UPOX/",
     measurementID = case_when(
-      measurementType == "silicate" ~ paste(eventID, "si", sep = ":"),
-      measurementType == "dissolved inorganic P" ~ paste(eventID, "DIP", sep =
-                                                           ":"),
-      measurementType == "dissolved inorganic N" ~ paste(eventID, "DIN", sep =
-                                                           ":"),
-      measurementType == "nitrogen dioxiode" ~ paste(eventID, "NO2", sep =
-                                                       ":"),
-      measurementType == "nitrate" ~ paste(eventID, "NO3", sep =
-                                             ":"),
+      measurementType == "silicates" ~ paste(eventID, "si", sep = ":"),
+      measurementType == "dissolved_inorganic_P" ~ paste(eventID, "DIP", sep = ":"),
+      measurementType == "dissolved_inorganic_N" ~ paste(eventID, "DIN", sep = ":"),
+      measurementType == "nitrites" ~ paste(eventID, "NO2", sep = ":"),
+      measurementType == "nitrates" ~ paste(eventID, "NO3", sep = ":"),
     )
   )
 
-nut_measurementOrFact <-
+nut_eMoF <-
   bind_rows(nut_botdepth, nut_measurement) %>%
   select(
     measurementID,
@@ -205,13 +205,15 @@ nut_measurementOrFact <-
     measurementUnit,
     measurementUnitID
   )
+```
 
-write_csv(nut_measurementOrFact,
-          here("nutrients", "tidy_data", "nut_measurement.csv"))
+```{r save eMoF}
+write_csv(nut_eMoF,
+          here("nutrients", "tidy_data", "nut_eMoF.csv"))
+
 drive_upload(
-  here("nutrients", "tidy_data", "nut_measurement.csv"),
+  here("nutrients", "tidy_data", "nut_eMoF.csv"),
   path = "https://drive.google.com/drive/u/0/folders/1M0JRuzW_rxwz9jZPVV-oDv5AARUS2K2w",
   name = "nutrient_eMoF.csv"
 )
 ```
-
