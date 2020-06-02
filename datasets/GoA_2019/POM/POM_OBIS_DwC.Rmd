@@ -117,7 +117,7 @@ pom_botdepth <- sheet1 %>%
     measurementID = paste(eventID, "depth", sep = ":"),
     measurementType = recode(measurementType,
                              Depth = "seafloor depth"),
-    measurementTypeID = "http://vocab.nerc.ac.uk/collection/C00/current/BRIDGE/",
+    measurementTypeID = "http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/",
     measurementUnit = "m",
     measurementUnitID = "http://vocab.nerc.ac.uk/collection/P06/current/ULAA/"
   ) %>%
