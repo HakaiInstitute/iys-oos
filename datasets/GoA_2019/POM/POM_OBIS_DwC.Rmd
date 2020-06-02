@@ -44,6 +44,14 @@ sheet1 <- read_excel(here("POM", "raw_data", "POM_tidy.xlsx"), sheet = "Sheet1")
   )
 ```
 
+Per correspondence with the data provider (Brian Hunt), it's likely that a typo was made when transcribing the longitude value for Station 60 because it does not align with the station's coordinates from other datasets. We're making the correction in the data wrangle script to preserve the integrity of the raw data file.
+
+```{r stn_60_long_corr}
+sheet1 <- sheet1 %>%
+  mutate(Longitude = ifelse(station == "GoA2019_Stn60", "-136.997", Longitude))
+```
+
+
 ## Create the Event core
 
 Each type of record in the Event core has different properties (columns) associated with it, but they ultimately all get nested under a single file. Therefore, I create a separate data frame for each type of Event record; this allows us to create populate rows with distinct records of each type and fill the relevant columns with data. Once all the event type data frames are created, they can be concatenated to form the Event core.
@@ -93,7 +101,7 @@ pom_event <-
   mutate(type = "Event")
 ```
 
-```{r event save}
+```{r event_save}
 # The .gitignore file has been configured to ignore all files in the tidy_data folder so no data gets pushed to the Git repository.
 write_csv(pom_event, here("POM", "tidy_data", "pom_event.csv"))
 
@@ -108,7 +116,7 @@ drive_upload(here("POM", "tidy_data", "pom_event.csv"),
 
 The eMoF extension links measurement records with records in the Event core table. Since this dataset is comprised only of environmental abiotic data, there is no `occurrenceID` column and records are linked by `eventID` instead. The `measurementTypeID` for seafloor depth is defined as "Bridge log sheets" until there is more information about how bottom depth was determined/measured (e.g., by bathymetric sensors, charts, etc.)
 
-```{r seafloor depth}
+```{r seafloor_depth}
 # Seafloor (bottom) depth is a measurement of the niskin cast.
 pom_botdepth <- sheet1 %>%
   select(eventID = cast, Depth) %>%
@@ -134,7 +142,9 @@ pom_botdepth <- sheet1 %>%
     measurementUnit,
     measurementUnitID
   )
+```
 
+``` {r eMoF}  
 # These are measurements taken from the niskin water samples. For each niskin collection, two samples were processed; one sample was acidified, and the other was  Some `measurementTypeIDs` were left blank ("") because I could not find any appropriate NERC vocab based on the current information available.
 pom_measurement <- sheet1 %>%
   select(
@@ -213,7 +223,7 @@ pom_measurementOrFact <-
   )
 ```
 
-```{r eMoF save}
+```{r eMoF_save}
 write_csv(pom_measurementOrFact,
           here("POM", "tidy_data", "pom_eMoF.csv"))
 drive_upload(
