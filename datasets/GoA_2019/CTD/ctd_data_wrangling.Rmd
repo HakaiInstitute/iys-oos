@@ -7,10 +7,6 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-```
-
-First load required packages:
-``` {r packages, eval = FALSE}
 library(tidyverse)
 library(lubridate)
 library(readxl)
@@ -20,226 +16,236 @@ library(googledrive)
 ```
 
 Download the raw data from GoogleDrive, and read from local folder:
-``` {r file download, eval = FALSE}
-drive_download("https://drive.google.com/open?id=1-onECiDW02DJRIX6g4dXywtzLEqCGyce", 
-               path = here::here("./datasets/GoA_2019/CTD/raw_data/", "Data_IYS_conbined_Final.xlsx"))
 
-sheet1 <- read_excel(here("./datasets/GoA_2019/CTD/raw_data/", "Data_IYS_conbined_Final.xlsx"), sheet = "Sheet1")
-sheet2 <- read_excel(here("./datasets/GoA_2019/CTD/raw_data/", "Data_IYS_conbined_Final.xlsx"), sheet = "Sheet2")
+``` {r file_download, eval = FALSE}
+drive_download("https://drive.google.com/open?id=1-onECiDW02DJRIX6g4dXywtzLEqCGyce", path = here::here("CTD", "raw_data", "Data_IYS_conbined_Final.xlsx"))
+
+sheet1 <- read_excel(here("CTD", "raw_data", "Data_IYS_conbined_Final.xlsx"), sheet = "Sheet1")
+sheet2 <- read_excel(here("CTD", "raw_data", "Data_IYS_conbined_Final.xlsx"), sheet = "Sheet2", guess_max = 60000)
 ```
 
 ## EventCore 
 
-The reported date / time has to get formatted to UTC in the ISO8601 extended format.
+The reported date / time has to get formatted to UTC in the ISO8601 extended format. Additionally, to wrangle the data into a tidy format that follows the Darwin Core Archive (DwC-A) standards and hierarchical structure, it's important to determine how many layers of `eventID` (and, consequently, `parentEventID`) the data has. In the CTD dataset, the data has four layers: "cruise", "station", "cast", and the depth at which the measurements were taken ("ndepth"). Additional columns for each of these layers are created. 
 
-``` {r time formatting, eval = FALSE}
-ctd <- sheet2 %>%
-  select(`NO.Trawl`, `NO.(CTD)`, `NO.(ST)`, `Bot. Depth`, DEPTH, 
-         LON, LAT, YEAR, MONTH, DAY, `TIME(ship time)`, `MIN(ship time)`) %>%
+``` {r time_formatting, eval = FALSE}
+sheet2 <- sheet2 %>%
   mutate(eventDate_text = str_c(YEAR, MONTH, DAY, `TIME(ship time)`, `MIN(ship time)`, sep="-"),
          eventDate = ymd_hm(eventDate_text, tz = "Asia/Kamchatka")) %>%
   mutate(eventDate = format_iso_8601(as.POSIXct(eventDate,
                                                 format = "%Y-%m-%d %H:%M%:S",
                                                 tz="Asia/Kamchatka")),
          eventDate = str_replace(eventDate, "\\+00:00", "Z")
-         )
-```
-
-The longitude was recorded as 'positive' values, however, after QC and cross-reference to other data recorded during the same cruise, it is clear that the values should be negative.
-
-``` {r QC Longitude, eval = FALSE}
-ctd$LON <- -ctd$LON
-```
-
-To wrangle the data into a tidy format that follows the Darwin Core Archive (DwC-A) standards and hierarchical structure, it's important to determine how many layers of eventID (and, consequently, parentEventID) the data has. In the CTD dataset, the data has four layers: cruise, station, cast, and the depth at which the  measurements were taken. For each of these layers, a data frame is created with unique eventIDs, associated parentEventIDs, and associated unique characteristics. In our data, we join the date to the station level, as all station-specific data was collected on a day. 
-
-``` {r ctd wrangle, eval = FALSE}
-ctd <- ctd %>%
+         ) %>%
   mutate(cruise = "GoA2019",
          station = paste(cruise, `NO.Trawl`, sep="_Stn"),
          cast = paste(station, "cast1", sep = ":"),
-         ndepth = paste(cast, DEPTH, sep=":ctd:"))
+         ndepth = paste(cast, DEPTH, sep=":ctd:"),
+         sample = paste(ndepth, sep = ":"))
+```
 
-ctd_cruise <- ctd %>% 
+The longitude was recorded as positive values, however, after QC and cross-reference to other data recorded during the same cruise, it is clear that the values should be negative.
+
+``` {r QC_Longitude, eval = FALSE}
+sheet2$LON <- -sheet2$LON
+```
+
+For each of the layers of `eventID`, a data frame is created with unique eventIDs, associated parentEventIDs, and associated unique characteristics such as `eventRemarks`. In our data, we join the date to the station level, as all station-specific data was collected on a day. 
+
+Finally, these tables get joined, and re-ordered based on `eventID`, to create the Event Core. This table gets saved locally and in the correct GoogleDrive folder.
+
+``` {r ctd_event, eval = FALSE}
+ctd_cruise <- sheet2 %>% 
   select(eventID = cruise) %>%
   distinct(eventID) %>%
-  mutate(type = "cruise")
+  mutate(eventRemarks = "cruise")
 
-# Join date and bottom depth to station
-ctd_station <- ctd %>%
+# Join date to station
+ctd_station <- sheet2 %>%
   select(eventID = station,
-         parentEventID = cruise,
+         parentEventID = cruise) %>% 
+  distinct(eventID, .keep_all = TRUE) %>% 
+  mutate(eventRemarks = "station")
+
+ctd_cast <- sheet2 %>% 
+  select(eventID = cast,
+         parentEventID = station,
          eventDate,
          decimalLatitude = LAT,
-         decimalLongitude = LON,
-         bottomDepth = `Bot. Depth`) %>% 
+         decimalLongitude = LON) %>% 
   distinct(eventID, .keep_all = TRUE) %>% 
-  mutate(type = "station")
+  mutate(eventRemarks = "cast")
 
-ctd_cast <- ctd %>% 
-  select(eventID = cast,
-         parentEventID = station) %>% 
-  distinct(eventID, .keep_all = TRUE) %>% 
-  mutate(type = "cast")
-
-ctd_ndepth <- ctd %>% 
+ctd_ndepth <- sheet2 %>% 
   select(eventID = ndepth,
          parentEventID = cast,
          minimumDepthInMetres = DEPTH,
          maximumDepthInMetres = DEPTH) %>% 
   distinct(eventID, .keep_all = TRUE) %>% 
-  mutate(type = "sample")
-```
+  mutate(eventRemarks = "sample")
 
-Finally, these tables get joined, and re-ordered based on eventID, to create the Event Core. This table gets saved locally and in the correct GoogleDrive folder.
+ctd_sample <- sheet2 %>%
+  select(eventID = sample,
+         parentEventID = ndepth) %>%
+  distinct(eventID, .keep_all = TRUE) %>%
+  mutate(eventRemarks = "subsample")
 
-``` {r ctd event, eval = FALSE}
-ctd_event <- bind_rows(ctd_cruise, ctd_station, ctd_cast, ctd_ndepth) %>% 
-  select(eventID, parentEventID:maximumDepthInMetres, type) 
+ctd_event <- bind_rows(ctd_cruise, ctd_station, ctd_cast, ctd_ndepth, ctd_sample) %>%   select(eventID, parentEventID:maximumDepthInMetres, eventRemarks) %>%
+  mutate(type = "Event")
 
-# Re-order the Event Core:
-order <- stringr::str_sort(ctd_event$eventID, numeric=TRUE)
-ctd_event <- ctd_event[match(order, ctd_event$eventID),]
+# If you wish to re-order the Event Core, use the following code:
+# order <- stringr::str_sort(ctd_event$eventID, numeric=TRUE)
+# ctd_event <- ctd_event[match(order, ctd_event$eventID),]
 
 # Save locally and in GoogleDrive
-write_csv(ctd_event, here("./datasets/GoA_2019/CTD/raw_data/", "CTD_event.csv"))
-drive_upload("./datasets/GoA_2019/CTD/raw_data/CTD_event.csv",
+write_csv(ctd_event, here("CTD", "tidy_data", "CTD_event.csv"))
+drive_upload(here("CTD", "tidy_data", "CTD_event.csv"),
              path = "https://drive.google.com/drive/u/0/folders/1-XXOPhMN4-BmhI3owM2hvaMKXEy6hEYL",
-             name = "draft_CTD_event.csv",
+             name = "CTD_event.csv",
              overwrite = TRUE)
 ```
 
 ## MeasurementOrFact 
 
-After creating the Event Core, we create an extended MeasurementOrFact (eMoF) table. An occurrence table is not created as the datasets only contain abiotic data. In the wrangling for the measurement table, we create specific eventIDs that we can associate measurement values to at a later stage. Also, DwC-A standards work with "long" format, rather than the wide format, so we need to transpose the data. 
+After creating the Event Core, we create an extended MeasurementOrFact (eMoF) table. An occurrence table is not created as the datasets only contain abiotic data. Therefore, measurements are linked to eventIDs. DwC-A standards work with "long" format, rather than the wide format, so we need to transpose the data. 
 
-``` {r measurement wrangle, eval = FALSE}
-# Create eMoF table, first from sheet1 (data collected only at specific depths),
-# as this computes faster (smaller dataset) 
+Our first step however is to add the column of bottom depth at each station to the extension measurementOrFact table. Please note that the `measurementTypeID` for seafloor depth is defined as "Bridge log sheets" until there is more information about how bottom depth was determined/measured (e.g., by bathymetric sensors, charts, etc.). 
 
-# First, EC25 is measured in microSiemens/cm, which is not (yet) in NERCs controlled 
-# vocabulary. Therefore, we convert this column to milliSiemens/cm:
-ctd_measurement <- sheet1 %>% 
-  mutate(`EC25 [mS/cm]_R` = as.numeric(`EC25 [uS/cm]_R`) / 1000,
-         eventID = paste("NO.Trawl",NO.Trawl, `NO.(CTD)`,"D",DEPTH, sep = "_"))
-ctd_measurement <- ctd_measurement[, -which(names(ctd_measurement) == "EC25 [uS/cm]_R")] %>%
-  pivot_longer(`TEM_S`:`EC25 [mS/cm]_R`,
+``` {r seafloor, eval = FALSE}
+ctd_botdepth <- sheet2 %>% 
+  select(eventID = cast, `Bot. Depth`) %>%
+  distinct(eventID, .keep_all = TRUE) %>%
+  pivot_longer(cols = `Bot. Depth`,
                names_to = "measurementType",
-               values_to = "measurementValue",
-               values_ptypes = list(measurementValue = 'character')
-  )
+               values_to = "measurementValue") %>%
+  mutate(measurementValue = as.character(measurementValue),
+         measurementID = paste(eventID, "depth", sep = ":"),
+         measurementType = recode(measurementType,
+                                  `Bot. Depth` = "seafloor depth"),
+         measurementTypeID = "http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/",
+         measurementUnit = "m",
+         measurementUnitID = "http://vocab.nerc.ac.uk/collection/P06/current/ULAA/" ) %>%
+  select(measurementID, eventID, measurementType, measurementTypeID, measurementValue,
+         measurementUnit, measurementUnitID)
 ```
 
-__Note: in the previous chunk we got our data from sheet1 - this is data collected at discrete depths. To create a measurement table for sheet2, simply replace sheet1 with sheet2.__
+Next, we select the appropriate columns and use the pivot_longer function to transpose the data. As EC25 is measured in microSiemens/cm, which is not (yet) in NERCs controlled vocabulary, we convert this column to milliSiemens/cm. 
 
-Assign the correct NERC controlled vocabulary to the variables and the measurement units. 
+Additionally, turbidity is measured in FTU. From personal communication with Anna Vazhova, _FTU is the Formazine Turbidity Unit. According to ISO 7027 (Water quality - Determination of turbidity), the turbidity unit is FNU (Formazine Nephelometric Unit). The United States Environmental Protection Agency (U.S. EPA) and the World Health Organization (WHO) use the NTU (Nephelometric Turbidity Unit). The ratio between the main units of turbidity is as follows: 1 FTU (EMF in Russia) = 1 FNU = 1 NTU_. As FTU is currently not a `measurementUnit` in the NERC vocab, we have changed this `measurementUnit` to NTU.
 
-``` {r CTD, eval = FALSE}
-ctd_measurement <- ctd_measurement %>% # Should "NO.Trawl" here be "NO.(ST)"?
-  mutate(measurementID = case_when(measurementType == "TEM_S" ~ paste(eventID,"TEM_S",sep="_"),
-                                   measurementType == "TEM_R" ~ paste(eventID,"TEM_R",sep="_"),
-                                   measurementType == "SAL_S" ~ paste(eventID,"SAL_S",sep="_"),
-                                   measurementType == "SAL_R" ~ paste(eventID,"SAL_R",sep="_"),
-                                   measurementType == "Cond. [mS/cm]_R" ~ paste(eventID,"Cond. [mS/cm]_R", sep="_"),
-                                   measurementType == "Density [kg/m^3]_R" ~ paste(eventID,"Density", sep="_"),
-                                   measurementType == "SigmaT [ ]_R" ~ paste(eventID,"Sigma",sep="_"),
-                                   measurementType == "Chl-Flu. [ppb]_R" ~ paste(eventID,"Chl-Flu", sep="_"),
-                                   measurementType == "Chl-a [ug/l]_R" ~ paste(eventID,"Chl-a", sep="_"),
-                                   measurementType == "Turb-M [FTU]_R" ~ paste(eventID,"Turbidity",sep="_"),
-                                   measurementType == "DO [mg/l]_R" ~ paste(eventID,"DO",sep="_"),
-                                   measurementType == "Batt. [V]_R" ~ paste(eventID,"Batt", sep="_"),
-                                   measurementType == "pH" ~ paste(eventID,"pH",sep="_"),
-                                   measurementType == "O2 [ml/l]" ~ paste(eventID,"O2 [ml/l]",sep="_"),
-                                   measurementType == "BOD5[ml/l]" ~ paste(eventID,"BOD5[ml/l]",sep="_"),
-                                   measurementType == "DO [%]_R" ~ paste(eventID,"BOD5[ml/l]",sep="_"),
-                                   measurementType == "EC25 [mS/cm]_R" ~ paste(eventID,"EC25 [mS/cm]_R",sep="_")),
-         
+``` {r measurement data_wrangle, eval = FALSE}
+ctd_measurement <- sheet2 %>% 
+  select(eventID = sample, 
+         `TEM_S`:`BOD5[ml/l]`) %>%
+  distinct(eventID, .keep_all = TRUE) %>%
+  mutate(`EC25 [mS/cm]_R` = as.numeric(`EC25 [uS/cm]_R`) / 1000) %>%
+  dplyr::select(-`EC25 [uS/cm]_R`) %>%
+  mutate_all(as.character) %>%
+  pivot_longer(cols = `TEM_S`:`EC25 [mS/cm]_R`,
+               names_to = "measurementType",
+               values_to = "measurementValue") %>% 
+  mutate(measurementID = case_when(measurementType == "TEM_S" ~ paste(eventID,"temp_s",sep=":"),
+                                   measurementType == "TEM_R" ~ paste(eventID,"temp_r",sep=":"),
+                                   measurementType == "SAL_S" ~ paste(eventID,"sal_s",sep=":"),
+                                   measurementType == "SAL_R" ~ paste(eventID,"sal_r",sep=":"),
+                                   measurementType == "Cond. [mS/cm]_R" ~ paste(eventID,"cond_r", sep=":"),
+                                   measurementType == "Density [kg/m^3]_R" ~ paste(eventID,"density", sep=":"),
+                                   measurementType == "SigmaT [ ]_R" ~ paste(eventID,"sigma_t",sep=":"),
+                                   measurementType == "Chl-Flu. [ppb]_R" ~ paste(eventID,"chl_flu", sep=":"),
+                                   measurementType == "Chl-a [ug/l]_R" ~ paste(eventID,"chl-a", sep=":"),
+                                   measurementType == "Turb-M [FTU]_R" ~ paste(eventID,"turb",sep=":"),
+                                   measurementType == "DO [mg/l]_R" ~ paste(eventID,"DO_conc",sep=":"),
+                                   measurementType == "Batt. [V]_R" ~ paste(eventID,"battery", sep=":"),
+                                   measurementType == "pH" ~ paste(eventID,"pH",sep=":"),
+                                   measurementType == "O2 [ml/l]" ~ paste(eventID,"O2",sep=":"),
+                                   measurementType == "BOD5[ml/l]" ~ paste(eventID,"BOD5",sep=":"),
+                                   measurementType == "DO [%]_R" ~ paste(eventID,"DO_per",sep=":"),
+                                   measurementType == "EC25 [mS/cm]_R" ~ paste(eventID,"ec25",sep=":")),
          measurementType = recode(measurementType, 
-                                  `TEM_S` = "Sea Water Temperature [Sea-Bird]",
-                                  `TEM_R` = "Sea Water Temperature [Rinko]",
-                                  `SAL_R` = "Sea Water Practical Salinity [Rinko]",
-                                  `SAL_S` = "Sea Water Practical Salinity [Sea-Bird]",
+                                  `TEM_S` = "seabird_sea_water_temperature",
+                                  `TEM_R` = "rinko_sea_water_temperature",
+                                  `SAL_R` = "rinko_sea_water_practical_salinity",
+                                  `SAL_S` = "seabird_sea_water_practical_salinity",
                                   `pH` = "pH",
-                                  `O2 [ml/l]` = "Dissolved oxygen [Lab]",
-                                  `Cond. [mS/cm]_R` = "Sea Water Electrical Conductivity",
-                                  `Density [kg/m^3]_R` = "Sea Water Density",
-                                  `SigmaT [ ]_R` = "Sea Water Sigma T",
-                                  `Chl-Flu. [ppb]_R` = "Chlorophyll - Flu",
-                                  `Chl-a [ug/l]_R` = "Chlorophyll-a",
-                                  `Turb-M [FTU]_R` = "Turbidity",
-                                  `DO [mg/l]_R` = "Dissolved oxygen",
-                                  `Batt. [V]_R` = "Battery voltage",
-                                  `BOD5[ml/l]` = "BOD in 5m depth [Lab]",
-                                  `DO [%]_R` = "Percent oxygen saturation",
+                                  `O2 [ml/l]` = "dissolved_oxygen_lab",
+                                  `Cond. [mS/cm]_R` = "sea_water_electrical_conductivity",
+                                  `Density [kg/m^3]_R` = "sea_water_density",
+                                  `SigmaT [ ]_R` = "sea_water_sigma_t",
+                                  `Chl-Flu. [ppb]_R` = "chlorophyll_flu",
+                                  `Chl-a [ug/l]_R` = "chlorophyll_a",
+                                  `Turb-M [FTU]_R` = "turbidity",
+                                  `DO [mg/l]_R` = "dissolved_oxygen",
+                                  `Batt. [V]_R` = "battery_voltage",
+                                  `BOD5[ml/l]` = "BOD_5m_depth",
+                                  `DO [%]_R` = "percent_oxygen_saturation",
                                   `EC25 [mS/cm]_R` = "EC25"),
          
          measurementTypeID = recode(measurementType, #URIs from NERC website
-                                    "Sea Water Temperature [Sea-Bird]" = "http://vocab.nerc.ac.uk/collection/P02/current/TEMP/2/",
-                                    "Sea Water Temperature [Rinko]" = "http://vocab.nerc.ac.uk/collection/P02/current/TEMP/2/",
-                                    "Sea Water Practical Salinity [Rinko]" = "http://vocab.nerc.ac.uk/collection/P02/current/PSAL/",
-                                    "Sea Water Practical Salinity [Sea-Bird]" = "http://vocab.nerc.ac.uk/collection/P02/current/PSAL/",
-                                    "Sea Water Electrical Conductivity" = "http://vocab.nerc.ac.uk/collection/P02/current/CNDC/",
-                                    "Sea Water Density" = "http://vocab.nerc.ac.uk/collection/P04/current/G990/",
-                                    "Sea Water Sigma T" = "http://vocab.nerc.ac.uk/collection/OG1/current/SIGTHETA/",     
-                                    "Chlorophyll - Flu" = "http://vocab.nerc.ac.uk/collection/P07/current/CFSN0705/",
-                                    "Chlorophyll-a" = "http://vocab.nerc.ac.uk/collection/P07/current/CFSN0705/",
-                                    "Turbidity" = "http://vocab.nerc.ac.uk/collection/P25/current/TURB/",
-                                    "Dissolved oxygen" = "http://vocab.nerc.ac.uk/collection/P35/current/EPC00002/",
-                                    "Battery voltage" = "http://vocab.nerc.ac.uk/collection/S06/current/S0600163/",
+                                    "seabird_sea_water_temperature" = "http://vocab.nerc.ac.uk/collection/P04/current/G963/",
+                                    "rinko_sea_water_temperature" = "http://vocab.nerc.ac.uk/collection/P04/current/G963/",
+                                    "rinko_sea_water_practical_salinity" = "http://vocab.nerc.ac.uk/collection/P04/current/G995/",
+                                    "seabird_sea_water_practical_salinity" = "http://vocab.nerc.ac.uk/collection/P04/current/G995/",
+                                    "sea_water_electrical_conductivity" = "http://vocab.nerc.ac.uk/collection/P01/current/CNDCZZ01/",
+                                    "sea_water_density" = "http://vocab.nerc.ac.uk/collection/P07/current/CFSN0393/",
+                                    "sea_water_sigma_t" = "http://vocab.nerc.ac.uk/collection/P07/current/CFSN0332/",     
+                                    "chlorophyll_flu" = "http://vocab.nerc.ac.uk/collection/P07/current/CFSN0705/",
+                                    "chlorophyll_a" = "http://vocab.nerc.ac.uk/collection/P07/current/CFSN0705/",
+                                    "turbidity" = "http://vocab.nerc.ac.uk/collection/P25/current/TURB/",
+                                    "dissolved_oxygen" = "http://vocab.nerc.ac.uk/collection/P35/current/EPC00002/",
+                                    "battery_voltage" = "http://vocab.nerc.ac.uk/collection/S06/current/S0600163/",
                                     "pH" = "http://vocab.nerc.ac.uk/collection/P01/current/PHXXZZXX/",
-                                    "Dissolved oxygen [Lab]" = "http://vocab.nerc.ac.uk/collection/P01/current/DOXYZZ01/",
-                                    "BOD in 5m depth [Lab]" = "http://vocab.nerc.ac.uk/collection/P01/current/BODZZZZZ/1/",
-                                    "Percent oxygen saturation" = "http://vocab.nerc.ac.uk/collection/P02/current/DOXY/",
-                                    "EC25" = "http://vocab.nerc.ac.uk/collection/P02/current/CNDC/"),
+                                    "dissolved_oxygen_lab" = "http://vocab.nerc.ac.uk/collection/P01/current/DOXYZZ01/",
+                                    "BOD_5m_depth" = "http://vocab.nerc.ac.uk/collection/P01/current/BODZZZZZ/1/",
+                                    "percent_oxygen_saturation" = "http://vocab.nerc.ac.uk/collection/P02/current/DOXY/",
+                                    "EC25" = "http://vocab.nerc.ac.uk/collection/P01/current/CNDCZZ01/"),
          
-         measurementUnit = case_when(measurementType == "Sea Water Temperature [Sea-Bird]" ~ "deg C",
-                                     measurementType == "Sea Water Temperature [Rinko]" ~ "deg C",
-                                     measurementType == "Sea Water Practical Salinity [Rinko]" ~ " ",
-                                     measurementType == "Sea Water Practical Salinity [Sea-Bird]" ~ " ",
+         measurementUnit = case_when(measurementType == "seabird_sea_water_temperature" ~ "deg C",
+                                     measurementType == "rinko_sea_water_temperature" ~ "deg C",
+                                     measurementType == "rinko_sea_water_practical_salinity" ~ " ",
+                                     measurementType == "seabird_sea_water_practical_salinity" ~ " ",
                                      measurementType == "pH" ~ " ",
-                                     measurementType == "Sea Water Electrical Conductivity" ~ "mS/cm",
-                                     measurementType == "Sea Water Density" ~ "kg m^-3 ",
-                                     measurementType == "Sea Water Sigma T" ~ "kg m^-3",
-                                     measurementType == "Chlorophyll - Flu" ~ "ppb",
-                                     measurementType == "Chlorophyll-a" ~ "ug/L",
+                                     measurementType == "sea_water_electrical_conductivity" ~ "mS/cm",
+                                     measurementType == "sea_water_density" ~ "kg/m^3 ",
+                                     measurementType == "sea_water_sigma_t" ~ "kg/m^3",
+                                     measurementType == "chlorophyll_flu" ~ "ppb",
+                                     measurementType == "chlorophyll_a" ~ "ug/L",
                                      # Alternatively, chlorophyll-a concentration can be reported in mg.m-3. Conversion = 1:1.
-                                     measurementType == "Turbidity" ~ "FTU",
-                                     measurementType == "Battery voltage" ~ "V",
-                                     measurementType == "Dissolved oxygen" ~ "mg/L",
-                                     measurementType == "Dissolved oxygen [Lab]" ~ "ml/L ",
-                                     measurementType == "BOD in 5m depth [Lab]" ~ "ml/L",
-                                     measurementType == "Percent oxygen saturation" ~ "percent saturation",
+                                     measurementType == "turbidity" ~ "NTU",
+                                     measurementType == "battery_voltage" ~ "V",
+                                     measurementType == "dissolved_oxygen" ~ "mg/L",
+                                     measurementType == "dissolved_oxygen_lab" ~ "ml/L ",
+                                     measurementType == "BOD_5m_depth" ~ "ml/L",
+                                     measurementType == "percent_oxygen_saturation" ~ "percent saturation",
                                      measurementType == "EC25" ~ "mS/cm"),
          
-         measurementUnitID = case_when(measurementType == "Sea Water Temperature [Sea-Bird]" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UPAA/",
-                                       measurementType == "Sea Water Temperature [Rinko]" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UPAA/",
-                                       measurementType == "Sea Water Practical Salinity [Rinko]" ~ "http://vocab.nerc.ac.uk/collection/P06/current/PPTR/",
-                                       measurementType == "Sea Water Practical Salinity [Sea-Bird]" ~ "http://vocab.nerc.ac.uk/collection/P06/current/PPTR/",
-                                       measurementType == "Sea Water Electrical Conductivity" ~ "http://vocab.nerc.ac.uk/collection/P06/current/MSCM/",
-                                       measurementType == "Sea Water Density" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UKMC/",
-                                       measurementType == "Sea Water Sigma T" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UKMC/",
-                                       measurementType == "Chlorophyll - Flu" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UPPB/",
-                                       measurementType == "Chlorophyll-a" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UGPL/",
-                                       measurementType == "Turbidity" ~ "http://vocab.nerc.ac.uk/collection/P06/current/USTU/",
-                                       measurementType == "Dissolved oxygen" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UMGL/",
-                                       measurementType == "Battery voltage" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UVLT/",
+         measurementUnitID = case_when(measurementType == "seabird_sea_water_temperature" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UPAA/",
+                                       measurementType == "rinko_sea_water_temperature" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UPAA/",
+                                       measurementType == "rinko_sea_water_practical_salinity" ~ "http://vocab.nerc.ac.uk/collection/P06/current/PPTR/",
+                                       measurementType == "seabird_sea_water_practical_salinity" ~ "http://vocab.nerc.ac.uk/collection/P06/current/PPTR/",
+                                       measurementType == "sea_water_electrical_conductivity" ~ "http://vocab.nerc.ac.uk/collection/P06/current/MSCM/",
+                                       measurementType == "sea_water_density" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UKMC/",
+                                       measurementType == "sea_water_sigma_t" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UKMC/",
+                                       measurementType == "chlorophyll_flu" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UPPB/",
+                                       measurementType == "chlorophyll_a" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UGPL/",
+                                       measurementType == "turbidity" ~ "http://vocab.nerc.ac.uk/collection/P06/current/USTU/",
+                                       measurementType == "dissolved_oxygen" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UMGL/",
+                                       measurementType == "battery_voltage" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UVLT/",
                                        measurementType == "pH" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UUPH/",
-                                       measurementType == "Dissolved oxygen [Lab]" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UMLL/",
-                                       measurementType == "BOD in 5m depth [Lab]" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UMLL/",
-                                       measurementType == "Percent oxygen saturation" ~ "http://vocab.nerc.ac.uk/collection/P01/current/OXYSZZ01/",
+                                       measurementType == "dissolved_oxygen_lab" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UMLL/",
+                                       measurementType == "BOD_5m_depth" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UMLL/",
+                                       measurementType == "percent_oxygen_saturation" ~ "http://vocab.nerc.ac.uk/collection/P01/current/OXYSZZ01/",
                                        measurementType == "EC25" ~ "http://vocab.nerc.ac.uk/collection/P06/current/MSCM/")
-  ) %>%
-  select(measurementID, measurementType, measurementTypeID,
+  ) 
+
+# Join the dataframes: 
+ctd_measurementOrFact <- bind_rows(ctd_botdepth, ctd_measurement) %>%
+  select(measurementID, eventID, measurementType, measurementTypeID,
          measurementValue, measurementUnit, measurementUnitID)
-```
 
-Finally, the eMoF table gets saved locally and on GoogleDrive. 
-
-``` {r CTD save, eval = FALSE}
 # Save locally and on GoogleDrive: 
-write_csv(ctd_measurement, here("./datasets/GoA_2019/CTD/raw_data/", "CTD_measurement.csv"))
-drive_upload("./datasets/GoA_2019/CTD/raw_data/CTD_measurement.csv",
+write_csv(ctd_measurementOrFact, here("CTD", "tidy_data", "CTD_measurement.csv"))
+drive_upload(here("CTD", "tidy_data", "CTD_measurement.csv"),
              path = "https://drive.google.com/drive/u/0/folders/1-XXOPhMN4-BmhI3owM2hvaMKXEy6hEYL",
-             name = "draft_CTD_measurement.csv",
+             name = "CTD_eMoF.csv",
              overwrite = TRUE)
 ```
