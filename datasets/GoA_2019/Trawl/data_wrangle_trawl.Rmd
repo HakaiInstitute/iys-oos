@@ -61,16 +61,16 @@ trawl_cruise <- trawl %>%
 
 trawl_station <- trawl %>% 
   select(eventID = station,
-         parentEventID = cruise,
-         eventDate,
-         decimalLatitude = Y,
-         decimalLongitude = X) %>% 
+         parentEventID = cruise) %>% 
   distinct(eventID, .keep_all = TRUE) %>% 
   mutate(eventRemarks = "station")
 
 trawl_trawl <- trawl %>% 
   select(eventID = trawl,
-         parentEventID = station) %>% 
+         parentEventID = station,
+         eventDate,
+         decimalLatitude = Y,
+         decimalLongitude = X) %>% 
   distinct(eventID, .keep_all = TRUE) %>% 
   mutate(eventRemarks = "trawl")
 
@@ -99,12 +99,13 @@ Next, `occurrenceID` - unique to each species _and each group (i.e. adult or juv
 trawl_sp_wrangle <- trawl %>%
   mutate(Species = paste(FISH1, FISH2, sep = " ")) %>% 
   # For each trawl, note for each of these species whether it was present or absent:
-  complete(NUMBER, Species, fill = list(PIECES = 0)) %>%
+  complete(NUMBER, Species, fill = list(MASSCATCH = 0)) %>%
   group_by(NUMBER) %>% 
   fill(trawl, .direction = "downup") %>% 
   ungroup(NUMBER) %>% 
-  # Add present or absent depending on whether "Pieces > 0"
-  mutate(occurrenceStatus = ifelse(PIECES > 0, "present", "absent")) %>% # What to do if PIECES = NA?
+  # Add present or absent depending on whether "MASSCATCH > 0"
+  # We decided to determine occurrenceStatus on MASSCATCH rather than PIECES because some species were caught (had a MASSCATCH rec.) but were not recorded under PIECES. This was mostly the case for jellyfish spp., and perhaps it was difficult to enumerate number of individuals.
+  mutate(occurrenceStatus = ifelse(MASSCATCH > 0, "present", "absent")) %>% 
   rename(eventID = trawl,
          scientificName = Species) %>%
   select(eventID, scientificName, occurrenceStatus, Group) %>%
