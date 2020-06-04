@@ -47,22 +47,21 @@ Below are listed some important command lines within GitHub that can be useful t
 
 __Please note: We should try and limit any changes made to the raw data. If any changes are made to the raw data, save these under a different file name and work from that.__
 
-The .R script contains the code used to transform or 'tidy' the data to follow Darwin Core standards, whereas the .Rmd contains the script along with a more thorough description of why certain functions were used. Including both these files increases the reproducibility of the script for other users. The .R, .Rmd and ChangeLog file get saved in the IYS-OOS repo in GitHub, whereas the tidied datasets get saved on GoogleDrive (.csv). 
+The RMarkdown (.Rmd) script contains the code used to transform or 'tidy' the data to follow Darwin Core standards, along with a more thorough description of why certain functions were used. The .Rmd and ChangeLog file get saved in the IYS-OOS repo in GitHub, whereas the tidied datasets get saved on GoogleDrive with a .csv extension. 
 
-When working with GitHub, the first step is to `clone` the repository you'll be working from. A clone is basically a duplicate of another repository, getting your own copy of someone else's code. The command line for this is: 
+When working with GitHub, the first step is to `clone` the repository you'll be working from. A clone is basically a duplicate of another repository, getting your own copy of someone else's code. The command line for this is `$ git clone [...]` e.g.: 
 
 > $ git clone https://github.com/HakaiInstitute/iys-oos.git
 >
 
-This clones the master branch and all associated develop and feature branches. A good practice is to create a `feature` branch on which you can work without directly affecting the `develop` or `master` branch. A new `feature` branch can be created in RStudio but also through a command line in Git. Branches can be created locally as well as on the remote. To create a new feature branch (e.g. feature/ctd, on which the CTD data gets wrangled), the command line is: 
+This clones the master branch and all associated develop and feature branches. A good practice is to create a `feature` branch on which you can work without directly affecting the `develop` or `master` branch. A new `feature` branch can be created in RStudio but also through a command line in Git. Branches can be created locally as well as on the remote. To create a new feature branch locally (e.g. feature/ctd, on which the CTD data gets wrangled), the command line is: 
 
 > $ git checkout -b feature/ctd
 >
 
 Git checkout is used often to switch between branches. The added `-b` means that a new branch is created at the same time. This branch is created _locally_ based on the branch you were on (HEAD). Using this command line, you not only create that branch but also switch over to it. 
 
-> Alternatively, you can also `fork` (i.e., copy) the repository to your own GitHub, if you have created one. Forking allows you to freely experiment with changes without affecting the original repository. To do this, go to the GitHub repository you want to fork and select `fork` in the top right. Now whenever you'd like your changes to be incorporated in the original repository, you'll to do a `pull request` (see below). 
->
+Alternatively, you can also `fork` (i.e., copy) the repository to your own GitHub, if you have created one. Forking allows you to freely experiment with changes without affecting the original repository. To do this, go to the GitHub repository you want to fork and select `fork` in the top right. Now whenever you'd like your changes to be incorporated in the original repository, you'll to do a `pull request` (see below). 
 
 To see which branch you are currently on: 
 
@@ -76,12 +75,12 @@ To checkout the branch you want to use:
 > $ git checkout <branch_name>
 >
 
-The checkout command lets you navigate and switch between the branches. Checkout works to switch between versions of code already on the local system. __Important: when you make changes in an R script that nests under a specific feature branch (e.g. CTD-wrangling script under feature/ctd), make sure to commit (and push?) this first before switching to another (feature) branch to work on a different R script. Otherwise changes you made to the CTD R script will also be committed and pushed onto a subsequent branch you're working on.__ To confirm you are now working on the correct branch: 
+The checkout command lets you navigate and switch between the branches. Checkout works to switch between versions of code already on the local system. __Important: when you make changes in an R script that nests under a specific feature branch (e.g. CTD-wrangling script under feature/ctd), make sure to commit and push this first before switching to another (feature) branch to work on a different R script. Otherwise changes you made to the CTD .Rmd script will also be committed and pushed onto a subsequent branch you're working on.__ To confirm you are now working on the correct branch: 
 
 > $ git branch
 >
 
-Now a new feature branch, called "ctd" is created _locally_. You can now freely work in this branch. Any saves you make will be saved to your local workstation, _not_ to GitHub. To save the changes to the remote, the first step is to `commit` your changes. This can be done through RStudio, or alternatively, by using the following command line:
+Once you have created a new (feature) branch locally, can now freely work in this branch. Any saves you make will be saved to your local workstation, _not_ to GitHub. To save the changes to the remote, the first step is to `commit` your changes. This can be done through RStudio, or alternatively, by using the following command line:
 
 > $ git add [name of the file]
 >
@@ -96,13 +95,12 @@ Please note that this commits your changes, they are not yet 'pushed' to GitHub.
 > $ git push <repo name> <branch name>
 >
 
-So if we've been working on the .R script which we want to push to the feature/ctd branch of our iys-oos repo, the syntax would be:
+So if we've been working on the .Rmd script which we want to push to the feature/ctd branch of our iys-oos repo, the syntax would be:
 
 > $ git push origin feature/ctd
 >
 
-The `origin` is a shorthand name for the remote repository that a project was originally cloned from (in this case, iys-oos). More precisely, it is used instead of that original repository's URL, making referencing much easier.
-Once pushed, the commits made to the scripts can be found on GitHub, and then be 'pulled' by other collaborators if they wish to make contributions or modifications to the code. A `pull` is useful to make sure you have the latest modifications / version from GitHub, and keep your code updated with whatever changes may have been applied to the original. 
+The `origin` is a shorthand name for the remote repository that a project was originally cloned from (in this case, iys-oos). More precisely, it is used instead of that original repository's URL, making referencing much easier. Once pushed, the commits made to the scripts can be found on GitHub, and then be 'pulled' by other collaborators if they wish to make contributions or modifications to the code. A `pull` is useful to make sure you have the latest modifications / version from GitHub, and keep your code updated with whatever changes may have been applied to the original. 
 
 The difference between `git fetch` and `git pull` is that `git fetch` tells your local git to retrieve the latest information, but doesn't transfer anything - it basically tells you whether any changes have been made. `git pull` does that _and_ also copies those changes from the remote repository.
 
@@ -148,9 +146,7 @@ To create a Project in RStudio and link it with an *existing* repository, use th
 6) Check if the files are saved locally in the folder you specified under step 4.3 (i.e., in our case: C:/Users/Tim/Desktop/GitHub/open-data-mgmt). This folder should also contain the R project file.
 7) In RStudio, in the top right you can select the Project (open-data-mgmt), and then see all the files associated to this Project in the bottom-right panel. You should be able to navigate to all the files within the repository this way, and also navigate between branches in the repository.
 
-__When naming branches, files and folders and committing/pushing it to the remote, it is good practice to make sure these are as concise as possible, and hyphenated.
-
-
+__When naming branches, files and folders and committing/pushing it to the remote, it is good practice to make sure these are as concise as possible, and hyphenated__.
 
 ## RMarkdown
 
@@ -167,7 +163,7 @@ A description of the columns:
  * Done for now:
  * Closed:
  
-The issues can also be `labeled` (i.e., "help wanted", "to do", "question"), which makes it easier to filter for specific labels or categorize them. Multiple labels can be attached to a single issue. Additionally, `story points` get attached to an issue. Story points are unitless scales of measurement which are sized in relation to other tasks. The number of storypoints within each column gives an indication how big (and therefore perhaps, as a proxy, how time-consuming) the issues are.
+The issues can also be `labeled` (i.e., "help wanted", "to do", "question"), which makes it easier to filter for specific labels or categorize them. Multiple labels can be attached to a single issue. You can also assign contributors (`Assignee`) to a specific issue so that they get notified of issues that they need to work on. Additionally, `story points` get attached to an issue. Story points are unitless scales of measurement which are sized in relation to other tasks. The number of storypoints within each column gives an indication how big (and therefore perhaps, as a proxy, how time-consuming) the issues are.
  
 The ZenHub tool allows us to keep track of the progress made through Epics and Projects, and provides an overview of the issues related to a certain stage of the project. 
 
@@ -212,7 +208,7 @@ __Event__: Three of these required DwC terms are nested under the __Event__ tabl
 
 Another interesting column within the Event Core is `type`. There was confusion as to how to interpret this column, as within the DwC-A standard there was controlled vocabulary available for `type`, whereas there was no defined controlled vocabulary under OBIS, and `type` was more description (e.g. "cruise", "sample", "subsample" etc). At a meeting with the Standardizing Marine Biological Data group on May 13, 2020, it was agreed to follow the DwC-A standard, and use controlled vocabulary for this term. However, type is not a required term.
 
-Update __May 26, 2020__: it seems the column `type` in the Event Core has been replaced by `eventRemarks`. Whilst it is still not a required term in the Event table, it can be useful to categorize and structure your data. 
+Update __May 26, 2020__: it seems the column `type` in the Event Core has been replaced by `eventRemarks`. Whilst it is still not a required term in the Event table, it can be useful to categorize and structure your data. Controlled vocabulary exists for the `type` column and can be found [here](https://dwc.tdwg.org/terms/).  
 
 __Location__: Location is _not_ a required table or Core for OBIS (although it is listed as a class in DwC-A), however, it is useful and good practice to create, and save, a separate file pertaining the information on sampling locations. Typically, a dataframe consisting of the columns "Station", "decimalLatitude" and "decimalLongitude" suffices. This dataframe can be saved locally as .xlsx or .csv file, and will prove useful at a later stage when entering the spatial extent in the metadata [see metaData].
 
@@ -222,7 +218,7 @@ One of the required terms within the Occurrence Core is `occurrenceStatus`, indi
 * A non-detection of a species does not necessarily imply that the species was absent in that geographic region, merely that it was not captured. 
 * Was the goal of the study to see what species can be observed at each station and, if _not_, the methodology used in the sampling might not be appropriate to determine local biodiversity. 
 
-It would be best to discuss with the data provider / scientist exactly what they would like out of the wrangled dataset. As we are unsure what the scientists want to do with the data, the solution that we have come up with now is that we complete / fill every station to include all the fish species captured throughout the expedition, and assign, per station, whether the species was captured (number caught >= 1), or absent (number caught = 0). However, as the expedition was set out to samples _salmon_, we filter out the absence data for every species _excluding_ the 5 Pacific Salmon species. After this, the occurrenceIDs are created. This is an arbitrarily chosen solution, and one that may change in the future.   
+It would be best to discuss with the data provider / scientist exactly what they would like out of the wrangled dataset. As we are unsure what the scientists want to do with the data, the solution that we have come up with now is that we complete / fill every station to include all the fish species captured throughout the expedition, and assign, per station, whether the species was captured (based on whether there is an associated `masscatch` __not__ by `number caught`), or absent (`masscatch` = 0). However, as the expedition was set out to samples _salmon_, we filter out the absence data for every species _excluding_ the 5 Pacific Salmon species. After this, the occurrenceIDs are created. This is an arbitrarily chosen solution, and one that may change in the future.   
 
 If species occurrence data is collected, the species names are listed in the column `scientificName`. However, species aren't always recorded the same way (i.e., Chinook Salmon or Oncorhynchus tshawytscha). Therefore, another required column is added to the Occurrence table: `scientificNameID`, where each unique species in the data gets assigned a unique LSID number, found in the World Register of Marine Species [WoRMS](http://www.marinespecies.org/). OBIS will use this identifier to pull the taxonomic information from WoRMS into OBIS, such as the taxonomic classification and the accepted name in case of invalid names or synonyms. LSIDs are persistent, location-independent, resource identifiers for uniquely naming biologically significant resources. It is important to thoroughly check whether the status of the naming convention is accepted on WoRMS, and if not, choose the accepted version and make note of this. OBIS makes use of the standardized scientificNameIDs, thereby making sure that minor spelling mistakes can be overlooked. 
 
