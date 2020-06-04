@@ -128,8 +128,8 @@ chl_measurement <- chl %>%
                                   Chl = "chlorophyll a",
                                   Phe = "phaeopigments"),
          measurementTypeID = recode(measurementType, #URIs from NERC website
-                                    "chlorophyll a" = "http://vocab.nerc.ac.uk/collection/P02/current/CPWC/",
-                                    "phaeopigments" = "http://vocab.nerc.ac.uk/collection/P02/current/PHWC/"),
+                                    "chlorophyll a" = "http://vocab.nerc.ac.uk/collection/P01/current/CPHLHPP1/",
+                                    "phaeopigments" = "http://vocab.nerc.ac.uk/collection/P01/current/PHAEZZXX/"),
          measurementUnit = case_when(measurementType == "chlorophyll a" ~ "mg/m^3",
                                      measurementType == "phaeopigments" ~ "mg/m^3"),
          measurementUnitID = case_when(measurementType == "chlorophyll a" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UMMC/",
