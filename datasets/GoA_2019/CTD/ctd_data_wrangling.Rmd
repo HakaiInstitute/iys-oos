@@ -133,6 +133,8 @@ Next, we select the appropriate columns and use the pivot_longer function to tra
 
 Additionally, turbidity is measured in FTU. From personal communication with Anna Vazhova, _FTU is the Formazine Turbidity Unit. According to ISO 7027 (Water quality - Determination of turbidity), the turbidity unit is FNU (Formazine Nephelometric Unit). The United States Environmental Protection Agency (U.S. EPA) and the World Health Organization (WHO) use the NTU (Nephelometric Turbidity Unit). The ratio between the main units of turbidity is as follows: 1 FTU (EMF in Russia) = 1 FNU = 1 NTU_. As FTU is currently not a `measurementUnit` in the NERC vocab, we have changed this `measurementUnit` to NTU.
 
+Finally, it is important to note that 3 columns within the dataset are _not_ in-situ CTD measurements. These three columns are: `pH`, `O2 [ml/l]` and `BOD5[ml/l]` - these measurements have been done in the lab. However, they will still be included in the eMoF dataset unless instructed otherwise. 
+
 ``` {r measurement data_wrangle, eval = FALSE}
 ctd_measurement <- sheet2 %>% 
   select(eventID = sample, 
@@ -167,7 +169,7 @@ ctd_measurement <- sheet2 %>%
                                   `SAL_R` = "rinko_sea_water_practical_salinity",
                                   `SAL_S` = "seabird_sea_water_practical_salinity",
                                   `pH` = "pH",
-                                  `O2 [ml/l]` = "dissolved_oxygen_lab",
+                                  `O2 [ml/l]` = "concentration_of_oxygen",
                                   `Cond. [mS/cm]_R` = "sea_water_electrical_conductivity",
                                   `Density [kg/m^3]_R` = "sea_water_density",
                                   `SigmaT [ ]_R` = "sea_water_sigma_t",
@@ -177,15 +179,15 @@ ctd_measurement <- sheet2 %>%
                                   `DO [mg/l]_R` = "dissolved_oxygen",
                                   `Batt. [V]_R` = "battery_voltage",
                                   `BOD5[ml/l]` = "BOD_5m_depth",
-                                  `DO [%]_R` = "percent_oxygen_saturation",
+                                  `DO [%]_R` = "oxygen_saturation",
                                   `EC25 [mS/cm]_R` = "EC25"),
          
          measurementTypeID = recode(measurementType, #URIs from NERC website
-                                    "seabird_sea_water_temperature" = "http://vocab.nerc.ac.uk/collection/P04/current/G963/",
-                                    "rinko_sea_water_temperature" = "http://vocab.nerc.ac.uk/collection/P04/current/G963/",
-                                    "rinko_sea_water_practical_salinity" = "http://vocab.nerc.ac.uk/collection/P04/current/G995/",
-                                    "seabird_sea_water_practical_salinity" = "http://vocab.nerc.ac.uk/collection/P04/current/G995/",
-                                    "sea_water_electrical_conductivity" = "http://vocab.nerc.ac.uk/collection/P01/current/CNDCZZ01/",
+                                    "seabird_sea_water_temperature" = "http://vocab.nerc.ac.uk/collection/P01/current/TEMPCU01/",
+                                    "rinko_sea_water_temperature" = "http://vocab.nerc.ac.uk/collection/P01/current/TEMPCU01/",
+                                    "rinko_sea_water_practical_salinity" = "http://vocab.nerc.ac.uk/collection/P01/current/SSALST01/",
+                                    "seabird_sea_water_practical_salinity" = "http://vocab.nerc.ac.uk/collection/P01/current/SSALST01/",
+                                    "sea_water_electrical_conductivity" = "http://vocab.nerc.ac.uk/collection/P01/current/CNDCST01/",
                                     "sea_water_density" = "http://vocab.nerc.ac.uk/collection/P07/current/CFSN0393/",
                                     "sea_water_sigma_t" = "http://vocab.nerc.ac.uk/collection/P07/current/CFSN0332/",     
                                     "chlorophyll_flu" = "http://vocab.nerc.ac.uk/collection/P07/current/CFSN0705/",
@@ -193,10 +195,11 @@ ctd_measurement <- sheet2 %>%
                                     "turbidity" = "http://vocab.nerc.ac.uk/collection/P25/current/TURB/",
                                     "dissolved_oxygen" = "http://vocab.nerc.ac.uk/collection/P35/current/EPC00002/",
                                     "battery_voltage" = "http://vocab.nerc.ac.uk/collection/S06/current/S0600163/",
-                                    "pH" = "http://vocab.nerc.ac.uk/collection/P01/current/PHXXZZXX/",
-                                    "dissolved_oxygen_lab" = "http://vocab.nerc.ac.uk/collection/P01/current/DOXYZZ01/",
+                                    "pH" = 
+"http://vocab.nerc.ac.uk/collection/P01/current/PHXXZZXX/",
+                                    "concentration_of_oxygen" = "http://vocab.nerc.ac.uk/collection/P01/current/DOXYWITX/",
                                     "BOD_5m_depth" = "http://vocab.nerc.ac.uk/collection/P01/current/BODZZZZZ/1/",
-                                    "percent_oxygen_saturation" = "http://vocab.nerc.ac.uk/collection/P02/current/DOXY/",
+                                    "oxygen_saturation" = "http://vocab.nerc.ac.uk/collection/P01/current/OXYSWW01/",
                                     "EC25" = "http://vocab.nerc.ac.uk/collection/P01/current/CNDCZZ01/"),
          
          measurementUnit = case_when(measurementType == "seabird_sea_water_temperature" ~ "deg C",
@@ -213,9 +216,9 @@ ctd_measurement <- sheet2 %>%
                                      measurementType == "turbidity" ~ "NTU",
                                      measurementType == "battery_voltage" ~ "V",
                                      measurementType == "dissolved_oxygen" ~ "mg/L",
-                                     measurementType == "dissolved_oxygen_lab" ~ "ml/L ",
+                                     measurementType == "concentration_of_oxygen" ~ "ml/L ",
                                      measurementType == "BOD_5m_depth" ~ "ml/L",
-                                     measurementType == "percent_oxygen_saturation" ~ "percent saturation",
+                                     measurementType == "oxygen_saturation" ~ "percent",
                                      measurementType == "EC25" ~ "mS/cm"),
          
          measurementUnitID = case_when(measurementType == "seabird_sea_water_temperature" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UPAA/",
@@ -231,11 +234,12 @@ ctd_measurement <- sheet2 %>%
                                        measurementType == "dissolved_oxygen" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UMGL/",
                                        measurementType == "battery_voltage" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UVLT/",
                                        measurementType == "pH" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UUPH/",
-                                       measurementType == "dissolved_oxygen_lab" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UMLL/",
+                                       measurementType == "concentration_of_oxygen" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UMLL/",
                                        measurementType == "BOD_5m_depth" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UMLL/",
-                                       measurementType == "percent_oxygen_saturation" ~ "http://vocab.nerc.ac.uk/collection/P01/current/OXYSZZ01/",
+                                       measurementType == "oxygen_saturation" ~ "http://vocab.nerc.ac.uk/collection/P01/current/OXYSZZ01/",
                                        measurementType == "EC25" ~ "http://vocab.nerc.ac.uk/collection/P06/current/MSCM/")
-  ) 
+  ) %>%
+  filter(measurementValue != "NaN")
 
 # Join the dataframes: 
 ctd_measurementOrFact <- bind_rows(ctd_botdepth, ctd_measurement) %>%
