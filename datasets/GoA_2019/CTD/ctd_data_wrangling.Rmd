@@ -178,7 +178,7 @@ ctd_measurement <- sheet2 %>%
                                   `Turb-M [FTU]_R` = "turbidity",
                                   `DO [mg/l]_R` = "dissolved_oxygen",
                                   `Batt. [V]_R` = "battery_voltage",
-                                  `BOD5[ml/l]` = "BOD_5m_depth",
+                                  `BOD5[ml/l]` = "BOD5",
                                   `DO [%]_R` = "oxygen_saturation",
                                   `EC25 [mS/cm]_R` = "EC25"),
          
@@ -198,7 +198,7 @@ ctd_measurement <- sheet2 %>%
                                     "pH" = 
 "http://vocab.nerc.ac.uk/collection/P01/current/PHXXZZXX/",
                                     "concentration_of_oxygen" = "http://vocab.nerc.ac.uk/collection/P01/current/DOXYWITX/",
-                                    "BOD_5m_depth" = "http://vocab.nerc.ac.uk/collection/P01/current/BODZZZZZ/1/",
+                                    "BOD5" = "http://vocab.nerc.ac.uk/collection/P01/current/BODZZZZZ/1/",
                                     "oxygen_saturation" = "http://vocab.nerc.ac.uk/collection/P01/current/OXYSWW01/",
                                     "EC25" = "http://vocab.nerc.ac.uk/collection/P01/current/CNDCZZ01/"),
          
@@ -217,7 +217,7 @@ ctd_measurement <- sheet2 %>%
                                      measurementType == "battery_voltage" ~ "V",
                                      measurementType == "dissolved_oxygen" ~ "mg/L",
                                      measurementType == "concentration_of_oxygen" ~ "ml/L ",
-                                     measurementType == "BOD_5m_depth" ~ "ml/L",
+                                     measurementType == "BOD5" ~ "ml/L",
                                      measurementType == "oxygen_saturation" ~ "percent",
                                      measurementType == "EC25" ~ "mS/cm"),
          
@@ -235,10 +235,11 @@ ctd_measurement <- sheet2 %>%
                                        measurementType == "battery_voltage" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UVLT/",
                                        measurementType == "pH" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UUPH/",
                                        measurementType == "concentration_of_oxygen" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UMLL/",
-                                       measurementType == "BOD_5m_depth" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UMLL/",
+                                       measurementType == "BOD5" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UMLL/",
                                        measurementType == "oxygen_saturation" ~ "http://vocab.nerc.ac.uk/collection/P01/current/OXYSZZ01/",
                                        measurementType == "EC25" ~ "http://vocab.nerc.ac.uk/collection/P06/current/MSCM/")
   ) %>%
+  # As Rinko doesn't take measurements at depths > 600m, there are a lot of "NaN" measurementValues at each stations at depths between 600 - 1000m. These values need to be removed:
   filter(measurementValue != "NaN")
 
 # Join the dataframes: 
