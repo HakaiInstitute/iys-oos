@@ -193,13 +193,13 @@ ctd_measurement <- sheet2 %>%
                                     "chlorophyll_flu" = "http://vocab.nerc.ac.uk/collection/P07/current/CFSN0705/",
                                     "chlorophyll_a" = "http://vocab.nerc.ac.uk/collection/P07/current/CFSN0705/",
                                     "turbidity" = "http://vocab.nerc.ac.uk/collection/P25/current/TURB/",
-                                    "dissolved_oxygen" = "http://vocab.nerc.ac.uk/collection/P35/current/EPC00002/",
+                                    "dissolved_oxygen" = "	http://vocab.nerc.ac.uk/collection/P01/current/DOXYOP01/",
                                     "battery_voltage" = "http://vocab.nerc.ac.uk/collection/S06/current/S0600163/",
                                     "pH" = 
 "http://vocab.nerc.ac.uk/collection/P01/current/PHXXZZXX/",
                                     "concentration_of_oxygen" = "http://vocab.nerc.ac.uk/collection/P01/current/DOXYWITX/",
                                     "BOD5" = "http://vocab.nerc.ac.uk/collection/P01/current/BODZZZZZ/1/",
-                                    "dissolved_oxygen_saturation" = "http://vocab.nerc.ac.uk/collection/P01/current/OXYSZZ01/",
+                                    "dissolved_oxygen_saturation" = "http://vocab.nerc.ac.uk/collection/P01/current/OXYSOP01/",
                                     "EC25" = "http://vocab.nerc.ac.uk/collection/P01/current/CNDCZZ01/"),
          
          measurementUnit = case_when(measurementType == "seabird_sea_water_temperature" ~ "deg C",
