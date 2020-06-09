@@ -161,7 +161,7 @@ ctd_measurement <- sheet2 %>%
                                    measurementType == "pH" ~ paste(eventID,"pH",sep=":"),
                                    measurementType == "O2 [ml/l]" ~ paste(eventID,"O2",sep=":"),
                                    measurementType == "BOD5[ml/l]" ~ paste(eventID,"BOD5",sep=":"),
-                                   measurementType == "DO [%]_R" ~ paste(eventID,"DO_per",sep=":"),
+                                   measurementType == "DO [%]_R" ~ paste(eventID,"DO_sat",sep=":"),
                                    measurementType == "EC25 [mS/cm]_R" ~ paste(eventID,"ec25",sep=":")),
          measurementType = recode(measurementType, 
                                   `TEM_S` = "seabird_sea_water_temperature",
@@ -179,7 +179,7 @@ ctd_measurement <- sheet2 %>%
                                   `DO [mg/l]_R` = "dissolved_oxygen",
                                   `Batt. [V]_R` = "battery_voltage",
                                   `BOD5[ml/l]` = "BOD5",
-                                  `DO [%]_R` = "oxygen_saturation",
+                                  `DO [%]_R` = "dissolved_oxygen_saturation",
                                   `EC25 [mS/cm]_R` = "EC25"),
          
          measurementTypeID = recode(measurementType, #URIs from NERC website
@@ -199,7 +199,7 @@ ctd_measurement <- sheet2 %>%
 "http://vocab.nerc.ac.uk/collection/P01/current/PHXXZZXX/",
                                     "concentration_of_oxygen" = "http://vocab.nerc.ac.uk/collection/P01/current/DOXYWITX/",
                                     "BOD5" = "http://vocab.nerc.ac.uk/collection/P01/current/BODZZZZZ/1/",
-                                    "oxygen_saturation" = "http://vocab.nerc.ac.uk/collection/P01/current/OXYSWW01/",
+                                    "dissolved_oxygen_saturation" = "http://vocab.nerc.ac.uk/collection/P01/current/OXYSZZ01/",
                                     "EC25" = "http://vocab.nerc.ac.uk/collection/P01/current/CNDCZZ01/"),
          
          measurementUnit = case_when(measurementType == "seabird_sea_water_temperature" ~ "deg C",
@@ -218,7 +218,7 @@ ctd_measurement <- sheet2 %>%
                                      measurementType == "dissolved_oxygen" ~ "mg/L",
                                      measurementType == "concentration_of_oxygen" ~ "ml/L ",
                                      measurementType == "BOD5" ~ "ml/L",
-                                     measurementType == "oxygen_saturation" ~ "percent",
+                                     measurementType == "dissolved_oxygen_saturation" ~ "percent",
                                      measurementType == "EC25" ~ "mS/cm"),
          
          measurementUnitID = case_when(measurementType == "seabird_sea_water_temperature" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UPAA/",
@@ -236,7 +236,7 @@ ctd_measurement <- sheet2 %>%
                                        measurementType == "pH" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UUPH/",
                                        measurementType == "concentration_of_oxygen" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UMLL/",
                                        measurementType == "BOD5" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UMLL/",
-                                       measurementType == "oxygen_saturation" ~ "http://vocab.nerc.ac.uk/collection/P01/current/OXYSZZ01/",
+                                       measurementType == "dissolved_oxygen_saturation" ~ "http://vocab.nerc.ac.uk/collection/P01/current/OXYSZZ01/",
                                        measurementType == "EC25" ~ "http://vocab.nerc.ac.uk/collection/P06/current/MSCM/")
   ) %>%
   # As Rinko doesn't take measurements at depths > 600m, there are a lot of "NaN" measurementValues at each stations at depths between 600 - 1000m. These values need to be removed:
