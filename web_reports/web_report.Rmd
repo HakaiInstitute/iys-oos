@@ -13,10 +13,10 @@ library(hakaiR)
 library(tidyverse)
 library(lubridate)
 library(here)
+library(plotly)
 ```
 
 # Make a plot
 
-```{r}
-plot(cars)
+```
 ```
