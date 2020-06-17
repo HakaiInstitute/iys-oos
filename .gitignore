@@ -26,8 +26,12 @@ vignettes/*.pdf
 *.knit.md
 # R Environment Variables
 .Renviron
-datasets/GoA_2019/*/raw_data/
-datasets/GoA_2019/*/tidy_data/
 *.Rproj
 .DS_Store
-data
+README.html
+.DS_Store
+iys-oos.Rproj
+datasets/GoA_2019/*/raw_data/
+cables/
+data/
+SAINT
