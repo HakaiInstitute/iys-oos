@@ -1,0 +1,176 @@
+---
+title: "2019 IYS - Bongo Data wrangle"
+author: "Tim van der Stap"
+date: "6/17/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(lubridate)
+library(janitor)
+library(readxl)
+library(here)
+library(parsedate)
+library(googledrive)
+library(uuid)
+```
+
+The raw data is stored on GoogleDrive. The first step is to download the file from Google Drive to a local folder on your computer's hard drive. 
+
+``` {r file_download, eval = FALSE}
+# Make sure your folder path exists already (e.g. ./Bongo/raw_data)
+drive_download("https://docs.google.com/spreadsheets/d/1vvIwlsIkuc9vHtVrv2l3pXeyoWpEX_gw/edit#gid=287253584", 
+               path = here::here("Bongo", "raw_data", 
+                                 "Zoop Bongo Isotopes_IYS_Dry Weight_Mar31.xlsx"),
+               overwrite = TRUE)
+```
+
+
+``` {r data wrangle, eval = FALSE}
+bongo <- read_excel(here("Bongo", "raw_data", 
+                       "Zoop Bongo Isotopes_IYS_Dry Weight_Mar31.xlsx"), 
+                  sheet = "Samples collected") %>%
+  janitor::clean_names() %>%
+  # Convert the standalone time value (UTC+12) into ISO8601 extended format
+  mutate(Date = lubridate::dmy(date),
+         Time = format(start_time, format = "%H:%M:%S"),
+         dateTime = format_iso_8601(as.POSIXct(paste(Date, Time), 
+                                               format="%Y-%m-%d %H:%M:%S", 
+                                               tz="Asia/Kamchatka")),
+         dateTime = str_replace(dateTime, "\\+00:00", "Z"),
+         cruise = "GoA2019",
+         station = paste(cruise, station, sep="_Stn"),
+         cast = paste(station, "cast1", sep=":"),
+         ndepth = paste(cast, net, sep = ":bongo:"),
+         ndepth = paste(ndepth, sample_depth, sep=":"),
+         sample = paste(ndepth, sample_id, sep=":")
+  )
+```
+
+``` {r bongo_event, eval = FALSE}
+bongo_cruise <- bongo %>% 
+  select(eventID = cruise) %>%
+  distinct(eventID) %>%
+  mutate(eventRemarks = "cruise")
+
+bongo_station <- bongo %>%
+  select(eventID = station,
+         parentEventID = cruise) %>% 
+  distinct(eventID, .keep_all = TRUE) %>% 
+  mutate(eventRemarks = "station")
+
+# Join date and coordinates to cast
+bongo_cast <- bongo %>%
+  select(eventID = cast,
+         parentEventID = station,
+         eventDate = dateTime,
+         decimalLatitude = start_latitude,
+         decimalLongitude = start_longitude) %>%
+  distinct(eventID, .keep_all = TRUE) %>%
+  mutate(eventRemarks = "cast")
+
+bongo_ndepth <- bongo %>% 
+  select(eventID = ndepth,
+         parentEventID = cast,
+         minimumDepthInMetres = sample_depth,
+         maximumDepthInMetres = sample_depth) %>% 
+  distinct(eventID, .keep_all = TRUE) %>% 
+  mutate(eventRemarks = "sample")
+
+bongo_sample <- bongo %>%
+  select(eventID = sample,
+         parentEventID = ndepth) %>%
+  distinct(eventID, .keep_all = TRUE) %>%
+  mutate(eventRemarks = "subsample")
+
+bongo_event <- bind_rows(bongo_cruise,bongo_station,bongo_cast,bongo_ndepth,bongo_sample) %>%   select(eventID, parentEventID:maximumDepthInMetres, eventRemarks) %>%
+ mutate(type = "Event")
+
+# Make sure the folder path exists already (e.g. ./chlorophyll/tidy_data)
+write_csv(bongo_event, here("Bongo", "tidy_data", "bongo_event.csv"))
+drive_upload(here("Bongo", "tidy_data", "bongo_event.csv"),
+             path = " ",
+             name = "bongo_event.csv",
+             overwrite = TRUE)
+```
+
+Brian's comments regarding the size fractions: _Samples were size fractions. IN some cases the 2mm and 4mm size fractions have been split out to obtain measurements f species. The sum of these measurements is the total size fraction biomass._
+
+
+``` {r trawl_occ}
+bongo_sp_wrangle <- bongo %>%
+  mutate(occurrenceStatus = ifelse(number > 0, "present", "absent")) %>% 
+  rename(eventID = sample,
+         scientificName = species) %>%
+  select(eventID, scientificName, occurrenceStatus) %>%
+  # For species that have not been identified to a species level, we can perhaps categorize them these under the highest common classification (Kingdom, phylum etc). 
+  mutate(occurrenceID = paste("IYS_GoA2019_occ", row_number(),sep = ""),
+    scientificNameID = case_when(
+      scientificName == "Size fraction" ~ " ",
+      scientificName == "Thysanoessa spinifera" ~ " ", 
+      scientificName == "Sergestes similis" ~ " ",
+      scientificName == "Euphausia pacifica" ~ " ",
+      scientificName == "Salpa aspera" ~ " ",
+      scientificName == "Copepod" ~ " " ,
+      scientificName == "Neocalanus cristatus" ~ " " ,
+      scientificName == "Cyphocaris" ~ " ",
+      scientificName == "Squat lobster" ~ " ",
+      scientificName == "Siphonophore" ~ " ",
+      scientificName == "Chaetognath (Sagitta)" ~ " ",
+      scientificName == "Beroe sp." ~ " ",
+      scientificName == "Euphausiid" ~ " ",
+      scientificName == "Chaetognath & Ctenophore" ~ " ",
+      scientificName == "Siphonophore (Lensia type)" ~ " ",
+      scientificName == "Aequorea sp." ~ " ",
+      scientificName == "Jelly mass" ~ " ",
+      scientificName == "Radiolarians" ~ " ",
+      scientificName == "Paraphronima (gracilis)" ~ " ",
+      scientificName == "Crab zoea" ~ " ",
+      scientificName == "Microstomus pacificus" ~ " ",
+      scientificName == "Thysanoessa (longipes)" ~ " ",
+      scientificName == "Myctophid larva" ~ " ",
+      scientificName == "Jellyfish, radiolarian, chaetognath" ~ " ",
+      scientificName == "Primno pacifica" ~ " ",
+      scientificName == "Japatella diaphana" ~ " ",
+      scientificName == "Gelatinous" ~ " ",
+      scientificName == "Clio pyrimidata" ~ " ",
+      scientificName == "Paraeuchaeta sp." ~ " ",
+      scientificName == "Thysanoessa sp." ~ " ",
+      scientificName == "Gastropod veliger" ~ " ",
+      scientificName == "Tarletonbeania crenularis" ~ " ",
+      scientificName == "Limacina helicina" ~ " ",
+      scientificName == "Phronima (sedentaria)" ~ " ",
+      scientificName == "Hydromedusae" ~ " ",
+      scientificName == "Siphonophore" ~ " ",
+      scientificName == "Ctenophore / jellyfish" ~ " "
+    )
+  )
+```
+
+``` {r bongo_occ, eval = FALSE}
+bongo_occ <- bongo_sp_wrangle %>% 
+  select(eventID, occurrenceID, scientificName, scientificNameID, occurrenceStatus) %>% 
+  mutate(basisOfRecord = "HumanObservation")
+```
+
+
+
+``` {r seafloor, eval = FALSE}
+bongo_botdepth <- bongo %>% 
+  select(eventID = cast, depth) %>%
+  distinct(eventID, .keep_all = TRUE) %>%
+  pivot_longer(cols = depth,
+               names_to = "measurementType",
+               values_to = "measurementValue") %>%
+  mutate(measurementValue = as.character(measurementValue),
+         measurementID = paste(eventID, "depth", sep = ":"),
+         measurementType = recode(measurementType,
+                                  depth = "seafloor depth"),
+         measurementTypeID = "http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/",
+         measurementUnit = "m",
+         measurementUnitID = "http://vocab.nerc.ac.uk/collection/P06/current/ULAA/" ) %>%
+  select(measurementID, eventID, measurementType, measurementTypeID, measurementValue,
+         measurementUnit, measurementUnitID)
+```
