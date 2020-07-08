@@ -23,7 +23,7 @@ library(hakaiR)
 options(scipen=999) # This removes scientific notation for inline output ie `r object` in the report text
 ```
 
-# _International Year of the Salmon Data Mobilization Interim Report_
+# _International Year of the Salmon Data Mobilization Recommendations_
 
 `March 31, 2020`
 
@@ -35,19 +35,22 @@ options(scipen=999) # This removes scientific notation for inline output ie `r o
 
 # Executive Summary
 
-An agreement was signed between the Hakai Institute and the North Pacific Anadromous Fish Commission on February 3rd, 2020 for Hakai to scope and review the requirements of data management for high seas salmon ecology and oceangraphic observations collected by collaborators of the International Year of the Salmon. We recommend a number of actions and worthwhile considerations for building and delivering digital infrastructure  systems for salmon ecology. The Global Ocean Observation System is a project of the United Nation’s Intergovernmental Oceanographic Commission and unifies networks of scientists around the world. Adopting international standards and principles that are widely recognized in community practice will ensure a multilateral approach to the standardization of salmon ocean ecology data. 
+An agreement was signed between the Hakai Institute and the North Pacific Anadromous Fish Commission on February 3rd, 2020 for Hakai to scope and review the requirements of data management for high seas salmon ecology and oceanographic observations collected by collaborators of the International Year of the Salmon. We recommend a number of actions and worthwhile considerations for building and delivering digital infrastructure  systems for salmon ecology. The Global Ocean Observation System is a project of the United Nation’s Intergovernmental Oceanographic Commission and unifies networks of scientists around the world. Adopting international standards and principles that are widely recognized in community practice will ensure a multilateral approach to the standardization of salmon ocean ecology data. 
 
-Data collected by the 2019 research cruise is centrally accessible in an International Year of the Salmon Ocean Observation System (IYS-OOS) catalogues at https://iys.hakai.org. We provide a complete catalogue of the data sets produced by the IYS in 2019 with ISO 19115 compliant metadata records which makes these data openly discoverable.
+Data collected by the 2019 research cruise is centrally accessible in an International Year of the Salmon Ocean Observation System (IYS-OOS) catalogue at https://iys.hakai.org. We provide a complete catalogue of the data sets produced by the IYS in 2019 with ISO 19115 compliant metadata records which makes these data openly discoverable.
 
 The core components of the Data Management and Communications model are:  1) Data catalogue records compliant with ISO 19115 (http://iys.hakai.org); 2) Open-Access licensing and Open Data Access Protocols (ERDDAP); 3) Controlled Vocabularies that define the variables, methods, units, platforms and measurement types used in salmon ocean ecology adhering to ‘Ocean Best Practices’ maintained by the Global Ocean Observation System; 4) A dedicated digital repository for hosting data and data-analysis tool development. 
 
 # Introduction
 
-The North Pacific Anadromous Fish Commission (NPAFC) is implementing a five-year International Year of the Salmon (IYS) collaborative project through 2022 to set the conditions for the resilience of salmon and people in a rapidly changing world. Partners are collaborating for a Pan-Pacific Expedition in March 2021 with up to five vessels simultaneously surveying the North Pacific. Multi-disciplinary programs across at least a dozen institutions and agencies will generate a complex set of data in the 2021 surveys.  Success will ultimately demand that standardized and integrated data are available to researchers involved in the work at sea and those who will work with it into the future. It is important that these data are open, readily accessible to all, and comply with the principles of FAIR data.  The NPAFC and the Hakai Institute with support from the British Columbia Salmon Restoration and Innovation Fund and the Tula Foundation are conducting a review of current practices and new approaches to mobilizing salmon ocean ecology data, specifically for the data will be collected during the five-vessel survey planned for 2021 but also for the BioEco Ocean research domain more broadly. The objectives of this reprot are:  1) catalogue expedition data; 2) provide a comprehesive guide to action towards mobilizing IYS data; 3) Innovate a data management and communications model that, at once, enhances the *effectiveness* of *and* brings *equality* to salmon ocean ecology data in the public domain.
+The North Pacific Anadromous Fish Commission (NPAFC) is implementing a five-year International Year of the Salmon (IYS) collaborative project through 2022 to set the conditions for the resilience of salmon and people in a rapidly changing world. Partners are collaborating for a Pan-Pacific Expedition in March 2021 with up to five vessels simultaneously surveying the North Pacific. Multi-disciplinary programs across at least a dozen institutions and agencies will generate a complex set of data in the 2021 surveys.  Success will ultimately demand that standardized and integrated data are available to researchers involved in the work at sea and those who will work with it into the future. It is important that these data are open, readily accessible to all, and comply with the principles of FAIR data.  The NPAFC and the Hakai Institute with support from the British Columbia Salmon Restoration and Innovation Fund and the Tula Foundation are conducting a review of current practices and new approaches to mobilizing salmon ocean ecology data, specifically for the data will be collected during the five-vessel survey planned for 2021 but also for the BioEco Ocean research domain more broadly. The objectives of this report are:  1) catalogue expedition data; 2) provide a comprehensive guide to action towards mobilizing IYS data; 3) Innovate a data management and communications model that, at once, enhances the *effectiveness* of *and* brings *equality* to salmon ocean ecology data in the public domain.
 
-The grateful contribution challenge Your data has international value. You're being asked to transfom the data. What do you do? Aint nobody got time for that given the multitude of skills needed for the modern scientist (REF Jeff Leek? or Brian Caffo?)
+The grateful contribution challenge: your data has international value. You're being asked to transform the data. What do you do? Nobody has time for that given the multitude of skills needed for the modern scientist (REF Jeff Leek? or Brian Caffo?)
+
 # Data Management and Communications Model
+
 Need to put in some words here before diving into sub topics. Something about the need for a strategy given our current tactics.
+
 ## Methods
 
 For every data element, method, platform, and variable produced by the IYS High Seas Expeditions the following tasks need to be completed:  
@@ -62,7 +65,6 @@ TODO: re-frame for IYS 2021 participants
 For the 2021 cruise to be successful, the establishment of a data standards science team made up of relevant representation of stakeholders needs to be established as soon as possible to begin to prioritize every data element, method, platform, and variable they plan to collect.
 
 ### Data Exchange Protocols
-
  
 ### Communications Plan
 
@@ -75,39 +77,38 @@ The model will be founded on protocols and standards for archiving and providing
 There is a clear imperative to revolutionize every scientific domain to better leverage the computing power available in 2020. 
 ### Emerging Technologies
 ### Network Theory
-### User Experiene
+### User Experience
 ## Deepening Engagement and Impact
 ### Media engagement
-Social media should be utlized to the fullest extent to put forward scientific facts (including links to open-access papers), drive narratives of key topics to move pieces of information throuh the multidimensionsal fabric of guiding science intiatives.
+Social media should be utilized to the fullest extent to put forward scientific facts (including links to open-access papers, data, and code), drive narratives of key topics to move pieces of information through the multidimensional fabric of guiding science initiatives.
 
-Use an example from the BCSFA.
+TODO: Use an example of media engagement from the BCSFA.
 
 # Data Strategy
-There needs to be a long-term strategy to effectively engage important stakeholders and deepen the impact of data mobilization. Community development is critical for the IYS-OOS to be succsessful. Open Science. Repeatability. Reproducibility. FAIR Data. What is copyright? Public work. Who is the public? Equality and openness; major rebalance of power required. Strategy ought to be modeled inline with UN objectives. Deepening Engagement and Impact; 2) System Integration and Delivery; and 3) Building for the Future.
+
+There needs to be a long-term strategy to effectively engage important stakeholders and deepen the impact of data mobilization. Community development is critical for the IYS-OOS to be successful. Open Science. Repeatability. Reproducibility. FAIR Data. But hold on, what is copyright? Public work? Who is the public? Equality and openness; major re-balance of power required. This strategy therefore is modelled inline with UN objectives. Deepening Engagement and Impact; 2) System Integration and Delivery; and 3) Building for the Future.
+
 ## Targeted Systems Change
 
-2 or 3 paras here
+Most agree that Open Science that leads to FAIR data archived in a 'TRUST'ed repository are noble goals in a time of great inequality. But what about FAIR trade? We need a guide for social action to make informed decisions and share knowledge resonsibly and equitably. The current system is highly inequitable. We need a guide for technical and social systems change to bring more equitality to the knowledge that is generated.
 
 ## Society and Ethics 
-### Funding
-Show BCSFA example implicitly.
-### Information Colonialism
-Most agree that Open Science, FAIR data in TRUSTed repository are noble notions in a time of great inequality.
-FAIR trade: How products were made and the patterns of our consumption. We need a guide for social action to make informed decisions. 
+## Funding
+## Information Colonialism
 
-The history of colonialism caused indigenous cultural materials to now be predominantly owned by third parties or left out of reach in the public domain. Stewardship and reconciliation is not possible under the current legaices of exploitation appropriation. TK labels are a guide for social action.
+The history of colonialism caused indigenous cultural materials to now be predominantly owned by third parties or left out of reach in the 'Public Domain'. Stewardship and reconciliation is not possible under the current legacies of exploitation and appropriation.
 
-Use knowledge for art, for knowledhe, to represent the world around us. Copyright is granted to someone who makes things with knowledge.
+Society uses knowledge for art, for fun, for money, or wealth to represent the world around us. Copyright is granted to someone who makes things with knowledge.
 
-Copyright originally define who did and did not have certain rights to reporoduce. We therefore have to be extremely careful in terms of providing the power of reproducibility. Digital objects are the same as books.
+Copyright originally define who did and did not have certain rights to reproduce. We therefore have to be extremely careful in terms of providing the power of reproducibility. Digital objects are the same as books.
 
-Focus on returning museum archive materials to source communities, but legal status... people in photos have no special rights or access, regardless of content. Knowledge handed down from generations should have no author identified. Collab and collective materials same thing as before.
+Focus on returning museum archive materials to source communities, but legal status... people in photos have no special rights or access, regardless of content. Knowledge handed down from generations should have no author identified. Collaborate and collective materials same thing as before.
 
-Ownership and authorship doesn't always fit with how indigineous cultura materials wer made or can be accessed. But FN need to be able to manage those materials. TK licenses with different access and use expectations.
+Ownership and authorship doesn't always fit with how indigenous cultural materials were made or can be accessed. But FN need to be able to manage those materials. TK licenses with different access and use expectations.
 
 Knowledge is power.
 
-TK licesens ask pple to respect their indigenous protocols and laws that govern their culutral heritage materials. Some materials are senstii e have restrictions and are not free to be used by anyone at anytime.
+TK licenses ask people to respect their indigenous protocols and laws that govern their cultural heritage materials. Some materials are sensitive e have restrictions and are not free to be used by anyone at anytime.
 
 # Steering Committee 
 
