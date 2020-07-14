@@ -98,6 +98,10 @@ drive_upload(here("Bongo", "tidy_data", "bongo_event.csv"),
 
 Brian's comments regarding the size fractions: _Samples were size fractions. IN some cases the 2mm and 4mm size fractions have been split out to obtain measurements f species. The sum of these measurements is the total size fraction biomass._
 
+The column `Number` indicates how often a species was (en)countered in each specific trawl. Some species have counts that are not a specific number (i.e., >3, >4, ~3 and >1). We assume these species, that have often not been identified to a species level, also have to be included in the list of species present. They are often listed in a column headed `Group`.
+
+All species that are listed as `size fraction` belong to the group "Zooplankton". How can we best represent this group according to OBIS standards?
+
 
 ``` {r trawl_occ}
 bongo_sp_wrangle <- bongo %>%
@@ -105,7 +109,7 @@ bongo_sp_wrangle <- bongo %>%
   rename(eventID = sample,
          scientificName = species) %>%
   select(eventID, scientificName, occurrenceStatus) %>%
-  # For species that have not been identified to a species level, we can perhaps categorize them these under the highest common classification (Kingdom, phylum etc). 
+  # For species that have not been identified to a species level, we can perhaps categorize them these under the lowest common classification (Kingdom, phylum etc). 
   mutate(occurrenceID = paste("IYS_GoA2019_occ", row_number(),sep = ""),
     scientificNameID = case_when(
       scientificName == "Size fraction" ~ " ",
@@ -114,10 +118,12 @@ bongo_sp_wrangle <- bongo %>%
       # Accepted name is Eusergestes similis
       scientificName == "Euphausia pacifica" ~ "urn:lsid:marinespecies.org:taxname:237851",
       scientificName == "Salpa aspera" ~ "urn:lsid:marinespecies.org:taxname:137270",
-      scientificName == "Copepod" ~ " " ,
+      scientificName == "Copepod" ~ "urn:lsid:marinespecies.org:taxname:1080",
+      # Subclass: Copepoda
       scientificName == "Neocalanus cristatus" ~ "urn:lsid:marinespecies.org:taxname:104470" ,
-      scientificName == "Cyphocaris" ~ " ",
-      scientificName == "Squat lobster" ~ " ",
+      scientificName == "Cyphocaris" ~ "urn:lsid:marinespecies.org:taxname:101603",
+      scientificName == "Squat lobster" ~ "urn:lsid:marinespecies.org:taxname:106671",
+      # Unsure whether the squat lobster is part of the superfamily Chirostyloidea or Galatheoidea, so the lowest common rank (InfraOrder) of Anomura was chosen. 
       scientificName == "Siphonophore" ~ "urn:lsid:marinespecies.org:taxname:1371",
       scientificName == "Chaetognath (Sagitta)" ~ "urn:lsid:marinespecies.org:taxname:5949",
       # Chaetognatha - class: Sagittoidea
@@ -129,12 +135,14 @@ bongo_sp_wrangle <- bongo %>%
       scientificName == "Siphonophore (Lensia type)" ~ "urn:lsid:marinespecies.org:taxname:135365",
       scientificName == "Aequorea sp." ~ "urn:lsid:marinespecies.org:taxname:116998",
       scientificName == "Jelly mass" ~ " ",
-      scientificName == "Radiolarians" ~ " ",
+      scientificName == "Radiolarians" ~ "urn:lsid:marinespecies.org:taxname:582421",
+      # Phylum: Radiozoa
       scientificName == "Paraphronima (gracilis)" ~ "urn:lsid:marinespecies.org:taxname:236597",
       scientificName == "Crab zoea" ~ " ",
       scientificName == "Microstomus pacificus" ~ "urn:lsid:marinespecies.org:taxname:274294",
       scientificName == "Thysanoessa (longipes)" ~ "urn:lsid:marinespecies.org:taxname:237873",
-      scientificName == "Myctophid larva" ~ " ",
+      scientificName == "Myctophid larva" ~ "urn:lsid:marinespecies.org:taxname:125498",
+      # Family: Myctophidae
       scientificName == "Jellyfish, radiolarian, chaetognath" ~ " ",
       scientificName == "Primno pacifica" ~ "urn:lsid:marinespecies.org:taxname:286539",
       # Genus: Primnoa
@@ -164,6 +172,19 @@ bongo_occ <- bongo_sp_wrangle %>%
   mutate(basisOfRecord = "HumanObservation")
 ```
 
+## MeasurementOrFact
+
+The following variables are connected to an occurrenceID in the measurementOrFact (eMoF) table: 
+- Length (mm)
+- Length type?
+- Weight (mg)
+- Tissue (whole/muscle)
+- Stage (= lifeStage? is all NA)
+- Sample type
+- Preservation (is all 20 C)
+- Sub-sample
+
+Add a section about comments/notes associated to the measurements. 
 
 
 ``` {r seafloor, eval = FALSE}
@@ -183,3 +204,19 @@ bongo_botdepth <- bongo %>%
   select(measurementID, eventID, measurementType, measurementTypeID, measurementValue,
          measurementUnit, measurementUnitID)
 ```
+
+The sample comments needed to be tidied separately (not part of the above pipe sequence) because they belong in the measurementRemarks column. I need to recreate measurementID so that the two data frames can be joined.
+
+``` {r measurementRemarks, eval = FALSE}
+bongo_measurementRemarks <- bongo %>%
+  select(eventID = sample, ends_with("Comment")) %>%
+  pivot_longer(cols = ends_with("Comment"), values_to = "measurementRemarks") %>%
+  mutate(measurementID = case_when(
+    name == "C Comment" ~ paste(eventID, "Ctot", sep = ":"),
+    name == "N Comment" ~ paste(eventID, "Ntot", sep = ":")
+  )) %>%
+  select(measurementID, measurementRemarks)
+```
+
+
+
