@@ -86,7 +86,9 @@ bongo_sample <- bongo %>%
   mutate(eventRemarks = "subsample")
 
 bongo_event <- bind_rows(bongo_cruise,bongo_station,bongo_cast,bongo_ndepth,bongo_sample) %>%   select(eventID, parentEventID:maximumDepthInMetres, eventRemarks) %>%
- mutate(type = "Event")
+ mutate(type = "HumanObservation")
+
+# Should sample_type be included in the Event Core, under the heading samplingProtocol? 
 
 # Make sure the folder path exists already (e.g. ./chlorophyll/tidy_data)
 write_csv(bongo_event, here("Bongo", "tidy_data", "bongo_event.csv"))
@@ -163,7 +165,8 @@ bongo_sp_wrangle <- bongo %>%
       # Order: Siphonophorae
       scientificName == "Ctenophore / jellyfish" ~ " "
     )
-  )
+  ) %>%
+  mutate(Preparations = bongo$preservation)
 ```
 
 ``` {r bongo_occ, eval = FALSE}
@@ -178,10 +181,12 @@ The following variables are connected to an occurrenceID in the measurementOrFac
 - Length (mm)
 - Length type?
 - Weight (mg)
+# As there is no Controlled Vocabulary for mg, these values are transformed to 'grams'. 
+
 - Tissue (whole/muscle)
 - Stage (= lifeStage? is all NA)
 - Sample type
-- Preservation (is all 20 C)
+# Perhaps sample type should be included in the Event Core under samplingProtocol? It's not a measurement
 - Sub-sample
 
 Add a section about comments/notes associated to the measurements. 
@@ -205,17 +210,93 @@ bongo_botdepth <- bongo %>%
          measurementUnit, measurementUnitID)
 ```
 
+Next step is creating the extended measurementOrFact (eMoF) table. From personal communication with the data provider (Brian Hunt) _in some cases the 2mm and 4mm size fractions have been split out to obtain measurements of species. The sum of these measurements is the total size fraction biomass_. Therefore we first have to filter out the measurements that have been split out, and sum these fractions. 
+
+Brian indicated that this was only done for some cases in the 2mm and 4mm size fractions, so the first step is to filter out all entries where the weight has not been determined (TBD), make the weight_mg as numeric, and examine all entries where size_fraction = 2 or 4:
+
+``` {r biomass_wrangling, eval = FALSE}
+bongo_biomass <- bongo[!(bongo$weight_mg == "TBD"),]
+bongo_biomass$weight_mg <- as.numeric(as.character(bongo_biomass$weight_mg))
+bongo_biomass <- bongo_biomass %>% filter(size_fraction %in% c(2, 4))
+```
+
+``` {r eMoF, eval = FALSE}
+bongo_measurement <- bongo %>%
+  select(number, size_fraction, sample_type,
+         length = length_mm,
+         length_type, 
+         weight = weight_mg,
+         tissue, stage) %>%
+  mutate_all(as.character) %>%
+  pivot_longer(cols = number:preservation, 
+               names_to = "measurementType",
+               values_to = "measurementValue") %>%
+  mutate(
+    measurementID = case_when(
+      measurementType == "number" ~ paste(eventID, "number", sep = ":"),
+      measurementType == "size_fraction" ~ paste(eventID, "size_fraction", sep = ":"),
+      measurementType == "sample_type" ~ paste(eventID, "sample_type", sep = ":"),
+      measurementType == "length" ~ paste(eventID, "length", sep = ":"),
+      measurementType == "length_type" ~ paste(eventID, "length_type", sep = ":"),
+      measurementType == "weight" ~ paste(eventID, "weight", sep = ":"),
+      measurementType == "tissue" ~ paste(eventID, "tissue", sep = ":"),
+      measurementType == "stage" ~ paste(eventID, "stage", sep = ":")
+    ),
+    measurementTypeID = case_when(
+      measurementType == "number" ~ " ",
+      measurementType == "size_fraction" ~ " ",
+      measurementType == "sample_type" ~ " ",
+      # samplingProtocol
+      measurementType == "length" ~ "http://vocab.nerc.ac.uk/collection/S06/current/S0600015/"
+      # I want to check if maybe there is a better Controlled Vocab for body size
+      measurementType == "length_type" ~ " ",
+      measurementType == "weight" ~ "	http://vocab.nerc.ac.uk/collection/S06/current/S0600088/",
+      measurementType == "tissue" ~ " ",
+      measurementType == "stage" ~ " "
+    ), 
+    measurementUnit = case_when(
+      measurementType == "length" ~ "mm",
+      measurementType == "weight" ~ "g",
+      measurementType == "size_fraction" ~ "" 
+      # If this is equal to mesh size
+    ), 
+    measurementUnitID = case_when(
+      measurementUnit == "mm" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UXMM/",
+      measurementUnit == "g" ~ "	http://vocab.nerc.ac.uk/collection/P06/current/UGRM/"
+      measurementUnit == " "
+      # Reminder: there is no NERC Controlled Vocabulary for mg, so values are formatted to 'grams'. 
+      # Is size fraction equal to mesh size?
+    )
+    )
+    )
+    
+    
+  ))
+
+```
+
 The sample comments needed to be tidied separately (not part of the above pipe sequence) because they belong in the measurementRemarks column. I need to recreate measurementID so that the two data frames can be joined.
 
 ``` {r measurementRemarks, eval = FALSE}
 bongo_measurementRemarks <- bongo %>%
-  select(eventID = sample, ends_with("Comment")) %>%
-  pivot_longer(cols = ends_with("Comment"), values_to = "measurementRemarks") %>%
+  select(eventID = sample, notes) %>%
+  pivot_longer(cols = notes, values_to = "measurementRemarks") %>%
   mutate(measurementID = case_when(
-    name == "C Comment" ~ paste(eventID, "Ctot", sep = ":"),
-    name == "N Comment" ~ paste(eventID, "Ntot", sep = ":")
-  )) %>%
+    name == "notes" ~ paste(eventID, "notes", sep = ":"))) %>%
   select(measurementID, measurementRemarks)
+
+bongo_measurementOrFact <-
+  bind_rows(bongo_botdepth, bongo_measurement) %>%
+  left_join(bongo_measurementRemarks) %>%
+  select(
+    measurementID,
+    eventID,
+    measurementType,
+    measurementTypeID,
+    measurementValue,
+    measurementUnit,
+    measurementUnitID,
+    measurementRemarks
 ```
 
 
