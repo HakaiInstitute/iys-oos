@@ -102,7 +102,7 @@ Brian's comments regarding the size fractions: _Samples were size fractions. IN 
 
 The column `Number` indicates how often a species was (en)countered in each specific trawl. Some species have counts that are not a specific number (i.e., >3, >4, ~3 and >1). We assume these species, that have often not been identified to a species level, also have to be included in the list of species present. They are often listed in a column headed `Group`.
 
-All species that are listed as `size fraction` belong to the group "Zooplankton". How can we best represent this group according to OBIS standards?
+All species that are listed as `size fraction` belong to the group "Zooplankton". How can we best represent this group according to OBIS / WoRMS standards?
 
 
 ``` {r trawl_occ}
