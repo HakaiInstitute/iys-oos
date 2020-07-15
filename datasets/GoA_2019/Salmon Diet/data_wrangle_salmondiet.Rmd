@@ -37,9 +37,9 @@ salmon <- read_excel(here("Salmon Diet", "raw_data",
                   sheet = "Diets_clean") %>%
   janitor::clean_names() %>%
   mutate(cruise = "GoA2019",
-         station = paste(cruise, Trawl, sep="_Stn"),
+         station = paste(cruise, trawl, sep="_Stn"),
          trawl = paste(station, "trawl1", sep=":"),
-         sample = paste(trawl, Species, sep=":")
+         sample = paste(trawl, species, sep=":")
   )
 ```
 
@@ -110,6 +110,44 @@ drive_upload(here("Salmon Diet", "tidy_data", "bongo_event.csv"),
 
 The current proposed set up would include two occurrence cores that are connected to the eventID through a common occurrence core. Currently however this does not seem to be possible, as within the datasheet there is no column designated to i.e., sampleID. The problem with this is that there are sometimes numerous individuals of the same species caught at a station/within a trawl, but no these individuals have no defining tag (so how do the scientists know which individual the stomach content belong to, asides from their data?)
 
+In one of the occurrence cores I think we should list all the unique prey species consumed by the salmon. The measurements attached to these unique occurrences would be the mass (g) of prey consumed. Each prey species will receive their own unique URN from [WoRMS](http://www.marinespecies.org/)
 
+``` {r prey_occurrence, eval = FALSE}
+# As all the prey species are listed as columns, we first have investigate all the unique prey species consumed, as these will get their associated WoRMS URN. There is also a column `digested_food` which will not have an associated URN. 
+str(salmon)
 
+# What to do with the column 'digested_food"?
+
+# To do: populate the following chunk of code with WoRMS URN: 
+boreoteuthis_borealis == "urn:lsid:marinespecies.org:taxname:342326",
+# Boreoteuthis is not an accepted genus, Gonatopsis is the accepted version?
+neocalanus_cristatus == "urn:lsid:marinespecies.org:taxname:104470",
+pisces == "urn:lsid:marinespecies.org:taxname:1167",
+tomopteris == "urn:lsid:marinespecies.org:taxname:11676",
+chuneola_major == "urn:lsid:marinespecies.org:taxname:431286" ,
+sergestes_pacificus == " ",
+# Is only the atlantic version accepted?
+e_pacifica == "urn:lsid:marinespecies.org:taxname:237851",
+tarletonbeania_crenularis == " ",
+hyperia_sp == " ",
+clione_limacina == " ",
+th_spinifera == " ",
+coelenterata == " ",
+vanadis_sp == " ",
+sagitta_elegans == " ",
+salpa_aspera == " ",
+cyclosalpa == " ", 
+th_longipes == " ",
+cephalopoda == " ",
+phronima_sedentaria == " ",
+oikopleura == " ",
+isopoda == " ",
+clio_pyramidata == " ",
+chormiphora_cucumis == " ",
+symbolophorus_californiensis == " ",
+okutania_anonycha == " ",
+sebastes == " ",
+mictostomus_pacificus == " ",
+
+```
 
