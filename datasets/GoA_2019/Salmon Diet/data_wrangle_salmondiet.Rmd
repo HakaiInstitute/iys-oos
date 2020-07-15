@@ -1,0 +1,115 @@
+---
+title: "2019 IYS - Salmon Diet Data wrangle"
+author: "Tim van der Stap"
+date: "7/15/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(lubridate)
+library(janitor)
+library(readxl)
+library(here)
+library(parsedate)
+library(googledrive)
+library(uuid)
+```
+
+The raw data is stored on GoogleDrive. The first step is to download the file from Google Drive to a local folder on your computer's hard drive. 
+
+``` {r file_download, eval = FALSE}
+# Make sure your folder path exists already (e.g. ./Salmon Diet/raw_data)
+drive_download("https://docs.google.com/spreadsheets/d/1E88ZXuiYIqjq4ABl2GDB7Kp0UAG-0tIM/edit#gid=2020388317", 
+               path = here::here("Salmon Diet", "raw_data", 
+                                 "GoA_fish diets_cleaned.xlsx"),
+               overwrite = TRUE)
+```
+
+When creating the different eventID layers, we assume that the column `Trawl` is synonymous to `Station` -- need to confirm this! Additionally, in the current set up, each salmon species caught at a specific station gets treated like a unique sample ID (and, thus, as a unique `eventID`). Ideally, the salmon that were caught and dissected would have been given a Floy tag, so a distinction can be made between stomach content of different individuals of a same species in the same trawl. 
+
+To do: Confirm model structure for salmon diet data. Current problem: Multiple individuals of the same species were caught in a single trawl, however within the dataset there is no column to indicate how these individual measurements are separate (i.e., no SampleID associated to each individual fish). Perhaps we should add a SampleID column ourselves, or, alternatively, associate two occurrence cores (fish metrics / fish stomach content) to a single occurrence core?
+
+``` {r data wrangle, eval = FALSE}
+salmon <- read_excel(here("Salmon Diet", "raw_data", 
+                       "GoA_fish diets_cleaned.xlsx"), 
+                  sheet = "Diets_clean") %>%
+  janitor::clean_names() %>%
+  mutate(cruise = "GoA2019",
+         station = paste(cruise, Trawl, sep="_Stn"),
+         trawl = paste(station, "trawl1", sep=":"),
+         sample = paste(trawl, Species, sep=":")
+  )
+```
+
+No metadata is mentioned in the Salmon Diet data as to when and where the trawls took place. To connect the coordinates and time to the eventIDs, this information is taken from the trawl datasheet. Right now I am saving both these files in the Salmon Diet folder, but once all folders and scripts have been QC'd the location/time can be read straight from the Trawl-specific folder. For now, I'm afraid it would cause confusion when committing/pushing to GitHub. 
+
+``` {r salmon_datetime, eval = FALSE}
+drive_download(file = "https://docs.google.com/spreadsheets/d/1rtT6L5WSi_UiiXfoS95wnDqA8loc959T/edit#gid=668595086", 
+               path = here::here("Salmon Diet", "raw_data", 
+                                 "2019_GoA_Fish_data_Hakai.xlsx"),
+               overwrite = TRUE)
+
+trawl <- read_excel(here("Salmon Diet", "raw_data", "2019_GoA_Fish_data_Hakai.xlsx")) %>%
+  mutate(eventDate = format_iso_8601(as.POSIXct(UTC_start)),
+         eventDate = str_replace(eventDate, "\\+00:00", "Z")
+
+```
+
+Please note that the date - given that it's currently from a .xlsx file that is not considered the final datasheet - could change. Will need to make sure that the correct excel file is read. 
+
+``` {r bongo_event, eval = FALSE}
+salmon_cruise <- salmon %>% 
+  select(eventID = cruise) %>%
+  distinct(eventID) %>%
+  mutate(eventRemarks = "cruise")
+
+salmon_station <- salmon %>%
+  select(eventID = station,
+         parentEventID = cruise) %>% 
+  distinct(eventID, .keep_all = TRUE) %>% 
+  mutate(eventRemarks = "station")
+
+# Join date and coordinates to trawl. Remember that the date and coordinates are not from the Salmon Diet data sheet, but from the trawl data sheet. Should minimum and maximum depth of the trawl be included here as well if the information becomes available? 
+salmon_trawl <- salmon %>%
+  select(eventID = trawl,
+         parentEventID = station,
+         eventDate = 
+         decimalLatitude = 
+         decimalLongitude = ) %>%
+  distinct(eventID, .keep_all = TRUE) %>%
+  mutate(eventRemarks = "trawl")
+
+# The Salmon Diet data does not include information as to at what depths the trawls were conducted. Currently I believe this information is also not present in the general Trawl data. Should this information become available it should be connected to the general trawl information, along with info such as: volume water filter, speed at which the vessel was traveling during trawl, starting & finish lat/longs of trawl. 
+
+# If we opt for two occurrence cores that are connected to the eventID through a common occurrenceID, then the following lines of code are not necessary: 
+
+salmon_sample <- salmon %>% 
+  select(eventID = sample,
+         parentEventID = trawl,
+         minimumDepthInMetres = 
+         maximumDepthInMetres = ) %>% 
+  distinct(eventID, .keep_all = TRUE) %>% 
+  mutate(eventRemarks = "sample")
+
+# To connect them all together: 
+salmon_event <- bind_rows(salmon_cruise,salmon_station,salmon_trawl, salmon_sample) %>%
+  select(eventID, parentEventID:maximumDepthInMetres, eventRemarks) %>%
+  mutate(type = "HumanObservation")
+
+# Should sample_type be included in the Event Core, under the heading samplingProtocol? 
+
+# Make sure the folder path exists already (e.g. ./Salmon Diet/tidy_data)
+write_csv(bongo_event, here("Salmon Diet", "tidy_data", "salmon_event.csv"))
+drive_upload(here("Salmon Diet", "tidy_data", "bongo_event.csv"),
+             path = " ",
+             name = "salmon_event.csv",
+             overwrite = TRUE)
+```
+
+The current proposed set up would include two occurrence cores that are connected to the eventID through a common occurrence core. Currently however this does not seem to be possible, as within the datasheet there is no column designated to i.e., sampleID. The problem with this is that there are sometimes numerous individuals of the same species caught at a station/within a trawl, but no these individuals have no defining tag (so how do the scientists know which individual the stomach content belong to, asides from their data?)
+
+
+
+
