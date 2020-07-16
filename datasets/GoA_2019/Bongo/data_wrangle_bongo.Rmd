@@ -43,8 +43,7 @@ bongo <- read_excel(here("Bongo", "raw_data",
          cruise = "GoA2019",
          station = paste(cruise, station, sep="_Stn"),
          cast = paste(station, "cast1", sep=":"),
-         ndepth = paste(cast, net, sep = ":bongo:"),
-         ndepth = paste(ndepth, sample_depth, sep=":"),
+         ndepth = paste(cast, net, sep = ":bongo:Net"),
          sample = paste(ndepth, sample_id, sep=":")
   )
 ```
@@ -88,9 +87,7 @@ bongo_sample <- bongo %>%
 bongo_event <- bind_rows(bongo_cruise,bongo_station,bongo_cast,bongo_ndepth,bongo_sample) %>%   select(eventID, parentEventID:maximumDepthInMetres, eventRemarks) %>%
  mutate(type = "HumanObservation")
 
-# Should sample_type be included in the Event Core, under the heading samplingProtocol? 
-
-# Make sure the folder path exists already (e.g. ./chlorophyll/tidy_data)
+# Make sure the folder path exists already (e.g. ./Bongo/tidy_data)
 write_csv(bongo_event, here("Bongo", "tidy_data", "bongo_event.csv"))
 drive_upload(here("Bongo", "tidy_data", "bongo_event.csv"),
              path = " ",
@@ -102,19 +99,35 @@ Brian's comments regarding the size fractions: _Samples were size fractions. IN 
 
 The column `Number` indicates how often a species was (en)countered in each specific trawl. Some species have counts that are not a specific number (i.e., >3, >4, ~3 and >1). We assume these species, that have often not been identified to a species level, also have to be included in the list of species present. They are often listed in a column headed `Group`.
 
+# When examining this dataset, we can identify three entries that we need to explore further, because the number != 1. However, as the number > 0, they do need to be included in the eMoF table. For some reason each measurement does not have their own associated `eventID`. Where number = 7, the notes indicate that this data entry regards 8 individuals, which have been identified to species or genus: n = 1 sagitta spp., n = 5 E. pacifica and n = 2 T. spinifera. Therefore, this eventID is split into 8 unique eventIDs to capture each unique length measurement. Unfortunately, no unique weight measurements were recorded. However, as length measurements have been associated to a species or genus, we want to make sure to include these in the Occurrence Core. 
+
+``` {r occ_wrangle, eval = FALSE}
+bongo_wrangle <- bongo %>% filter(number == "7") %>% rename(eventID = sample)
+bongo_wrangle <- bongo_wrangle[rep(seq_len(nrow(bongo_wrangle)), each = 9), ] 
+# This creates an additional 8 rows that are identical - we don't want to lose the original data entry. 
+bongo_wrangle$weight_mg <- c(43.7, NA, NA, NA, NA, NA, NA, NA, NA)
+bongo_wrangle$number <- c(7, 1, 1, 1, 1, 1, 1, 1, 1)
+bongo_wrangle$length_mm <- c("16-20mm", 29, 14, 15, 16, 17, 18, 12, 13)
+bongo_wrangle$species <- c("Size fraction", "sagitta", "E pacifica", "E pacifica", "E pacifica", 
+                           "E pacifica", "E pacifica", "T spinifera", "T spinifera")
+bongo_wrangle$eventID <- sub('[.]', '_', make.names(bongo_wrangle$eventID, unique=TRUE))
+```
+
 All species that are listed as `size fraction` belong to the group "Zooplankton". How can we best represent this group according to OBIS / WoRMS standards?
 
+After a brief discussion with Julian, it was agreed on that entries where Species = `Size fraction`, will not have an Occurrence Core associated to it, because it is not possible to associate a URN from WoRMS to this class or group (`Zooplankton`). The same goes for entries where no common rank can be associated, such as `Jellyfish, radiolarian, chaetognath` and `Gelatinous`. For other entries where no clear classification is provided, e.g. `crab zoea` and `jelly mass`, the lowest common rank URN is listed. 
 
-``` {r trawl_occ}
-bongo_sp_wrangle <- bongo %>%
+Where do we draw the line when it comes to associating an Occurrence(ID) to an entry? Would this only be for species that have been identified to Species or Genus level, as perhaps a classification on phylum or kingdom level does not really provide any information?
+
+``` {r bongo_occ}
+bongo_occ <- bongo %>%
+  subset(species != "Size fraction" & species != "Jellyfish, radiolarian, chaetognath" & species != "Gelatinous") %>%
   mutate(occurrenceStatus = ifelse(number > 0, "present", "absent")) %>% 
   rename(eventID = sample,
          scientificName = species) %>%
-  select(eventID, scientificName, occurrenceStatus) %>%
-  # For species that have not been identified to a species level, we can perhaps categorize them these under the lowest common classification (Kingdom, phylum etc). 
   mutate(occurrenceID = paste("IYS_GoA2019_occ", row_number(),sep = ""),
+         # I am not happy yet with this occurrenceID but gives an indication. 
     scientificNameID = case_when(
-      scientificName == "Size fraction" ~ " ",
       scientificName == "Thysanoessa spinifera" ~ "urn:lsid:marinespecies.org:taxname:237874", 
       scientificName == "Sergestes similis" ~ "urn:lsid:marinespecies.org:taxname:514127",
       # Accepted name is Eusergestes similis
@@ -136,21 +149,21 @@ bongo_sp_wrangle <- bongo %>%
       # Rank: Kingdom is the lowest common rank of phylum 'chaetognatha and 'ctenophora'
       scientificName == "Siphonophore (Lensia type)" ~ "urn:lsid:marinespecies.org:taxname:135365",
       scientificName == "Aequorea sp." ~ "urn:lsid:marinespecies.org:taxname:116998",
-      scientificName == "Jelly mass" ~ " ",
+      scientificName == "Jelly mass" ~ "urn:lsid:marinespecies.org:taxname:1267",
+      # URN for 'Jelly mass' is that for phylum: Cnidaria
       scientificName == "Radiolarians" ~ "urn:lsid:marinespecies.org:taxname:582421",
       # Phylum: Radiozoa
       scientificName == "Paraphronima (gracilis)" ~ "urn:lsid:marinespecies.org:taxname:236597",
-      scientificName == "Crab zoea" ~ " ",
+      scientificName == "Crab zoea" ~ "urn:lsid:marinespecies.org:taxname:1065",
+      # URN for 'crab zoea' is that for phylum: Arthropoda. 
       scientificName == "Microstomus pacificus" ~ "urn:lsid:marinespecies.org:taxname:274294",
       scientificName == "Thysanoessa (longipes)" ~ "urn:lsid:marinespecies.org:taxname:237873",
       scientificName == "Myctophid larva" ~ "urn:lsid:marinespecies.org:taxname:125498",
       # Family: Myctophidae
-      scientificName == "Jellyfish, radiolarian, chaetognath" ~ " ",
       scientificName == "Primno pacifica" ~ "urn:lsid:marinespecies.org:taxname:286539",
       # Genus: Primnoa
       scientificName == "Japatella diaphana" ~ "urn:lsid:marinespecies.org:taxname:138849",
       # Genus: Japetella
-      scientificName == "Gelatinous" ~ " ",
       scientificName == "Clio pyrimidata" ~ "urn:lsid:marinespecies.org:taxname:139033",
       # Species: Clio pyramidata
       scientificName == "Paraeuchaeta sp." ~ "urn:lsid:marinespecies.org:taxname:196874",
@@ -160,37 +173,31 @@ bongo_sp_wrangle <- bongo %>%
       scientificName == "Tarletonbeania crenularis" ~ "urn:lsid:marinespecies.org:taxname:282927",
       scientificName == "Limacina helicina" ~ "urn:lsid:marinespecies.org:taxname:140223",
       scientificName == "Phronima (sedentaria)" ~ "urn:lsid:marinespecies.org:taxname:103272",
-      scientificName == "Hydromedusae" ~ " ",
+      scientificName == "Hydromedusae" ~ "urn:lsid:marinespecies.org:taxname:1337",
+      # Hydromedusae belong to the Hydrozoa as a sub-class, along with the Scyphomedusae. In WoRMS, the closest accepted URN I could find is that for subclass "Hydroidolina". As I'm not sure if this is the correct one, currently the URN for Hydromedusae reflects the URN for Hydrozoa. 
       scientificName == "Siphonophore" ~ "urn:lsid:marinespecies.org:taxname:1371",
+      scientificName == "siphonophore" ~ "urn:lsid:marinespecies.org:taxname:1371",
       # Order: Siphonophorae
-      scientificName == "Ctenophore / jellyfish" ~ " "
+      scientificName == "Ctenophore / jellyfish" ~ "urn:lsid:marinespecies.org:taxname:1248",
+      # As they are listed under the group 'Ctenophore', the associated URN above links to this phylum.
+      scientificName == "sagitta" ~ " ", 
+      scientificName == "E pacifica" ~ " ",
+      scientificName == "T spinifera" ~ " "
     )
   ) %>%
-  mutate(Preparations = bongo$preservation)
-```
-
-``` {r bongo_occ, eval = FALSE}
-bongo_occ <- bongo_sp_wrangle %>% 
-  select(eventID, occurrenceID, scientificName, scientificNameID, occurrenceStatus) %>% 
+  rename(Preparations = preservation) %>%
+  select(eventID, occurrenceID, scientificName, scientificNameID, occurrenceStatus, Preparations) %>%
   mutate(basisOfRecord = "HumanObservation")
+
+# Make sure the folder path exists already (e.g. ./Bongo/tidy_data)
+write_csv(bongo_occ, here("Bongo", "tidy_data", "bongo_event.csv"))
+drive_upload(here("Bongo", "tidy_data", "bongo_event.csv"),
+             path = " ",
+             name = "bongo_event.csv",
+             overwrite = TRUE)
 ```
 
-## MeasurementOrFact
-
-The following variables are connected to an occurrenceID in the measurementOrFact (eMoF) table: 
-- Length (mm)
-- Length type?
-- Weight (mg)
-# As there is no Controlled Vocabulary for mg, these values are transformed to 'grams'. 
-
-- Tissue (whole/muscle)
-- Stage (= lifeStage? is all NA)
-- Sample type
-# Perhaps sample type should be included in the Event Core under samplingProtocol? It's not a measurement
-- Sub-sample
-
-Add a section about comments/notes associated to the measurements. 
-
+## extended measurementOrFact
 
 ``` {r seafloor, eval = FALSE}
 bongo_botdepth <- bongo %>% 
@@ -210,37 +217,36 @@ bongo_botdepth <- bongo %>%
          measurementUnit, measurementUnitID)
 ```
 
-Next step is creating the extended measurementOrFact (eMoF) table. From personal communication with the data provider (Brian Hunt) _in some cases the 2mm and 4mm size fractions have been split out to obtain measurements of species. The sum of these measurements is the total size fraction biomass_. Therefore we first have to filter out the measurements that have been split out, and sum these fractions. 
+Though an occurrenceID was not created for each data entry, measurements can be linked either directly to the `eventID` or through the `occurrenceID`. The following measurements are linked to either the `eventID` or `occurrenceID`: `size fraction`, `length_mm`, `length_type`, and `weight_mg`. Additional information that might in the future be included as well could be `Stage`, which reflects a lifeStage of an organism. However, because the datasheet includes a wide variety of organisms, all with different 'levels' of a lifeStage, to what extent is it necessary to choose a uniform 'coding' system for this variable?
 
-Brian indicated that this was only done for some cases in the 2mm and 4mm size fractions, so the first step is to filter out all entries where the weight has not been determined (TBD), make the weight_mg as numeric, and examine all entries where size_fraction = 2 or 4:
+When the species or genus has been identified, the measurements are associated to the occurrenceID. The reason for this is that URNs from [WoRMS](http://www.marinespecies.org/) can be associated to the species entries. For the entries where the `Species` are more descriptive or which haven't been able to get associated to a URN from WoRMS, the measurements are linked directly to the `eventID`. This concerns the following listed "Species": `Gelatinous`, `Jellyfish, radiolarian, chaetognath`, and `size fraction`. 
 
-``` {r biomass_wrangling, eval = FALSE}
-bongo_biomass <- bongo[!(bongo$weight_mg == "TBD"),]
-bongo_biomass$weight_mg <- as.numeric(as.character(bongo_biomass$weight_mg))
-bongo_biomass <- bongo_biomass %>% filter(size_fraction %in% c(2, 4))
-```
+So a total of two extended measurementOrFact cores will be created; one linking to the `occurrenceIDs` and the other directly to the `eventID`. We first create the eMoF table that links directly to the `eventID`:  
 
 ``` {r eMoF, eval = FALSE}
-bongo_measurement <- bongo %>%
-  select(number, size_fraction, sample_type,
+bongo_emof <- bongo %>% filter(species %in% c("Size fraction", 
+                                              "Jellyfish, radiolarian, chaetognath", "Gelatinous")) %>%
+  select(eventID = sample, 
+         number, size_fraction, 
          length = length_mm,
-         length_type, 
          weight = weight_mg,
-         tissue, stage) %>%
+         length_type)
+
+```
+
+When examining this dataset, we can identify three entries that we need to explore further, where number != 0. k
+%>%
   mutate_all(as.character) %>%
-  pivot_longer(cols = number:preservation, 
+  pivot_longer(cols = number:length_type, 
                names_to = "measurementType",
                values_to = "measurementValue") %>%
   mutate(
     measurementID = case_when(
       measurementType == "number" ~ paste(eventID, "number", sep = ":"),
       measurementType == "size_fraction" ~ paste(eventID, "size_fraction", sep = ":"),
-      measurementType == "sample_type" ~ paste(eventID, "sample_type", sep = ":"),
       measurementType == "length" ~ paste(eventID, "length", sep = ":"),
       measurementType == "length_type" ~ paste(eventID, "length_type", sep = ":"),
-      measurementType == "weight" ~ paste(eventID, "weight", sep = ":"),
-      measurementType == "tissue" ~ paste(eventID, "tissue", sep = ":"),
-      measurementType == "stage" ~ paste(eventID, "stage", sep = ":")
+      measurementType == "weight" ~ paste(eventID, "weight", sep = ":")
     ),
     measurementTypeID = case_when(
       measurementType == "number" ~ " ",
@@ -274,6 +280,46 @@ bongo_measurement <- bongo %>%
   ))
 
 ```
+
+```
+
+## MeasurementOrFact
+
+The following variables are connected to an occurrenceID in the measurementOrFact (eMoF) table: 
+- size fraction
+- Length (mm)
+- Length type?
+- Weight (mg)
+# As there is no Controlled Vocabulary for mg, these values are transformed to 'grams'. 
+
+
+- Stage (= lifeStage? is all NA)
+- Sample type
+# Perhaps sample type should be included in the Event Core under samplingProtocol? It's not a measurement but more method of analysis. 
+
+Add a section about comments/notes associated to the measurements. 
+
+
+
+
+Next step is creating the extended measurementOrFact (eMoF) table. From personal communication with the data provider (Brian Hunt) _in some cases the 2mm and 4mm size fractions have been split out to obtain measurements of species. The sum of these measurements is the total size fraction biomass_. Therefore we first have to filter out the measurements that have been split out, and sum these fractions. 
+
+Brian indicated that this was only done for some cases in the 2mm and 4mm size fractions, so the first step is to filter out all entries where the weight has not been determined (TBD), make the weight_mg as numeric, and examine all entries where size_fraction = 2 or 4:
+
+``` {r biomass_wrangling, eval = FALSE}
+bongo_biomass <- bongo[!(bongo$weight_mg == "TBD"),]
+bongo_biomass$weight_mg <- as.numeric(as.character(bongo_biomass$weight_mg))
+bongo_biomass <- bongo_biomass %>% filter(size_fraction %in% c(2, 4))
+```
+
+``` {r eMoF, eval = FALSE}
+bongo_measurement <- bongo %>%
+  select(number, size_fraction, sample_type,
+         length = length_mm,
+         length_type, 
+         weight = weight_mg,
+         tissue, stage) %>%
+  
 
 The sample comments needed to be tidied separately (not part of the above pipe sequence) because they belong in the measurementRemarks column. I need to recreate measurementID so that the two data frames can be joined.
 
