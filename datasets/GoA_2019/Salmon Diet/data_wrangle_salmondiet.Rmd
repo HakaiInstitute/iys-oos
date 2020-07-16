@@ -102,7 +102,7 @@ salmon_event <- bind_rows(salmon_cruise,salmon_station,salmon_trawl, salmon_samp
 
 # Make sure the folder path exists already (e.g. ./Salmon Diet/tidy_data)
 write_csv(bongo_event, here("Salmon Diet", "tidy_data", "salmon_event.csv"))
-drive_upload(here("Salmon Diet", "tidy_data", "bongo_event.csv"),
+drive_upload(here("Salmon Diet", "tidy_data", "salmon_event.csv"),
              path = " ",
              name = "salmon_event.csv",
              overwrite = TRUE)
@@ -116,38 +116,90 @@ In one of the occurrence cores I think we should list all the unique prey specie
 # As all the prey species are listed as columns, we first have investigate all the unique prey species consumed, as these will get their associated WoRMS URN. There is also a column `digested_food` which will not have an associated URN. 
 str(salmon)
 
-# What to do with the column 'digested_food"?
+# What to do with the column 'digested_food"? Sounds like it's 'unidentified species'. Occurrence of prey present or absent based on whether mass (g) has been recorded in the stomach content. 
 
-# To do: populate the following chunk of code with WoRMS URN: 
-boreoteuthis_borealis == "urn:lsid:marinespecies.org:taxname:342326",
+salmon_prey <- salmon %>%
+  pivot_longer(cols = boreoteuthis_borealis:mictostomus_pacificus, names_to = "scientificName", values_to = "Mass") %>%
+  mutate(occurrenceStatus = ifelse(Mass > 0, "present", "absent"),
+         occurrenceID = paste(trawl, species, scientificName, sep = ":"),
+         scientificNameID = case_when(
+  # I am not happy with the occurrenceID but this is just a set-up for now. 
+scientificName == "boreoteuthis_borealis" ~ "urn:lsid:marinespecies.org:taxname:342326",
 # Boreoteuthis is not an accepted genus, Gonatopsis is the accepted version?
-neocalanus_cristatus == "urn:lsid:marinespecies.org:taxname:104470",
-pisces == "urn:lsid:marinespecies.org:taxname:1167",
-tomopteris == "urn:lsid:marinespecies.org:taxname:11676",
-chuneola_major == "urn:lsid:marinespecies.org:taxname:431286" ,
-sergestes_pacificus == " ",
+scientificName == "neocalanus_cristatus" ~ "urn:lsid:marinespecies.org:taxname:104470",
+scientificName == "pisces" ~ "urn:lsid:marinespecies.org:taxname:1167",
+scientificName == "tomopteris" ~ "urn:lsid:marinespecies.org:taxname:11676",
+scientificName == "chuneola_major" ~ "urn:lsid:marinespecies.org:taxname:431286" ,
+scientificName == "sergestes_pacificus" ~ " ",
 # Is only the atlantic version accepted?
-e_pacifica == "urn:lsid:marinespecies.org:taxname:237851",
-tarletonbeania_crenularis == " ",
-hyperia_sp == " ",
-clione_limacina == " ",
-th_spinifera == " ",
-coelenterata == " ",
-vanadis_sp == " ",
-sagitta_elegans == " ",
-salpa_aspera == " ",
-cyclosalpa == " ", 
-th_longipes == " ",
-cephalopoda == " ",
-phronima_sedentaria == " ",
-oikopleura == " ",
-isopoda == " ",
-clio_pyramidata == " ",
-chormiphora_cucumis == " ",
-symbolophorus_californiensis == " ",
-okutania_anonycha == " ",
-sebastes == " ",
-mictostomus_pacificus == " ",
+scientificName == "e_pacifica" ~ "urn:lsid:marinespecies.org:taxname:237851",
+scientificName == "tarletonbeania_crenularis" ~ "urn:lsid:marinespecies.org:taxname:282927",
+scientificName == "hyperia_sp" ~ "urn:lsid:marinespecies.org:taxname:101796",
+scientificName == "clione_limacina" ~ "urn:lsid:marinespecies.org:taxname:139178",
+scientificName == "th_spinifera" ~ " ",
+# Unsure whether th. stands for Thalamita, Thyone, or Thysanoessa
+scientificName == "coelenterata" ~ "urn:lsid:marinespecies.org:taxname:2",
+# Coelenterata is a term encompassing the animal phyla Cnidaria and Ctenophora? 
+# Therefore the lowest common rank is the kingdom Animalia
+scientificName == "vanadis_sp" ~ "urn:lsid:marinespecies.org:taxname:129150",
+scientificName == "sagitta_elegans" ~ "urn:lsid:marinespecies.org:taxname:105440",
+# The accepted name is Parasagitta elegans
+scientificName == "salpa_aspera" ~ "urn:lsid:marinespecies.org:taxname:137270",
+scientificName == "cyclosalpa" ~ "urn:lsid:marinespecies.org:taxname:137227", 
+scientificName == "th_longipes" ~ " ",
+# Unsure whether the `th` is for Thalassarachna, Thalassomyia, Thalestris, Thaumatops or Thysanoessa
+# Likely Thysanoessa given that th_spinifera is also listed, but have to confirm. 
+scientificName == "cephalopoda" ~ "urn:lsid:marinespecies.org:taxname:11707",
+scientificName == "phronima_sedentaria" ~ "urn:lsid:marinespecies.org:taxname:103272",
+scientificName == "oikopleura" ~ "urn:lsid:marinespecies.org:taxname:103367",
+scientificName == "isopoda" ~ "urn:lsid:marinespecies.org:taxname:1131",
+scientificName == "clio_pyramidata" ~ "urn:lsid:marinespecies.org:taxname:139033",
+scientificName == "chormiphora_cucumis" ~ "urn:lsid:marinespecies.org:taxname:106382"
+# Accepted name is Hormiphora cucumis?
+scientificName == "symbolophorus_californiensis" ~ "urn:lsid:marinespecies.org:taxname:272733",
+scientificName == "okutania_anonycha" ~ "urn:lsid:marinespecies.org:taxname:342285",
+# Is the accepted name Berryteuthis anonychus?
+scientificName == "sebastes" ~ "urn:lsid:marinespecies.org:taxname:126175",
+scientificName == "mictostomus_pacificus" ~ "urn:lsid:marinespecies.org:taxname:274294")
+# Spelling error? Accepted name is Microstomus pacificus?
+) %>%
+  rename(eventID = trawl)
 
+salmon_prey_occ <- salmon_prey %>%
+  select(eventID, occurreceID, scientificName, scientificNameID, occurrenceStatus) %>%
+  mutate(basisOfRecord = "HumanObservation")
+
+# Make sure the folder path exists already (e.g. ./Salmon Diet/tidy_data)
+write_csv(salmon_prey_occ, here("Salmon Diet", "tidy_data", "salmon_prey_occ.csv"))
+drive_upload(here("Salmon Diet", "tidy_data", "salmon_prey_occ.csv"),
+             path = " ",
+             name = "salmon_prey_occ.csv",
+             overwrite = TRUE)
 ```
 
+There are two occurrence cores, one for the prey species consumed by the individual salmon, and an occurrence core for each salmon species dissected. To the salmon_prey occurrence core, measurements include presence/absence of whether a prey species has been consumed, and how much (mass - gram). Measurements linked to the salmon individual include: forklength, mass, food mass, GFI, CFI adj % and `N stomachs` (though have to see how this last one fits in). 
+``` {r salmon_occ, eval = FALSE}
+salmon_spp_occ <- salmon %>%
+  # Given that the expedition was targeted to salmon species, for each station we'll include whether each of the five salmon species were caught (present) or not (absent): 
+  complete(trawl, species, fill = list(n_stomachs = 0)) %>%
+  fill(salmon, .direction = "downup") %>%
+  mutate(occurrenceStatus = ifelse(n_stomachs > 0, "present", "absent"),
+         occurrenceID = paste(trawl, species, sep = ":"),
+         scientificNameID = case_when(
+scientificName == "Oncorhynchus gorbuscha" ~ "urn:lsid:marinespecies.org:taxname:127182",
+scientificName == "Oncorhynchus kisutch" ~ "urn:lsid:marinespecies.org:taxname:127184",
+scientificName == "Oncorhynchus keta" ~ "urn:lsid:marinespecies.org:taxname:127183",
+scientificName == "Oncorhynchus nerka" ~ "urn:lsid:marinespecies.org:taxname:254569",
+scientificName == "Oncorhynchus tschawytscha" ~ "urn:lsid:marinespecies.org:taxname:158075")) %>%
+  # Accepted name has slightly different species name: O. tshawytscha
+  rename(eventID = trawl)
+
+# Make sure the folder path exists already (e.g. ./Salmon Diet/tidy_data)
+write_csv(salmon_spp_occ, here("Salmon Diet", "tidy_data", "salmon_spp_occ.csv"))
+drive_upload(here("Salmon Diet", "tidy_data", "salmon_spp_occ.csv"),
+             path = " ",
+             name = "salmon_spp_occ.csv",
+             overwrite = TRUE)
+```
+
+So given that we have two occurrence cores for Salmon Diet data, there are also two measurementOr
