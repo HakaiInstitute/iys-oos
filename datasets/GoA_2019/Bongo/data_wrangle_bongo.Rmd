@@ -220,15 +220,16 @@ div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
 Q: If a data entry has number > 1, but only one associated length measurement, does that mean that all individuals in that row have that length? If so - these should all receive a unique `occurrenceID` and `occurrenceStatus`! Right now I haven't split these data entries, but have included a measurement in the eMoF table for "number". 
 </div>
 
+
 __To address these issues, a total of five different occurrence tables will be created, that eventually get merged to a single Occurrence Core! Reminder: in all these occurrence tables only data entries are included where species have been identified to species or genus level, and will therefore have an associated occurrenceID and occurrenceStatus.__
 
 The five Occurrence tables are: 
 
-bongo_occ1. Occurrence table for entries with no distinct number recorded (i.e., >4, >3 or >1);
-bongo_occ2. Occurrence table for entries where count > 1, but individual measurements (length) are provided in the notes. These entries will be split up and unique `occurrenceID`s will be created;
-bongo_occ3. Occurrence table for entries where count > 1, and a range of length measurements is provided in the `length_mm` column; 
-bongo_occ4. Occurrence table for individual data entries (i.e., where `number` = 1).
-bongo_occ5. Occurrence table for data entries where count > 1, but only a single length measurement is provided. 
+* bongo_occ1. Occurrence table for entries with no distinct number recorded (i.e., >4, >3 or >1);
+* bongo_occ2. Occurrence table for entries where count > 1, but individual measurements (length) are provided in the notes. These entries will be split up and unique `occurrenceID`s will be created;
+* bongo_occ3. Occurrence table for entries where count > 1, and a range of length measurements is provided in the `length_mm` column; 
+* bongo_occ4. Occurrence table for individual data entries (i.e., where `number` = 1).
+* bongo_occ5. Occurrence table for data entries where count > 1, but only a single length measurement is provided. 
 
 These five occurrence tables will eventually be concatenated into a single Occurrence Core. 
 
@@ -261,9 +262,7 @@ bongo_occ2_ind <- bongo_occ2 %>% filter(sample_id %in% c("SS12", "SS38", "SS42B"
                                                "SS119", "SS126", "SS176", "SS185"))
 ```
 
-When filtering for number > 1, we noticed that there are four data entries (rows) with a similar sample_id ("Petri dish"). So in our current set up these all have the same `sample_id` (GoA2019_Stn11:cast1:bongo:Net1:Petri dish). We will deal with these entries separate. So our first step here is to filter out this sample_id and assign a unique `eventID`. However, unique length measurements are provided in the notes for only three of these data entries.
-
-Therefore we have to deal with sample_id 'Petri dish' by creating unique `eventID`s, and then splitting three of those uniquely created `eventID`s as they have individual measurements associated to them. The fourth uniquely created `eventID` will have number = 3, but only a single length measurement associated. Therefore this row will be removed and be dealt with under bongo_occ3. 
+When filtering for number > 1, we observe that there are data entries for Station 11 that are all for the same species, but unique length measurements are provided for three data entries, and the four includes a length measurement range. We therefore split three of those uniquely created `eventID`s as they have individual measurements associated to them. The fourth uniquely created `eventID` will have number = 3, but only a single length measurement associated. Therefore this row will be removed and be dealt with under bongo_occ3. 
 
 ``` {r bongo_occ2_petri, eval = FALSE}
 bongo_petri <- bongo_occ2 %>% filter(sample_id == c("Petri dish_13","Petri dish_14", 
