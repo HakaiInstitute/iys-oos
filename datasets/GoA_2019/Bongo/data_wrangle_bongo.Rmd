@@ -89,39 +89,54 @@ bongo_event <- bind_rows(bongo_cruise,bongo_station,bongo_cast, bongo_sample) %>
 # Make sure the folder path exists already (e.g. ./Bongo/tidy_data)
 write_csv(bongo_event, here("Bongo", "tidy_data", "bongo_event.csv"))
 drive_upload(here("Bongo", "tidy_data", "bongo_event.csv"),
-             path = " ",
+             path = "https://drive.google.com/drive/u/0/folders/1cAJP-DGSQZdRhrIYraX8MJXO-h_7qbn2",
              name = "bongo_event.csv",
              overwrite = TRUE)
 ```
 
 ## Occurrence Core
 
-An `occurrenceID` and `occurrenceStatus` will only be provided to data entries where species have been identified to a species or genus level. Only for these species can a URN be associated from WoRMS. So first we inspect all the unique input for the `species` column, and filter for all these species by filtering out the species that can _not_ be identified to a species or genus level. Measurements of weight, length, life stage and taxonomic group will still be included, however they will linked directly to the `eventID` (the sampleID) rather than the `occurrenceID`. In other words, _no_ Occurrence Core will be created for these data entries!
+An `occurrenceID` and `occurrenceStatus` will only be provided to data entries where species have been identified to a species or genus level. Only for these species can a URN be associated from WoRMS. So first we inspect all the unique input for the `species` column, and filter for all these species by filtering out the species that can _not_ be identified to a species or genus level. Measurements of weight, length, life stage and taxonomic group will still be included, however they will linked directly to the `eventID` (the sampleID) rather than the `occurrenceID`. In other words, these data entries will not be included in the Occurrence Core!
 
 After a brief discussion with Julian, it was agreed on that entries where Species = `Size fraction`, will not have an Occurrence Core associated to it, because it is not possible to associate a URN from WoRMS to this class or group (`Zooplankton`). The same goes for entries where no common rank can be associated, such as `Jellyfish, radiolarian, chaetognath` and `Gelatinous`. For other entries where no clear classification is provided, e.g. `crab zoea` and `jelly mass`, the lowest common rank URN is listed. 
 
-Brian's comments regarding the size fractions: _Samples were size fractions. IN some cases the 2mm and 4mm size fractions have been split out to obtain measurements f species. The sum of these measurements is the total size fraction biomass._
-
+<style>
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
+</style>
+<div class = "blue">
 Q: Where do we draw the line when it comes to associating an Occurrence(ID) to an entry? Would this only be for species that have been identified to Species or Genus level, as perhaps a classification on phylum or kingdom level does not really provide any information?
+</div>
 
 ``` {r bongo_occ_pre_wrangle, eval = FALSE}
 unique(bongo$species)
 
 # Identify all entries that have not been identified to species or genus level: 
-bongo_occ_spp <- bongo %>% filter(!(species%in% c("Size fraction", "Chaetognath & Ctenophore", "Jelly mass",
+bongo_occ_spp <- bongo %>% filter(!(species %in% c("Size fraction", "Chaetognath & Ctenophore", "Jelly mass",
                                               "Crab zoea", "Jellyfish, radiolarian, chaetognath", "Gelatinous",
                                               "Ctenophore / jellyfish")))
-
-# Upon inspection, numerous bongo tows have the sample_id 'Petri dish' associated to them, with the only distinguishable feature being a difference in length measurement. In our current set up, all Petri dish sample_ids belong to the same Station have the same sample (GoA2019_Stn10:cast1:bongo:Net1:Petri dish), although they are different data entries. Therefore we attach a unique sample to them and then merge them back to the dataframe: 
-bongo_occ_spp_petri <- bongo_occ_spp %>% filter(sample_id == "Petri dish") %>%
-  mutate(sample_id = paste(sample_id, row_number(), sep = "_"))
-bongo_occ_spp_2 <- bongo_occ_spp %>% filter(!sample_id == "Petri dish")
-bongo_occ_spp <- rbind(bongo_occ_spp_2, bongo_occ_spp_petri)
 ```
 
-Upon close inspection of the data that we filtered out, there are two sample_ids (SS81 and SS133) for which the species are mentioned in the _notes_ column, _along_ with their length measured. For these two sample_ids we can add an `occurrenceID` and `occurrenceStatus`. Both sample_ids require special attention: For sampleID SS81 the number = 7, but the notes distinguish 8 unique measurements. Additionally, sample_id SS133 requires special attention because although number = 1, in the notes it says that jellies were observed (length range: 10 - 15mm) and 3 sagitta spp. were observed, with individual lengths measured. 
+<style>
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
+</style>
+<div class = "blue">
+Q: Upon inspection of the species filtered out of the bongo dataset, some sample_ids have associated notes in which sometimes species are specified, see e.g. sample_id Z80, Z15, SS102 etc. Where the notes specify the species and individual measurements (e.g. SS81) I have dealt with these samples in a later stage. However, the other sample_ids I have left as is -- notes are eventually added to the eMoF table in a column labelled measurementRemarks. Would you reckon that is sufficient?
 
-We will split up the data entries for these two sample_id's, thereby creating unique entries, and join it back with the dataset `bongo_occ_spp`. To create unique rows for these data entries, we manually change the value in the `number` column.
+Q: When examining samples SS177, SS178 and SS82, it appears that these data entries have a life stage listed in the species column (hydromedusae and crab zoea). Should we manually make changes in the data to reflect this?
+</div>
+
+When examining the bongo_occ_spp dataset, numerous bongo tows have the sample_id 'Petri dish' associated to them, with the only distinguishable feature being a difference in length measurement. In our current set up, all Petri dish sample_ids belong to the same Station have the same sample (GoA2019_Stn10:cast1:bongo:Net1:Petri dish), although they are different data entries. Therefore we attach a unique sample to them and then merge them back to the dataframe: 
+
+``` {r petri_dish, eval = FALSE}
+bongo_occ_petri <- bongo_occ_spp %>% filter(sample_id == "Petri dish") %>%
+  mutate(sample_id = paste(sample_id, row_number(), sep = "_"))
+bongo_occ_spp_temp <- bongo_occ_spp %>% filter(!sample_id == "Petri dish")
+bongo_occ_spp <- rbind(bongo_occ_spp_temp, bongo_occ_petri)
+```
+
+Upon close inspection of the data entries that we filtered out, there are two sample_ids (SS81 and SS133) for which the species are mentioned in the _notes_ column, _along_ with their length measured. For these two sample_ids we can add an `occurrenceID` and `occurrenceStatus`. Both sample_ids require special attention: For sampleID SS81 the number = 7, but the notes distinguish 8 unique measurements. Additionally, sample_id SS133 requires special attention because although number = 1, in the notes it says that jellies were observed (length range: 10 - 15mm) and 3 sagitta spp. were observed, with individual lengths measured. **For those data entries where some species are specified in the notes but no individual measurements are provided, no additional splitting is done!**
+
+Before creating occurrence tables that will eventually be merged into an Occurrence Core, we will split up the data entries for these two sample_id's, thereby creating unique entries, and join it back with the dataset bongo_occ_spp. To create unique rows for these data entries, we manually change the value in the `number` column. Then we duplicate the row of each sample_id based onthe value in the number column. The newly created dataframe will consist only of the duplicated rows, and will later be merged again with the original dataset. The reason for this is that no weight_mg value is associated to any of the individual measurements (weight_mg = NA).  
 
 ``` {r SS81 and SS133, eval = FALSE}
 bongo_pre_wrangle <- bongo %>% filter(sample_id %in% c("SS81", "SS133"))
@@ -129,16 +144,18 @@ bongo_pre_wrangle <- bongo %>% filter(sample_id %in% c("SS81", "SS133"))
 bongo_pre_wrangle$number[1] <- 8
 bongo_pre_wrangle$number[2] <- 4
 
-# Then we duplicate the row of the sampleID based on the value in the number column. The new dataframe consists only of duplicated rows, and will later be merged again with the dataset containing the original two sampleIDs/rows. The duplicated rows therefore need to reflect that no unique weight measurements are associated. 
-bongo_pre_wrangle_dup <- data.frame(bongo_pre_wrangle[rep(seq_len(dim(bongo_5)[1]),
+bongo_pre_wrangle_dup <- data.frame(bongo_pre_wrangle[rep(seq_len(dim(bongo_pre_wrangle)[1]),
                                   bongo_pre_wrangle$number), , drop = FALSE], row.names = NULL) %>%
   mutate(weight_mg = NA)
 
+# Merge it back with the original dataframe: 
 bongo_pre_wrangle_fnl <- rbind(bongo_pre_wrangle, bongo_pre_wrangle_dup)
 bongo_pre_wrangle_fnl$number <- as.numeric(bongo_pre_wrangle_fnl$number)
 bongo_pre_wrangle_fnl <- bongo_pre_wrangle_fnl[order(bongo_pre_wrangle_fnl$number, decreasing = TRUE), ]
 bongo_pre_wrangle_fnl <- bongo_pre_wrangle_fnl[order(as.character(bongo_pre_wrangle_fnl$sample_id)), ]
 bongo_pre_wrangle_fnl$sample_id <- sub('[.]', '_', make.names(bongo_pre_wrangle_fnl$sample_id, unique=TRUE))
+
+# Fill in the unique measurements associated to each data entry. 
 bongo_pre_wrangle_fnl <- bongo_pre_wrangle_fnl %>%
   mutate(species = case_when(
     sample_id == "SS133" ~ "Size fraction",
@@ -196,9 +213,16 @@ When examining the remaining data entries in the bongo_occ_spp dataset, we can i
 2) Some data entries that have a count > 1, appear to be aggregated entries, as only a single length measurement is associated. However, sometimes individual measurements or classifications are provided in the `notes` column. As we don't want to mess with the raw data .csv file, we have to manually inspect these entries to ensure that no (individual) measurements get overlooked * ;
 3) Some data entries have a count > 1, and an associated range in the length measurement (i.e., 15 - 17mm)
 
-* Q: If a data entry has number > 1, but only one associated length measurement, does that mean that all individuals in that row have that length? If so - these should all receive a unique `occurrenceID` and `occurrenceStatus`!
+<style>
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
+</style>
+<div class = "blue">
+Q: If a data entry has number > 1, but only one associated length measurement, does that mean that all individuals in that row have that length? If so - these should all receive a unique `occurrenceID` and `occurrenceStatus`! Right now I haven't split these data entries, but have included a measurement in the eMoF table for "number". 
+</div>
 
-__To address these issues, a total of five different occurrence tables will be created, that eventually get merged to a single Occurrence Core! Reminder: in all these occurrence tables only data entries are included whether species have been identified to species or genus level, and will therefore have an associated occurrenceID and occurrenceStatus.__
+__To address these issues, a total of five different occurrence tables will be created, that eventually get merged to a single Occurrence Core! Reminder: in all these occurrence tables only data entries are included where species have been identified to species or genus level, and will therefore have an associated occurrenceID and occurrenceStatus.__
+
+The five Occurrence tables are: 
 
 bongo_occ1. Occurrence table for entries with no distinct number recorded (i.e., >4, >3 or >1);
 bongo_occ2. Occurrence table for entries where count > 1, but individual measurements (length) are provided in the notes. These entries will be split up and unique `occurrenceID`s will be created;
@@ -207,6 +231,8 @@ bongo_occ4. Occurrence table for individual data entries (i.e., where `number` =
 bongo_occ5. Occurrence table for data entries where count > 1, but only a single length measurement is provided. 
 
 These five occurrence tables will eventually be concatenated into a single Occurrence Core. 
+
+***
 
 Let's first examine the data entries where the counts do not have a specific number associated to it. As the species has been identified to a species or genus-level, we do want to assign `occurrenceID` and `occurrenceStatus` columns to them. An `occurrenceID` will be associated at a later stage when all the created occurrence tables are joined. 
 
@@ -221,23 +247,23 @@ bongo_occ1 <- bongo_occ_spp %>% filter(number == ">3" | number == ">4" | number 
          scientificName = species)
 ```
 
-Next, we create an occurrence table to address the second issue we are facing, that _some data entries have a count >1, i.e., appear to be aggregated entries_. For some of these data entries, individual measurements or classifications are provided in the `notes` column. Therefore, we need to manually inspect the data entries where number > 1. If individual measurements are provided, we want split the data entry, and associate a unique `occurrenceID` and `occurrenceStatus`. We do _not_ want to create a new `eventID`!
+Next, we create an occurrence table to address the second issue we are facing, that _some data entries have a count >1, i.e., appear to be aggregated entries_. For some of these data entries, individual measurements or classifications are provided in the `notes` column. Therefore, we need to manually inspect the data entries where number > 1. If individual measurements are provided, we want split the data entry, and associate a unique `occurrenceID` and `occurrenceStatus`. We do _not_ want to create a unique `eventID` for each of these!
 
-We create a separate table for the unique sample_id's that have number > 1 and where the number matches the individual length measurements in `length_mm`. Our intention here is to _add_ duplicate rows for each unique sample_id equal to the value under `number` associated to that data entry. However, we want to keep the original data entry row (the `eventID`) intact. In other words, if four individual length measurements are provided in the `length_mm` column, we want to make sure these all get a unique `occurrenceID`. 
+We create a separate table for the unique sample_id's that have number > 1 and where the number matches the individual length measurements in `length_mm`. Our intention here is to _add_ duplicate rows for each unique sample_id equal to the value under `number` associated to that data entry. We want to keep the original data entry row (the `eventID`) intact, as this data entry usually contains the weight measurement. In other words, if four individual length measurements are provided in the `length_mm` column, we want to make sure these all get a unique `occurrenceID`, associated to the same `eventID`. 
 
 ``` {r bongo_occ2_pre, eval = FALSE}
 bongo_occ2 <- bongo_occ_spp %>% filter(number > 1)
 
-# Upon manual inspection, there are several data entries where count > 1, and the individual length measurements are provided in the notes. We filter for these sample_ids. 
+# We filter for the sample_ids where number is more than 1, and unique length measurements are provided. . 
 
 bongo_occ2_ind <- bongo_occ2 %>% filter(sample_id %in% c("SS12", "SS38", "SS42B", "22020", "22021",
                                                "SS59", "SS58", "SS57", "SS55", "Z318", "SS68", "SS69",
                                                "SS119", "SS126", "SS176", "SS185"))
 ```
 
-When filtering for number > 1, we noticed that there are four data entries (rows) with a similar sample_id ("Petri dish"). In other words, for sample_id `Petri dish` there are four data entries, all for the same species, so in our current set up these all have the same `sample_id` (GoA2019_Stn11:cast1:bongo:Net1:Petri dish). We will deal with these entries separate. So our first step here is to filter out this sample_id and assign a unique `eventID`. However, upon inspection, unique length measurements are provided in the notes for only three of these data entries.
+When filtering for number > 1, we noticed that there are four data entries (rows) with a similar sample_id ("Petri dish"). So in our current set up these all have the same `sample_id` (GoA2019_Stn11:cast1:bongo:Net1:Petri dish). We will deal with these entries separate. So our first step here is to filter out this sample_id and assign a unique `eventID`. However, unique length measurements are provided in the notes for only three of these data entries.
 
-Therefore we have to deal with sample_id 'Petri dish' by creating unique `eventID`s, and then splitting three of those uniquely created `eventID`s as they have individual measurements associated to them. The fourth uniquely created `eventID` will have number = 3, but only a single length measurement associated. Therefore this row will be removed and be dealt with 
+Therefore we have to deal with sample_id 'Petri dish' by creating unique `eventID`s, and then splitting three of those uniquely created `eventID`s as they have individual measurements associated to them. The fourth uniquely created `eventID` will have number = 3, but only a single length measurement associated. Therefore this row will be removed and be dealt with under bongo_occ3. 
 
 ``` {r bongo_occ2_petri, eval = FALSE}
 bongo_petri <- bongo_occ2 %>% filter(sample_id == c("Petri dish_13","Petri dish_14", 
@@ -249,7 +275,7 @@ bongo_petri <- bongo_petri[-4, ]
 bongo_occ_new <- rbind(bongo_occ2_ind, bongo_petri)
 ```
 
-The next step is to create duplicate rows of these data entries, equal to the count in the `number` column. These duplicated rows will need to reflect the individual length (mm) measurements and also reflect that it now represents just a single measurement (i.e., number = 1). Additionally, for all the split unique data entries in this dataframe, the weight_mg measurement has to be NA. The weight_mg measurements for these data entries will still be reflected in the original data. In a later stage, this newly created dataframe will be merged with the original dataframe, and the `occurrenceIDs` will be given a unique string. 
+The next step is to create duplicate rows of these data entries, equal to the count in the `number` column. These duplicated rows will need to reflect the individual length (mm) measurements and also reflect that it now represents just a single measurement (i.e., number = 1). For all the split unique data entries in this dataframe, the weight_mg measurement will be NA. The weight_mg measurements for these data entries combined will still be reflected in the original data. In a later stage, this newly created dataframe will be merged with the original dataframe. 
 
 ``` {r bongo_occ2_wrangle, eval = FALSE}
 bongo_occ2dup <- data.frame(bongo_occ_new[rep(seq_len(dim(bongo_occ_new)[1]),
@@ -340,7 +366,7 @@ bongo_occ2 <- bongo_occ2 %>%
          scientificName = species)
 ```
 
-Third, we create an occurrence table for the third issue, _some data entries have a count > 1, and an associated range in the length measurement (i.e., 15 - 17mm)_. The next chunk of code is for the data entries where number > 1, _but_ no distinct measurement lengths are provided, but a range is provided (i.e., 15-17mm). In the code above, these entries were _not_ given an occurrenceID (but the individual measurements were); however, here we do provide an `occurrenceID` for these entries, and in the eMoF table they will have measurementTypes `minimum length` and `maximum length` to display the range. As these are all ranged values, all entries contain a hyphen so we can filter for that. 
+Third, we create an occurrence table for the third issue, _some data entries have a count > 1, and an associated range in the length measurement (i.e., 15 - 17mm)_. The next chunk of code is for the data entries where number > 1, _but_ no distinct measurement lengths are provided, but a range is provided. In the code above, these entries were _not_ given an occurrenceID (but the individual measurements were); however, here we do provide an `occurrenceID` for these entries, and in the eMoF table they will have measurementTypes `minimum length` and `maximum length` to display the range. As these are all ranged values, all entries contain a hyphen so we can filter for that. 
 
 ``` {r occ_range, eval = FALSE}
 # From the original dataset, filter out all the numbers in the `length_mm` column that contain a range (i.e., a -). 
@@ -358,13 +384,18 @@ So far, for all the data entries where species have been identified to a species
     *- Data entries where number > 1 and individual measurements are depicted in the notes
     *- Data entries where number > 1 and a range is provided in the `length_mm` column. 
     
-The only occurrence table that needs to be created is for all data entries where species or genus has been identified and individual measurements are associated (i.e., the rows where number = 1):
+This leaves two occurrence tables that need to be created:
+
+1) all data entries where species or genus has been identified and individual measurements are associated (i.e., the rows where number = 1), and;
+2) all data entries where species or genus has been identified and the number is greater than 1, but only a _single_ length measurement is provided.  
 
 ``` {r bongo_occ_ind, eval = FALSE}
 bongo_occ4 <- bongo_occ_spp %>%
   filter(number == 1) %>%
   filter(!sample_id %in% c("22003", "Z372")) %>%
-  # Upon inspection, bongo_occ4 has sample_id 22003 and Z372 as well. These is a samples where number = 1, but the length measurement is a range. Therefore, these samples are already included in bongo_occ3 dataset and are therefore omitted from this dataset. 
+  
+# Upon inspection, bongo_occ4 has sample_id 22003 and Z372 as well. These is a samples where number = 1, but the length measurement is a range. Therefore, these samples are already included in bongo_occ3 dataset and are therefore omitted from this dataset. 
+  
   mutate(occurrenceID = " ",
          occurrenceStatus = "present") %>%
   rename(eventID = sample,
@@ -386,9 +417,6 @@ bongo_occ5 <- bongo_occ5[ !(bongo_occ5$sample_id %in% bongo_petri$sample_id), ] 
          occurrenceStatus = "present") %>%  
   rename(eventID = sample,
          scientificName = species)
-
-# The resulting bongo_occ5 dataframe includes data entries where the number > 1, but no individual length measurements or length range is provided. However, all these data entries have been identified to a species or genus level. 
-
 ```
 
 To create the final occurrence table, the five occurrence tables are joined. As individual measurements are associated to these data entries, an `occurrenceID` is created for them. Additionally, for each species the proper scientificNameID (WoRMS URN) is provided. 
@@ -417,17 +445,11 @@ bongo_occ_fnl <- bongo_occ_fnl %>%
       scientificName == "Beroe sp." ~ "urn:lsid:marinespecies.org:taxname:1434803",
       scientificName == "Euphausiid" ~ "urn:lsid:marinespecies.org:taxname:110671",
       # Family: Euphasiidae
-      scientificName == "Chaetognath & Ctenophore" ~ "urn:lsid:marinespecies.org:taxname:2",
-      # Rank: Kingdom is the lowest common rank of phylum 'chaetognatha and 'ctenophora'
       scientificName == "Siphonophore (Lensia type)" ~ "urn:lsid:marinespecies.org:taxname:135365",
       scientificName == "Aequorea sp." ~ "urn:lsid:marinespecies.org:taxname:116998",
-      scientificName == "Jelly mass" ~ "urn:lsid:marinespecies.org:taxname:1267",
-      # URN for 'Jelly mass' is that for phylum: Cnidaria
       scientificName == "Radiolarians" ~ "urn:lsid:marinespecies.org:taxname:582421",
       # Phylum: Radiozoa
       scientificName == "Paraphronima (gracilis)" ~ "urn:lsid:marinespecies.org:taxname:236597",
-      scientificName == "Crab zoea" ~ "urn:lsid:marinespecies.org:taxname:1065",
-      # URN for 'crab zoea' is that for phylum: Arthropoda. 
       scientificName == "Microstomus pacificus" ~ "urn:lsid:marinespecies.org:taxname:274294",
       scientificName == "Thysanoessa (longipes)" ~ "urn:lsid:marinespecies.org:taxname:237873",
       scientificName == "Myctophid larva" ~ "urn:lsid:marinespecies.org:taxname:125498",
@@ -450,8 +472,6 @@ bongo_occ_fnl <- bongo_occ_fnl %>%
       scientificName == "Siphonophore" ~ "urn:lsid:marinespecies.org:taxname:1371",
       scientificName == "siphonophore" ~ "urn:lsid:marinespecies.org:taxname:1371",
       # Order: Siphonophorae
-      scientificName == "Ctenophore / jellyfish" ~ "urn:lsid:marinespecies.org:taxname:1248",
-      # As they are listed under the group 'Ctenophore', the associated URN above links to this phylum.
       scientificName == "Sagitta" ~ "urn:lsid:marinespecies.org:taxname:105410", 
       scientificName == "E pacifica" ~ "urn:lsid:marinespecies.org:taxname:237851",
       scientificName == "T spinifera" ~ "urn:lsid:marinespecies.org:taxname:237874"
@@ -460,53 +480,58 @@ bongo_occ_fnl <- bongo_occ_fnl %>%
 bongo_occ_core <- bongo_occ_fnl %>%
   rename(Preparations = preservation) %>%
   select(eventID, occurrenceID, scientificName, scientificNameID, occurrenceStatus, Preparations)
+# I change bongo_occ_fnl into a new dataframe because we're going to use the bongo_occ_fnl dataset in the eMoF table.
 
 # Make sure the folder path exists already (e.g. ./Bongo/tidy_data)
 write_csv(bongo_occ_core, here("Bongo", "tidy_data", "bongo_occ.csv"))
 drive_upload(here("Bongo", "tidy_data", "bongo_occ.csv"),
-             path = " ",
+             path = "https://drive.google.com/drive/u/0/folders/1cAJP-DGSQZdRhrIYraX8MJXO-h_7qbn2",
              name = "bongo_occ.csv",
              overwrite = TRUE)
 ```
 
-After an initial QC of the Occurrence Core .csv file, Tim noticed that two sample_ids have 2 `OccurrenceID`s associated to it whereas it should only be 1. The sample_ids are: Z372 and and 22003. -- This issue has been resolved.
-
-Q: Where length (mm) is e.g. 15 - 17mm, should we filter these samples from the rest and include a minimum length and maximum length column in the eMoF table?
-A: Yes, initially a dataframe is created, where we have filtered for data entries that include a range in the measurement of length. In the associated eMoF table there will be two `measurementTypes` associated to length_mm: `minimum length` and `maximum length`. 
-
+<style>
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
+</style>
+<div class = "blue">
 Q: All species that are listed as `size fraction` belong to the group "Zooplankton". How can we best represent this group according to OBIS / WoRMS standards?
 A: As no species name or genus is provided, rather than creating an `occurrenceID` for these species, we link the measurements associated to this data entry directly to the `eventID`. To indicate that it does concern measurements associated to 'Zooplankton', one of the measurement parameters is the column `Group`. 
+</div>
 
 ## extended measurementOrFact
 
-In our extended measurementOrFact table(s), we associate the measurements to either the `eventID` (if species was not identified to species or genus level), or the `occurrenceID` (if species was identified to species or genus level). As a first step though, we associate the _depth_ to the cast. 
+In our extended measurementOrFact table(s), we associate the measurements to either the `eventID` (if species was not identified to species or genus level), or the `occurrenceID` (if species was identified to species or genus level). As a first step though, we associate the _seafloor depth_ and _sampling depth_ to the cast. 
 
 ``` {r bongo_bottomdepth, eval = FALSE}
 bongo_bottomdepth <- bongo %>% 
   select(eventID = cast, 
-         depth) %>%
+         depth, sample_depth) %>%
   distinct(eventID, .keep_all = TRUE) %>%
   mutate_all(as.character) %>%
-  pivot_longer(cols = depth,
+  pivot_longer(cols = depth:sample_depth,
                names_to = "measurementType",
                values_to = "measurementValue") %>%
   mutate(measurementID = case_when(
-    measurementType == "depth" ~ paste(eventID, "depth", sep = ":")),
+    measurementType == "depth" ~ paste(eventID, "depth", sep = ":"),
+    measurementType == "sample_depth" ~ paste(eventID, "sample_depth", sep = ":")),
         measurementType = recode(measurementType,
-                                 depth = "seafloor depth")) %>%
+                                 depth = "seafloor depth",
+                                 sample_depth = "sampling depth")) %>%
   mutate(measurementTypeID = case_when(
-    measurementType == "seafloor depth" ~ "http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/"),
+    measurementType == "seafloor depth" ~ "http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/",
+    measurementType == "sampling depth" ~ "http://vocab.nerc.ac.uk/collection/P01/current/DXPHPRST/"),
         measurementUnit = case_when(
-    measurementType == "seafloor depth" ~ "m"),
+    measurementType == "seafloor depth" ~ "m",
+    measurementType == "sampling depth" ~ "m"),
         measurementUnitID = case_when(
-    measurementType == "seafloor depth" ~ "http://vocab.nerc.ac.uk/collection/P06/current/ULAA/")) %>%
+    measurementUnit == "m" ~ "http://vocab.nerc.ac.uk/collection/P06/current/ULAA/")) %>%
   select(eventID, measurementID, measurementType, measurementTypeID, measurementValue, 
          measurementUnit, measurementUnitID)
 ```
 
 Though an occurrenceID was not created for each data entry, measurements can be linked either directly to the `eventID` or to the `occurrenceID`. The following measurements are linked to either the `eventID` or `occurrenceID`: `length_mm`, `length_type`, `weight_mg`, `number` and `(taxonomic) group`. Additional information that might in the future be included as well could be `Stage`, which reflects a lifeStage of an organism. However, because the datasheet includes a wide variety of organisms, all with different 'levels' of a lifeStage, to what extent is it necessary to choose a uniform 'coding' system for this variable? Finally, `size_fraction` needs to be added to `eventID`, but perhaps also to the `occurrenceID`. 
 
-Not sure if this means that we have to create two distinct extended measurementOrFact tables which we join to a single eMoF Core? One linking to the `occurrenceIDs` and the other directly to the `eventID`. We first create the eMoF table that links directly to the `eventID`. First we have to filter for all the data entries for which no `occurrenceID` has been created. In other words, remove any rows (data entries) for which an `occurrenceID` has been created:
+We first create the eMoF table that links directly to the `eventID`. First we have to filter for all the data entries for which no `occurrenceID` has been created. In other words, remove any rows (data entries) for which an `occurrenceID` has been created:
 
 ``` {r eMoF, eval = FALSE}
 bongo_occID <- bongo_occ_fnl %>% rename(sample = eventID)
@@ -521,6 +546,9 @@ bongo_emof <- bongo_emof %>%
          weight = weight_mg,
          length_type,
          group) %>%
+
+  # As there is no NERC vocab (it appears) for milligram (for the weight), we transform this column to reflect the weight in grams: 
+  mutate(weight = as.numeric(weight) / 1000) %>%
   mutate_all(as.character) %>%
   pivot_longer(cols = number:group, 
                names_to = "measurementType",
@@ -536,25 +564,27 @@ bongo_emof <- bongo_emof %>%
       measurementType == "group" ~ paste(eventID, "group", sep = ":")
     ),
     measurementTypeID = case_when(
-      measurementType == "number" ~ " ",
-      measurementType == "size_fraction" ~ " ",
+      measurementType == "number" ~ "http://vocab.nerc.ac.uk/collection/S06/current/S0600008/",
+      measurementType == "size_fraction" ~ "http://vocab.nerc.ac.uk/collection/P01/current/MSHSIZE1/",
       # samplingProtocol
       measurementType == "length" ~ "http://vocab.nerc.ac.uk/collection/S06/current/S0600015/",
       # I want to check if maybe there is a better Controlled Vocab for body size
       measurementType == "length_type" ~ " ",
-      measurementType == "weight" ~ "http://vocab.nerc.ac.uk/collection/S06/current/S0600088/",
+      measurementType == "weight" ~ "http://vocab.nerc.ac.uk/collection/S06/current/S0600087/",
+      # As per communication with Brian Hunt: weight refers to net dry weight!
       measurementType == "group" ~ " "
     ), 
     measurementUnit = case_when(
+      measurementType == "number" ~ "individuals",
       measurementType == "length" ~ "mm",
       measurementType == "weight" ~ "g",
-      measurementType == "size_fraction" ~ "microns" 
+      measurementType == "size_fraction" ~ "mm" 
       # If this is equal to mesh size
     ), 
     measurementUnitID = case_when(
+      measurementUnit == "individuals" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UUUU/", 
       measurementUnit == "mm" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UXMM/",
-      measurementUnit == "g" ~ "	http://vocab.nerc.ac.uk/collection/P06/current/UGRM/",
-      measurementUnit == "microns" ~ " "
+      measurementUnit == "g" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UGRM/",
       # Reminder: there is no NERC Controlled Vocabulary for mg, so values are formatted to 'grams'. 
     )
     )
@@ -570,6 +600,7 @@ bongo_emof2 <- bongo_occ_fnl %>%
          weight = weight_mg,
          length_type,
          group) %>%
+  mutate(weight = as.numeric(weight) / 1000) %>% 
   mutate_all(as.character)
 ```
 
@@ -617,31 +648,34 @@ bongo_emof2 <- bongo_emof2 %>%
     ),
     measurementTypeID = case_when(
       measurementType == "number" ~ "http://vocab.nerc.ac.uk/collection/S06/current/S0600008/",
-      measurementType == "size_fraction" ~ " ",
+      measurementType == "size_fraction" ~ "http://vocab.nerc.ac.uk/collection/P01/current/MSHSIZE1/",
       # samplingProtocol
       measurementType == "length" ~ "http://vocab.nerc.ac.uk/collection/S06/current/S0600015/",
       # I want to check if maybe there is a better Controlled Vocab for body size
       measurementType == "maximumLength" ~ "http://vocab.nerc.ac.uk/collection/P01/current/OBSMAXLX/",
       measurementType == "minimumLength" ~ "http://vocab.nerc.ac.uk/collection/P01/current/OBSMINLX/",
       measurementType == "length_type" ~ " ",
-      measurementType == "weight" ~ "http://vocab.nerc.ac.uk/collection/S06/current/S0600088/",
+      measurementType == "weight" ~ "http://vocab.nerc.ac.uk/collection/S06/current/S0600253/",
+      # As per communication with Brian Hunt: weight refers to net dry weight!
       measurementType == "group" ~ " "
     ), 
     measurementUnit = case_when(
-      measurementType == "number" ~ "individuals"
+      measurementType == "number" ~ "individuals",
       measurementType == "length" ~ "mm",
       measurementType == "minimumLength" ~ "mm",
       measurementType == "maximumLength" ~ "mm",
       measurementType == "weight" ~ "g",
-      measurementType == "size_fraction" ~ "microns" 
+      measurementType == "size_fraction" ~ "mm" 
       # If this is equal to mesh size
     ), 
     measurementUnitID = case_when(
-      measurementUnit == "individuals" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UUUU/"
+      measurementUnit == "individuals" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UUUU/",
       measurementUnit == "mm" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UXMM/",
-      measurementUnit == "g" ~ "	http://vocab.nerc.ac.uk/collection/P06/current/UGRM/",
-      measurementUnit == "microns" ~ " "
+      measurementUnit == "g" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UGRM/"
       # Reminder: there is no NERC Controlled Vocabulary for mg, so values are formatted to 'grams'. 
+      # Reminder2: The size_fraction is often times measured in microns, but in the data set it is reported in 'mm', 
+      # or 1/1000th of a micron. T
+      # The measurementUnitID for microns, if needed, is: http://vocab.nerc.ac.uk/collection/P06/current/UMIC/
     )
     )
 ```
@@ -675,11 +709,12 @@ bongo_measurementOrFact <- bind_rows(bongo_bottomdepth, bongo_emof, bongo_emof2)
 
 # If you want to change the order of the eventID, use:
 bongo_measurementOrFact <- bongo_measurementOrFact[mixedorder(as.character(bongo_measurementOrFact$eventID)),]
+# I personally like this to QC my data manually. 
 
 # Make sure the folder path exists already (e.g. ./Bongo/tidy_data)
 write_csv(bongo_measurementOrFact, here("Bongo", "tidy_data", "bongo_emof.csv"))
 drive_upload(here("Bongo", "tidy_data", "bongo_emof.csv"),
-             path = " ",
+             path = "https://drive.google.com/drive/u/0/folders/1cAJP-DGSQZdRhrIYraX8MJXO-h_7qbn2",
              name = "bongo_emof.csv",
              overwrite = TRUE)
 ```
