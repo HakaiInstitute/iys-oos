@@ -1,0 +1,116 @@
+---
+output:
+  rmarkdown::pdf_document:
+  
+  fig_caption: yes
+  includes::
+    in_header: figure_opts.tex
+    latex_engine: xelatex
+sansfont: Times New Roman
+fontsize: 12pt
+
+header-includes:
+- \usepackage{booktabs}
+- \usepackage{sectsty} \sectionfont{\centering \emph}
+
+author: "Tim van der Stap"
+date: "7/24/2020"
+---
+
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE)
+library(here)
+library(tidyverse)
+library(hakaiR)
+options(scipen=999) # This removes scientific notation for inline output ie `r object` in the report text
+```
+
+# Data Management Plan
+## _Salmon ecological data_
+
+`July 24, 2020`
+
+`Tim van der Stap`
+
+`Hakai Institute`
+
+`1713 Hyacinthe Bay Road, Heriot Bay, BC, Canada`
+
+# Executive Summary
+
+# List of acronyms
+
+Below the acronyms mentioned throughout this Data Management Plan and their descriptions are listed for reference. 
+
+BODL - Biodiversity of Life Online Database
+CKAN - Comprehensive Knowledge Archive Network
+DMP - Data Management Plan 
+DwC - Darwin Core
+ERDDAP - Environmental Research Division Data Access Program
+CIOOS - Canadian Integrated Ocean Observing System
+GBIF - Global Biodiversity Information System
+GOOS - Global Ocean Observing System
+MBON - Marine Biodiversity Observation Network
+NERC - Natural Environment Research Council
+OBIS - Ocean Biodiversity Information System
+TDWG - Biodiversity Information Standards (formerly: The International Working Group on Taxonomic Databases)
+WoRMS - 
+
+# Introduction 
+
+This Data Management Plan ('DMP') aims to describe the work flow and the federated approach taken by the Hakai Institute to standardize salmon ecological data to international standards. Improving the understanding on how the (historic) data collected is standardized, mobilized and what Management and Communication Model structure it follows will hopefully provide a 'support base' or strengthen the foundation for scientists to collaborate and engage. The approach described in this report can be applied to various scientific disciplines within salmon ecology. 
+
+It is important to note that this is a living document, and by no means have we 'found the golden nugget' on how best to standardize data and integrate it into a large online platform or database. As we move forward though hopefully this process will become more streamlined, resulting in a higher quality data and faster data processing. 
+
+# Objectives
+
+When it comes to standardizing and tidying data, our goal is to ensure that the data adheres to the FAIR principles and is therefore interoperable between different platforms. By standardizing it to an international standard it also ensures the longevity of the data and allows it to be reused by future scientists and the public at large. 
+
+To standardize data it is important that we create an effective 'roadmap' on how this is achieved, and what the key components within this roadmap or framework are. This roadmap that we at the Hakai Institute are building will hopefully contribute to a stronger foundation among the scientific community and strengthen the idea that (international) collaboration, quality or version control, are required to propel data science into the future. 
+
+As mentioned, to effectively do that a roadmap needs to be created on how we structure 'raw data' and standardize it to fit an international format. This Data Management Plan describes this 'data tidying roadmap'. The objectives described herein are three-fold: 
+
+1. Describe the federated approach taken to standardize data;
+2. Describe how it complies with the principles of open and FAIR data; 
+3. Demonstrate the relational database structure
+
+## Data principles
+
+The Hakai Institute believes that success in data science ultimately depends on how standardized and integrated the data collected is, and how accessible the data is to not just scientists involved but also the public at large and those working with the data moving forward. Therefore, it is important that the data follows the 'FAIR' principles: Findable, Accessible, Interoperable, and Reusable. Open source data allows version control and collaboration between scientists, with the idea being that data collection and statistical analyses will be of greater quality. Whilst 'open source' is quickly becoming the new standard, it became apparent that not every scientist collects data in a similar manner or of similar quality. Therefore, a need arose for an international standard. By formatting - we often refer to it as 'tidying' - the data to an international standard, the interoperability of the data is also improved as it becomes easier to search and filter for the correct data.
+
+
+
+TRUSTed data. 
+
+
+# Data standards, platforms and software used
+
+Currently, the raw data we receive regarding the IYS project is stored on GoogleDrive. It is important to note that this 'raw data' is typically data that has already been cleaned by the scientists and can already be used by them for analyses. Using the statistical software program _R_, use the data set to wrangle the data, with the ultimate goal of hosting the data on ____. Metadata associated to the dataset is hosted on CKAN (Comprehensive Knowledge Archive Network). Through CKAN a link will also be provided to the wrangled data. Quality control will have to be done for all metadata uploaded to CKAN. 
+
+The Data Management and Communications model will be founded on protocols and standards for archiving and providing open access to data put forward by the Global Ocean Observation System (GOOS). GOOS is a program that is coordinated by the Intergovernmental Oceanographic Commission of UNESCO (United Nations Educational, Scientific and Cultural Organization). GOOS is partnered with expert agencies in biological data—namely the Ocean Biogeographic Information System (OBIS), Biodiversity of Life Online Database (BOLD) and the Marine Biodiversity Observation Network (MBON), among others. These organizations promote and/or develop the use of _Controlled Vocabularies_. Standards like this encourage interoperability and reuse of data. We recommend using established international standards connected to GOOS where available, and extending or developing standards where needed.
+
+The Ocean Biodiversity Information System (OBIS) is a global open-access data and information clearing-house on marine biodiversity for science, conservation and sustainable development. The Darwin Core (DwC) is the body of standards for biodiversity standards. It provides terms and vocabularies used to format data to an international standard. This 'archive' of terms and vocabularies (thus often referred to as Darwin Core Archive or DwC-A) is maintained by TDWG (Biodiversity Information Standards, formerly The International Working Group on Taxonomic Databases). As the name implies, OBIS is an excellent platform to host biodiversity data, which typically consists of occurrence or presence/absence data. Additionally, OBIS can also host environmental data (OBIS-ENV). Using this approach, and standardizing both biological as well as environmental data according to the DwC-A so that it can be hosted on OBIS, allows for biological and environmental data to be linked. 
+
+Data standardized to DwC terms typically follows a hierarchical structure, where usually three layers - or 'Cores' - are created to which the data is linked: the Event Core, Occurrence Core and the extended Measurements or Facts Core. Each of these layers contains different data pertaining to the sampling event, the occurrence or the measurements. A detailed description of this structure can be found here: https://obis.org/manual/darwincore/. Information pertaining to the sampling event, such as date, time and location coordinates are associated to the Event Core; information pertaining to the Occurrence Core is .... and finally, the extended measurementOrFact table (eMoF) contains the measurements associated to the sampling event. Through shared IDs the different cores are nested. 
+
+By formatting the data and data columns to an international standard and having all datasets follow a similar structure, it simplifies the process of searching for the data in the future. To ensure that people search for the correct terms, OBIS and DwC promotes the use of a standardized set of terms, also known as _controlled vocabulary_ in both the metadat and to label the data. This also enables records to be interpreted by computers, and opens up dta sets to a whole world of possibilities for computer aided manipulation, distribution and long term reuse. The controlled vocabulary we use comes from the Natural Environment Research Council (NERC) Vocabulary Server. The NERC Vocabulary Server provides access to lists of standardised terms that cover a broad spectrum of disciplines of relevance to the oceanographic and wider community. It gives scientists the means to access lists of controlled terms to describe data, saving time trying to unravel data sets. Controlled vocabulary is used to describe e.g. sampling methodology, measurement units and values.
+
+
+# Visual representation of relational database structure
+
+The diagram below indicates how the different platforms are connected and describes the work flow or approach taken when standardizing data. 
+
+![an image caption: Relational Database Structure](images/Standardization_flowchart.png)
+
+# Case study - historical salmon diet data
+
+So what does all this information mean regarding the historic salmon diet database? A question often asked is: "Now I have my data or database, how do I make sure it gets used?" By standardizing and formatting the data and the database according to DwC-A standards we can ensure that moving forward, the data complies to the FAIR data principles. This would allow even greater findability, accessibility and interoperability with platforms worldwide. By integrating the data into the standards adopted by e.g. OBIS and GBIF it also improves the chances that data gets added to the database in the future. 
+
+# Moving forward; sustainability of the data\
+
+# Conclusion
+
+# Important links and resources
+
+- OBIS: https://obis.org/ -- https://obis.org/manual/
