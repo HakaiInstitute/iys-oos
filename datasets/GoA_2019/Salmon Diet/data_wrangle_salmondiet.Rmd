@@ -17,7 +17,7 @@ library(googledrive)
 library(uuid)
 ```
 
-The raw data is stored on GoogleDrive. The first step is to download the file from Google Drive to a local folder on your computer's hard drive. 
+The raw data is stored on Google Drive. The first step is to download the file from Google Drive to a local folder on your computer's hard drive. 
 
 ``` {r file_download, eval = FALSE}
 # Make sure your folder path exists already (e.g. ./Salmon Diet/raw_data)
@@ -26,6 +26,49 @@ drive_download("https://docs.google.com/spreadsheets/d/1E88ZXuiYIqjq4ABl2GDB7Kp0
                                  "GoA_fish diets_cleaned.xlsx"),
                overwrite = TRUE)
 ```
+
+We want to see if the data in the salmon diet dataset matches data recorded in the pathogen dataset. The reason for this is that in the pathogen dataset, Floytags and MGL# are attached to the samples, but this appears to be missing in the salmon diet dataset. By cross-referencing, we can gain insight as to which diet data belongs to which Floytag or MGL#
+
+``` {r file_download2, eval = FALSE}
+# Make sure your folder path exists already (e.g. /Salmon Diet/raw_data)
+drive_download("https://docs.google.com/spreadsheets/d/14YOHGGrU0zi--QHurgC6YVqlJ2GMPdoa/edit#gid=1919082779",
+               path = here::here("Salmon Diet", "raw_data",
+                                 "IYS_GoA_2019_fish_health_pathogen_detections.xlsx"),
+               overwrite = TRUE)
+```
+
+Now read both files from the local folder, and make the minor adjustments needed to cross-reference columns `Trawl`, `Species` and `Mass`. 
+
+``` {r, eval = FALSE}
+salmon <- read_excel(here("Salmon Diet", "raw_data", 
+                          "GoA_fish diets_cleaned.xlsx"),
+                     sheet = "Diets_clean") %>%
+  rename(Mass = `Mass, g`) %>%
+  select(Trawl, Species, Mass)
+
+pathogen <- read_excel(here("Salmon Diet", "raw_data",
+                            "IYS_GoA_2019_fish_health_pathogen_detections.xlsx")) %>%
+  mutate(Species = case_when(
+    Species == "Coho" ~ "Oncorhynchus kisutch",
+    Species == "Pink" ~ "Oncorhynchus gorbuscha",
+    Species == "Chum" ~ "Oncorhynchus keta",
+    Species == "Chinook" ~ "Oncorhynchus tschawytschka",
+    Species == "Sockeye" ~ "Oncorhynchus nerka"
+  )) %>%
+  rename(Trawl = Set) %>%
+  select(Trawl, Species, Mass)
+
+# The rows where the is a match can be found using: 
+test <- inner_join(salmon, pathogen) %>% mutate(check = "match")
+# The rows where there is no match can be found using:
+test2 <- anti_join(salmon, pathogen) %>% mutate(check = "nomatch")
+full <- rbind(test, test2)
+full <- full[order(full$Trawl),]
+```
+
+Using the nrow() function we find that there are 52 rows where `Species`, `Trawl` and `Mass` data matches between the salmon diet data and the pathogen data, and 96 rows where there is no match. Unfortunately this means that we cannot cross-reference the pathogen and salmon data for the majority of the fish, and consequently that - at the moment - we are not able to use Floytag or MGL# as a common parentEvent. 
+
+***
 
 When creating the different eventID layers, we assume that the column `Trawl` is synonymous to `Station` -- need to confirm this! Additionally, in the current set up, each salmon species caught at a specific station gets treated like a unique sample ID (and, thus, as a unique `eventID`). Ideally, the salmon that were caught and dissected would have been given a Floy tag, so a distinction can be made between stomach content of different individuals of a same species in the same trawl. 
 
@@ -108,22 +151,45 @@ drive_upload(here("Salmon Diet", "tidy_data", "salmon_event.csv"),
              overwrite = TRUE)
 ```
 
-The current proposed set up would include two occurrence cores that are connected to the eventID through a common occurrence core. Currently however this does not seem to be possible, as within the datasheet there is no column designated to i.e., sampleID. The problem with this is that there are sometimes numerous individuals of the same species caught at a station/within a trawl, but no these individuals have no defining tag (so how do the scientists know which individual the stomach content belong to, asides from their data?)
+The current proposed set up would include two occurrence cores, with one occurrence core being connected to the other. Ideally, two occurrence cores would be connected to the `eventID` through a common occurrence core. Currently however this does not seem to be possible, as within the datasheet there is no column designated to i.e., sampleID. The problem with this is that there are sometimes numerous individuals of the same species caught at a station/within a trawl, but no these individuals have no defining tag (so how do the scientists know which individual the stomach content belong to, asides from their data?) In the salmon diet dataset some data entries cover multiple stomachs examined (`N stomachs` > 1), and the associated fork length and mass appear to be averaged across multiple individuals. However, in the current set up it's sometimes not possible to identify which individuals this covers (i.e., no mentioning of Floytags or #MGL). 
 
-In one of the occurrence cores I think we should list all the unique prey species consumed by the salmon. The measurements attached to these unique occurrences would be the mass (g) of prey consumed. Each prey species will receive their own unique URN from [WoRMS](http://www.marinespecies.org/)
+In one of the occurrence cores I think we should list all salmon species / individuals caught at a station/in a trawl. Measurements linked to the salmon species include: fork length, mass, food mass, gut fullness index (GFI), CFI adj %, `N stomachs` and mass digested food (but unidentified to a species). The assumption made here is that the column `N stomachs` refers to the number of stomachs examined, and therefore appears to work in a similar way to `count`. As the survey was set out to capture salmon, we assume that it is also of interest to see know which salmon species _have not_ been caught at each station, and therefore for each station we'll include whether each of the five salmon species were caught (present) or not (absent). Additionally, each salmon species will receive their own unique URN from [WoRMS](http://www.marinespecies.org). 
+
+``` {r salmon_occ, eval = FALSE}
+salmon_spp_occ <- salmon %>%
+  complete(trawl, species, fill = list(n_stomachs = 0)) %>%
+  rename(scientificName = species) %>% 
+  mutate(occurrenceStatus = ifelse(n_stomachs > 0, "present", "absent"),
+         occurrenceID = paste(trawl, scientificName, sep = ":"),
+         scientificNameID = case_when(
+scientificName == "Oncorhynchus gorbuscha" ~ "urn:lsid:marinespecies.org:taxname:127182",
+scientificName == "Oncorhynchus kisutch" ~ "urn:lsid:marinespecies.org:taxname:127184",
+scientificName == "Oncorhynchus keta" ~ "urn:lsid:marinespecies.org:taxname:127183",
+scientificName == "Oncorhynchus nerka" ~ "urn:lsid:marinespecies.org:taxname:254569",
+scientificName == "Oncorhynchus tschawytscha" ~ "urn:lsid:marinespecies.org:taxname:158075")) %>%
+  # Accepted name has slightly different species name: O. tshawytscha
+  rename(eventID = trawl) %>%
+  select(eventID, occurrenceID, scientificName, scientificNameID, occurrenceStatus)
+
+# Make sure the folder path exists already (e.g. ./Salmon Diet/tidy_data)
+write_csv(salmon_spp_occ, here("Salmon Diet", "tidy_data", "salmon_spp_occ.csv"))
+drive_upload(here("Salmon Diet", "tidy_data", "salmon_spp_occ.csv"),
+             path = " ",
+             name = "salmon_spp_occ.csv",
+             overwrite = TRUE)
+```
+
+The second occurrence core is connected to this 'primary' occurrence core, and consists of all the unique prey species consumed by the salmon species at each station. The measurements attached to these unique occurrences would be the presence or absence of a certain prey species in the stomach of a salmon, and the mass (g) of unique prey consumed. Each prey species will receive their own unique URN from [WoRMS](http://www.marinespecies.org/)
+
+As all the prey species are listed as columns, we first have to investigate all the unique prey species consumed, as these will get their associated WoRMS URN. THere is also a column `digested_food` which will not have an associated URN, as it likely reflects unidentified prey species consumed. This column will get added as a measurement to the primary occurrence core. 
 
 ``` {r prey_occurrence, eval = FALSE}
-# As all the prey species are listed as columns, we first have investigate all the unique prey species consumed, as these will get their associated WoRMS URN. There is also a column `digested_food` which will not have an associated URN. 
-str(salmon)
-
-# What to do with the column 'digested_food"? Sounds like it's 'unidentified species'. Occurrence of prey present or absent based on whether mass (g) has been recorded in the stomach content. 
-
-salmon_prey <- salmon %>%
-  pivot_longer(cols = boreoteuthis_borealis:mictostomus_pacificus, names_to = "scientificName", values_to = "Mass") %>%
-  mutate(occurrenceStatus = ifelse(Mass > 0, "present", "absent"),
-         occurrenceID = paste(trawl, species, scientificName, sep = ":"),
+salmon_prey <- salmon  %>%
+  pivot_longer(cols = boreoteuthis_borealis:mictostomus_pacificus, names_to = "scientificName", values_to = "Mass") 
+salmon_prey <- salmon_prey %>%
+  mutate(occurrenceStatus = ifelse(is.na(salmon_prey$Mass), "absent", "present"),
+         occurrenceID = paste(trawl, species, "stomach_content", scientificName, sep = ":"),
          scientificNameID = case_when(
-  # I am not happy with the occurrenceID but this is just a set-up for now. 
 scientificName == "boreoteuthis_borealis" ~ "urn:lsid:marinespecies.org:taxname:342326",
 # Boreoteuthis is not an accepted genus, Gonatopsis is the accepted version?
 scientificName == "neocalanus_cristatus" ~ "urn:lsid:marinespecies.org:taxname:104470",
@@ -138,6 +204,11 @@ scientificName == "hyperia_sp" ~ "urn:lsid:marinespecies.org:taxname:101796",
 scientificName == "clione_limacina" ~ "urn:lsid:marinespecies.org:taxname:139178",
 scientificName == "th_spinifera" ~ " ",
 # Unsure whether th. stands for Thalamita, Thyone, or Thysanoessa
+scientificName == "themisto_pacifica" ~ "urn:lsid:marinespecies.org:taxname:254453",
+scientificName == "limacina_helicina" ~ "urn:lsid:marinespecies.org:taxname:140223",
+scientificName == "primno_macropa" ~ "urn:lsid:marinespecies.org:taxname:180759",
+scientificName == "th_inspinata" ~ "urn:lsid:marinespecies.org:taxname:237872",
+# Assumption here is made that 'th' stands for Thysanoessa (genus)
 scientificName == "coelenterata" ~ "urn:lsid:marinespecies.org:taxname:2",
 # Coelenterata is a term encompassing the animal phyla Cnidaria and Ctenophora? 
 # Therefore the lowest common rank is the kingdom Animalia
@@ -154,7 +225,7 @@ scientificName == "phronima_sedentaria" ~ "urn:lsid:marinespecies.org:taxname:10
 scientificName == "oikopleura" ~ "urn:lsid:marinespecies.org:taxname:103367",
 scientificName == "isopoda" ~ "urn:lsid:marinespecies.org:taxname:1131",
 scientificName == "clio_pyramidata" ~ "urn:lsid:marinespecies.org:taxname:139033",
-scientificName == "chormiphora_cucumis" ~ "urn:lsid:marinespecies.org:taxname:106382"
+scientificName == "chormiphora_cucumis" ~ "urn:lsid:marinespecies.org:taxname:106382",
 # Accepted name is Hormiphora cucumis?
 scientificName == "symbolophorus_californiensis" ~ "urn:lsid:marinespecies.org:taxname:272733",
 scientificName == "okutania_anonycha" ~ "urn:lsid:marinespecies.org:taxname:342285",
@@ -166,7 +237,7 @@ scientificName == "mictostomus_pacificus" ~ "urn:lsid:marinespecies.org:taxname:
   rename(eventID = trawl)
 
 salmon_prey_occ <- salmon_prey %>%
-  select(eventID, occurreceID, scientificName, scientificNameID, occurrenceStatus) %>%
+  select(eventID, occurrenceID, scientificName, scientificNameID, occurrenceStatus) %>%
   mutate(basisOfRecord = "HumanObservation")
 
 # Make sure the folder path exists already (e.g. ./Salmon Diet/tidy_data)
@@ -177,29 +248,57 @@ drive_upload(here("Salmon Diet", "tidy_data", "salmon_prey_occ.csv"),
              overwrite = TRUE)
 ```
 
-There are two occurrence cores, one for the prey species consumed by the individual salmon, and an occurrence core for each salmon species dissected. To the salmon_prey occurrence core, measurements include presence/absence of whether a prey species has been consumed, and how much (mass - gram). Measurements linked to the salmon individual include: forklength, mass, food mass, GFI, CFI adj % and `N stomachs` (though have to see how this last one fits in). 
-``` {r salmon_occ, eval = FALSE}
-salmon_spp_occ <- salmon %>%
-  # Given that the expedition was targeted to salmon species, for each station we'll include whether each of the five salmon species were caught (present) or not (absent): 
-  complete(trawl, species, fill = list(n_stomachs = 0)) %>%
-  fill(salmon, .direction = "downup") %>%
-  mutate(occurrenceStatus = ifelse(n_stomachs > 0, "present", "absent"),
-         occurrenceID = paste(trawl, species, sep = ":"),
-         scientificNameID = case_when(
-scientificName == "Oncorhynchus gorbuscha" ~ "urn:lsid:marinespecies.org:taxname:127182",
-scientificName == "Oncorhynchus kisutch" ~ "urn:lsid:marinespecies.org:taxname:127184",
-scientificName == "Oncorhynchus keta" ~ "urn:lsid:marinespecies.org:taxname:127183",
-scientificName == "Oncorhynchus nerka" ~ "urn:lsid:marinespecies.org:taxname:254569",
-scientificName == "Oncorhynchus tschawytscha" ~ "urn:lsid:marinespecies.org:taxname:158075")) %>%
-  # Accepted name has slightly different species name: O. tshawytscha
-  rename(eventID = trawl)
+ [ ] Should these occurrence cores be combined using rbind()? 
 
-# Make sure the folder path exists already (e.g. ./Salmon Diet/tidy_data)
-write_csv(salmon_spp_occ, here("Salmon Diet", "tidy_data", "salmon_spp_occ.csv"))
-drive_upload(here("Salmon Diet", "tidy_data", "salmon_spp_occ.csv"),
+So given that we have two occurrence cores for Salmon Diet data, there are also two measurementOrFact tables, each with their own associated measurements. Let's start with the first extended measurementOrFact Core, where we associate measurements of `fork length`, `mass`, `food mass`, `gut fullness index (GFI)`, `N stomachs`, `CFI` and possibly `digested food (unidentified)`. 
+
+``` {r, eval = FALSE}
+salmon_spp_measurement <- salmon %>%
+  select(occurrenceID = sample,
+         fl_cm:cfi_percent_adj) %>%
+  pivot_longer(cols = fl_cm:cfi_percent_adj, 
+               names_to = "measurementType",
+               values_to = "measurementValue") %>%
+  mutate(measurementID = case_when(
+    measurementType == "fl_cm" ~ paste(occurrenceID, "FL", sep = ":"),
+    measurementType == "mass_g" ~ paste(occurrenceID, "mass", sep = ":"),
+    measurementType == "food_mass_g" ~ paste(occurrenceID, "food_mass", sep = ":"),
+    measurementType == "gfi_percent" ~ paste(occurrenceID, "GFI", sep = ":"),
+    measurementType == "n_stomachs" ~ paste(occurrenceID, "n_stomachs", sep = ":"),
+    measurementType == "cfi_percent_adj" ~ paste(occurrenceID, "CFI", sep = ":")),
+         measurementTypeID = case_when(
+    measurementType == "fl_cm" ~ " ",
+    measurementType == "mass_g" ~ " ",
+    measurementType == "food_mass_g" ~ " ",
+    measurementType == "gfi_percent" ~ " ",
+    measurementType == "n_stomachs" ~ " ",
+    measurementType == "cfi_percent_adj" ~ " "),
+         measurementUnit = case_when(
+    measurementType == "fl_cm" ~ "cm",
+    measurementType == "mass_g" ~ "g",
+    measurementType == "food_mass_g" ~ "g",
+    measurementType == "gfi_percent" ~ "percent"
+    measurementType == "n_stomachs" ~ "stomachs"
+    measuremetnType == "cfi_percent_adj" ~ "percent"),
+         measurementUnitID = case_when(
+    measurementUnit == "cm" ~ "http://vocab.nerc.ac.uk/collection/P06/current/ULCM/",
+    measurementUnit == "g" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UGRM/",
+    measurementUnit == "percent" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UPCT/",
+    measurementUnit == "stomachs" ~ " ")) %>%
+  select(measurementID, measurementType, measurementTypeID,
+         measurementValue, measurementUnit, measurementUnitID)
+
+# Write up csv file and upload to Google Drive folder
+write_csv(salmon_spp_measurement, here("Salmon Diet", "tidy_data", "salmon_spp_measurement.csv"))
+drive_upload(here("Salmon Diet", "tidy_data", "salmon_spp_measurement.csv"),
              path = " ",
-             name = "salmon_spp_occ.csv",
+             name = "salmon_spp_eMoF.csv",
              overwrite = TRUE)
+  
+         )
+         )
+         )
+  ))
+
 ```
 
-So given that we have two occurrence cores for Salmon Diet data, there are also two measurementOr
