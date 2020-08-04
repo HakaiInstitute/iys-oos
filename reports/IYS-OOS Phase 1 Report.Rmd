@@ -25,15 +25,11 @@ options(scipen=999) # This removes scientific notation for inline output ie `r o
 
 # _International Year of the Salmon Data Mobilization Strategic Recommendations_
 
-`Last updated:` ``r Sys.time()``
-
-`Brett Johnson`
-
 `Hakai Institute`
 
 `1713 Hyacinthe Bay Road, Heriot Bay, BC, Canada`
 
-
+`Last updated:` ``r Sys.time()``
 
 # Executive Summary
 
@@ -63,10 +59,9 @@ For every data element, collection method, platform, and variable produced by th
 An executive-level steering committee will provide technical and strategic advice on the project while Hakai and NPAFC will retain administrative oversight of the project. Steering Committee participants will include:
 
 * Eric Peterson/Brett Johnson – Hakai Institute
-* Mark Saunders/Stephanie Taylor/Caroline Graham– IYS/NPAFC
-* Dick Beamish and Brian Riddell – 2019 and 2020 Expeditions/Pacific Salmon Foundation
+* Mark Saunders/Stephanie Taylor/Caroline Graham – IYS/NPAFC
+* Dick Beamish and Brian Riddell – 2019 and 2020 Expeditions
 * Bruce Patten – DFO Pacific Biological Station and OBIS Canada Node Manager
-* Erin Satterthwaite – GOOS BioEco Expert Panel Member
 * Gabrielle Canonico - GOOS BioEco Panel Co-Chair & NOAA Federal
 * Expedition Chief Scientists 
 
