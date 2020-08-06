@@ -112,7 +112,7 @@ Continue building Data Model. Determine which high-value 'sub projects' should b
 
 * A GOOS-compatible repository (likely ERDDAP) for physical and biogeochemical data acquired on the expeditions. IN PROGRESS
 
-* Solutions for other data types: either as natural extensions of the GOOS model, as contemplated under the GOOS Bio Eco, or in other repositories, as mandated by our modelling decisions. IN PROGRESS
+* Solutions for other data types: either as natural extensions of the GOOS model, as contemplated under the GOOS BioEco Panel, or in other repositories, as mandated by our modelling decisions. IN PROGRESS
 
 * Data Management Planning and Facilitation for 2021 Expeditions. IN PROGRESS
 
