@@ -96,7 +96,7 @@ drive_upload(here("Bongo", "tidy_data", "bongo_event.csv"),
 
 ## Occurrence Core
 
-An `occurrenceID` and `occurrenceStatus` will only be provided to data entries where species have been identified to a species or genus level. Only for these species can a URN be associated from WoRMS. So first we inspect all the unique input for the `species` column, and filter for all these species by filtering out the species that can _not_ be identified to a species or genus level. Measurements of weight, length, life stage and taxonomic group will still be included, however they will linked directly to the `eventID` (the sampleID) rather than the `occurrenceID`. In other words, these data entries will not be included in the Occurrence Core!
+An `occurrenceID` and `occurrenceStatus` will only be provided to data entries where species have been identified to a level for which we can find a WoRMS taxon. Only for these species can a URN be associated from WoRMS. So first we inspect all the unique input for the `species` column, and filter for all these species by filtering out the species that can _not_ be identified to a species or genus level. Measurements of weight, length, life stage and taxonomic group will still be included, however they will linked directly to the `eventID` (the sampleID) rather than the `occurrenceID`. In other words, these data entries will not be included in the Occurrence Core!
 
 After a brief discussion with Julian, it was agreed on that entries where Species = `Size fraction`, will not have an Occurrence Core associated to it, because it is not possible to associate a URN from WoRMS to this class or group (`Zooplankton`). The same goes for entries where no common rank can be associated, such as `Jellyfish, radiolarian, chaetognath` and `Gelatinous`. For other entries where no clear classification is provided, e.g. `crab zoea` and `jelly mass`, the lowest common rank URN is listed. 
 
@@ -107,12 +107,14 @@ div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
 Q: Where do we draw the line when it comes to associating an Occurrence(ID) to an entry? Would this only be for species that have been identified to Species or Genus level, as perhaps a classification on phylum or kingdom level does not really provide any information?
 </div>
 
+**A**: After internal discussion, it was opted to associate an occurrence(ID) to an entry as long as we can find a WoRMS taxon / URN, even if a species can only be identified up to a phylum or kingdom level. For data entries where multiple groups are lumped together (i.e. "Jelly fish, radiolarian and chaetognath"), we have opted _not_ to split them into separate occurrenceIDs because it is not possible to associate any measurements to the entry.  
+
 ``` {r bongo_occ_pre_wrangle, eval = FALSE}
 unique(bongo$species)
 
 # Identify all entries that have not been identified to species or genus level: 
 bongo_occ_spp <- bongo %>% filter(!(species %in% c("Size fraction", "Chaetognath & Ctenophore", "Jelly mass",
-                                              "Crab zoea", "Jellyfish, radiolarian, chaetognath", "Gelatinous",
+                                              "Jellyfish, radiolarian, chaetognath", "Gelatinous",
                                               "Ctenophore / jellyfish")))
 ```
 
@@ -217,7 +219,7 @@ When examining the remaining data entries in the bongo_occ_spp dataset, we can i
 div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
 </style>
 <div class = "blue">
-Q: If a data entry has number > 1, but only one associated length measurement, does that mean that all individuals in that row have that length? If so - these should all receive a unique `occurrenceID` and `occurrenceStatus`! Right now I haven't split these data entries, but have included a measurement in the eMoF table for "number". 
+Q: If a data entry has number > 1, but only one associated length measurement, does that mean that all individuals in that row have that length? If so perhaps these should all receive a unique `occurrenceID` and `occurrenceStatus`? Right now I haven't split these data entries, but have included a measurement in the eMoF table for "number". 
 </div>
 
 
@@ -473,7 +475,8 @@ bongo_occ_fnl <- bongo_occ_fnl %>%
       # Order: Siphonophorae
       scientificName == "Sagitta" ~ "urn:lsid:marinespecies.org:taxname:105410", 
       scientificName == "E pacifica" ~ "urn:lsid:marinespecies.org:taxname:237851",
-      scientificName == "T spinifera" ~ "urn:lsid:marinespecies.org:taxname:237874"
+      scientificName == "T spinifera" ~ "urn:lsid:marinespecies.org:taxname:237874",
+      scientificName == "Crab zoea" ~ "urn:lsid:marinespecies.org:taxname:1130"
     )
   )
 bongo_occ_core <- bongo_occ_fnl %>%
@@ -528,7 +531,7 @@ bongo_bottomdepth <- bongo %>%
          measurementUnit, measurementUnitID)
 ```
 
-Though an occurrenceID was not created for each data entry, measurements can be linked either directly to the `eventID` or to the `occurrenceID`. The following measurements are linked to either the `eventID` or `occurrenceID`: `length_mm`, `length_type`, `weight_mg`, `number` and `(taxonomic) group`. Additional information that might in the future be included as well could be `Stage`, which reflects a lifeStage of an organism. However, because the datasheet includes a wide variety of organisms, all with different 'levels' of a lifeStage, to what extent is it necessary to choose a uniform 'coding' system for this variable? Finally, `size_fraction` needs to be added to `eventID`, but perhaps also to the `occurrenceID`. 
+Though an occurrenceID was not created for each data entry, measurements can be linked either directly to the `eventID` or to the `occurrenceID`. The following measurements are linked to either the `eventID` or `occurrenceID`: `length_mm`, `length_type`, `weight_mg`, `number` and `(taxonomic) group`. Additional information that might in the future be included as well could be `Stage`, which reflects a lifeStage of an organism. However, because the datasheet includes a wide variety of organisms, all with different 'levels' of a life stage, to what extent is it necessary to choose a uniform 'coding' system for this variable? Finally, `size_fraction` needs to be added to `eventID`, but perhaps also to the `occurrenceID`. 
 
 We first create the eMoF table that links directly to the `eventID`. First we have to filter for all the data entries for which no `occurrenceID` has been created. In other words, remove any rows (data entries) for which an `occurrenceID` has been created:
 
@@ -560,7 +563,7 @@ bongo_emof <- bongo_emof %>%
       measurementType == "length_type" ~ paste(eventID, "length_type", sep = ":"),
       measurementType == "weight" ~ paste(eventID, "weight", sep = ":"),
       # Have to check whether this is dry weight or wet weight. 
-      measurementType == "group" ~ paste(eventID, "group", sep = ":")
+      measurementType == "group" ~ paste(eventID, "taxonomic group", sep = ":")
     ),
     measurementTypeID = case_when(
       measurementType == "number" ~ "http://vocab.nerc.ac.uk/collection/S06/current/S0600008/",
@@ -568,10 +571,10 @@ bongo_emof <- bongo_emof %>%
       # samplingProtocol
       measurementType == "length" ~ "http://vocab.nerc.ac.uk/collection/S06/current/S0600015/",
       # I want to check if maybe there is a better Controlled Vocab for body size
-      measurementType == "length_type" ~ " ",
+      measurementType == "length_type" ~ "http://vocab.nerc.ac.uk/collection/P01/current/OBSINDLX/",
       measurementType == "weight" ~ "http://vocab.nerc.ac.uk/collection/S06/current/S0600087/",
       # As per communication with Brian Hunt: weight refers to net dry weight!
-      measurementType == "group" ~ " "
+      measurementType == "group" ~ "http://vocab.nerc.ac.uk/collection/P01/current/SCNAME01/"
     ), 
     measurementUnit = case_when(
       measurementType == "number" ~ "individuals",
@@ -598,6 +601,7 @@ bongo_emof2 <- bongo_occ_fnl %>%
          length = length_mm,
          weight = weight_mg,
          length_type,
+         stage,
          group) %>%
   mutate(weight = as.numeric(weight) / 1000) %>% 
   mutate_all(as.character)
@@ -620,7 +624,6 @@ temp <- bongo_emof2[ -grep("-", bongo_emof2$length), ] %>%
          maximumLength = " ")
 
 bongo_emof2 <- rbind(range, temp)
-
 ```
 
 So now we have a dataframe where:
@@ -641,22 +644,52 @@ bongo_emof2 <- bongo_emof2 %>%
       measurementType == "length_type" ~ paste(eventID, "length_type", sep = ":"),
       measurementType == "weight" ~ paste(eventID, "weight", sep = ":"),
       # Have to check whether this is dry weight or wet weight. 
-      measurementType == "group" ~ paste(eventID, "group", sep = ":"),
+      measurementType == "group" ~ paste(eventID, "taxonomic group", sep = ":"),
       measurementType == "maximumLength" ~ paste(eventID, "maxLength", sep = ":"),
       measurementType == "minimumLength" ~ paste(eventID, "minLenght", sep = ":")
     ),
+    measurementValueID = case_when(
+      measurementValue == "Copepod" ~ "urn:lsid:marinespecies.org:taxname:1080",
+      measurementValue == "Chaetognath" ~ "urn:lsid:marinespecies.org:taxname:2081",
+      measurementValue == "Siphonphore" ~ "urn:lsid:marinespecies.org:taxname:1371",
+      measurementValue == "Euphausiid" ~ "urn:lsid:marinespecies.org:taxname:110671",
+      measurementValue == "Zooplankton" ~ " ",
+      measurementValue == "Pteropod" ~ "urn:lsid:marinespecies.org:taxname:325345",
+      measurementValue == "Decapod" ~ "urn:lsid:marinespecies.org:taxname:1130",
+      measurementValue == "Tunicate" ~ "urn:lsid:marinespecies.org:taxname:146420",
+      measurementValue == "Amphipod" ~ "urn:lsid:marinespecies.org:taxname:1135",
+      measurementValue == "Ctenophore" ~ "urn:lsid:marinespecies.org:taxname:1248",
+      measurementValue == "Hydromedusae" ~ "urn:lsid:marinespecies.org:taxname:1337",
+      # Hydromedusae is a life stage of Hydrozoa (URN provided)
+      measurementValue == "Fish" ~ "urn:lsid:marinespecies.org:taxname:11676",
+      measurementValue == "Squid" ~ "urn:lsid:marinespecies.org:taxname:11707",
+      measurementValue == "Gastropod" ~ "urn:lsid:marinespecies.org:taxname:101"
+    ),
+    measurementValueID = case_when(
+      measurementValue == "NA" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1131/",
+      measurementValue == "2" ~ " ",
+      measurementValue == "4" ~ " ",
+      measurementValue == "1to2" ~ " ",
+      # Perhaps http://vocab.nerc.ac.uk/collection/S11/current/S1165/ is appropriate?
+      measurementValue == "CV" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1112/",
+      # Assuming that CV represents C5.
+      measurementValue == "Spent" ~ " ",
+      measurementValue == "Solitary" ~ " ",
+      measurementValue == "juvenile" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1127/",
+      measurementValue == "Gravid female" ~ " "
+      ),
     measurementTypeID = case_when(
       measurementType == "number" ~ "http://vocab.nerc.ac.uk/collection/S06/current/S0600008/",
       measurementType == "size_fraction" ~ "http://vocab.nerc.ac.uk/collection/P01/current/MSHSIZE1/",
       # samplingProtocol
-      measurementType == "length" ~ "http://vocab.nerc.ac.uk/collection/S06/current/S0600015/",
+      measurementType == "length" ~ "http://vocab.nerc.ac.uk/collection/P01/current/OBSINDLX/",
       # I want to check if maybe there is a better Controlled Vocab for body size
       measurementType == "maximumLength" ~ "http://vocab.nerc.ac.uk/collection/P01/current/OBSMAXLX/",
       measurementType == "minimumLength" ~ "http://vocab.nerc.ac.uk/collection/P01/current/OBSMINLX/",
-      measurementType == "length_type" ~ " ",
+      measurementType == "length_type" ~ "http://vocab.nerc.ac.uk/collection/P01/current/OBSINDLX/",
       measurementType == "weight" ~ "http://vocab.nerc.ac.uk/collection/S06/current/S0600253/",
       # As per communication with Brian Hunt: weight refers to net dry weight!
-      measurementType == "group" ~ " "
+      measurementType == "group" ~ "http://vocab.nerc.ac.uk/collection/P01/current/SCNAME01/"
     ), 
     measurementUnit = case_when(
       measurementType == "number" ~ "individuals",
@@ -673,17 +706,26 @@ bongo_emof2 <- bongo_emof2 %>%
       measurementUnit == "g" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UGRM/"
       # Reminder: there is no NERC Controlled Vocabulary for mg, so values are formatted to 'grams'. 
       # Reminder2: The size_fraction is often times measured in microns, but in the data set it is reported in 'mm', 
-      # or 1/1000th of a micron. T
+      # or 1/1000th of a micron. 
       # The measurementUnitID for microns, if needed, is: http://vocab.nerc.ac.uk/collection/P06/current/UMIC/
     )
     )
 ```
 
-As there were also comments in the dataset, we have to make sure we include those in the measurementOrFact table, as they might be important to the measurements. 
+As there were also comments in the dataset, we have to make sure we include those in the measurementOrFact table, as they might be important to the measurements. Additionally, as there is NERC vocabulary for the different length types in this dataset, we include this column in the measurementRemarks, alongside the original notes. 
 
 ``` {r measurementRemarks, eval = FALSE}
 bongo_measurementRemarks <- bongo %>%
-  select(eventID = sample, notes) %>%
+  select(eventID = sample, length_type, notes)
+bongo_measurementRemarks <- bongo_measurementRemarks %>%
+  mutate(notes = paste(notes, "Length type", sep = ". "),
+         notes = paste(notes, length_type, sep = ": "))
+
+# As not all data entries had a comment, some were left with NA. This string needs to be removed.
+
+bongo_measurementRemarks$notes <- gsub("NA. ", "", bongo_measurementRemarks$notes)
+bongo_measurementRemarks <-  bongo_measurementRemarks %>%
+  select(eventID, notes) %>% 
   pivot_longer(cols = notes, values_to = "measurementRemarks") %>%
   mutate(measurementID = case_when(
     name == "notes" ~ paste(eventID, "notes", sep = ":"))) %>%
@@ -696,12 +738,13 @@ Finally, join all the tables together to form the measurementOrFact Core, and sa
 bongo_measurementOrFact <- bind_rows(bongo_bottomdepth, bongo_emof, bongo_emof2) %>%
   left_join(bongo_measurementRemarks) %>%
   select(
-    measurementID,
-    occurrenceID,
     eventID,
+    occurrenceID,
+    measurementID,
     measurementType,
     measurementTypeID,
     measurementValue,
+    measurementValueID,
     measurementUnit,
     measurementUnitID,
     measurementRemarks)
