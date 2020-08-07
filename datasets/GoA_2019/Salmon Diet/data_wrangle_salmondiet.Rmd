@@ -27,7 +27,9 @@ drive_download("https://docs.google.com/spreadsheets/d/1E88ZXuiYIqjq4ABl2GDB7Kp0
                overwrite = TRUE)
 ```
 
-We want to see if the data in the salmon diet dataset matches data recorded in the pathogen dataset. The reason for this is that in the pathogen dataset, Floytags and MGL# are attached to the samples, but this appears to be missing in the salmon diet dataset. By cross-referencing, we can gain insight as to which diet data belongs to which Floytag or MGL#
+*** 
+
+First step, is we wanted to see if the data in the salmon diet dataset matches data recorded in the pathogen dataset. The reason for this is that in the pathogen dataset, Floytags and MGL# are attached to the samples, but this appears to be missing in the salmon diet dataset. By cross-referencing, we can gain insight as to which diet data belongs to which Floytag or MGL#. Therefore, we also download the pathogen data.
 
 ``` {r file_download2, eval = FALSE}
 # Make sure your folder path exists already (e.g. /Salmon Diet/raw_data)
@@ -37,7 +39,7 @@ drive_download("https://docs.google.com/spreadsheets/d/14YOHGGrU0zi--QHurgC6YVql
                overwrite = TRUE)
 ```
 
-Now read both files from the local folder, and make the minor adjustments needed to cross-reference columns `Trawl`, `Species` and `Mass`. 
+Now read both files from the local folder, and make the minor adjustments in the data (column headers) needed to cross-reference columns `Trawl`, `Species` and `Mass`. 
 
 ``` {r, eval = FALSE}
 salmon <- read_excel(here("Salmon Diet", "raw_data", 
@@ -66,13 +68,34 @@ full <- rbind(test, test2)
 full <- full[order(full$Trawl),]
 ```
 
-Using the nrow() function we find that there are 52 rows where `Species`, `Trawl` and `Mass` data matches between the salmon diet data and the pathogen data, and 96 rows where there is no match. Unfortunately this means that we cannot cross-reference the pathogen and salmon data for the majority of the fish, and consequently that - at the moment - we are not able to use Floytag or MGL# as a common parentEvent. 
+Using the nrow() function we find that there are 52 rows where `Species`, `Trawl` and `Mass` data matches between the salmon diet data and the pathogen data, but 96 rows where there is no match. Unfortunately this means that, in the current state, we cannot cross-reference the pathogen and salmon data for the majority of the fish, and consequently that  we are not able to use Floytag or MGL# as a common parentEvent. 
 
 ***
 
-When creating the different eventID layers, we assume that the column `Trawl` is synonymous to `Station` -- need to confirm this! Additionally, in the current set up, each salmon species caught at a specific station gets treated like a unique sample ID (and, thus, as a unique `eventID`). Ideally, the salmon that were caught and dissected would have been given a Floy tag, so a distinction can be made between stomach content of different individuals of a same species in the same trawl. 
+# Event Core
 
-To do: Confirm model structure for salmon diet data. Current problem: Multiple individuals of the same species were caught in a single trawl, however within the dataset there is no column to indicate how these individual measurements are separate (i.e., no SampleID associated to each individual fish). Perhaps we should add a SampleID column ourselves, or, alternatively, associate two occurrence cores (fish metrics / fish stomach content) to a single occurrence core?
+When creating the different eventID layers, we assume that the column `Trawl` is synonymous to `Station` -- need to confirm this!  Ideally, the salmon that were caught and dissected would have been given a Floytag or MGL#, so a distinction can be made between stomach content of different individuals of a same species in the same trawl. 
+
+<style>
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
+</style>
+<div class = "blue">
+
+To do: Confirm model structure for salmon diet data. Current problem: Multiple individuals of the same species were caught in a single trawl, however within the salmon diet dataset there is no column to indicate how these individual measurements are separate (i.e., no SampleID associated to each individual fish). Perhaps we should add a SampleID column ourselves, so that we can associate two occurrence cores (fish metrics / fish stomach content) to a single occurrence core?
+
+</div>
+
+The model structure for the salmon diet data is shown [here](https://app.diagrams.net/#G1CCBTro5std-UGbHdy6mVMa3QpZipGvIP). As can be seen, there are two occurrence cores that are linked, and connected to a common `eventID`. In the current set up, a salmon is also regarded as a 'sampling platform'. 
+
+<style>
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
+</style>
+<div class = "blue">
+
+**Food for thought**: should perhaps "Salmon caught" be an `event` layer, rather than an `Occurrence` (as is our current set up)? The measurements associated to the fish, such as `fork length`, `mass` etc can then be directly linked to the salmon individual. The reason why I currently included the salmon individual in the `Occurrence` layer is because I believe that allowed me to associate scientificName(ID) -- but perhaps this is not relevant? The focus of the dataset is _occurrence and prey mass_ in the stomach content of salmon. Thoughts?
+
+</div>
+
 
 ``` {r data wrangle, eval = FALSE}
 salmon <- read_excel(here("Salmon Diet", "raw_data", 
@@ -101,7 +124,7 @@ trawl <- read_excel(here("Salmon Diet", "raw_data", "2019_GoA_Fish_data_Hakai.xl
 
 ```
 
-Please note that the date and coordinates - given that it's currently from a .xlsx file that is not considered the final datasheet - could change. Will need to make sure that the correct excel file is read. 
+**Please note that the date and coordinates could change as the trawl data is not finalized.** 
 
 ``` {r salmondiet_event, eval = FALSE}
 salmon_cruise <- salmon %>% 
@@ -115,7 +138,7 @@ salmon_station <- salmon %>%
   distinct(eventID, .keep_all = TRUE) %>% 
   mutate(eventRemarks = "station")
 
-# Join date and coordinates to trawl. Remember that the date and coordinates are not from the Salmon Diet data sheet, but from the trawl data sheet. Should minimum and maximum depth of the trawl be included here as well if the information becomes available? 
+# Join date and coordinates to trawl. Remember that the date and coordinates are not from the Salmon Diet data sheet, but from the trawl data sheet. Minimum and maximum depth of the trawl be included here as well if the information becomes available. 
 salmon_trawl <- salmon %>%
   left_join(select(
     trawl,
@@ -134,7 +157,7 @@ salmon_trawl <- salmon %>%
 
 # The Salmon Diet data does not include information as to at what depths the trawls were conducted. Currently I believe this information is also not present in the general Trawl data. Should this information become available it should be connected to the general trawl information, along with info such as: volume water filter, speed at which the vessel was traveling during trawl, starting & finish lat/longs of trawl. 
 
-# Once information on minimumDepthInMetres and maximumDepthInMetres regarding the trawl becomes available we need to either add that to salmon_sample or salmon_trawl. If we opt for two occurrence cores that are connected to the eventID through a common occurrenceID, then the following lines of code are not necessary: 
+# If an additional eventID layer is created for each salmon individual, the following lines of code are necessary: 
  
 #salmon_sample <- salmon %>% 
 #  select(eventID = sample,
@@ -157,9 +180,19 @@ drive_upload(here("Salmon Diet", "tidy_data", "salmon_event.csv"),
              overwrite = TRUE)
 ```
 
-The current proposed set up would include two occurrence cores, with one occurrence core being connected to the other. Ideally, two occurrence cores would be connected to the `eventID` through a common occurrence core (Option 4 in DePooter et al 2017). Currently however this does not seem to be possible, as within the salmon diet datasheet there is no column designated to i.e., sampleID. The problem with this is that there are sometimes numerous individuals of the same species caught at a station/within a trawl, but no these individuals have no defining tag (so how do the scientists know which individual the stomach content belong to, asides from their data?) In the salmon diet dataset some data entries cover multiple stomachs examined (`N stomachs` > 1), and the associated fork length and mass appear to be averaged across multiple individuals. However, in the current set up it's sometimes not possible to identify which individuals this covers (i.e., no mentioning of Floytags or #MGL). 
+# Occurrence Core(s)
 
-In one of the occurrence cores I think we should list all salmon species / individuals caught at a station/in a trawl. Measurements linked to the salmon species include: fork length, mass, food mass, gut fullness index (GFI), CFI adj %, `N stomachs` and mass digested food (but unidentified to a species). The assumption made here is that the column `N stomachs` refers to the number of stomachs examined, and therefore appears to work in a similar way to `count`. As the survey was set out to capture salmon, we assume that it is also of interest to see know which salmon species _have not_ been caught at each station, and therefore for each station we'll include whether each of the five salmon species were caught (present) or not (absent). Additionally, each salmon species will receive their own unique URN from [WoRMS](http://www.marinespecies.org). 
+The current proposed set up would include two occurrence cores, with one occurrence core being connected to the other. Ideally, two occurrence cores would be connected to the `eventID` through a common occurrence core (Option 4 in DePooter et al 2017). Currently however this does not seem to be possible, as within the salmon diet datasheet there is no column designated to i.e., sampleID. The problem with this is that there are sometimes numerous individuals of the same species caught at a station/within a trawl, but these individuals have no defining tag. In the salmon diet dataset some data entries cover multiple stomachs examined (`N stomachs` > 1), and the associated fork length and mass appear to be averaged across multiple individuals. However, in the current set up it's sometimes not possible to identify which individuals this covers (i.e., no mentioning of Floytags or #MGL).
+
+<style>
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
+</style>
+<div class = "blue">
+
+How do the scientists know which individual the stomach content belong to, asides from their data?
+</div>
+
+In one of the occurrence cores I think we should list all salmon species / individuals caught at a station/in a trawl. Measurements linked to the salmon species include: fork length, mass, food mass, gut fullness index (GFI), CFI adj %, `N stomachs` and `mass digested food` (but unidentified to a species). The assumption made here is that the column `N stomachs` refers to the number of stomachs examined, and therefore appears to work in a similar way to `count`. As the survey was set out to capture salmon, we assume that it is also of interest to see know which salmon species _have not_ been caught at each station, and therefore for each station we'll include whether each of the five salmon species were caught (present) or not (absent). Additionally, each salmon species will receive their own unique URN from [WoRMS](http://www.marinespecies.org). 
 
 ``` {r salmon_occ, eval = FALSE}
 salmon_spp_occ <- salmon %>%
@@ -185,9 +218,9 @@ drive_upload(here("Salmon Diet", "tidy_data", "salmon_spp_occ.csv"),
              overwrite = TRUE)
 ```
 
-The second occurrence core is connected to this 'primary' occurrence core, and consists of all the unique prey species consumed by the salmon species at each station. The measurements attached to these unique occurrences would be the presence or absence of a certain prey species in the stomach of a salmon, and the mass (g) of unique prey consumed. Each prey species will receive their own unique URN from [WoRMS](http://www.marinespecies.org/)
+The second occurrence core is connected to this 'primary' occurrence core, and consists of all the unique prey species consumed by the salmon species at each station. The measurements attached to these unique occurrences would be the presence or absence of a certain prey species in the stomach of a salmon, and the mass (g) of unique prey consumed. Each prey species will receive their own unique URN from [WoRMS](http://www.marinespecies.org/), if identified.
 
-As all the prey species are listed as columns, we first have to investigate all the unique prey species consumed, as these will get their associated WoRMS URN. THere is also a column `digested_food` which will not have an associated URN, as it likely reflects unidentified prey species consumed. This column will get added as a measurement to the primary occurrence core. 
+As all the prey species are listed as columns, we first have to investigate all the unique prey species consumed, as these will get their associated WoRMS URN. THere is also a column `digested_food` which will not have an associated URN, as it likely reflects unidentified prey species consumed -- this will have to be confirmed! This column will get added as a measurement to the _primary occurrence core_ (see model structure). 
 
 ``` {r prey_occurrence, eval = FALSE}
 salmon_prey <- salmon  %>%
@@ -253,6 +286,7 @@ drive_upload(here("Salmon Diet", "tidy_data", "salmon_prey_occ.csv"),
              name = "salmon_prey_occ.csv",
              overwrite = TRUE)
 ```
+
 <style>
 div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
 </style>
@@ -261,6 +295,8 @@ div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
 Q: Should these occurrence cores be combined into a single Occurrence Core using rbind()? 
 
 </div>
+
+# measurementOrFact Core(s)
 
 So given that we have two occurrence cores for Salmon Diet data, there are also two measurementOrFact tables, each with their own associated measurements. Let's start with the first extended measurementOrFact Core, where we associate measurements of `fork length`, `mass`, `food mass`, `gut fullness index (GFI)`, `N stomachs`, `CFI` and possibly `digested food (unidentified)`. 
 
@@ -278,26 +314,31 @@ salmon_spp_measurement <- salmon %>%
     measurementType == "food_mass_g" ~ paste(occurrenceID, "food_mass", sep = ":"),
     measurementType == "gfi_percent" ~ paste(occurrenceID, "GFI", sep = ":"),
     measurementType == "n_stomachs" ~ paste(occurrenceID, "n_stomachs", sep = ":"),
-    measurementType == "cfi_percent_adj" ~ paste(occurrenceID, "CFI", sep = ":")),
+    measurementType == "cfi_percent_adj" ~ paste(occurrenceID, "CFI", sep = ":"),
+    measurementType == "digested_food" ~ paste(occurrenceID, "food_digested", sep = ":")),
          measurementTypeID = case_when(
     measurementType == "fl_cm" ~ " ",
-    measurementType == "mass_g" ~ " ",
-    measurementType == "food_mass_g" ~ " ",
+    # But standard length: 	http://vocab.nerc.ac.uk/collection/P01/current/SL01XX01/
+    measurementType == "mass_g" ~ "http://vocab.nerc.ac.uk/collection/P24/current/NMASS/",
+    measurementType == "food_mass_g" ~ "http://vocab.nerc.ac.uk/collection/P24/current/NMASS/",
     measurementType == "gfi_percent" ~ " ",
     measurementType == "n_stomachs" ~ " ",
-    measurementType == "cfi_percent_adj" ~ " "),
+    measurementType == "cfi_percent_adj" ~ " ",
+    measurementType == "digested_food" ~ "http://vocab.nerc.ac.uk/collection/P24/current/NMASS/"),
          measurementUnit = case_when(
     measurementType == "fl_cm" ~ "cm",
     measurementType == "mass_g" ~ "g",
     measurementType == "food_mass_g" ~ "g",
     measurementType == "gfi_percent" ~ "percent",
     measurementType == "n_stomachs" ~ "stomachs",
-    measurementType == "cfi_percent_adj" ~ "percent"),
+    # This seems off to me - want to find a better alternative.
+    measurementType == "cfi_percent_adj" ~ "percent",
+    measurementType == "digested_food" ~ "g"),
          measurementUnitID = case_when(
     measurementUnit == "cm" ~ "http://vocab.nerc.ac.uk/collection/P06/current/ULCM/",
     measurementUnit == "g" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UGRM/",
     measurementUnit == "percent" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UPCT/",
-    measurementUnit == "stomachs" ~ " ")) %>%
+    measurementUnit == "stomachs" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UUUU/")) %>%
   select(measurementID, measurementType, measurementTypeID,
          measurementValue, measurementUnit, measurementUnitID)
 
@@ -370,7 +411,7 @@ div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
 </style>
 <div class = "blue">
 
-Q: Similar to the question above regarding the occurrence cores, should these measurement or fact cores be combined into a single MeasurentOrFact Core? 
+Q: Similar to the question above regarding the occurrence cores, should these measurementOrFact cores be combined into a single MeasuremtOrFact Core? 
 
 </div>
 
