@@ -630,6 +630,13 @@ So now we have a dataframe where:
     * - Species have been identified to a species or genus level
     * - Length measurement ranges have been split up into columns of minimumLength and maximumLength.
     
+<style>
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
+</style>
+<div class = "blue">
+Q: For sampleID SS146, the life stage is `gravid female`. Should I create column with `sex` for this entry, until a time that there is controlled vocabulary found for this entry?
+</div>
+    
 ``` {r, eval = FALSE}
 bongo_emof2 <- bongo_emof2 %>%
   mutate_all(as.character) %>%
@@ -667,15 +674,17 @@ bongo_emof2 <- bongo_emof2 %>%
     ),
     measurementValueID = case_when(
       measurementValue == "NA" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1131/",
-      measurementValue == "2" ~ " ",
-      measurementValue == "4" ~ " ",
-      measurementValue == "1to2" ~ " ",
+      measurementValue == "2" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1165/",
+      measurementValue == "4" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1165/",
+      measurementValue == "1to2" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1165/",
       # Perhaps http://vocab.nerc.ac.uk/collection/S11/current/S1165/ is appropriate?
       measurementValue == "CV" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1112/",
-      # Assuming that CV represents C5.
+      measurementValue == "Hydromedusae" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1126/",
+      measurementValue == "Crab zoea" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1137/",
       measurementValue == "Spent" ~ " ",
       measurementValue == "Solitary" ~ " ",
       measurementValue == "juvenile" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1127/",
+      measurementValue == "adult" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1116/",
       measurementValue == "Gravid female" ~ " "
       ),
     measurementTypeID = case_when(
