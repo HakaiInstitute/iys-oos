@@ -51,6 +51,7 @@ bongo <- read_excel(here("Bongo", "raw_data",
 
 Dataframes are created for each unique `eventID` layer, with unique associated columns. Eventually, the data frames get joined, and the event table gets saved locally and in Google Drive. The column `eventRemarks` is not a required column, and currently only contains descriptive information. However, it is a good method to understand the structure in the dataset. A visual diagram of the structure of the Bongo data set is provided [here](https://app.diagrams.net/#G1YG5AVLwawocrr18XwbZG-1mDwwcc4ewM). 
 
+## Event Core
 
 ``` {r bongo_event, eval = FALSE}
 bongo_cruise <- bongo %>% 
@@ -72,9 +73,15 @@ bongo_cast <- bongo %>%
          decimalLatitude = start_latitude,
          decimalLongitude = start_longitude,
          minimumDepthInMetres = sample_depth,
-         maximumDepthInMetres = sample_depth) %>%
+         maximumDepthInMetres = sample_depth,
+         samplingProtocol = "Vertical Bongo net deployment"
+        # samplingEffort = "Volume of water? Length of tow?"
+        ) %>%
   distinct(eventID, .keep_all = TRUE) %>%
   mutate(eventRemarks = "cast")
+
+# sampleSizeUnit and sampleSizeValue are included in the eMOF core
+# Ideally, the samplingProtocol also includes a DOI of the paper that includes the sampling protocol. 
 
 bongo_sample <- bongo %>%
   select(eventID = sample,
@@ -94,7 +101,21 @@ drive_upload(here("Bongo", "tidy_data", "bongo_event.csv"),
              overwrite = TRUE)
 ```
 
+<style>
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
+</style>
+<div class = "blue">
+
+Two columns that might still need to be added to the Event Core: `sampleSizeValue` and `sampleSizeUnit`. The sampling protocol for the Bongo measurements is described [here](https://npafc.org/wp-content/uploads/Public-Documents/2019/1858Prof-Kaganovskiy-Cruise-Summary.pdf). In the [DwC terms](https://dwc.tdwg.org/terms/) it is stated that the definition of the samplingProtocol is "the name of, reference to, or description of the method or protocol used during an Event". For this data set that would be: Bongo net(s) (0.5 m2, mesh size = 236 microns) was deployed to a depth of 250m and towed up vertically. Net 1 of the Bongo was preserved in a 4% formaldehyde seawater solution, net 2 was size fractioned. All net 2 samples were immediately transferred to a -40C blast freezer, and 12 hours later to a -40C storage freezer. 
+
+`samplingProtocol` = "Vertical deployment of Bongo net" - alternatively this could be the link to the Cruise Summary, or DOI once the paper is published?
+`samplingEffort` = volume of water filtered? Time (length) of tow?
+
+</div>
+
 ## Occurrence Core
+
+TO DO: Add life stage to occurrence core. 
 
 An `occurrenceID` and `occurrenceStatus` will only be provided to data entries where species have been identified to a level for which we can find a WoRMS taxon. Only for these species can a URN be associated from WoRMS. So first we inspect all the unique input for the `species` column, and filter for all these species by filtering out the species that can _not_ be identified to a species or genus level. Measurements of weight, length, life stage and taxonomic group will still be included, however they will linked directly to the `eventID` (the sampleID) rather than the `occurrenceID`. In other words, these data entries will not be included in the Occurrence Core!
 
@@ -477,11 +498,32 @@ bongo_occ_fnl <- bongo_occ_fnl %>%
       scientificName == "E pacifica" ~ "urn:lsid:marinespecies.org:taxname:237851",
       scientificName == "T spinifera" ~ "urn:lsid:marinespecies.org:taxname:237874",
       scientificName == "Crab zoea" ~ "urn:lsid:marinespecies.org:taxname:1130"
-    )
+    ),
+  lifeStage = case_when(
+      stage == "NA" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1131/",
+      stage == "2" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1165/",
+      stage == "4" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1165/",
+      stage == "1to2" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1165/",
+      stage == "CV" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1112/",
+      stage == "Spent" ~ " ",
+      stage == "Solitary" ~ " ",
+      stage == "juvenile" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1127/",
+      stage == "adult" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1116/",
+      
+      # Additionally, for two data entries the scientificName is actually more a lifeStage then an actual species, so we record the life stage for these as well:
+      scientificName == "Hydromedusae" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1126/",
+      scientificName == "Crab zoea" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1137/"
+  ),
+  sex = case_when(
+    stage == "Gravid female" ~ "female"),
+  reproductiveCondition = case_when(
+    stage == "Gravid female" ~ "gravid")
   )
+
 bongo_occ_core <- bongo_occ_fnl %>%
   rename(Preparations = preservation) %>%
-  select(eventID, occurrenceID, scientificName, scientificNameID, occurrenceStatus, Preparations)
+  select(eventID, occurrenceID, scientificName, scientificNameID, occurrenceStatus, Preparations,
+         stage, lifeStage, sex, reproductiveCondition)
 # I change bongo_occ_fnl into a new dataframe because we're going to use the bongo_occ_fnl dataset in the eMoF table.
 
 # Make sure the folder path exists already (e.g. ./Bongo/tidy_data)
@@ -502,7 +544,7 @@ A: As no species name or genus is provided, rather than creating an `occurrenceI
 
 ## extended measurementOrFact
 
-In our extended measurementOrFact table(s), we associate the measurements to either the `eventID` (if species was not identified to species or genus level), or the `occurrenceID` (if species was identified to species or genus level). As a first step though, we associate the _seafloor depth_ and _sampling depth_ to the cast. 
+In our extended measurementOrFact table(s), we associate the measurements to either the `eventID` (if species was not identified to species or genus level), or the `occurrenceID` (if species was identified to species or genus level). As a first step though, we associate the _seafloor depth_, _sampling depth_, _sampleSizeValue_ and _sampleSizeUnit_ to the cast. There is still debate on whether information regarding the sampleSizeValue and sampleSizeUnit need to be included, as we are essentially recording metadata in the data. Do note that that this Core standards for measurements and _facts_, and these Bongo net details are _facts_ linked to the Event. For the time being therefore, this information is recorded in this Core. 
 
 ``` {r bongo_bottomdepth, eval = FALSE}
 bongo_bottomdepth <- bongo %>% 
@@ -548,11 +590,13 @@ bongo_emof <- bongo_emof %>%
          weight = weight_mg,
          length_type,
          group) %>%
+  mutate(bongo_mesh = 236,
+         bongo_opening = 0.5) %>%
 
   # As there is no NERC vocab (it appears) for milligram (for the weight), we transform this column to reflect the weight in grams: 
   mutate(weight = as.numeric(weight) / 1000) %>%
   mutate_all(as.character) %>%
-  pivot_longer(cols = number:group, 
+  pivot_longer(cols = number:bongo_opening, 
                names_to = "measurementType",
                values_to = "measurementValue") %>%
   mutate(
@@ -562,31 +606,37 @@ bongo_emof <- bongo_emof %>%
       measurementType == "length" ~ paste(eventID, "length", sep = ":"),
       measurementType == "length_type" ~ paste(eventID, "length_type", sep = ":"),
       measurementType == "weight" ~ paste(eventID, "weight", sep = ":"),
-      # Have to check whether this is dry weight or wet weight. 
-      measurementType == "group" ~ paste(eventID, "taxonomic group", sep = ":")
+      measurementType == "group" ~ paste(eventID, "taxonomic group", sep = ":"),
+      measurementType == "bongo_mesh" ~ paste(eventID, "bongo_mesh_size", sep = ":"),
+      measurementType == "bongo_opening" ~ paste(eventID, "bongo_opening", sep = ":")
+      # Not really happy with the nomenclature for bongo_opening
     ),
     measurementTypeID = case_when(
       measurementType == "number" ~ "http://vocab.nerc.ac.uk/collection/S06/current/S0600008/",
       measurementType == "size_fraction" ~ "http://vocab.nerc.ac.uk/collection/P01/current/MSHSIZE1/",
-      # samplingProtocol
       measurementType == "length" ~ "http://vocab.nerc.ac.uk/collection/S06/current/S0600015/",
       # I want to check if maybe there is a better Controlled Vocab for body size
       measurementType == "length_type" ~ "http://vocab.nerc.ac.uk/collection/P01/current/OBSINDLX/",
       measurementType == "weight" ~ "http://vocab.nerc.ac.uk/collection/S06/current/S0600087/",
-      # As per communication with Brian Hunt: weight refers to net dry weight!
-      measurementType == "group" ~ "http://vocab.nerc.ac.uk/collection/P01/current/SCNAME01/"
+      measurementType == "group" ~ "http://vocab.nerc.ac.uk/collection/P01/current/SCNAME01/",
+      measurementType == "bongo_mesh" ~ "http://vocab.nerc.ac.uk/collection/Q01/current/Q0100015/",
+      measurementType == "bongo_opening" ~ "http://vocab.nerc.ac.uk/collection/Q01/current/Q0100017/"
     ), 
     measurementUnit = case_when(
       measurementType == "number" ~ "individuals",
       measurementType == "length" ~ "mm",
       measurementType == "weight" ~ "g",
-      measurementType == "size_fraction" ~ "mm" 
+      measurementType == "size_fraction" ~ "mm", 
+      measurementType == "bongo_mesh" ~ "um",
+      measurementType == "bongo_opening" ~ "m^2"
       # If this is equal to mesh size
     ), 
     measurementUnitID = case_when(
       measurementUnit == "individuals" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UUUU/", 
       measurementUnit == "mm" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UXMM/",
       measurementUnit == "g" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UGRM/",
+      measurementUnit == "um" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UMIC/",
+      measurementUnit == "m^2" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UMSQ/"
       # Reminder: there is no NERC Controlled Vocabulary for mg, so values are formatted to 'grams'. 
     )
     )
@@ -603,6 +653,8 @@ bongo_emof2 <- bongo_occ_fnl %>%
          length_type,
          stage,
          group) %>%
+    mutate(bongo_mesh = 236,
+         bongo_opening = 0.5) %>%
   mutate(weight = as.numeric(weight) / 1000) %>% 
   mutate_all(as.character)
 ```
@@ -653,7 +705,10 @@ bongo_emof2 <- bongo_emof2 %>%
       # Have to check whether this is dry weight or wet weight. 
       measurementType == "group" ~ paste(eventID, "taxonomic group", sep = ":"),
       measurementType == "maximumLength" ~ paste(eventID, "maxLength", sep = ":"),
-      measurementType == "minimumLength" ~ paste(eventID, "minLenght", sep = ":")
+      measurementType == "minimumLength" ~ paste(eventID, "minLenght", sep = ":"),
+      measurementType == "bongo_mesh" ~ paste(eventID, "bongo_mesh_size", sep = ":"),
+      measurementType == "bongo_opening" ~ paste(eventID, "bongo_opening", sep = ":")
+      # Not really happy with the nomenclature for bongo_opening
     ),
     measurementValueID = case_when(
       measurementValue == "Copepod" ~ "urn:lsid:marinespecies.org:taxname:1080",
@@ -698,7 +753,9 @@ bongo_emof2 <- bongo_emof2 %>%
       measurementType == "length_type" ~ "http://vocab.nerc.ac.uk/collection/P01/current/OBSINDLX/",
       measurementType == "weight" ~ "http://vocab.nerc.ac.uk/collection/S06/current/S0600253/",
       # As per communication with Brian Hunt: weight refers to net dry weight!
-      measurementType == "group" ~ "http://vocab.nerc.ac.uk/collection/P01/current/SCNAME01/"
+      measurementType == "group" ~ "http://vocab.nerc.ac.uk/collection/P01/current/SCNAME01/",
+      measurementType == "bongo_mesh" ~ "http://vocab.nerc.ac.uk/collection/Q01/current/Q0100015/",
+      measurementType == "bongo_opening" ~ "http://vocab.nerc.ac.uk/collection/Q01/current/Q0100017/"
     ), 
     measurementUnit = case_when(
       measurementType == "number" ~ "individuals",
@@ -706,13 +763,16 @@ bongo_emof2 <- bongo_emof2 %>%
       measurementType == "minimumLength" ~ "mm",
       measurementType == "maximumLength" ~ "mm",
       measurementType == "weight" ~ "g",
-      measurementType == "size_fraction" ~ "mm" 
-      # If this is equal to mesh size
+      measurementType == "size_fraction" ~ "mm",
+      measurementType == "bongo_mesh" ~ "um",
+      measurementType == "bongo_opening" ~ "m^2"
     ), 
     measurementUnitID = case_when(
       measurementUnit == "individuals" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UUUU/",
       measurementUnit == "mm" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UXMM/",
-      measurementUnit == "g" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UGRM/"
+      measurementUnit == "g" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UGRM/",
+      measurementUnit == "um" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UMIC/",
+      measurementUnit == "m^2" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UMSQ/"
       # Reminder: there is no NERC Controlled Vocabulary for mg, so values are formatted to 'grams'. 
       # Reminder2: The size_fraction is often times measured in microns, but in the data set it is reported in 'mm', 
       # or 1/1000th of a micron. 
