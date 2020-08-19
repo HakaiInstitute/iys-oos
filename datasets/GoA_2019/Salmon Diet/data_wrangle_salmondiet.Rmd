@@ -61,34 +61,34 @@ pathogen <- read_excel(here("Salmon Diet", "raw_data",
   select(Trawl, Species, Mass)
 
 # The rows where the is a match can be found using: 
-test <- inner_join(salmon, pathogen) %>% mutate(check = "match")
+match <- inner_join(salmon, pathogen) %>% mutate(check = "match")
 # The rows where there is no match can be found using:
-test2 <- anti_join(salmon, pathogen) %>% mutate(check = "nomatch")
-full <- rbind(test, test2)
+nomatch <- anti_join(salmon, pathogen) %>% mutate(check = "nomatch")
+full <- rbind(match, nomatch)
 full <- full[order(full$Trawl),]
 ```
 
-Using the nrow() function we find that there are 52 rows where `Species`, `Trawl` and `Mass` data matches between the salmon diet data and the pathogen data, but 96 rows where there is no match. Unfortunately this means that, in the current state, we cannot cross-reference the pathogen and salmon data for the majority of the fish, and consequently that  we are not able to use Floytag or MGL# as a common parentEvent. 
+Using the nrow() function we find that there are 52 rows where `Species`, `Trawl` and `Mass` data matches between the salmon diet data and the pathogen data, but 96 rows where there is no match. Unfortunately this means that, in the current state, we cannot cross-reference the pathogen and salmon data for the majority of the fish, and consequently we are not able to use Floytag or MGL# as a common parentEvent. 
 
 ***
 
 # Event Core
 
-When creating the different eventID layers, we assume that the column `Trawl` is synonymous to `Station` -- need to confirm this!  Ideally, the salmon that were caught and dissected would have been given a Floytag or MGL#, so a distinction can be made between stomach content of different individuals of a same species in the same trawl. 
+When creating the different eventID layers, we assume that the column `Trawl` is synonymous to `Station` -- need to confirm this! Ideally, the salmon that were caught and dissected would have been given a Floytag or MGL#, so a distinction can be made between stomach content of different individuals of a same species in the same trawl. 
 
 <style>
-div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 10px;}
 </style>
 <div class = "blue">
 
-To do: Confirm model structure for salmon diet data. Current problem: Multiple individuals of the same species were caught in a single trawl, however within the salmon diet dataset there is no column to indicate how these individual measurements are separate (i.e., no SampleID associated to each individual fish). Perhaps we should add a SampleID column ourselves, so that we can associate two occurrence cores (fish metrics / fish stomach content) to a single occurrence core?
+To do: Confirm model structure for salmon diet data. Current problem: Multiple individuals of the same species were caught in a single trawl, however within the salmon diet dataset there is no column to indicate how these individual measurements are separate (i.e., no sampleID associated to each individual fish). Perhaps we should add a sampleID column ourselves, so that we can associate two occurrence cores (fish metrics / fish stomach content) to a single occurrence core?
 
 </div>
 
 The model structure for the salmon diet data is shown [here](https://app.diagrams.net/#G1CCBTro5std-UGbHdy6mVMa3QpZipGvIP). As can be seen, there are two occurrence cores that are linked, and connected to a common `eventID`. In the current set up, a salmon is also regarded as a 'sampling platform'. 
 
 <style>
-div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 10px;}
 </style>
 <div class = "blue">
 
@@ -121,7 +121,6 @@ trawl <- read_excel(here("Salmon Diet", "raw_data", "2019_GoA_Fish_data_Hakai.xl
   mutate(eventDate = format_iso_8601(as.POSIXct(UTC_start)),
          eventDate = str_replace(eventDate, "\\+00:00", "Z")) %>%
   mutate(station = paste("GoA2019", NUMBER, sep = "_Stn"))
-
 ```
 
 **Please note that the date and coordinates could change as the trawl data is not finalized.** 
@@ -157,16 +156,16 @@ salmon_trawl <- salmon %>%
 
 # The Salmon Diet data does not include information as to at what depths the trawls were conducted. Currently I believe this information is also not present in the general Trawl data. Should this information become available it should be connected to the general trawl information, along with info such as: volume water filter, speed at which the vessel was traveling during trawl, starting & finish lat/longs of trawl. 
 
-# If an additional eventID layer is created for each salmon individual, the following lines of code are necessary: 
+# If an additional eventID layer is created for each salmon individual, the following lines of code are necessary. What this does is it treats every salmon data entry for which the stomach has been removed and examined as a sampling event, or, in other words, it treats the salmon like a sampling instrument! 
  
-#salmon_sample <- salmon %>% 
-#  select(eventID = sample,
-#         parentEventID = trawl) %>% 
-#  distinct(eventID, .keep_all = TRUE) %>% 
-#  mutate(eventRemarks = "sample")
+salmon_sample <- salmon %>% 
+  select(eventID = sample,
+         parentEventID = trawl) %>% 
+  distinct(eventID, .keep_all = TRUE) %>% 
+  mutate(eventRemarks = "sample")
 
 # To connect them all together: 
-salmon_event <- bind_rows(salmon_cruise,salmon_station,salmon_trawl) %>%
+salmon_event <- bind_rows(salmon_cruise,salmon_station,salmon_trawl, salmon_sample) %>%
   select(eventID, parentEventID:decimalLongitude, eventRemarks) %>%
   mutate(type = "HumanObservation")
 
@@ -185,7 +184,7 @@ drive_upload(here("Salmon Diet", "tidy_data", "salmon_event.csv"),
 The current proposed set up would include two occurrence cores, with one occurrence core being connected to the other. Ideally, two occurrence cores would be connected to the `eventID` through a common occurrence core (Option 4 in DePooter et al 2017). Currently however this does not seem to be possible, as within the salmon diet datasheet there is no column designated to i.e., sampleID. The problem with this is that there are sometimes numerous individuals of the same species caught at a station/within a trawl, but these individuals have no defining tag. In the salmon diet dataset some data entries cover multiple stomachs examined (`N stomachs` > 1), and the associated fork length and mass appear to be averaged across multiple individuals. However, in the current set up it's sometimes not possible to identify which individuals this covers (i.e., no mentioning of Floytags or #MGL).
 
 <style>
-div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 10px;}
 </style>
 <div class = "blue">
 
@@ -224,7 +223,8 @@ As all the prey species are listed as columns, we first have to investigate all 
 
 ``` {r prey_occurrence, eval = FALSE}
 salmon_prey <- salmon  %>%
-  pivot_longer(cols = boreoteuthis_borealis:mictostomus_pacificus, names_to = "scientificName", values_to = "Mass") 
+  pivot_longer(cols = boreoteuthis_borealis:mictostomus_pacificus, 
+               names_to = "scientificName", values_to = "Mass") 
 salmon_prey <- salmon_prey %>%
   mutate(occurrenceStatus = ifelse(is.na(salmon_prey$Mass), "absent", "present"),
          occurrenceID = paste(trawl, species, "stomach_content", scientificName, sep = ":"),
@@ -241,8 +241,8 @@ scientificName == "e_pacifica" ~ "urn:lsid:marinespecies.org:taxname:237851",
 scientificName == "tarletonbeania_crenularis" ~ "urn:lsid:marinespecies.org:taxname:282927",
 scientificName == "hyperia_sp" ~ "urn:lsid:marinespecies.org:taxname:101796",
 scientificName == "clione_limacina" ~ "urn:lsid:marinespecies.org:taxname:139178",
-scientificName == "th_spinifera" ~ " ",
-# Unsure whether th. stands for Thalamita, Thyone, or Thysanoessa
+scientificName == "th_spinifera" ~ "urn:lsid:marinespecies.org:taxname:237874",
+# Assumption here is made that this concerns Thysanoessa spinifera
 scientificName == "themisto_pacifica" ~ "urn:lsid:marinespecies.org:taxname:254453",
 scientificName == "limacina_helicina" ~ "urn:lsid:marinespecies.org:taxname:140223",
 scientificName == "primno_macropa" ~ "urn:lsid:marinespecies.org:taxname:180759",
@@ -256,9 +256,8 @@ scientificName == "sagitta_elegans" ~ "urn:lsid:marinespecies.org:taxname:105440
 # The accepted name is Parasagitta elegans
 scientificName == "salpa_aspera" ~ "urn:lsid:marinespecies.org:taxname:137270",
 scientificName == "cyclosalpa" ~ "urn:lsid:marinespecies.org:taxname:137227", 
-scientificName == "th_longipes" ~ " ",
-# Unsure whether the `th` is for Thalassarachna, Thalassomyia, Thalestris, Thaumatops or Thysanoessa
-# Likely Thysanoessa given that th_spinifera is also listed, but have to confirm. 
+scientificName == "th_longipes" ~ "urn:lsid:marinespecies.org:taxname:237873",
+# Assumption is made that it is Thysanoessa longipes, Thysanoessa was the only genus in common between longipes and spinifera. 
 scientificName == "cephalopoda" ~ "urn:lsid:marinespecies.org:taxname:11707",
 scientificName == "phronima_sedentaria" ~ "urn:lsid:marinespecies.org:taxname:103272",
 scientificName == "oikopleura" ~ "urn:lsid:marinespecies.org:taxname:103367",
