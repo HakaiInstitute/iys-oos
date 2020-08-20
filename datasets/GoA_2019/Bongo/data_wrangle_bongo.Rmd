@@ -508,7 +508,7 @@ bongo_occ_fnl <- bongo_occ_fnl %>%
       stage == "CV" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1112/",
       stage == "Spent" ~ " ",
   
-      # There is currently no controlled vocabulary for whether a species is dead or alive, but they are currently working on it: https://www.tdwg.org/community/osr/how-did-it-die/
+      # There is currently no controlled vocabulary for whether a species is dead or alive, but they are currently working on it: https://www.tdwg.org/community/osr/how-did-it-die/ 
       
       stage == "Solitary" ~ " ",
       stage == "juvenile" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1127/",
@@ -521,13 +521,16 @@ bongo_occ_fnl <- bongo_occ_fnl %>%
   sex = case_when(
     stage == "Gravid female" ~ "female"),
   reproductiveCondition = case_when(
-    stage == "Gravid female" ~ "gravid")
+    stage == "Gravid female" ~ "gravid"),
+  occurrenceRemarks = case_when(
+    stage == "Spent" ~ "Spent"
+  )
   )
 
 bongo_occ_core <- bongo_occ_fnl %>%
   rename(Preparations = preservation) %>%
   select(eventID, occurrenceID, scientificName, scientificNameID, occurrenceStatus, Preparations,
-         individualCount, stage, lifeStage, sex, reproductiveCondition)
+         individualCount, stage, lifeStage, sex, reproductiveCondition, occurrenceRemarks)
 # I change bongo_occ_fnl into a new dataframe because we're going to use the bongo_occ_fnl dataset in the eMoF table.
 
 # Make sure the folder path exists already (e.g. ./Bongo/tidy_data)
