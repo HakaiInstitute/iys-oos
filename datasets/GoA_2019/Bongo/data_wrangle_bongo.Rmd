@@ -507,6 +507,9 @@ bongo_occ_fnl <- bongo_occ_fnl %>%
       stage == "1to2" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1165/",
       stage == "CV" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1112/",
       stage == "Spent" ~ " ",
+  
+      # There is currently no controlled vocabulary for whether a species is dead or alive, but they are currently working on it: https://www.tdwg.org/community/osr/how-did-it-die/
+      
       stage == "Solitary" ~ " ",
       stage == "juvenile" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1127/",
       stage == "adult" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1116/",
