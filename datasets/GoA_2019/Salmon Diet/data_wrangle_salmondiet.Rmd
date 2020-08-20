@@ -74,25 +74,18 @@ Using the nrow() function we find that there are 52 rows where `Species`, `Trawl
 
 # Event Core
 
-When creating the different eventID layers, we assume that the column `Trawl` is synonymous to `Station` -- need to confirm this! Ideally, the salmon that were caught and dissected would have been given a Floytag or MGL#, so a distinction can be made between stomach content of different individuals of a same species in the same trawl. 
+When creating the different eventID layers, we assume that the column `Trawl` is synonymous to `Station`. Ideally, the salmon that were caught and dissected would have been given a Floytag or MGL#, so a distinction can be made between stomach content of different individuals of a same species in the same trawl. 
 
 <style>
 div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 10px;}
 </style>
 <div class = "blue">
 
-To do: Confirm model structure for salmon diet data. Current problem: Multiple individuals of the same species were caught in a single trawl, however within the salmon diet dataset there is no column to indicate how these individual measurements are separate (i.e., no sampleID associated to each individual fish). Perhaps we should add a sampleID column ourselves, so that we can associate two occurrence cores (fish metrics / fish stomach content) to a single occurrence core?
+Current problem: Multiple individuals of the same species were caught in a single trawl, however within the salmon diet dataset there is no column to indicate how these individual measurements are separate (i.e., no sampleID associated to each individual fish). Additionally, some species' stomach content seems to have been aggregated, whereas others hasn't. Even within a single trawl record there is data specific to a single individual and aggregated data, _and sometimes of the same species_. 
 
 </div>
 
-The model structure for the salmon diet data is shown [here](https://app.diagrams.net/#G1CCBTro5std-UGbHdy6mVMa3QpZipGvIP). As can be seen, there are two occurrence cores that are linked, and connected to a common `eventID`. In the current set up, a salmon is also regarded as a 'sampling platform'. 
-
-<style>
-div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 10px;}
-</style>
-<div class = "blue">
-
-**Food for thought**: should perhaps "Salmon caught" be an `event` layer, rather than an `Occurrence` (as is our current set up)? The measurements associated to the fish, such as `fork length`, `mass` etc can then be directly linked to the salmon individual. The reason why I currently included the salmon individual in the `Occurrence` layer is because I believe that allowed me to associate scientificName(ID) -- but perhaps this is not relevant? The focus of the dataset is _occurrence and prey mass_ in the stomach content of salmon. Thoughts?
+**Food for thought**: Currently I have the "Salmon caught" be an `event` layer, rather than an `Occurrence`. The measurements associated to the fish, such as `fork length`, `mass` etc are directly linked to the salmon individual. The reason why I currently included the salmon individual in the `Event` Core is because I believe the focus of the dataset is _occurrence and prey mass_ in the stomach content of salmon, and to examine whether viewing the salmon as a _sampling instrument_ is a viable option. 
 
 </div>
 
@@ -154,9 +147,29 @@ salmon_trawl <- salmon %>%
   distinct(eventID, .keep_all = TRUE) %>%
   mutate(eventRemarks = "trawl")
 
-# The Salmon Diet data does not include information as to at what depths the trawls were conducted. Currently I believe this information is also not present in the general Trawl data. Should this information become available it should be connected to the general trawl information, along with info such as: volume water filter, speed at which the vessel was traveling during trawl, starting & finish lat/longs of trawl. 
+# The Salmon Diet data does not include information as to at what depths the trawls were conducted. Currently I believe this information is also not present in the general Trawl data. Should this information become available it should be connected to the general trawl information, along with info such as: volume water filter, speed at which the vessel was traveling during trawl, starting & finish lat/longs of trawl.
+```
 
-# If an additional eventID layer is created for each salmon individual, the following lines of code are necessary. What this does is it treats every salmon data entry for which the stomach has been removed and examined as a sampling event, or, in other words, it treats the salmon like a sampling instrument! 
+***
+
+<style>
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 10px;}
+</style>
+<div class = "blue">
+The current dilemma I have is that there is no unique `sampleID` associated with each data entry in the salmon diet data. This makes it difficult to properly structure the dataset. There are two options we can take:
+
+Option A: If we want to treat a salmon as a `sampling instrument`, each salmon species should be in the Event Core, rather than in the Occurrence Core. This is a novel technique, I believe salmon haven't really been seen as an instrument to collect data. The measurement or facts (eMOF) associated to the salmon can be linked directly to the event layer. See the layout of option A [here](https://app.diagrams.net/#G1qMPIuqd90pT11CXULX6k48YjKS_5WDUx)
+
+Option B: Alternatively, we create a unique sampleID for each data entry in the salmon diet data, but in that we do not regard the salmon as the sampling instrument (and, additionally, it would be difficult to associate any data to the sampleID). However, this way each salmon in the salmon diet data set would be an `occurrence`, with associated measurements or facts. See the layout of option B [here](https://app.diagrams.net/#G18hDRALexgAs5hQ8k89lsgg7SDI5Ho83H)
+</div>
+
+Currently the data is reformatted data is structured as shown in option A. However, the data standardization is an evolving process so the structure might change. 
+
+***
+
+``` {r, eval = FALSE}
+
+# If we treat every salmon entry for which the stomach has been removed and examined as a sampling event, we essentially treat the salmon like a sampling instrument of their direct surroundings! 
  
 salmon_sample <- salmon %>% 
   select(eventID = sample,
@@ -169,8 +182,6 @@ salmon_event <- bind_rows(salmon_cruise,salmon_station,salmon_trawl, salmon_samp
   select(eventID, parentEventID:decimalLongitude, eventRemarks) %>%
   mutate(type = "HumanObservation")
 
-# Should sample_type be included in the Event Core, under the heading samplingProtocol? 
-
 # Make sure the folder path exists already (e.g. ./Salmon Diet/tidy_data)
 write_csv(salmon_event, here("Salmon Diet", "tidy_data", "salmon_event.csv"))
 drive_upload(here("Salmon Diet", "tidy_data", "salmon_event.csv"),
@@ -179,55 +190,31 @@ drive_upload(here("Salmon Diet", "tidy_data", "salmon_event.csv"),
              overwrite = TRUE)
 ```
 
-# Occurrence Core(s)
+# Occurrence Core
 
-The current proposed set up would include two occurrence cores, with one occurrence core being connected to the other. Ideally, two occurrence cores would be connected to the `eventID` through a common occurrence core (Option 4 in DePooter et al 2017). Currently however this does not seem to be possible, as within the salmon diet datasheet there is no column designated to i.e., sampleID. The problem with this is that there are sometimes numerous individuals of the same species caught at a station/within a trawl, but these individuals have no defining tag. In the salmon diet dataset some data entries cover multiple stomachs examined (`N stomachs` > 1), and the associated fork length and mass appear to be averaged across multiple individuals. However, in the current set up it's sometimes not possible to identify which individuals this covers (i.e., no mentioning of Floytags or #MGL).
+Currently we have opted for Option A, where the salmon caught and examined are in the Event Core, with a single Occurrence Core for the prey occurrences in the stomach content. This option was chosen as the focus of this particular study is on the stomach content, and to understand whether considering salmon as the `sampling instrument` is a viable option. 
+
+The problem in the salmon diet data is that there are sometimes numerous individuals of the same species caught at a station/within a trawl, but these individuals have no defining tag. Additionally, some data entries cover multiple stomachs examined (`N stomachs` > 1), and the associated fork length and mass appear to be averaged across multiple individuals. However, in the current set up it's sometimes not possible to identify which individuals this covers (i.e., no mentioning of Floytags or #MGL).
 
 <style>
 div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 10px;}
 </style>
 <div class = "blue">
-
 How do the scientists know which individual the stomach content belong to, asides from their data?
 </div>
 
-In one of the occurrence cores I think we should list all salmon species / individuals caught at a station/in a trawl. Measurements linked to the salmon species include: fork length, mass, food mass, gut fullness index (GFI), CFI adj %, `N stomachs` and `mass digested food` (but unidentified to a species). The assumption made here is that the column `N stomachs` refers to the number of stomachs examined, and therefore appears to work in a similar way to `count`. As the survey was set out to capture salmon, we assume that it is also of interest to see know which salmon species _have not_ been caught at each station, and therefore for each station we'll include whether each of the five salmon species were caught (present) or not (absent). Additionally, each salmon species will receive their own unique URN from [WoRMS](http://www.marinespecies.org). 
+The Occurrence core connected to each salmon stomach examined consists of the occurrences of prey species consumed by the salmon species at each station. The measurement attached to these unique occurrences is the mass (g) of each prey species consumed. Each prey species will receive their own unique URN from [WoRMS](http://www.marinespecies.org/), if identified.
 
-``` {r salmon_occ, eval = FALSE}
-salmon_spp_occ <- salmon %>%
-  complete(trawl, species, fill = list(n_stomachs = 0)) %>%
-  rename(scientificName = species) %>% 
-  mutate(occurrenceStatus = ifelse(n_stomachs > 0, "present", "absent"),
-         occurrenceID = paste(trawl, scientificName, sep = ":"),
-         scientificNameID = case_when(
-scientificName == "Oncorhynchus gorbuscha" ~ "urn:lsid:marinespecies.org:taxname:127182",
-scientificName == "Oncorhynchus kisutch" ~ "urn:lsid:marinespecies.org:taxname:127184",
-scientificName == "Oncorhynchus keta" ~ "urn:lsid:marinespecies.org:taxname:127183",
-scientificName == "Oncorhynchus nerka" ~ "urn:lsid:marinespecies.org:taxname:254569",
-scientificName == "Oncorhynchus tschawytscha" ~ "urn:lsid:marinespecies.org:taxname:158075")) %>%
-  # Accepted name has slightly different species name: O. tshawytscha
-  rename(eventID = trawl) %>%
-  select(eventID, occurrenceID, scientificName, scientificNameID, occurrenceStatus)
-
-# Make sure the folder path exists already (e.g. ./Salmon Diet/tidy_data)
-write_csv(salmon_spp_occ, here("Salmon Diet", "tidy_data", "salmon_spp_occ.csv"))
-drive_upload(here("Salmon Diet", "tidy_data", "salmon_spp_occ.csv"),
-             path = "https://drive.google.com/drive/u/0/folders/1pGd2cuvdb25QX7CGm2wC81Emh5O-LdbR",
-             name = "salmon_spp_occ.csv",
-             overwrite = TRUE)
-```
-
-The second occurrence core is connected to this 'primary' occurrence core, and consists of all the unique prey species consumed by the salmon species at each station. The measurements attached to these unique occurrences would be the presence or absence of a certain prey species in the stomach of a salmon, and the mass (g) of unique prey consumed. Each prey species will receive their own unique URN from [WoRMS](http://www.marinespecies.org/), if identified.
-
-As all the prey species are listed as columns, we first have to investigate all the unique prey species consumed, as these will get their associated WoRMS URN. THere is also a column `digested_food` which will not have an associated URN, as it likely reflects unidentified prey species consumed -- this will have to be confirmed! This column will get added as a measurement to the _primary occurrence core_ (see model structure). 
+As all the prey species are listed as columns, we first have to investigate all the unique prey species consumed, as these will get their associated WoRMS URN. There is also a column `digested_food` which will not have an associated URN, as it likely reflects unidentified prey species consumed -- this will have to be confirmed! This column will get added as a measurement linking directly to the salmon (Event Core). 
 
 ``` {r prey_occurrence, eval = FALSE}
 salmon_prey <- salmon  %>%
   pivot_longer(cols = boreoteuthis_borealis:mictostomus_pacificus, 
                names_to = "scientificName", values_to = "Mass") 
+salmon_prey <- salmon_prey[ !(salmon_prey$scientificName %in% "digested_food"),]
 salmon_prey <- salmon_prey %>%
   mutate(occurrenceStatus = ifelse(is.na(salmon_prey$Mass), "absent", "present"),
-         occurrenceID = paste(trawl, species, "stomach_content", scientificName, sep = ":"),
+         occurrenceID = paste(sample, "stomach_content", scientificName, sep = ":"),
          scientificNameID = case_when(
 scientificName == "boreoteuthis_borealis" ~ "urn:lsid:marinespecies.org:taxname:342326",
 # Boreoteuthis is not an accepted genus, Gonatopsis is the accepted version?
@@ -257,7 +244,7 @@ scientificName == "sagitta_elegans" ~ "urn:lsid:marinespecies.org:taxname:105440
 scientificName == "salpa_aspera" ~ "urn:lsid:marinespecies.org:taxname:137270",
 scientificName == "cyclosalpa" ~ "urn:lsid:marinespecies.org:taxname:137227", 
 scientificName == "th_longipes" ~ "urn:lsid:marinespecies.org:taxname:237873",
-# Assumption is made that it is Thysanoessa longipes, Thysanoessa was the only genus in common between longipes and spinifera. 
+# Assumption is made that it is Thysanoessa longipes, Thysanoessa was the only genus in common between longipes, inspinata and spinifera. 
 scientificName == "cephalopoda" ~ "urn:lsid:marinespecies.org:taxname:11707",
 scientificName == "phronima_sedentaria" ~ "urn:lsid:marinespecies.org:taxname:103272",
 scientificName == "oikopleura" ~ "urn:lsid:marinespecies.org:taxname:103367",
@@ -272,11 +259,12 @@ scientificName == "sebastes" ~ "urn:lsid:marinespecies.org:taxname:126175",
 scientificName == "mictostomus_pacificus" ~ "urn:lsid:marinespecies.org:taxname:274294")
 # Spelling error? Accepted name is Microstomus pacificus?
 ) %>%
-  rename(eventID = trawl)
+  rename(id = sample)
 
 salmon_prey_occ <- salmon_prey %>%
-  select(eventID, occurrenceID, scientificName, scientificNameID, occurrenceStatus) %>%
-  mutate(basisOfRecord = "HumanObservation")
+  select(id, occurrenceID, scientificName, scientificNameID, occurrenceStatus) %>%
+  mutate(basisOfRecord = "HumanObservation") %>%
+  filter(occurrenceStatus == "present")
 
 # Make sure the folder path exists already (e.g. ./Salmon Diet/tidy_data)
 write_csv(salmon_prey_occ, here("Salmon Diet", "tidy_data", "salmon_prey_occ.csv"))
@@ -286,52 +274,70 @@ drive_upload(here("Salmon Diet", "tidy_data", "salmon_prey_occ.csv"),
              overwrite = TRUE)
 ```
 
-<style>
-div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
-</style>
-<div class = "blue">
+If we choose option B then the following chunk of code is also needed to create the Occurrence Core specifically for the salmon caught and whose stomach contents have been examined: 
 
-Q: Should these occurrence cores be combined into a single Occurrence Core using rbind()? 
+``` {r salmon_occ, eval = FALSE}
+salmon_spp_occ <- salmon %>%
+  complete(trawl, species, fill = list(n_stomachs = 0)) %>%
+  rename(scientificName = species) %>% 
+  mutate(occurrenceStatus = ifelse(n_stomachs > 0, "present", "absent"),
+         occurrenceID = paste(trawl, scientificName, sep = ":"),
+         scientificNameID = case_when(
+scientificName == "Oncorhynchus gorbuscha" ~ "urn:lsid:marinespecies.org:taxname:127182",
+scientificName == "Oncorhynchus kisutch" ~ "urn:lsid:marinespecies.org:taxname:127184",
+scientificName == "Oncorhynchus keta" ~ "urn:lsid:marinespecies.org:taxname:127183",
+scientificName == "Oncorhynchus nerka" ~ "urn:lsid:marinespecies.org:taxname:254569",
+scientificName == "Oncorhynchus tschawytscha" ~ "urn:lsid:marinespecies.org:taxname:158075")) %>%
+  # Accepted name has slightly different species name: O. tshawytscha
+  rename(eventID = trawl) %>%
+  select(eventID, occurrenceID, scientificName, scientificNameID, occurrenceStatus)
 
-</div>
+# Make sure the folder path exists already (e.g. ./Salmon Diet/tidy_data)
+write_csv(salmon_spp_occ, here("Salmon Diet", "tidy_data", "salmon_spp_occ.csv"))
+drive_upload(here("Salmon Diet", "tidy_data", "salmon_spp_occ.csv"),
+             path = "https://drive.google.com/drive/u/0/folders/1pGd2cuvdb25QX7CGm2wC81Emh5O-LdbR",
+             name = "salmon_spp_occ.csv",
+             overwrite = TRUE)
+```
 
-# measurementOrFact Core(s)
+# measurementOrFact Cores
 
-So given that we have two occurrence cores for Salmon Diet data, there are also two measurementOrFact tables, each with their own associated measurements. Let's start with the first extended measurementOrFact Core, where we associate measurements of `fork length`, `mass`, `food mass`, `gut fullness index (GFI)`, `N stomachs`, `CFI` and possibly `digested food (unidentified)`. 
+So even though we (currently) have one Occurrence Core for Salmon Diet data, there are two measurement Or Fact tables, one linking directly to the salmon (Event) and the other linking to the stomach content (prey occurrence). Let's start with the first extended measurement Or Fact Core, where we associate measurements of `fork length`, `mass`, `food mass`, `gut fullness index (GFI)`, `N stomachs`, `CFI` and possibly `digested food (unidentified)` to the salmon examined.  
 
 ``` {r, eval = FALSE}
 salmon_spp_measurement <- salmon %>%
-  select(occurrenceID = sample,
+  select(measurementID = sample,
          fl_cm:cfi_percent_adj,
          digested_food) %>%
-  pivot_longer(cols = fl_cm:cfi_percent_adj, 
+  pivot_longer(cols = fl_cm:digested_food, 
                names_to = "measurementType",
                values_to = "measurementValue") %>%
-  mutate(measurementID = case_when(
-    measurementType == "fl_cm" ~ paste(occurrenceID, "FL", sep = ":"),
-    measurementType == "mass_g" ~ paste(occurrenceID, "mass", sep = ":"),
-    measurementType == "food_mass_g" ~ paste(occurrenceID, "food_mass", sep = ":"),
-    measurementType == "gfi_percent" ~ paste(occurrenceID, "GFI", sep = ":"),
-    measurementType == "n_stomachs" ~ paste(occurrenceID, "n_stomachs", sep = ":"),
-    measurementType == "cfi_percent_adj" ~ paste(occurrenceID, "CFI", sep = ":"),
-    measurementType == "digested_food" ~ paste(occurrenceID, "food_digested", sep = ":")),
-         measurementTypeID = case_when(
-    measurementType == "fl_cm" ~ " ",
+  mutate(measurementType = case_when(
+           measurementType == "fl_cm" ~ "FL",
+           measurementType == "mass_g" ~ "mass",
+           measurementType == "food_mass_g" ~ "food_mass",
+           measurementType == "gfi_percent" ~ "GFI",
+           measurementType == "n_stomachs" ~ "count",
+           measurementType == "cfi_percent_adj" ~ "CFI",
+           measurementType == "digested_food" ~ "digested_food"),
+    measurementID = paste(measurementID, measurementType, sep = ":"),
+    measurementTypeID = case_when(
+    measurementType == "FL" ~ " ",
     # But standard length: 	http://vocab.nerc.ac.uk/collection/P01/current/SL01XX01/
-    measurementType == "mass_g" ~ "http://vocab.nerc.ac.uk/collection/P24/current/NMASS/",
-    measurementType == "food_mass_g" ~ "http://vocab.nerc.ac.uk/collection/P24/current/NMASS/",
-    measurementType == "gfi_percent" ~ " ",
-    measurementType == "n_stomachs" ~ " ",
-    measurementType == "cfi_percent_adj" ~ " ",
+    measurementType == "mass" ~ "http://vocab.nerc.ac.uk/collection/P24/current/NMASS/",
+    measurementType == "food_mass" ~ "http://vocab.nerc.ac.uk/collection/P24/current/NMASS/",
+    measurementType == "GFI" ~ " ",
+    measurementType == "count" ~ " ",
+    measurementType == "CFI" ~ " ",
     measurementType == "digested_food" ~ "http://vocab.nerc.ac.uk/collection/P24/current/NMASS/"),
          measurementUnit = case_when(
-    measurementType == "fl_cm" ~ "cm",
-    measurementType == "mass_g" ~ "g",
-    measurementType == "food_mass_g" ~ "g",
-    measurementType == "gfi_percent" ~ "percent",
-    measurementType == "n_stomachs" ~ "stomachs",
+    measurementType == "FL" ~ "cm",
+    measurementType == "mass" ~ "g",
+    measurementType == "food_mass" ~ "g",
+    measurementType == "GFI" ~ "percent",
+    measurementType == "count" ~ "stomachs",
     # This seems off to me - want to find a better alternative.
-    measurementType == "cfi_percent_adj" ~ "percent",
+    measurementType == "CFI" ~ "percent",
     measurementType == "digested_food" ~ "g"),
          measurementUnitID = case_when(
     measurementUnit == "cm" ~ "http://vocab.nerc.ac.uk/collection/P06/current/ULCM/",
@@ -349,48 +355,49 @@ drive_upload(here("Salmon Diet", "tidy_data", "salmon_spp_measurement.csv"),
              overwrite = TRUE)
 ```
 
-The second measurement Or Fact table will be created for the stomach content of the salmon species examined. The measurements associated to this Occurrence Core is `mass digested prey species`. The `presence/absence` of a prey species in an occurrence has already been determined in the Occurrence core. 
+The second measurement Or Fact table will be created for the stomach content of the salmon species examined. The measurements associated to this Occurrence Core is `mass digested prey species`. First we filter out all the entries of species that were not recorded within a stomach (i.e., where measurementValue = NA)
 
 ``` {r, eval = FALSE}
 salmon_prey_measurement <- salmon %>%
-  select(occurrenceID = sample,
+  select(measurementID = sample,
          boreoteuthis_borealis:mictostomus_pacificus) %>%
   select(-digested_food) %>%
   pivot_longer(cols = boreoteuthis_borealis:mictostomus_pacificus,
                names_to = "measurementType",
                values_to = "measurementValue") %>%
+  filter(!is.na(measurementValue)) %>%
   mutate(measurementID = case_when(
-    measurementType == "boreoteuthis_borealis" ~ paste(occurrenceID, "b.borealis", sep = ":"),
-    measurementType == "neocalanus_cristatus" ~ paste(occurrenceID, "n.cristatus", sep = ":"),
-    measurementType == "pisces" ~ paste(occurrenceID, "pisces", sep = ":"),
-    measurementType == "tomopteris" ~ paste(occurrenceID, "tomopteris", sep = ":"),
-    measurementType == "chuneola_major" ~ paste(occurrenceID, "c.major", sep = ":"),
-    measurementType == "sergestes_pacificus" ~ paste(occurrenceID, "s.pacificus", sep = ":"),
-    measurementType == "e_pacifica" ~ paste(occurrenceID, "e.pacifica", sep = ":"),
-    measurementType == "tarletonbeania_crenularis" ~ paste(occurrenceID, "t.crenularis", sep = ":"),
-    measurementType == "hyperia_sp" ~ paste(occurrenceID, "hyperia_sp", sep = ":"),
-    measurementType == "clione_limacina" ~ paste(occurrenceID, "c.limacina", sep = ":"),
-    measurementType == "th_spinifera" ~ paste(occurrenceID, "t.spinifera", sep = ":"),
-    measurementType == "themisto_pacifica" ~ paste(occurrenceID, "t.pacifica", sep = ":"),
-    measurementType == "limacina_helicina" ~ paste(occurrenceID, "l.helicina", sep = ":"),
-    measurementType == "primno_macropa" ~ paste(occurrenceID, "p.macropa", sep = ":"),
-    measurementType == "th_inspinata" ~ paste(occurrenceID, "t.inspinata", sep = ":"),
-    measurementType == "coelenterata" ~ paste(occurrenceID, "coelenterata", sep = ":"),
-    measurementType == "vanadis_sp" ~ paste(occurrenceID, "vanadis_sp", sep = ":"),
-    measurementType == "sagitta_elegans" ~ paste(occurrenceID, "s.elegans", sep = ":"),
-    measurementType == "salpa_aspera" ~ paste(occurrenceID, "s.aspera", sep = ":"),
-    measurementType == "cyclosalpa" ~ paste(occurrenceID, "cyclosalpa", sep = ":"),
-    measurementType == "th_longipes" ~ paste(occurrenceID, "t.longipes", sep = ":"),
-    measurementType == "cephalopoda" ~ paste(occurrenceID, "cephalopoda", sep = ":"),
-    measurementType == "phronima_sedentaria" ~ paste(occurrenceID, "p.sedentaria", sep = ":"),
-    measurementType == "oikopleura" ~ paste(occurrenceID, "oikopleura", sep = ":"),
-    measurementType == "isopoda" ~ paste(occurrenceID, "isopoda", sep = ":"),
-    measurementType == "clio_pyramidata" ~ paste(occurrenceID, "c.pyramidata", sep = ":"),
-    measurementType == "chormiphora_cucumis" ~ paste(occurrenceID, "c.cucumis", sep = ":"),
-    measurementType == "symbolophorus_californiensis" ~ paste(occurrenceID, "s.californiensis", sep = ":"),
-    measurementType == "okutania_anonycha" ~ paste(occurrenceID, "o.anonycha", sep = ":"),
-    measurementType == "sebastes" ~ paste(occurrenceID, "sebastes", sep = ":"),
-    measurementType == "mictostomus_pacificus" ~ paste(occurrenceID, "m.pacificus", sep = ":")),
+    measurementType == "boreoteuthis_borealis" ~ paste(measurementID, "b.borealis", sep = ":"),
+    measurementType == "neocalanus_cristatus" ~ paste(measurementID, "n.cristatus", sep = ":"),
+    measurementType == "pisces" ~ paste(measurementID, "pisces", sep = ":"),
+    measurementType == "tomopteris" ~ paste(measurementID, "tomopteris", sep = ":"),
+    measurementType == "chuneola_major" ~ paste(measurementID, "c.major", sep = ":"),
+    measurementType == "sergestes_pacificus" ~ paste(measurementID, "s.pacificus", sep = ":"),
+    measurementType == "e_pacifica" ~ paste(measurementID, "e.pacifica", sep = ":"),
+    measurementType == "tarletonbeania_crenularis" ~ paste(measurementID, "t.crenularis", sep = ":"),
+    measurementType == "hyperia_sp" ~ paste(measurementID, "hyperia_sp", sep = ":"),
+    measurementType == "clione_limacina" ~ paste(measurementID, "c.limacina", sep = ":"),
+    measurementType == "th_spinifera" ~ paste(measurementID, "t.spinifera", sep = ":"),
+    measurementType == "themisto_pacifica" ~ paste(measurementID, "t.pacifica", sep = ":"),
+    measurementType == "limacina_helicina" ~ paste(measurementID, "l.helicina", sep = ":"),
+    measurementType == "primno_macropa" ~ paste(measurementID, "p.macropa", sep = ":"),
+    measurementType == "th_inspinata" ~ paste(measurementID, "t.inspinata", sep = ":"),
+    measurementType == "coelenterata" ~ paste(measurementID, "coelenterata", sep = ":"),
+    measurementType == "vanadis_sp" ~ paste(measurementID, "vanadis_sp", sep = ":"),
+    measurementType == "sagitta_elegans" ~ paste(measurementID, "s.elegans", sep = ":"),
+    measurementType == "salpa_aspera" ~ paste(measurementID, "s.aspera", sep = ":"),
+    measurementType == "cyclosalpa" ~ paste(measurementID, "cyclosalpa", sep = ":"),
+    measurementType == "th_longipes" ~ paste(measurementID, "t.longipes", sep = ":"),
+    measurementType == "cephalopoda" ~ paste(measurementID, "cephalopoda", sep = ":"),
+    measurementType == "phronima_sedentaria" ~ paste(measurementID, "p.sedentaria", sep = ":"),
+    measurementType == "oikopleura" ~ paste(measurementID, "oikopleura", sep = ":"),
+    measurementType == "isopoda" ~ paste(measurementID, "isopoda", sep = ":"),
+    measurementType == "clio_pyramidata" ~ paste(measurementID, "c.pyramidata", sep = ":"),
+    measurementType == "chormiphora_cucumis" ~ paste(measurementID, "c.cucumis", sep = ":"),
+    measurementType == "symbolophorus_californiensis" ~ paste(measurementID, "s.californiensis", sep = ":"),
+    measurementType == "okutania_anonycha" ~ paste(measurementID, "o.anonycha", sep = ":"),
+    measurementType == "sebastes" ~ paste(measurementID, "sebastes", sep = ":"),
+    measurementType == "mictostomus_pacificus" ~ paste(measurementID, "m.pacificus", sep = ":")),
   measurementUnit = "g",
   measurementUnitID = case_when(
     measurementUnit == "g" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UGRM/"
@@ -406,11 +413,11 @@ drive_upload(here("Salmon Diet", "tidy_data", "salmon_prey_measurement.csv"),
 ```
 
 <style>
-div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 10px;}
 </style>
 <div class = "blue">
 
-Q: Similar to the question above regarding the occurrence cores, should these measurementOrFact cores be combined into a single MeasuremtOrFact Core? 
+Should these measurementOrFact cores be combined into a single MeasuremtOrFact Core? 
 
 </div>
 
