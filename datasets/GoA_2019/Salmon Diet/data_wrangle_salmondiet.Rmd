@@ -81,14 +81,11 @@ div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 10px;}
 </style>
 <div class = "blue">
 
-Current problem: Multiple individuals of the same species were caught in a single trawl, however within the salmon diet dataset there is no column to indicate how these individual measurements are separate (i.e., no sampleID associated to each individual fish). Additionally, some species' stomach content seems to have been aggregated, whereas others hasn't. Even within a single trawl record there is data specific to a single individual and aggregated data, _and sometimes of the same species_. 
+Current problem: Multiple individuals of the same species were caught in a single trawl, however within the salmon diet dataset there is no column to indicate how these individual measurements are separate (i.e., no sampleID associated to each individual fish). Additionally, some species' stomach content seems to have been aggregated, whereas others haven't. Even within a single trawl record there is data specific to a single individual and aggregated data, _and sometimes of the same species_. 
 
 </div>
 
-**Food for thought**: Currently I have the "Salmon caught" be an `event` layer, rather than an `Occurrence`. The measurements associated to the fish, such as `fork length`, `mass` etc are directly linked to the salmon individual. The reason why I currently included the salmon individual in the `Event` Core is because I believe the focus of the dataset is _occurrence and prey mass_ in the stomach content of salmon, and to examine whether viewing the salmon as a _sampling instrument_ is a viable option. 
-
-</div>
-
+**Food for thought**: Currently I have the "Salmon caught" be an `event` layer, rather than an `Occurrence`. The measurements associated to the fish, such as `fork length`, `mass` etc are directly linked to the salmon individual. The reason why I currently included the salmon individual in the `Event` Core is because I believe the focus of the dataset is _prey occurrence and prey mass_ in the stomach content of salmon, and to examine whether viewing the salmon as a _sampling instrument_ is a viable option. 
 
 ``` {r data wrangle, eval = FALSE}
 salmon <- read_excel(here("Salmon Diet", "raw_data", 
@@ -163,7 +160,7 @@ Option A: If we want to treat a salmon as a `sampling instrument`, each salmon s
 Option B: Alternatively, we create a unique sampleID for each data entry in the salmon diet data, but in that we do not regard the salmon as the sampling instrument (and, additionally, it would be difficult to associate any data to the sampleID). However, this way each salmon in the salmon diet data set would be an `occurrence`, with associated measurements or facts. See the layout of option B [here](https://app.diagrams.net/#G18hDRALexgAs5hQ8k89lsgg7SDI5Ho83H)
 </div>
 
-Currently the data is reformatted data is structured as shown in option A. However, the data standardization is an evolving process so the structure might change. 
+Currently the data is reformatted data is structured as shown in **option A**. However, the data standardization is an evolving process so the structure might change. 
 
 ***
 

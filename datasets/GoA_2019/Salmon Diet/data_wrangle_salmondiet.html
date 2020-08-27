@@ -411,20 +411,14 @@ full &lt;- full[order(full$Trawl),]</code></pre>
 <hr />
 <div id="event-core" class="section level1">
 <h1>Event Core</h1>
-<p>When creating the different eventID layers, we assume that the column <code>Trawl</code> is synonymous to <code>Station</code> – need to confirm this! Ideally, the salmon that were caught and dissected would have been given a Floytag or MGL#, so a distinction can be made between stomach content of different individuals of a same species in the same trawl.</p>
+<p>When creating the different eventID layers, we assume that the column <code>Trawl</code> is synonymous to <code>Station</code>. Ideally, the salmon that were caught and dissected would have been given a Floytag or MGL#, so a distinction can be made between stomach content of different individuals of a same species in the same trawl.</p>
 <style>
 div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 10px;}
 </style>
 <div class="blue">
-<p>To do: Confirm model structure for salmon diet data. Current problem: Multiple individuals of the same species were caught in a single trawl, however within the salmon diet dataset there is no column to indicate how these individual measurements are separate (i.e., no sampleID associated to each individual fish). Perhaps we should add a sampleID column ourselves, so that we can associate two occurrence cores (fish metrics / fish stomach content) to a single occurrence core?</p>
+<p>Current problem: Multiple individuals of the same species were caught in a single trawl, however within the salmon diet dataset there is no column to indicate how these individual measurements are separate (i.e., no sampleID associated to each individual fish). Additionally, some species’ stomach content seems to have been aggregated, whereas others haven’t. Even within a single trawl record there is data specific to a single individual and aggregated data, <em>and sometimes of the same species</em>.</p>
 </div>
-<p>The model structure for the salmon diet data is shown <a href="https://app.diagrams.net/#G1CCBTro5std-UGbHdy6mVMa3QpZipGvIP">here</a>. As can be seen, there are two occurrence cores that are linked, and connected to a common <code>eventID</code>. In the current set up, a salmon is also regarded as a ‘sampling platform’.</p>
-<style>
-div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 10px;}
-</style>
-<div class="blue">
-<p><strong>Food for thought</strong>: should perhaps “Salmon caught” be an <code>event</code> layer, rather than an <code>Occurrence</code> (as is our current set up)? The measurements associated to the fish, such as <code>fork length</code>, <code>mass</code> etc can then be directly linked to the salmon individual. The reason why I currently included the salmon individual in the <code>Occurrence</code> layer is because I believe that allowed me to associate scientificName(ID) – but perhaps this is not relevant? The focus of the dataset is <em>occurrence and prey mass</em> in the stomach content of salmon. Thoughts?</p>
-</div>
+<p><strong>Food for thought</strong>: Currently I have the “Salmon caught” be an <code>event</code> layer, rather than an <code>Occurrence</code>. The measurements associated to the fish, such as <code>fork length</code>, <code>mass</code> etc are directly linked to the salmon individual. The reason why I currently included the salmon individual in the <code>Event</code> Core is because I believe the focus of the dataset is <em>prey occurrence and prey mass</em> in the stomach content of salmon, and to examine whether viewing the salmon as a <em>sampling instrument</em> is a viable option.</p>
 <pre class="r"><code>salmon &lt;- read_excel(here(&quot;Salmon Diet&quot;, &quot;raw_data&quot;, 
                        &quot;GoA_fish diets_cleaned.xlsx&quot;), 
                   sheet = &quot;Diets_clean&quot;) %&gt;%
@@ -474,14 +468,17 @@ salmon_trawl &lt;- salmon %&gt;%
   mutate(eventRemarks = &quot;trawl&quot;)
 
 # The Salmon Diet data does not include information as to at what depths the trawls were conducted. Currently I believe this information is also not present in the general Trawl data. Should this information become available it should be connected to the general trawl information, along with info such as: volume water filter, speed at which the vessel was traveling during trawl, starting &amp; finish lat/longs of trawl.</code></pre>
+<hr />
 <style>
 div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 10px;}
 </style>
 <div class="blue">
-<p>The current dilemma I have is that there is no unique <code>sampleID</code> associated with each data entry in the salmon diet data. There are two options we can take:</p>
+<p>The current dilemma I have is that there is no unique <code>sampleID</code> associated with each data entry in the salmon diet data. This makes it difficult to properly structure the dataset. There are two options we can take:</p>
 <p>Option A: If we want to treat a salmon as a <code>sampling instrument</code>, each salmon species should be in the Event Core, rather than in the Occurrence Core. This is a novel technique, I believe salmon haven’t really been seen as an instrument to collect data. The measurement or facts (eMOF) associated to the salmon can be linked directly to the event layer. See the layout of option A <a href="https://app.diagrams.net/#G1qMPIuqd90pT11CXULX6k48YjKS_5WDUx">here</a></p>
 <p>Option B: Alternatively, we create a unique sampleID for each data entry in the salmon diet data, but in that we do not regard the salmon as the sampling instrument (and, additionally, it would be difficult to associate any data to the sampleID). However, this way each salmon in the salmon diet data set would be an <code>occurrence</code>, with associated measurements or facts. See the layout of option B <a href="https://app.diagrams.net/#G18hDRALexgAs5hQ8k89lsgg7SDI5Ho83H">here</a></p>
 </div>
+<p>Currently the data is reformatted data is structured as shown in <strong>option A</strong>. However, the data standardization is an evolving process so the structure might change.</p>
+<hr />
 <pre class="r"><code># If we treat every salmon entry for which the stomach has been removed and examined as a sampling event, we essentially treat the salmon like a sampling instrument of their direct surroundings! 
  
 salmon_sample &lt;- salmon %&gt;% 
@@ -502,8 +499,8 @@ drive_upload(here(&quot;Salmon Diet&quot;, &quot;tidy_data&quot;, &quot;salmon_e
              name = &quot;salmon_event.csv&quot;,
              overwrite = TRUE)</code></pre>
 </div>
-<div id="occurrence-cores" class="section level1">
-<h1>Occurrence Core(s)</h1>
+<div id="occurrence-core" class="section level1">
+<h1>Occurrence Core</h1>
 <p>Currently we have opted for Option A, where the salmon caught and examined are in the Event Core, with a single Occurrence Core for the prey occurrences in the stomach content. This option was chosen as the focus of this particular study is on the stomach content, and to understand whether considering salmon as the <code>sampling instrument</code> is a viable option.</p>
 <p>The problem in the salmon diet data is that there are sometimes numerous individuals of the same species caught at a station/within a trawl, but these individuals have no defining tag. Additionally, some data entries cover multiple stomachs examined (<code>N stomachs</code> &gt; 1), and the associated fork length and mass appear to be averaged across multiple individuals. However, in the current set up it’s sometimes not possible to identify which individuals this covers (i.e., no mentioning of Floytags or #MGL).</p>
 <style>
@@ -512,8 +509,8 @@ div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 10px;}
 <div class="blue">
 <p>How do the scientists know which individual the stomach content belong to, asides from their data?</p>
 </div>
-<p>The Occurrence core connected to each salmon stomach examined consists of the occurrence of prey species consumed by the salmon species at each station. The measurements attached to these unique occurrences the mass (g) of unique prey consumed. Each prey species will receive their own unique URN from <a href="http://www.marinespecies.org/">WoRMS</a>, if identified.</p>
-<p>As all the prey species are listed as columns, we first have to investigate all the unique prey species consumed, as these will get their associated WoRMS URN. THere is also a column <code>digested_food</code> which will not have an associated URN, as it likely reflects unidentified prey species consumed – this will have to be confirmed! This column will get added as a measurement to the <em>primary occurrence core</em> (see model structure).</p>
+<p>The Occurrence core connected to each salmon stomach examined consists of the occurrences of prey species consumed by the salmon species at each station. The measurement attached to these unique occurrences is the mass (g) of each prey species consumed. Each prey species will receive their own unique URN from <a href="http://www.marinespecies.org/">WoRMS</a>, if identified.</p>
+<p>As all the prey species are listed as columns, we first have to investigate all the unique prey species consumed, as these will get their associated WoRMS URN. There is also a column <code>digested_food</code> which will not have an associated URN, as it likely reflects unidentified prey species consumed – this will have to be confirmed! This column will get added as a measurement linking directly to the salmon (Event Core).</p>
 <pre class="r"><code>salmon_prey &lt;- salmon  %&gt;%
   pivot_longer(cols = boreoteuthis_borealis:mictostomus_pacificus, 
                names_to = &quot;scientificName&quot;, values_to = &quot;Mass&quot;) 
@@ -550,7 +547,7 @@ scientificName == &quot;sagitta_elegans&quot; ~ &quot;urn:lsid:marinespecies.org
 scientificName == &quot;salpa_aspera&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:137270&quot;,
 scientificName == &quot;cyclosalpa&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:137227&quot;, 
 scientificName == &quot;th_longipes&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:237873&quot;,
-# Assumption is made that it is Thysanoessa longipes, Thysanoessa was the only genus in common between longipes and spinifera. 
+# Assumption is made that it is Thysanoessa longipes, Thysanoessa was the only genus in common between longipes, inspinata and spinifera. 
 scientificName == &quot;cephalopoda&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:11707&quot;,
 scientificName == &quot;phronima_sedentaria&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:103272&quot;,
 scientificName == &quot;oikopleura&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:103367&quot;,
@@ -602,13 +599,13 @@ drive_upload(here(&quot;Salmon Diet&quot;, &quot;tidy_data&quot;, &quot;salmon_s
              overwrite = TRUE)</code></pre>
 </div>
 <div id="measurementorfact-cores" class="section level1">
-<h1>measurementOrFact Core(s)</h1>
+<h1>measurementOrFact Cores</h1>
 <p>So even though we (currently) have one Occurrence Core for Salmon Diet data, there are two measurement Or Fact tables, one linking directly to the salmon (Event) and the other linking to the stomach content (prey occurrence). Let’s start with the first extended measurement Or Fact Core, where we associate measurements of <code>fork length</code>, <code>mass</code>, <code>food mass</code>, <code>gut fullness index (GFI)</code>, <code>N stomachs</code>, <code>CFI</code> and possibly <code>digested food (unidentified)</code> to the salmon examined.</p>
 <pre class="r"><code>salmon_spp_measurement &lt;- salmon %&gt;%
   select(measurementID = sample,
          fl_cm:cfi_percent_adj,
          digested_food) %&gt;%
-  pivot_longer(cols = fl_cm:cfi_percent_adj, 
+  pivot_longer(cols = fl_cm:digested_food, 
                names_to = &quot;measurementType&quot;,
                values_to = &quot;measurementValue&quot;) %&gt;%
   mutate(measurementType = case_when(
