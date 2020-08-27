@@ -116,7 +116,7 @@ drive_upload(here("Pathogen", "tidy_data", "pathogen_event.csv"),
 
 ## Occurrence Core
 
-The first Occurrence Core will identify which species of salmon is associated to the mgl_number. That occurrence will then have the associated measurements of `fork length`, `mass` and `sex`. If there is also an interest in understanding what salmon species were not caught / floytagged at a station, we need to use `complete()` to fill in the rest of the species.
+The first Occurrence Core will identify which species of salmon is associated to the mgl_number. That occurrence will then have the associated measurements of `fork length`, `mass` and `sex`. Additionally, OBIS recommends that `sex` be added to the Occurrence Core as well. If there is also an interest in understanding what salmon species were not caught / floytagged at a station, we need to use `complete()` to fill in the rest of the species.
 
 ``` {r occ, eval = FALSE}
 pathogen <- pathogen %>%  mutate(species = case_when(
@@ -136,10 +136,13 @@ scientificName == "Oncorhynchus gorbuscha" ~ "urn:lsid:marinespecies.org:taxname
 scientificName == "Oncorhynchus kisutch" ~ "urn:lsid:marinespecies.org:taxname:127184",
 scientificName == "Oncorhynchus keta" ~ "urn:lsid:marinespecies.org:taxname:127183",
 scientificName == "Oncorhynchus nerka" ~ "urn:lsid:marinespecies.org:taxname:254569",
-scientificName == "Oncorhynchus tschawytscha" ~ "urn:lsid:marinespecies.org:taxname:158075")) %>%
+scientificName == "Oncorhynchus tschawytscha" ~ "urn:lsid:marinespecies.org:taxname:158075"),
   # Accepted name has slightly different species name: O. tshawytscha
+         sex = case_when(
+sex == "F" ~ "Female",
+sex == "M" ~ "Male")) %>%
   rename(eventID = trawl) %>%
-  select(eventID, occurrenceID, scientificName, scientificNameID, occurrenceStatus)
+  select(eventID, occurrenceID, scientificName, scientificNameID, sex, occurrenceStatus)
 
 # Make sure the folder path exists already (e.g. ./Salmon Diet/tidy_data)
 write_csv(pathogen_spp_occ, here("Pathogen", "tidy_data", "pathogen_spp_occ.csv"))
@@ -149,9 +152,31 @@ drive_upload(here("Pathogen", "tidy_data", "pathogen_spp_occ.csv"),
              overwrite = TRUE)
 ```
 
+The second Occurrence Core reflects the presence or absence of certain pathogens on each salmon individual. In the current state of the file, pathogen presence or absence is reflected by either a + (present) or - (absent). Please note that any additional columns, such as `sea lice`, `stock` and `sticky_gut` are not included in the Occurrence and eMOF Cores because they are not the focus of this study. 
+
+``` {r, eval = FALSE}
+pathogen_occ <- pathogen %>%
+  select(sample,
+         aeromonas_salmonicida:piscine_orthoreovirus) %>%
+  pivot_longer(cols = aeromonas_salmonicida:piscine_orthoreovirus,
+               names_to = "scientificName",
+               values_to = "measurementValue") %>%
+  mutate(occurrenceID = paste(sample, "pocc", sep = ":"),
+         occurrenceStatus = ifelse(measurementValue == "+", "present", "absent")) %>%
+  rename(id = sample) %>%
+  select(id, scientificName, measurementValue, occurrenceID, occurrenceStatus)
+
+# Make sure the folder path exists already (e.g. ./Pathogen/tidy_data)
+write_csv(pathogen_occ, here("Pathogen", "tidy_data" "pathogen_occ.csv"))
+drive_upload(here("Pathogen", "tidy_data", "pathogen_occ.csv"),
+             path = " ",
+             name = "pathogen_occ.csv",
+             overwrite = TRUE)
+```
+
 ## Measurement Or Fact Core
 
-Next we need to associate the measurements of `fork length`, `mass` and `sex` to these salmon:
+Next we need to associate the measurements of `fork length`, `mass` and `sex` to these salmon. Although it is not the focus of this study, perhaps we also have to include measurements regarding `adc`, `cwt`, `black_spots` etc here?
 
 ``` {r eMOF, eval = FALSE}
 pathogen_spp_measurement <- pathogen %>%
@@ -175,14 +200,18 @@ pathogen_spp_measurement <- pathogen %>%
          measurementUnitID = case_when(
     measurementUnit == "cm" ~ "http://vocab.nerc.ac.uk/collection/P06/current/ULCM/",
     measurementUnit == "g" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UGRM/",
-    measurementUnit == " " ~ "http://vocab.nerc.ac.uk/collection/P06/current/UUUU/")) %>%
+    measurementUnit == " " ~ "http://vocab.nerc.ac.uk/collection/P06/current/UUUU/"),
+         measurementValueID = case_when(
+    measurementValue == "F" ~ "http://vocab.nerc.ac.uk/collection/S10/current/S102/",
+    measurementValue == "M" ~ "http://vocab.nerc.ac.uk/collection/S10/current/S103/"
+         )) %>%
   select(measurementID, measurementType, measurementTypeID,
-         measurementValue, measurementUnit, measurementUnitID)
+         measurementValue, measurementValueID, measurementUnit, measurementUnitID)
   
 # Write up csv file and upload to Google Drive folder
-write_csv(salmon_spp_measurement, here("Salmon Diet", "tidy_data", "salmon_spp_measurement.csv"))
-drive_upload(here("Salmon Diet", "tidy_data", "salmon_spp_measurement.csv"),
-             path = "https://drive.google.com/drive/u/0/folders/1pGd2cuvdb25QX7CGm2wC81Emh5O-LdbR",
-             name = "salmon_spp_eMoF.csv",
+write_csv(pathogen_spp_measurement, here("Pathogen", "tidy_data", "pathogen_spp_measurement.csv"))
+drive_upload(here("Pathogen", "tidy_data", "pathogen_spp_measurement.csv"),
+             path = " ",
+             name = "pathogen_spp_eMoF.csv",
              overwrite = TRUE)
 ```
