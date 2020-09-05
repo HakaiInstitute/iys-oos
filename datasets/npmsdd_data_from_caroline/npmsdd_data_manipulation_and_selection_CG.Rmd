@@ -1,0 +1,284 @@
+---
+title: "npmsdd_data_manipulation_and_selection_CG"
+author: "Caroline Graham"
+date: "9/4/2020"
+output: html_document
+---
+
+This file utilizes the data from the North Pacific Marine Salmon Diet Database (NPMSDD) version 1 (https://github.com/mcarolinegraham/North_Pacific_Marine_Salmon_Diet_Database). In this code, I import all the data from the database, deduplicate the diet data, edit the spatial data so it is easier to work with, and convert the data to presence/absence information. I then select 2 sources that will be used for the trial run with OBIS and describe the information available for each source. Note that one unique sample (or row in the data table) can represet either 1 salmon or multiple salmon sampled from a certain space and time. Information was entered into the database as it was available, therefore, not all columns are filled in for each sample due to missing data. For more information about what each variable means, please reference the database documentation: https://github.com/mcarolinegraham/North_Pacific_Marine_Salmon_Diet_Database/blob/master/npmsdd/npmsdd_documentation.pdf.
+
+## Loading packages
+
+```{r}
+
+ipak <- function(pkg){
+    new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
+    if (length(new.pkg)) 
+        install.packages(new.pkg, dependencies = TRUE)
+    sapply(pkg, require, character.only = TRUE)
+}
+
+packages <- c("tidyverse", "ggplot2", "here", "gridExtra", "tibble", "chron", "janitor", "lubridate", "data.table", "DataCombine", "plyr", "textclean", "remotes", "raster", "sp", "sf", "scales")
+ipak(packages)
+
+```
+
+## Importing data
+
+Note that I am importing all of the data in the database but you will likely not need all of these files.
+
+```{r}
+
+#importing metdata for sources in the database
+sources <- read_csv("sources.csv", col_types = "iiccccccccccccccccc")
+
+#importing salmon diet data
+diet_data <- read_csv("diet_data.csv", col_types = "iiiiccccccccttnnnncccciiiiiicccnnnnnnicciciiiiicccccccccccnccccnnnnnnc")
+
+#importing prey biological data
+prey_bio <- read_csv("prey_biological_data.csv", col_types = "iiiiiccccccccttnnnncccciiiiiicccnnnnnnicciciiiiicccccccccccnnnnnnciiciiiiiccnnnnnc")
+
+#importing predator (salmon) biological data
+pred_bio <- read_csv("predator_biological_data.csv", col_types = "iiiiccccccccttnnnncccciiiiiicccnnnnnnicciciiiiiccnnnnnc")
+
+#importing environmental data
+env_data <- read_csv("environmental_data.csv", col_types = "iiiiccccccccttnnnncncicnnnnnc")
+
+#importing prey gear information (in this case the prey gear is 'salmon')
+prey_gear <- read_csv("gear_type_prey.csv", col_types = "icnnncnnncnnncnnncnnncnnncnnncc")
+
+#importing predator gear information
+pred_gear <- read_csv("gear_type_predator.csv", col_types = "icnnncnnncnnncnnncnnncnnncnnncc")
+  
+```
+
+## Removing duplicates from the diet data frame
+
+This code to used remove duplicate diet data based on presence/absence information. Duplicate data in this case means either there is another source that reports the same samples or the same source reports the sample using different diet metrics. In selecting which version of the data to keep I preferentially kept data that were more detailed and/or more accurate (e.g., data presented in a table instead of a figure). Note that this code works to deduplicate all sources in version 1 of the NPMSDD.
+
+```{r}
+
+#removing overlapping data for presence/absence analysis
+diet_data_presence_absence <- diet_data %>% 
+  dplyr::filter(!(predator_id %in% c(562:585, 874, 875, 888, 889, 909, 910, 923, 924, 805:816, 844:870, 6093:6094, 6118, 6119, 6128, 1039:1050, 1560:1565, 1586, 1587, 1589, 1590, 1592, 1593, 1595, 1596, 1598:1602, 1604, 1605, 1607, 1608, 1610, 1611, 1613, 1614, 1616, 1617, 1618, 1639:1641, 1670:1675, 5792:5800, 1490:1510, 77:110, 6099:6101, 6120:6123, 6138, 6143, 6145:6147, 6153, 6155:6160, 6178, 6185, 6198:6202, 6206:6209, 6216:6226, 73, 76, 6081, 1036, 1037, 1038, 5983:5996, 6003:6009, 6114, 6127, 1537, 77:82, 5846:5862, 5939:5960, 778:786))) %>% 
+  dplyr::filter(!(predator_id %in% c(619:627) & type_diet_data == "percent weight of prey")) %>% 
+  dplyr::filter(!(predator_id %in% c(6010:6012) & is.na(diet_data_units))) %>% 
+  dplyr::filter(!(predator_id %in% c(770:804) & type_diet_data == "absolute weight of prey")) %>%
+  dplyr::filter(!(predator_id %in% c(947:1008) & type_diet_data == "frequency of occurrence")) %>% 
+  dplyr::filter(!(predator_id %in% c(1032:1035) & type_diet_data == "percent volume of prey")) %>% 
+  dplyr::filter(!(predator_id %in% c(1051:1292) & type_diet_data == "absolute number of prey")) %>% 
+  dplyr::filter(!(predator_id %in% c(1397:1420) & type_diet_data == "percent number of prey")) %>% 
+  dplyr::filter(!(predator_id %in% c(1397:1420) & type_diet_data == "percent weight of prey")) %>% 
+  dplyr::filter(!(predator_id %in% c(1425:1445) & type_diet_data == "percent number of prey")) %>% 
+  dplyr::filter(!(predator_id == 1522 & type_diet_data == "average weight of prey")) %>% 
+  dplyr::filter(!(predator_id == 1522 & type_diet_data == "absolute weight of prey")) %>% 
+  dplyr::filter(!(predator_id == 1522 & type_diet_data == "percent weight of prey")) %>% 
+  dplyr::filter(!(predator_id == 1522 & type_diet_data == "frequency of occurrence" & diet_data_units == "percent" )) %>% 
+  dplyr::filter(!(predator_id %in% c(1535, 1536, 1538:1540) & type_diet_data == "index of fullness")) %>% 
+  dplyr::filter(!(predator_id %in% c(1689:1719) & type_diet_data == "stomach content index")) %>% 
+  dplyr::filter(!(predator_id %in% c(5801:5805) & type_diet_data == "percent weight of prey")) %>% 
+  dplyr::filter(!(predator_id %in% c(5806:5810) & type_diet_data == "average number of prey")) %>% 
+  dplyr::filter(!(predator_id %in% c(5823:5835) & type_diet_data == "stomach content index")) %>% 
+  dplyr::filter(!(predator_id %in% c(5836:5845) & type_diet_data == "percent volume of prey")) %>% 
+  dplyr::filter(!(predator_id %in% c(5836:5845) & type_diet_data == "stomach content index")) %>% 
+  dplyr::filter(!(predator_id %in% c(394:401) & type_diet_data == "percent weight of prey")) %>% 
+  dplyr::filter(!(predator_id %in% c(5901:5910) & type_diet_data == "percent weight of prey")) %>% 
+  dplyr::filter(!(predator_id %in% c(7201:7204) & type_diet_data == "percent number of prey"))
+
+```
+
+## Editing spatial data 
+
+The spatial data is found in three different formats: areas (squares/rectangles), transects, and points. These are all represented through the lat_min, lat_max, lon_min and lon_max columns and can be sepearated using the code below. Since the longitude values are both positive and negative, this causes challenges when working with the spatial data. This code can be used to edit the spatial data so that longitude values are on a scale from 0° to 360° and to make sure values are in the proper order (min vs. max).
+
+```{r}
+
+#selecting spatial data with unique predator_ids
+select_spatial <- diet_data_presence_absence %>% 
+  dplyr::select(predator_id, lat_min, lat_max, lon_min, lon_max) %>% 
+  unique()
+
+###filtering out the different kinds of lat/long data - points, lines and transects
+
+#subsetting polygon data
+data1_diet <- select_spatial %>% 
+  dplyr::select(lat_min, lat_max, lon_min, lon_max, predator_id)  %>%
+  dplyr::filter(!is.na(lat_min) & !is.na(lat_max) & !is.na(lon_min) & !is.na(lon_max))
+
+#subsetting horizontal transect data
+data2_diet <- select_spatial %>% 
+  dplyr::select(lat_min, lat_max, lon_min, lon_max, predator_id)  %>% 
+  dplyr::filter(!is.na(lat_min) & (is.na(lat_max)) & !is.na(lon_min) & !is.na(lon_max))
+
+#subsetting vertical transect data
+data3_diet <- select_spatial %>% 
+  dplyr::select(lat_min, lat_max, lon_min, lon_max, predator_id)  %>% 
+  dplyr::filter(!is.na(lat_min) & !is.na(lat_max) & !is.na(lon_min) & (is.na(lon_max)))
+
+#subsetting point data
+data4_diet <- select_spatial %>% 
+  dplyr::select(lat_min, lat_max, lon_min, lon_max, predator_id)  %>% 
+  dplyr::filter(!is.na(lat_min) & (is.na(lat_max)) & !is.na(lon_min) & (is.na(lon_max)))
+
+#fixing the lon values so they can be plotted on a scale from 0 to 360 degrees
+data1_diet$lon_min[data1_diet$lon_min<0] = data1_diet$lon_min[data1_diet$lon_min<0] + 360
+data1_diet$lon_max[data1_diet$lon_max<0] = data1_diet$lon_max[data1_diet$lon_max<0] + 360
+
+data2_diet$lon_min[data2_diet$lon_min<0] = data2_diet$lon_min[data2_diet$lon_min<0] + 360
+data2_diet$lon_max[data2_diet$lon_max<0] = data2_diet$lon_max[data2_diet$lon_max<0] + 360
+
+data3_diet$lon_min[data3_diet$lon_min<0] = data3_diet$lon_min[data3_diet$lon_min<0] + 360
+
+data4_diet$lon_min[data4_diet$lon_min<0] = data4_diet$lon_min[data4_diet$lon_min<0] + 360
+
+#switching the lon values so that they are in the correct order (min vs. max)
+data1_diet$lon_min1 <- ifelse(data1_diet$lon_min > data1_diet$lon_max, data1_diet$lon_max, data1_diet$lon_min)
+data1_diet$lon_max1 <- ifelse(data1_diet$lon_min > data1_diet$lon_max, data1_diet$lon_min, data1_diet$lon_max)
+
+data2_diet$lon_min1 <- ifelse(data2_diet$lon_min > data2_diet$lon_max, data2_diet$lon_max, data2_diet$lon_min)
+data2_diet$lon_max1 <- ifelse(data2_diet$lon_min > data2_diet$lon_max, data2_diet$lon_min, data2_diet$lon_max)
+
+#filtering and renaming columns
+data1_diet_edit <- data1_diet %>% 
+  dplyr::select(-lon_min, -lon_max) %>%  
+  dplyr::rename(lon_min = lon_min1,
+                lon_max = lon_max1)
+
+data2_diet_edit <- data2_diet %>% 
+  dplyr::select(-lon_min, -lon_max) %>%  
+  dplyr::rename(lon_min = lon_min1,
+                lon_max = lon_max1)
+
+#joining all spatial data
+spatial_data_all_join <- rbind(data1_diet_edit, data2_diet_edit, data3_diet, data4_diet)
+
+#joining edited spatial data to diet_data dataframe
+diet_data_rm_old_spatial <- diet_data_presence_absence %>% dplyr::select(-lat_min, -lat_max, -lon_min, -lon_max)
+diet_data_new_spatial <- left_join(diet_data_rm_old_spatial, spatial_data_all_join, by = "predator_id")
+
+```
+
+## Selecting 2 sources for trial run with OBIS
+
+I selected the following 2 diet data sources to use for the trial run with OBIS:
+
+source_id == 44 (LeBrasseur, R.J., Doidge, D.A., 1966. Stomach contents of salmonids caught in the Northeastern Pacific Ocean - 1959 & 1960. Circular, Statistical series, Fisheries Research Board of Canada, Biological Station, Nanaimo, Canada, 21, Vol. 3, 67 pp.)
+
+source_id == 33 (Atcheson, M.E., Myers, K.W., Beauchamp, D.A., Mantua, N.J., 2012. Bioenergetic response by steelhead to variation in diet, thermal habitat, and climate in the North Pacific Ocean. Transactions of the American Fisheries Society 141, 1081-1096.)
+
+```{r}
+
+#selecting diet data for source_ids 44 and 33
+diet_data_select_source <- diet_data_new_spatial %>% dplyr::filter(source_id == 33 | source_id == 44)
+
+```
+
+##Removing detailed prey information and converting data frame to wide format
+
+Here I remove all the detailed prey information so that we are left with just 'prey_lowest_taxonomic_level' and then I convert the data frame to a wide format.
+
+```{r}
+
+#removing detailed prey information
+diet_data_rm_prey_details <- diet_data_select_source %>%
+  dplyr::select(-prey_kingdom:-prey_species) %>% 
+  dplyr::select(-prey_sex:-prey_notes)
+
+#converting data frame to wide format
+diet_data_wide <- spread(diet_data_rm_prey_details, key = prey_lowest_taxonomic_level, value = value_diet_data)
+
+```
+
+## Coverting data to presence/absence data from various other diet metrics
+
+```{r}
+
+#total number of columns
+ncol <- ncol(diet_data_wide)
+
+#converting diet data to presence/absence data
+diet_data_0_1 <- diet_data_wide %>% dplyr::mutate_at(c(51:ncol), funs(ifelse (is.na(.), 0, 1)))
+
+```
+
+## Information of interest for OBIS (source_id == 33)
+
+In this chunk on code I give an example of what information is available for each source that will be of interest for entry into the OBIS database.
+
+```{r}
+
+#filter just source_id 33
+diet_data_source_33 <- diet_data_0_1 %>% dplyr::filter(source_id == 33)
+
+#temporal information (year, season, month, date, time)
+unique(diet_data_source_33$year_min) #there are a range of years reported by this source (1993-2009) and these are all reported in the 'year_min' column because each sample in taken from a specific year
+unique(diet_data_source_33$year_max) #this column would only have values if the sample can from a range of years - this is not the case for source 33
+
+unique(diet_data_source_33$season_min) #no season is reported here - since months are reported we default to this more accurate temporal metric
+unique(diet_data_source_33$season_max)
+
+unique(diet_data_source_33$month_min) #in the case of months, one sample can be an average over multiple months so there are both month_min and month_max values
+unique(diet_data_source_33$month_max)
+
+unique(diet_data_source_33$date_min) #no dates are reported by this source
+unique(diet_data_source_33$date_max)
+
+unique(diet_data_source_33$time_min) #no times are reported by this source
+unique(diet_data_source_33$time_max)
+
+#spatial information (lat_min, lat_max, lon_min, lon_max)
+min(diet_data_source_33$lat_min) # in this source data are reported as vertical transect so there are values for lat_min, lat_max and lon_min, but there are no values for lon_max
+max(diet_data_source_33$lat_min)
+min(diet_data_source_33$lon_min)
+max(diet_data_source_33$lon_min)
+min(diet_data_source_33$lat_max)
+max(diet_data_source_33$lat_max)
+min(diet_data_source_33$lon_max)
+max(diet_data_source_33$lon_max)
+
+#salmon species information
+unique(diet_data_source_33$predator_lowest_taxonomic_level)
+
+#salmon life stage information - there are lots of way to report salmon life stage information - I would reccommend looking at the database documentation for descriptions of each of these variables
+unique(diet_data_source_33$predator_life_stage)
+unique(diet_data_source_33$predator_life_stage_min)
+unique(diet_data_source_33$predator_life_stage_max)
+unique(diet_data_source_33$predator_freshwater_age)
+unique(diet_data_source_33$predator_freshwater_age_min)
+unique(diet_data_source_33$predator_freshwater_age_max)
+unique(diet_data_source_33$predator_ocean_age) #in this source they report ocean age and no other life stage information
+unique(diet_data_source_33$predator_ocean_age_min)
+unique(diet_data_source_33$predator_ocean_age_max)
+unique(diet_data_source_33$predator_maturity)
+unique(diet_data_source_33$predator_maturity_min)
+unique(diet_data_source_33$predator_maturity_max)
+unique(diet_data_source_33$predator_length_value_cm)
+unique(diet_data_source_33$predator_length_value_cm_min)
+unique(diet_data_source_33$predator_length_value_cm_max)
+unique(diet_data_source_33$predator_weight_value_g)
+unique(diet_data_source_33$predator_weight_value_g_min)
+unique(diet_data_source_33$predator_weight_value_g_max)
+
+#predator replicates
+min(diet_data_source_33$predator_replicates) #in this source data is summarized for a group of salmon instead of reporting by individual fish
+max(diet_data_source_33$predator_replicates)
+
+#gear type
+unique(diet_data_source_33$gear_type_predator_id1) #for this source geart_type_predator_ids are 12 and 18 which correspond to the information in the pred_gear dataframe
+unique(diet_data_source_33$gear_type_predator_id2)
+unique(diet_data_source_33$gear_type_predator_id3)
+unique(diet_data_source_33$gear_type_predator_id4)
+unique(diet_data_source_33$gear_type_predator_id5)
+
+view(pred_gear %>% dplyr::filter(gear_type_predator_id == 12)) #view more information about the gear types
+view(pred_gear %>% dplyr::filter(gear_type_predator_id == 18))
+
+#from column 51 onwards, this is the diet information
+
+```
+
+
+
+
+
+
