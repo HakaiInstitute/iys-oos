@@ -1,0 +1,230 @@
+---
+title: "Historic Salmon Diet OBIS wrangle"
+author: "Tim van der Stap"
+date: "9/9/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(lubridate)
+library(readxl)
+library(parsedate)
+library(googledrive)
+library(here)
+```
+
+Read in and filter for source_id == 44. Additionally, the dates have to be changed to iso_8601 format. To check: is any information given on the timezone in which the data was collected; this could also be determined from the latitude and longitude.
+
+- `geodeticDatum` is `WGS84`? **A**: _In OBIS, the spatial reference system to be documented in `geodeticDatum` is `EPSG:4326`. 
+
+```{r, message = FALSE}
+source_id_44 <- read_csv(here::here("datasets", "npmsdd_data_from_caroline", "diet_data_0_1.csv")) %>%
+  filter(source_id == "44") %>%
+  mutate(eventDate = format_iso_8601(as.POSIXct(date_min,
+                                                format="%Y-%m-%d"))) %>%
+  mutate(eventDate = str_replace(eventDate, "\\+00:00", "Z"))
+```
+
+After having adjusted the timezone, we need to create the Event Core. Required columns are: `eventDate`, `eventID`. We also need to figure out how to add coordinates to the Event Core, especially given that for predator_id 116:125 the coordinates are those of a polygon. For all other data entries, only the `lat_min` and `lon_min` are populated, and these will therefore correspond to the OBIS columns of `decimalLatitude` and `decimalLongitude`. Additionally, as per OBIS standards, latitude has to be in the range of -90 to 90, inclusive, and longitude has to be in the range of -180 to 180, inclusive. 
+
+Predator_ids 116:125, which include `lat_max` and `lon_max`, represent a polygon. The rest are all `POINT` estimates. Furthermore, we want to automate the process where the coordinates of both the `POINT` and `POLYGON` coordinates are provided from the four columns with coordinates. To get more accurate coordinates for the polygon; [this](https://github.com/iobis/obistools#calculate-centroid-and-radius-for-wkt-geometries) is a very useful link!
+
+```{r}
+source_id_44 <- source_id_44 %>% 
+  mutate(footprintWKT = " ")
+
+for(i in 1:nrow(source_id_44)){
+  if (!is.na(source_id_44$lat_max[i])) {
+  source_id_44$footprintWKT[i] <- "POLYGON"
+} else {
+  source_id_44$footprintWKT[i] <- "POINT"
+}
+}
+
+source_id_44$lon_min[source_id_44$lon_min>0] = source_id_44$lon_min[source_id_44$lon_min>0] - 360
+if(source_id_44$lon_max > 0){
+  source_id_44$lon_max <- source_id_44$lon_max - 360
+}
+
+source_id_44 <- source_id_44 %>% 
+  dplyr::rename(year = year_min,
+                month = month_min)
+
+source_id_44$footprintWKT <- with(source_id_44, ifelse(footprintWKT == "POINT", paste0("POINT", " (", 
+                                                                                     lon_min,
+                                                                                     " ",
+                                                                                     lat_min, ")"), 
+                                                       paste0("POLYGON", " ((",
+                                                              lon_min, " ", lat_min, ", ",
+                                                              lon_min, " ", lat_max, ", ",
+                                                              lon_max, " ", lat_min, ", ",
+                                                              lon_max, " ", lat_max, ", ",
+                                                              lon_min, " ", lat_min, "))")))
+
+# Make sure you have devtools and obistools installed:
+# install.packages("devtools")
+# library(devtools)
+# devtools::install_github("iobis/obistools")
+
+# Find decimalLongitude, decimalLatitude and coordinateUncertaintyInMeters using obistools, and then join these columsn to the source_id_44 dataframe. 
+coordinates <- obistools::calculate_centroid(source_id_44$footprintWKT)
+source_id_44 <- cbind(source_id_44, coordinates)
+```
+
+Additionally, an `eventID` column has to be created, with a unique row for each salmon individual and for each species identified in the stomach content. All salmon individuals in this regard are considered the predators, as indicate with a _p_. Prey species found in the stomach content will be indicated by _pr_ (see resourceRelationship). We want to make it such that if multiple species of prey are present (i.e., '1'), they will be assigned, in ascending order, pr1, pr2 etc [rewrite this section].
+
+Create a prey event core and predator event core, and join these together so that all required information in the final event core is listed in all the rows [rewrite this section].
+
+```{r}
+predator <- source_id_44 %>%
+  mutate(eventID = paste("npmsdd", source_id, predator_id, "p", sep = "-")) %>%
+  select(eventID, decimalLatitude, decimalLongitude, footprintWKT, eventDate,
+         lat_min, lat_max, lon_min, lon_max, year, month, predator_lowest_taxonomic_level,
+         predator_maturity, predator_sex, coordinateUncertaintyInMeters)
+
+prey <- source_id_44 %>%
+  select(eventID, decimalLatitude, decimalLongitude, footprintWKT, eventDate, coordinateUncertaintyInMeters,
+         lat_min, lat_max, lon_min, lon_max, year, month, Actinopterygii:Pteropoda) %>%
+  pivot_longer(cols = Actinopterygii:Pteropoda,
+               names_to = "prey",
+               values_to = "presence")
+
+
+# Now, for each unique eventID, give a species that was present (i.e., presence = 1) a prey_id of pr with an assigned number, in ascending order. In other words, with each unique eventID, the first prey present in the stomach content would get prey_id pr1, the second would get pr2 (etc). 
+
+prey$id <- " " # create a dummy column to populate
+prey <- prey %>%
+  filter(presence == "1")
+for(i in unique(prey$eventID)) {
+  prey$id[prey$eventID == i] <- seq_len(sum(prey$eventID == i))
+}
+
+prey$prey_id <- paste0("pr", prey$id)
+prey$id <- str_replace(prey$eventID, "-p", (paste("-", prey$prey_id, sep = ""))) 
+prey1 <- prey %>% select(-eventID)
+prey1 <- prey1 %>% dplyr::rename(eventID = id)
+
+HS_44 <- full_join(predator, prey1)
+hs_44_event <- HS_44 %>% select(eventID, eventDate, year, month,
+                          decimalLatitude, decimalLongitude, footprintWKT, coordinateUncertaintyInMeters)
+
+# To get the order right:
+
+order2 <- stringr::str_sort(hs_44_event$eventID, numeric = TRUE)
+hs_44_event <- hs_44_event[match(order2, hs_44_event$eventID),]
+hs_44_event <- hs_44_event %>% 
+  mutate(type = "Event",
+         geodeticDatum = "EPSG:4326")
+
+write_csv(hs_44_event, here::here("datasets", "npmsdd_data_from_caroline",
+                                  "hs_44_event.csv"))
+```
+
+ Should we add a column with `samplingProtocol` and add the link to the paper? Does the paper have a DOI?
+
+***
+
+Additionally, perhaps we are required to make a resourceRelationship table, as both the salmon and the stomach content can be viewed as species occurrences. For an example of a resourceRelationship table and what that would look like in GBIF/OBIS, see: http://ogc-act.csiro.au/ipt/resource?r=csiro_sef_diet; and for the GitHub issue associated to this: https://github.com/iobis/obis-issues/issues/96.
+
+The resourceRelationshipID follows the format of e.g. `npmsdd-44-116-ppr1`, `npmsdd-44-116-ppr2` etc. In other words, database - source_id - predator_id - predatorprey1 etc. Some salmon individuals have more than 1 identified prey spp in their stomach. 
+
+```{r resourceRelationship}
+
+id <- prey$eventID
+resourceRelationship <- apply(cbind(prey$eventID, prey$prey_id), 1, function(x) paste(x[!is.na(x)], collapse = ""))
+resourceID <- prey$eventID
+relatedResourceID <-  str_replace(prey$eventID, "-p", (paste("-",prey$prey_id, sep = "")))
+relationshipOfResource <- "hasEaten"
+
+hs_44_resourcerelationship <- cbind(id, resourceRelationship, resourceID, relatedResourceID, relationshipOfResource) %>% as.data.frame()
+
+write_csv(hs_44_resourcerelationship, here::here("datasets", "npmsdd_data_from_caroline",
+                                  "hs_44_resourcerelationship.csv"))
+```
+
+***
+
+Next, we create the Occurrence Core, where we add the WoRMS URN to not just the salmon but also the species identified in their stomachs. 
+
+``` {r prey_occurrence}
+# create two separate data frames of occurrences, one for the prey species (stomach content) and one for the predator (salmon) species, and then later merge these two data frames. The first step for our prey_occurrence core is to filter for the species found in the stomach (i.e., that have a prey_id)
+
+prey_occ <- HS_44 %>% filter(!is.na(prey_id)) %>%
+  select(eventID, prey, presence) %>%
+  dplyr::rename(scientificName = prey) %>%
+  mutate(occurrenceStatus = ifelse(presence == "1", "present", "absent"))
+
+# Perhaps we shouldn't remove the kingdom, phylum and infraorder classes in the initial data wrangling process, because those columns can be included in the Occurrence Core (line #184). 
+
+prey_occ <- prey_occ %>%
+  mutate(scientificNameID = case_when(
+    scientificName == "Actinopterygii" ~ "urn:lsid:marinespecies.org:taxname:10194",
+    scientificName == "Amphipoda" ~ "urn:lsid:marinespecies.org:taxname:1135",
+    scientificName == "Anomura" ~ "urn:lsid:marinespecies.org:taxname:106671",
+    scientificName == "Brachyura" ~ "urn:lsid:marinespecies.org:taxname:106673",
+    scientificName == "Callianassa" ~ "urn:lsid:marinespecies.org:taxname:107072",
+    scientificName == "Chaetognatha" ~ "urn:lsid:marinespecies.org:taxname:2081",
+    scientificName == "Coleoidea" ~ "urn:lsid:marinespecies.org:taxname:11709",
+    scientificName == "Copepoda" ~ "urn:lsid:marinespecies.org:taxname:1080",
+    scientificName == "Crustacea" ~ "urn:lsid:marinespecies.org:taxname:1066",
+    scientificName == "Euphausiacea" ~ "urn:lsid:marinespecies.org:taxname:1128",
+    scientificName == "Euphausiidae" ~ "urn:lsid:marinespecies.org:taxname:110671",
+    scientificName == "Limacina" ~ "urn:lsid:marinespecies.org:taxname:138122",
+    scientificName == "Limacina helicina" ~ "urn:lsid:marinespecies.org:taxname:140223",
+    scientificName == "Miscellaneous" ~ " ",
+    scientificName == "Polychaeta" ~ "urn:lsid:marinespecies.org:taxname:883",
+    scientificName == "Pteropoda" ~ "urn:lsid:marinespecies.org:taxname:325345")
+  ) %>%
+  select(eventID, scientificName, scientificNameID, occurrenceStatus)
+```
+
+And to create the predator_occ core:
+
+``` {r predator_occ}
+# Filter for the predator species, i.e. ones that don't have a prey_id. 
+predator_occ <- HS_44 %>% filter(is.na(prey_id)) %>%
+  select(eventID, predator_lowest_taxonomic_level, 
+                                predator_maturity, predator_sex, presence) %>%
+  dplyr::rename(scientificName = predator_lowest_taxonomic_level) %>%
+  mutate(occurrenceStatus = "present") %>%
+  mutate(scientificNameID = case_when(
+    scientificName == "Oncorhynchus keta" ~ "urn:lsid:marinespecies.org:taxname:127183",
+    scientificName == "Oncorhynchus nerka" ~ "urn:lsid:marinespecies.org:taxname:254569",
+    scientificName == "Oncorhynchus gorbuscha" ~ "urn:lsid:marinespecies.org:taxname:127182",
+    scientificName == "Oncorhynchus kisutch" ~ "urn:lsid:marinespecies.org:taxname:127184",
+    scientificName == "Oncorhynchus mykiss" ~ "urn:lsid:marinespecies.org:taxname:127185")
+  ) %>%
+  dplyr::rename(lifeStage = predator_maturity,
+                sex = predator_sex) %>%
+  select(eventID, scientificName, scientificNameID, sex, lifeStage, occurrenceStatus)
+```
+
+Join the two occurrence cores. Once occurrence cores are joined/merged, add an `occurrenceID`. As per OBIS, _if `basisOfRecord` is `PreservedSpecimen`, please also add the `institutionCode`, `collectionCode` and `catalogNumber` which will enable people to visit the collection and re-examine the material_. 
+
+``` {r occ}
+hs_44_occ <- plyr::rbind.fill(prey_occ, predator_occ)
+
+# To re-order the eventID, use following code:
+order <- stringr::str_sort(hs_44_occ$eventID, numeric=TRUE)
+hs_44_occ <- hs_44_occ[match(order, hs_44_occ$eventID),]
+
+# As basisOfRecord is `PreservedSpecimen`, it is recommended that we add `institutionCode`, `collectionCode` and `catalogNumber`. 
+hs_44_occ <- hs_44_occ %>%
+  mutate(basisOfRecord = "PreservedSpecimen",
+         institutionCode = " ",
+         collectionCode = " ", 
+         catalogNumber = " ",
+         occurrenceID = eventID)
+
+write_csv(hs_44_occ, here::here("datasets", "npmsdd_data_from_caroline",
+                                  "hs_44_occ.csv"))
+
+# The `obistools::flatten_occurrence(hs_44_event, hs_44_occ)` does not seem to be working, because it is missing parentEventID. In most of the datasets that I've wrangled there is a parentEventID, but with historic salmon I haven't this because I don't know what the common parentEventID would be for data associated to both salmon (predator) and it's stomach content (prey). Therefore, should the event and occurrence cores need to be combined, use:
+
+hs_44_fnl_event_occ <- left_join(hs_44_event, hs_44_occ, by = "eventID")
+
+write_csv(hs_44_fnl_event_occ, here::here("datasets", "npmsdd_data_from_caroline",
+                                          "hs_44_event_occ.csv"))
+```
