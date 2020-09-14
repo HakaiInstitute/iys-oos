@@ -15,21 +15,23 @@ library(googledrive)
 library(here)
 ```
 
-Read in and filter for source_id == 44. Additionally, the dates have to be changed to iso_8601 format. To check: is any information given on the timezone in which the data was collected; this could also be determined from the latitude and longitude.
+Read in and filter for source_id == 44. I prefer reading in a .csv file rather than an .xlsx file because it seems parsing dates is easier from a .csv file (for some reason the date_min column changed when reading in .xlsx file). Additionally, the dates have to be changed to iso_8601 format. As stated in the OBIS [manual](https://obis.org/manual/darwincore/#time): _ISO 8601 dates can represent moments in time at different resolutions, as well as time intervals, which use / as a separator. Date and time are separated by T. Times can have a time zone indicator at the end, if this is not the case then the time is assumed to be local time. When a time is UTC, a Z is added._
 
-- `geodeticDatum` is `WGS84`? **A**: _In OBIS, the spatial reference system to be documented in `geodeticDatum` is `EPSG:4326`. 
+As no times were recorded in this dataset, no `Z` is added, and any reference to time is removed after formatting to the iso_8601 standard. 
 
-```{r, message = FALSE}
+```{r, message = FALSE, warning=FALSE}
 source_id_44 <- read_csv(here::here("datasets", "npmsdd_data_from_caroline", "diet_data_0_1.csv")) %>%
   filter(source_id == "44") %>%
   mutate(eventDate = format_iso_8601(as.POSIXct(date_min,
                                                 format="%Y-%m-%d"))) %>%
-  mutate(eventDate = str_replace(eventDate, "\\+00:00", "Z"))
+  mutate(eventDate = str_replace(eventDate, "\\T.+", ""))
 ```
 
-After having adjusted the timezone, we need to create the Event Core. Required columns are: `eventDate`, `eventID`. We also need to figure out how to add coordinates to the Event Core, especially given that for predator_id 116:125 the coordinates are those of a polygon. For all other data entries, only the `lat_min` and `lon_min` are populated, and these will therefore correspond to the OBIS columns of `decimalLatitude` and `decimalLongitude`. Additionally, as per OBIS standards, latitude has to be in the range of -90 to 90, inclusive, and longitude has to be in the range of -180 to 180, inclusive. 
+Next we need to create the Event Core. Required columns are: `eventDate`, `eventID`. We also need to figure out how to add coordinates to the Event Core, especially given that for predator_id 116:125 the coordinates are those of a polygon. For all other data entries, only the `lat_min` and `lon_min` are populated, and these will therefore correspond to the OBIS columns of `decimalLatitude` and `decimalLongitude`. Additionally, as per OBIS standards, latitude has to be in the range of -90 to 90, inclusive, and longitude has to be in the range of -180 to 180, inclusive. 
 
 Predator_ids 116:125, which include `lat_max` and `lon_max`, represent a polygon. The rest are all `POINT` estimates. Furthermore, we want to automate the process where the coordinates of both the `POINT` and `POLYGON` coordinates are provided from the four columns with coordinates. To get more accurate coordinates for the polygon; [this](https://github.com/iobis/obistools#calculate-centroid-and-radius-for-wkt-geometries) is a very useful link!
+
+To determine how the `footprintWKT`s are depicted (i.e., with the number of brackets), see [here](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry). The way to depict points, polygons, linestrings, multipolygons or a geometrycollection differs.
 
 ```{r}
 source_id_44 <- source_id_44 %>% 
@@ -68,14 +70,16 @@ source_id_44$footprintWKT <- with(source_id_44, ifelse(footprintWKT == "POINT", 
 # library(devtools)
 # devtools::install_github("iobis/obistools")
 
-# Find decimalLongitude, decimalLatitude and coordinateUncertaintyInMeters using obistools, and then join these columsn to the source_id_44 dataframe. 
+# Find decimalLongitude, decimalLatitude and coordinateUncertaintyInMeters using obistools, and then join these columns to the source_id_44 dataframe. 
 coordinates <- obistools::calculate_centroid(source_id_44$footprintWKT)
 source_id_44 <- cbind(source_id_44, coordinates)
 ```
 
-Additionally, an `eventID` column has to be created, with a unique row for each salmon individual and for each species identified in the stomach content. All salmon individuals in this regard are considered the predators, as indicate with a _p_. Prey species found in the stomach content will be indicated by _pr_ (see resourceRelationship). We want to make it such that if multiple species of prey are present (i.e., '1'), they will be assigned, in ascending order, pr1, pr2 etc [rewrite this section].
+Additionally, an `eventID` column has to be created, with a unique row for each salmon individual and for each species identified in the stomach content. All salmon individuals in this regard are considered the predators, as indicate with a _p_. Prey species found in the stomach content will be indicated by _pr_ (see resourceRelationship). We want to make it such that if multiple species of prey are present (i.e., '1'), they will be assigned, in ascending order, pr1, pr2, independent of exactly which species were found in the stomach content.
 
-Create a prey event core and predator event core, and join these together so that all required information in the final event core is listed in all the rows [rewrite this section].
+Create a prey event core and predator event core, and join these together so that all required information in the final event core is listed in all the rows.
+
+Finally, add a column `geodeticDatum`. As stated in OBIS _the spatial reference system to be documented in `geodeticDatum` is `EPSG:4326`_
 
 ```{r}
 predator <- source_id_44 %>%
@@ -85,6 +89,7 @@ predator <- source_id_44 %>%
          predator_maturity, predator_sex, coordinateUncertaintyInMeters)
 
 prey <- source_id_44 %>%
+  mutate(eventID = paste("npmsdd", source_id, predator_id, "p", sep = "-")) %>%
   select(eventID, decimalLatitude, decimalLongitude, footprintWKT, eventDate, coordinateUncertaintyInMeters,
          lat_min, lat_max, lon_min, lon_max, year, month, Actinopterygii:Pteropoda) %>%
   pivot_longer(cols = Actinopterygii:Pteropoda,
@@ -118,7 +123,7 @@ hs_44_event <- hs_44_event %>%
   mutate(type = "Event",
          geodeticDatum = "EPSG:4326")
 
-write_csv(hs_44_event, here::here("datasets", "npmsdd_data_from_caroline",
+write_csv(hs_44_event, here::here("datasets", "npmsdd_data_from_caroline", "hs_44",
                                   "hs_44_event.csv"))
 ```
 
@@ -140,7 +145,7 @@ relationshipOfResource <- "hasEaten"
 
 hs_44_resourcerelationship <- cbind(id, resourceRelationship, resourceID, relatedResourceID, relationshipOfResource) %>% as.data.frame()
 
-write_csv(hs_44_resourcerelationship, here::here("datasets", "npmsdd_data_from_caroline",
+write_csv(hs_44_resourcerelationship, here::here("datasets", "npmsdd_data_from_caroline", "hs_44",
                                   "hs_44_resourcerelationship.csv"))
 ```
 
@@ -201,7 +206,7 @@ predator_occ <- HS_44 %>% filter(is.na(prey_id)) %>%
   select(eventID, scientificName, scientificNameID, sex, lifeStage, occurrenceStatus)
 ```
 
-Join the two occurrence cores. Once occurrence cores are joined/merged, add an `occurrenceID`. As per OBIS, _if `basisOfRecord` is `PreservedSpecimen`, please also add the `institutionCode`, `collectionCode` and `catalogNumber` which will enable people to visit the collection and re-examine the material_. 
+Join the two occurrence cores. Once occurrence cores are joined/merged, add an `occurrenceID`. As per OBIS, _if `basisOfRecord` is `PreservedSpecimen`, please also add the `institutionCode`, `collectionCode` and `catalogNumber` which will enable people to visit the collection and re-examine the material_. Additionally, I'd say that as we're talking about a preserved specimen, the `preparations` column also has to be populated. 
 
 ``` {r occ}
 hs_44_occ <- plyr::rbind.fill(prey_occ, predator_occ)
@@ -218,13 +223,49 @@ hs_44_occ <- hs_44_occ %>%
          catalogNumber = " ",
          occurrenceID = eventID)
 
-write_csv(hs_44_occ, here::here("datasets", "npmsdd_data_from_caroline",
+write_csv(hs_44_occ, here::here("datasets", "npmsdd_data_from_caroline", "hs_44",
                                   "hs_44_occ.csv"))
 
 # The `obistools::flatten_occurrence(hs_44_event, hs_44_occ)` does not seem to be working, because it is missing parentEventID. In most of the datasets that I've wrangled there is a parentEventID, but with historic salmon I haven't this because I don't know what the common parentEventID would be for data associated to both salmon (predator) and it's stomach content (prey). Therefore, should the event and occurrence cores need to be combined, use:
 
 hs_44_fnl_event_occ <- left_join(hs_44_event, hs_44_occ, by = "eventID")
 
-write_csv(hs_44_fnl_event_occ, here::here("datasets", "npmsdd_data_from_caroline",
+write_csv(hs_44_fnl_event_occ, here::here("datasets", "npmsdd_data_from_caroline", "hs_44",
                                           "hs_44_event_occ.csv"))
+```
+
+I want to add in some fail-safes to ensure that we have required information for OBIS: 
+
+``` {r fail-safe}
+obistools::check_eventdate(hs_44_event) # To see if every record has an associated eventdate. 
+obistools::check_extension_eventids(hs_44_event, hs_44_occ) # Checks if all eventIDs in an extension (Occurrence Core or measurement or fact (EMOF) Core) have matching eventIDs in the core table. 
+obistools::check_eventids() # Checks if both eventID and parentEventID field are present in the event core, and if all parentEventIDs have a corresponding eventID. 
+
+obistools::match_taxa(hs_44_occ$scientificName) # performs interactive taxon matching with WoRMS.
+obistools::check_fields(hs_44_occ) # This function will check if all required OBIS fields are present in an occurrence table and if any values are missing. 
+
+# The check_fields() function indicated that eventDate, decimalLongitude and decimalLatitude fields were missing. These fields are indeed missing for the hs_44_occ core, but only because they were added initially only to the eventCore. In the combined core, these required fields are present.
+obistools::check_fields(hs_44_fnl_event_occ)
+```
+
+To get a nice visual and see if perhaps some of the coordinates are wrong/off, we can plot the occurrences in a map or leaflet, and also perform checks to see if the data isn't on land when it should be in the ocean, or whether the depths are off.
+
+As the depth of the occurrence was not recorded, no depth checks can be done (for this specific dataset). 
+
+``` {r maps_and_checks}
+obistools::plot_map(hs_44_fnl_event_occ, zoom = TRUE) # plot points on ggplot2 map
+obistools::plot_map_leaflet(hs_44_fnl_event_occ) # plot points on leaflet map. 
+obistools::check_onland(hs_44_fnl_event_occ)
+
+obistools::plot_map(check_depth(data, depthmargin = 50), zoom = TRUE)
+report <- obistools::check_depth(data, report = TRUE, depthmargin = 50)
+
+# The depthmargin indicates how much the given depth can deviate from the bathymetry in the rasters. 
+```
+
+To save any maps etc, use the following chunk of code:
+
+``` {r save_plots_images}
+obistools::plot_map(hs_44_fnl_event_occ, zoom = TRUE)
+ggsave(here::here("datasets", "npmsdd_data_from_caroline", "hs_44", "map_hs_44.png"))
 ```
