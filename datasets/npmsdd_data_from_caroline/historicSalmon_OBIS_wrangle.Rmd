@@ -79,7 +79,7 @@ predator <- source_id_44 %>%
   mutate(eventID = paste("npmsdd", source_id, predator_id, "p", sep = "-")) %>%
   select(eventID, decimalLatitude, decimalLongitude, footprintWKT, eventDate,
          lat_min, lat_max, lon_min, lon_max, year, month, predator_lowest_taxonomic_level,
-         predator_maturity, predator_sex, coordinateUncertaintyInMeters)
+         predator_maturity, predator_sex, predator_replicates, coordinateUncertaintyInMeters)
 
 prey <- source_id_44 %>%
   mutate(eventID = paste("npmsdd", source_id, predator_id, "p", sep = "-")) %>%
@@ -184,7 +184,7 @@ And to create the predator_occ core:
 # Filter for the predator species, i.e. ones that don't have a prey_id. 
 predator_occ <- HS_44 %>% filter(is.na(prey_id)) %>%
   select(eventID, predator_lowest_taxonomic_level, 
-                                predator_maturity, predator_sex, presence) %>%
+         predator_maturity, predator_sex, predator_replicates, presence) %>%
   dplyr::rename(scientificName = predator_lowest_taxonomic_level) %>%
   mutate(occurrenceStatus = "present") %>%
   mutate(scientificNameID = case_when(
@@ -195,7 +195,9 @@ predator_occ <- HS_44 %>% filter(is.na(prey_id)) %>%
     scientificName == "Oncorhynchus mykiss" ~ "urn:lsid:marinespecies.org:taxname:127185")
   ) %>%
   dplyr::rename(lifeStage = predator_maturity,
-                sex = predator_sex) %>%
+                sex = predator_sex,
+                organismQuantity = predator_replicates) %>%
+  mutate(organismQuantityType = "individuals")
   select(eventID, scientificName, scientificNameID, sex, lifeStage, occurrenceStatus)
 ```
 
