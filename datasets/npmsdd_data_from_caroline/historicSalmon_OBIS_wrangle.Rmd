@@ -31,7 +31,7 @@ Next we need to create the Event Core. Required columns are: `eventDate`, `event
 
 Predator_ids 116:125, which include `lat_max` and `lon_max`, represent a polygon. The rest are all `POINT` estimates. Furthermore, we want to automate the process where the coordinates of both the `POINT` and `POLYGON` coordinates are provided from the four columns with coordinates. To get more accurate coordinates for the polygon; [this](https://github.com/iobis/obistools#calculate-centroid-and-radius-for-wkt-geometries) is a very useful link!
 
-To determine how the `footprintWKT`s are depicted (i.e., with the number of brackets), see [here](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry). The way to depict points, polygons, linestrings, multipolygons or a geometrycollection differs.
+The coordinates of the polygon can be obtained from a [WKT Tool](https://obis.org/maptool/#). It's easy enough to add in the coordinates into this website, draw the polygon and copy paste the generated WKT into our script here. I would recommend to follow the script below to determine the coordinates of points, especially if data was collected at various points. The way to depict points, polygons, linestrings, multipolygons etc in the `footprintWKT` differs - see [here](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry). 
 
 ```{r}
 source_id_44 <- source_id_44 %>% 
@@ -54,16 +54,9 @@ source_id_44 <- source_id_44 %>%
   dplyr::rename(year = year_min,
                 month = month_min)
 
-source_id_44$footprintWKT <- with(source_id_44, ifelse(footprintWKT == "POINT", paste0("POINT", " (", 
-                                                                                     lon_min,
-                                                                                     " ",
+source_id_44$footprintWKT <- with(source_id_44, ifelse(footprintWKT == "POINT", paste0("POINT", " (", lon_min," ",
                                                                                      lat_min, ")"), 
-                                                       paste0("POLYGON", " ((",
-                                                              lon_min, " ", lat_min, ", ",
-                                                              lon_min, " ", lat_max, ", ",
-                                                              lon_max, " ", lat_min, ", ",
-                                                              lon_max, " ", lat_max, ", ",
-                                                              lon_min, " ", lat_min, "))")))
+paste0("POLYGON ((-180.00000 65.00000, -180.00000 35.00000, -125.00000 35.00000, -125.00000 65.00000, -180.00000 65.00000))")))
 
 # Make sure you have devtools and obistools installed:
 # install.packages("devtools")
@@ -221,6 +214,7 @@ hs_44_occ <- hs_44_occ %>%
          institutionCode = " ",
          collectionCode = " ", 
          catalogNumber = " ",
+         preparations = " ",
          occurrenceID = eventID)
 
 write_csv(hs_44_occ, here::here("datasets", "npmsdd_data_from_caroline", "hs_44",
