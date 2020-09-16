@@ -53,9 +53,9 @@ chl <- read_excel(here("chlorophyll", "raw_data",
 
 Each type of record in the Event core (in our case, cruise, station, cast, sample and subsample) has different properties (columns) associated with it, but they ultimately all get nested under a single file. Therefore, separate data frame for each type of Event record are created; this allows us to populate rows with distinct records of each type and fill the relevant columns with data. Once all the event type data frames are created, they can be concatenated to form the Event core. 
 
-The "station" event category exists to tie casts and trawl data together. eventDate, decimalLatitude and decimalLongitude are attributes associated with the "cast" record type, because sampling times and cast and trawl coordinates differ amongst datasets
+The "station" event category exists to tie casts and trawl data together. eventDate, decimalLatitude and decimalLongitude are attributes associated with the "cast" record type, because sampling times and cast and trawl coordinates differ among datasets. I think `footprintWKT`, though useful to calculate the `coordinateUncertaintyInMeters`, is not really required when it concerns accurate point locations.  
 
-Finally, these tables get joined, and re-ordered based on `eventID`. This table gets saved locally and in the correct GoogleDrive folder. 
+Finally, these tables get joined, and if required can be re-ordered based on `eventID`. Additionally, `geodeticDatum` gets added. This table then gets saved locally and in the correct GoogleDrive folder. 
 
 ``` {r chl_event, eval = FALSE}
 chl_cruise <- chl %>% 
@@ -77,7 +77,12 @@ chl_cast <- chl %>%
          decimalLatitude = Latitude,
          decimalLongitude = Longitude) %>%
   distinct(eventID, .keep_all = TRUE) %>%
-  mutate(eventRemarks = "cast")
+  mutate(eventRemarks = "cast",
+         footprintWKT = paste("POINT", " (", chl_cast$decimalLongitude,
+                              " ", chl_cast$decimalLatitude, ")"))
+
+coordinates <- obistools::calculate_centroid(chl_cast$footprintWKT) %>% select(coordinateUncertaintyInMeters)
+chl_cast <- cbind(chl_cast, coordinates)
 
 chl_ndepth <- chl %>% 
   select(eventID = ndepth,
@@ -93,8 +98,15 @@ chl_sample <- chl %>%
   distinct(eventID, .keep_all = TRUE) %>%
   mutate(eventRemarks = "subsample")
 
-chl_event <- bind_rows(chl_cruise, chl_station, chl_cast, chl_ndepth, chl_sample) %>%   select(eventID, parentEventID:maximumDepthInMetres, eventRemarks) %>%
-  mutate(type = "Event")
+chl_event <- bind_rows(chl_cruise, chl_station, chl_cast, chl_ndepth, chl_sample) %>% select(eventID, parentEventID:maximumDepthInMetres, coordinateUncertaintyInMeters, eventRemarks) %>% select(-footprintWKT) %>%
+  mutate(type = "Event",
+         geodeticDatum = "EPSG:4326")
+
+# To see if both eventID and parentEventID are present in the event Core, and if all parentEventIDs have a corresponding eventID:
+obistools::check_eventids(chl_event)
+
+# Should there be a need to recursively add event information from parent events to 'child events', use:
+# obistools::flatten_event(chl_event)
 
 # If you wish to re-order the Event Core, use the following code:
 # order <- stringr::str_sort(chl_event$eventID, numeric=TRUE)
@@ -154,4 +166,13 @@ chl_loc <- chl %>%
   distinct(Station, Region, Latitude, Longitude)
 write_csv(chl_loc, here("chlorophyll", "tidy_data", "chl_location.csv"))
 ```
+
+To visualize the sampling stations in a map:
+
+``` {r chl_visualizations, eval = FALSE}
+chl_leaflet <- obistools::plot_map_leaflet(chl_event)
+chl_map <- obistools::plot_map(chl_event, zoom = TRUE)
+ggsave(filename = "chl_map.png", plot = chl_map, path = here::here("chlorophyll", "maps"))
+```
+
 
