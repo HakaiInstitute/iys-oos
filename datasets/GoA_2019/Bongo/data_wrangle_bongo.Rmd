@@ -73,12 +73,16 @@ bongo_cast <- bongo %>%
          decimalLatitude = start_latitude,
          decimalLongitude = start_longitude,
          minimumDepthInMetres = sample_depth,
-         maximumDepthInMetres = sample_depth,
-         samplingProtocol = "Vertical Bongo net deployment"
-        # samplingEffort = "Volume of water? Length of tow?"
-        ) %>%
-  distinct(eventID, .keep_all = TRUE) %>%
-  mutate(eventRemarks = "cast")
+         maximumDepthInMetres = sample_depth) %>%
+  mutate(samplingProtocol = "vertical Bongo Net deployment") %>%
+  distinct(eventID, .keep_all = TRUE)
+bongo_cast <- bongo_cast %>%
+  mutate(eventRemarks = "cast",
+         footprintWKT = paste("POINT", " (", bongo_cast$decimalLongitude,
+                              " ", bongo_cast$decimalLatitude, ")"))
+
+coordinates <- obistools::calculate_centroid(bongo_cast$footprintWKT) %>% select(coordinateUncertaintyInMeters)
+bongo_cast <- cbind(bongo_cast, coordinates)
 
 # sampleSizeUnit and sampleSizeValue are included in the eMOF core
 # Ideally, the samplingProtocol also includes a DOI of the paper that includes the sampling protocol. 
@@ -90,8 +94,9 @@ bongo_sample <- bongo %>%
   mutate(eventRemarks = "sample")
 
 bongo_event <- bind_rows(bongo_cruise,bongo_station,bongo_cast, bongo_sample) %>% 
-  select(eventID, parentEventID:maximumDepthInMetres, eventRemarks) %>%
- mutate(type = "HumanObservation")
+  select(eventID, parentEventID:maximumDepthInMetres, coordinateUncertaintyInMeters, eventRemarks) %>%
+  mutate(type = "HumanObservation",
+        geodeticDatum = "EPSG:4326")
 
 # Make sure the folder path exists already (e.g. ./Bongo/tidy_data)
 write_csv(bongo_event, here("Bongo", "tidy_data", "bongo_event.csv"))
@@ -835,4 +840,12 @@ drive_upload(here("Bongo", "tidy_data", "bongo_emof.csv"),
              path = "https://drive.google.com/drive/u/0/folders/1cAJP-DGSQZdRhrIYraX8MJXO-h_7qbn2",
              name = "bongo_emof.csv",
              overwrite = TRUE)
+```
+
+To visualize the sampling stations in a map:
+
+``` {r chl_visualizations, eval = FALSE}
+bongo_leaflet <- obistools::plot_map_leaflet(bongo_event)
+bongo_map <- obistools::plot_map(bongo_event, zoom = TRUE)
+ggsave(filename = "bongo_map.png", plot = bongo_map, path = here::here("Bongo", "maps"))
 ```
