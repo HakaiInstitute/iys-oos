@@ -51,10 +51,11 @@ sheet1 <- sheet1 %>%
   mutate(Longitude = ifelse(station == "GoA2019_Stn60", "-136.997", Longitude))
 ```
 
-
 ## Create the Event core
 
 Each type of record in the Event core has different properties (columns) associated with it, but they ultimately all get nested under a single file. Therefore, I create a separate data frame for each type of Event record; this allows us to create populate rows with distinct records of each type and fill the relevant columns with data. Once all the event type data frames are created, they can be concatenated to form the Event core.
+
+I am removing the `footprintWKT` column from the final Event Core because I don't think that column is required given the accuracy of the sampling locations (point). 
 
 ```{r event}
 pom_cruise <- sheet1 %>%
@@ -65,19 +66,24 @@ pom_cruise <- sheet1 %>%
 pom_station <- sheet1 %>%
   select(
     eventID = station,
-    parentEventID = cruise,
-    eventDate,
-    decimalLatitude = Latitude,
-    decimalLongitude = Longitude
-  ) %>%
+    parentEventID = cruise) %>%
   distinct(eventID, .keep_all = TRUE) %>%
   mutate(eventRemarks = "station")
 
 pom_cast <- sheet1 %>%
   select(eventID = cast,
-         parentEventID = station) %>%
+         parentEventID = station,
+         eventDate,
+         decimalLatitude = Latitude,
+         decimalLongitude = Longitude) %>%
+  mutate(decimalLongitude = as.numeric(decimalLongitude)) %>%
   distinct(eventID, .keep_all = TRUE) %>%
-  mutate(eventRemarks = "cast")
+  mutate(eventRemarks = "cast",
+         footprintWKT = paste("POINT", " (", pom_cast$decimalLongitude,
+                              " ", pom_cast$decimalLatitude, ")"))
+
+coordinates <- obistools::calculate_centroid(pom_cast$footprintWKT) %>% select(coordinateUncertaintyInMeters)
+pom_cast <- cbind(pom_cast, coordinates)
 
 pom_ndepth <- sheet1 %>%
   select(
@@ -97,8 +103,13 @@ pom_sample <- sheet1 %>%
 
 pom_event <-
   bind_rows(pom_cruise, pom_station, pom_cast, pom_ndepth, pom_sample) %>%
-  select(eventID, parentEventID:maximumDepthInMetres, eventRemarks) %>% 
-  mutate(type = "Event")
+  select(eventID, parentEventID:maximumDepthInMetres, coordinateUncertaintyInMeters, eventRemarks) %>% 
+  select(-footprintWKT) %>%
+  mutate(type = "Event",
+         geodeticDatum = "EPSG:4326")
+
+# To see if both eventID and parentEventID are present in the event Core, and if all parentEventIDs have a corresponding eventID:
+obistools::check_eventids(pom_event)
 ```
 
 ```{r event_save}
@@ -110,7 +121,6 @@ drive_upload(here("POM", "tidy_data", "pom_event.csv"),
              path = "https://drive.google.com/drive/folders/1WMsDahUdt9dKXGcoi2gcrjNmpGBgHOSB",
              name = "POM_event.csv")
 ```
-
 
 ## Create the ExtendedMeasurementorFact extension
 
@@ -232,6 +242,14 @@ drive_upload(
   name = "POM_eMoF.csv",
   overwrite = TRUE
 )
+```
+
+To visualize the sampling stations in a map:
+
+``` {r chl_visualizations, eval = FALSE}
+pom_leaflet <- obistools::plot_map_leaflet(pom_event)
+pom_map <- obistools::plot_map(pom_event, zoom = TRUE)
+ggsave(filename = "pom_map.png", plot = pom_map, path = here::here("POM", "maps"))
 ```
 
 
