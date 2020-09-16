@@ -89,8 +89,14 @@ oxy_cast <- chemistry %>%
          decimalLatitude = Latitude,
          decimalLongitude = Longitude) %>%
   distinct(eventID, .keep_all = TRUE) %>%
-  mutate(decimalLongitude = decimalLongitude-360,
-         eventRemarks = "cast")
+  mutate(decimalLongitude = decimalLongitude-360)
+oxy_cast <- oxy_cast %>%
+  mutate(eventRemarks = "cast",
+         footprintWKT = paste("POINT", " (", oxy_cast$decimalLongitude,
+                              " ", oxy_cast$decimalLatitude, ")"))
+
+coordinates <- obistools::calculate_centroid(oxy_cast$footprintWKT) %>% select(coordinateUncertaintyInMeters)
+oxy_cast <- cbind(oxy_cast, coordinates)
 
 oxy_ndepth <- chemistry %>%
   select(
@@ -104,8 +110,10 @@ oxy_ndepth <- chemistry %>%
 
 oxy_event <-
   bind_rows(oxy_cruise, oxy_station, oxy_cast, oxy_ndepth) %>%
-  select(eventID, parentEventID:maximumDepthInMetres, eventRemarks) %>% 
-  mutate(type = "Event")
+  select(eventID, parentEventID:maximumDepthInMetres, coordinateUncertaintyInMeters, eventRemarks) %>% 
+  select(-footprintWKT) %>%
+  mutate(type = "Event",
+         geodeticDatum = "EPSG:4326")
 ```
 
 ```{r save event}
@@ -220,4 +228,12 @@ drive_upload(
   path = "https://drive.google.com/drive/folders/1k2b_kijF70wAF00E4NfzRIxoISkqiI1v",
   name = "oxygen_eMoF.csv"
 )
+```
+
+To visualize the sampling stations in a map:
+
+``` {r oxy_visualizations, eval = FALSE}
+oxy_leaflet <- obistools::plot_map_leaflet(oxy_event)
+oxy_map <- obistools::plot_map(oxy_event, zoom = TRUE)
+ggsave(filename = "oxy_map.png", plot = oxy_map, path = here::here("oxygen", "maps"))
 ```
