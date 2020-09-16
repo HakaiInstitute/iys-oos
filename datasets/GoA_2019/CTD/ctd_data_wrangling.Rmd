@@ -74,7 +74,12 @@ ctd_cast <- sheet2 %>%
          decimalLatitude = LAT,
          decimalLongitude = LON) %>% 
   distinct(eventID, .keep_all = TRUE) %>% 
-  mutate(eventRemarks = "cast")
+  mutate(eventRemarks = "cast",
+         footprintWKT = paste("POINT", " (", ctd_cast$decimalLongitude,
+                              " ", ctd_cast$decimalLatitude, ")"))
+
+coordinates <- obistools::calculate_centroid(ctd_cast$footprintWKT) %>% select(coordinateUncertaintyInMeters)
+ctd_cast <- cbind(ctd_cast, coordinates)
 
 ctd_ndepth <- sheet2 %>% 
   select(eventID = ndepth,
@@ -90,8 +95,9 @@ ctd_sample <- sheet2 %>%
   distinct(eventID, .keep_all = TRUE) %>%
   mutate(eventRemarks = "subsample")
 
-ctd_event <- bind_rows(ctd_cruise, ctd_station, ctd_cast, ctd_ndepth, ctd_sample) %>%   select(eventID, parentEventID:maximumDepthInMetres, eventRemarks) %>%
-  mutate(type = "Event")
+ctd_event <- bind_rows(ctd_cruise, ctd_station, ctd_cast, ctd_ndepth, ctd_sample) %>% select(eventID, parentEventID:maximumDepthInMetres, coordinateUncertaintyInMeters, eventRemarks) %>% select(-footprintWKT) %>%
+  mutate(type = "Event",
+         geodeticDatum = "EPSG:4326")
 
 # If you wish to re-order the Event Core, use the following code:
 # order <- stringr::str_sort(ctd_event$eventID, numeric=TRUE)
@@ -253,4 +259,12 @@ drive_upload(here("CTD", "tidy_data", "CTD_measurement.csv"),
              path = "https://drive.google.com/drive/u/0/folders/1-XXOPhMN4-BmhI3owM2hvaMKXEy6hEYL",
              name = "CTD_eMoF.csv",
              overwrite = TRUE)
+```
+
+To visualize the sampling stations in a map:
+
+``` {r chl_visualizations, eval = FALSE}
+ctd_leaflet <- obistools::plot_map_leaflet(ctd_event)
+ctd_map <- obistools::plot_map(ctd_event, zoom = TRUE)
+ggsave(filename = "ctd_map.png", plot = ctd_map, path = here::here("CTD", "maps"))
 ```
