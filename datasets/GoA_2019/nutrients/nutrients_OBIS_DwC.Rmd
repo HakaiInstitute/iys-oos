@@ -90,8 +90,14 @@ nut_cast <- chemistry %>%
          decimalLatitude = Latitude,
          decimalLongitude = Longitude) %>%
   distinct(eventID, .keep_all = TRUE) %>%
-  mutate(decimalLongitude = decimalLongitude-360,
-         eventRemarks = "cast")
+  mutate(decimalLongitude = decimalLongitude-360)
+nut_cast <- nut_cast %>% 
+  mutate(eventRemarks = "cast",
+         footprintWKT = paste("POINT", " (", nut_cast$decimalLongitude,
+                              " ", nut_cast$decimalLatitude, ")"))
+
+coordinates <- obistools::calculate_centroid(nut_cast$footprintWKT) %>% select(coordinateUncertaintyInMeters)
+nut_cast <- cbind(nut_cast, coordinates)
 
 nut_ndepth <- chemistry %>%
   select(
@@ -111,8 +117,10 @@ nut_sample <- chemistry %>%
 
 nut_event <-
   bind_rows(nut_cruise, nut_station, nut_cast, nut_ndepth, nut_sample) %>%
-  select(eventID, parentEventID:maximumDepthInMetres, eventRemarks) %>% 
-  mutate(type = "Event")
+  select(eventID, parentEventID:maximumDepthInMetres, coordinateUncertaintyInMeters, eventRemarks) %>% 
+  select(-footprintWKT) %>%
+  mutate(type = "Event",
+         geodeticDatum = "EPSG:4326")
 ```
 
 ```{r save event}
@@ -217,3 +225,13 @@ drive_upload(
   name = "nutrient_eMoF.csv"
 )
 ```
+
+To visualize the sampling stations in a map:
+
+``` {r chl_visualizations, eval = FALSE}
+nut_leaflet <- obistools::plot_map_leaflet(nut_event)
+nut_map <- obistools::plot_map(nut_event, zoom = TRUE)
+ggsave(filename = "nut_map.png", plot = nut_map, path = here::here("nutrients", "maps"))
+```
+
+
