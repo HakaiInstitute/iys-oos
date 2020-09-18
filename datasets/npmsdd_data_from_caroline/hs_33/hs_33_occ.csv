@@ -1,216 +1,216 @@
-eventID,scientificName,scientificNameID,occurrenceStatus,sex,lifeStage,basisOfRecord,institutionCode,collectionCode,catalogNumber,occurrenceID
-npmsdd-33-1541-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , ,npmsdd-33-1541-p
-npmsdd-33-1541-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1541-pr1
-npmsdd-33-1541-pr2,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1541-pr2
-npmsdd-33-1541-pr3,Miscellaneous, ,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1541-pr3
-npmsdd-33-1541-pr4,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1541-pr4
-npmsdd-33-1542-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , ,npmsdd-33-1542-p
-npmsdd-33-1542-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1542-pr1
-npmsdd-33-1542-pr2,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1542-pr2
-npmsdd-33-1542-pr3,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1542-pr3
-npmsdd-33-1542-pr4,Crustacea,urn:lsid:marinespecies.org:taxname:1066,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1542-pr4
-npmsdd-33-1542-pr5,Miscellaneous, ,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1542-pr5
-npmsdd-33-1542-pr6,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1542-pr6
-npmsdd-33-1543-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , ,npmsdd-33-1543-p
-npmsdd-33-1543-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1543-pr1
-npmsdd-33-1543-pr2,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1543-pr2
-npmsdd-33-1543-pr3,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1543-pr3
-npmsdd-33-1543-pr4,Polychaeta,urn:lsid:marinespecies.org:taxname:883,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1543-pr4
-npmsdd-33-1543-pr5,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1543-pr5
-npmsdd-33-1544-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , ,npmsdd-33-1544-p
-npmsdd-33-1544-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1544-pr1
-npmsdd-33-1544-pr2,Crustacea,urn:lsid:marinespecies.org:taxname:1066,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1544-pr2
-npmsdd-33-1544-pr3,Miscellaneous, ,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1544-pr3
-npmsdd-33-1544-pr4,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1544-pr4
-npmsdd-33-1545-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , ,npmsdd-33-1545-p
-npmsdd-33-1545-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1545-pr1
-npmsdd-33-1545-pr2,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1545-pr2
-npmsdd-33-1545-pr3,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1545-pr3
-npmsdd-33-1545-pr4,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1545-pr4
-npmsdd-33-1545-pr5,Miscellaneous, ,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1545-pr5
-npmsdd-33-1545-pr6,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1545-pr6
-npmsdd-33-1546-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , ,npmsdd-33-1546-p
-npmsdd-33-1546-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1546-pr1
-npmsdd-33-1546-pr2,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1546-pr2
-npmsdd-33-1546-pr3,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1546-pr3
-npmsdd-33-1546-pr4,Miscellaneous, ,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1546-pr4
-npmsdd-33-1547-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , ,npmsdd-33-1547-p
-npmsdd-33-1547-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1547-pr1
-npmsdd-33-1547-pr2,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1547-pr2
-npmsdd-33-1547-pr3,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1547-pr3
-npmsdd-33-1547-pr4,Copepoda,urn:lsid:marinespecies.org:taxname:1080,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1547-pr4
-npmsdd-33-1547-pr5,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1547-pr5
-npmsdd-33-1547-pr6,Miscellaneous, ,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1547-pr6
-npmsdd-33-1547-pr7,Polychaeta,urn:lsid:marinespecies.org:taxname:883,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1547-pr7
-npmsdd-33-1547-pr8,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1547-pr8
-npmsdd-33-1548-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , ,npmsdd-33-1548-p
-npmsdd-33-1548-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1548-pr1
-npmsdd-33-1548-pr2,Copepoda,urn:lsid:marinespecies.org:taxname:1080,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1548-pr2
-npmsdd-33-1549-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , ,npmsdd-33-1549-p
-npmsdd-33-1549-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1549-pr1
-npmsdd-33-1549-pr2,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1549-pr2
-npmsdd-33-1549-pr3,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1549-pr3
-npmsdd-33-1549-pr4,Crustacea,urn:lsid:marinespecies.org:taxname:1066,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1549-pr4
-npmsdd-33-1549-pr5,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1549-pr5
-npmsdd-33-1549-pr6,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1549-pr6
-npmsdd-33-1550-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , ,npmsdd-33-1550-p
-npmsdd-33-1550-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1550-pr1
-npmsdd-33-1550-pr2,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1550-pr2
-npmsdd-33-1550-pr3,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1550-pr3
-npmsdd-33-1550-pr4,Crustacea,urn:lsid:marinespecies.org:taxname:1066,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1550-pr4
-npmsdd-33-1550-pr5,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1550-pr5
-npmsdd-33-1550-pr6,Miscellaneous, ,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1550-pr6
-npmsdd-33-1550-pr7,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1550-pr7
-npmsdd-33-1551-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , ,npmsdd-33-1551-p
-npmsdd-33-1551-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1551-pr1
-npmsdd-33-1551-pr2,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1551-pr2
-npmsdd-33-1551-pr3,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1551-pr3
-npmsdd-33-1551-pr4,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1551-pr4
-npmsdd-33-1552-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , ,npmsdd-33-1552-p
-npmsdd-33-1552-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1552-pr1
-npmsdd-33-1552-pr2,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1552-pr2
-npmsdd-33-1552-pr3,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1552-pr3
-npmsdd-33-1552-pr4,Crustacea,urn:lsid:marinespecies.org:taxname:1066,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1552-pr4
-npmsdd-33-1552-pr5,Miscellaneous, ,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1552-pr5
-npmsdd-33-1552-pr6,Polychaeta,urn:lsid:marinespecies.org:taxname:883,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1552-pr6
-npmsdd-33-1552-pr7,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1552-pr7
-npmsdd-33-1553-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , ,npmsdd-33-1553-p
-npmsdd-33-1553-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1553-pr1
-npmsdd-33-1553-pr2,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1553-pr2
-npmsdd-33-1553-pr3,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1553-pr3
-npmsdd-33-1553-pr4,Miscellaneous, ,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1553-pr4
-npmsdd-33-1553-pr5,Polychaeta,urn:lsid:marinespecies.org:taxname:883,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1553-pr5
-npmsdd-33-1553-pr6,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1553-pr6
-npmsdd-33-1554-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , ,npmsdd-33-1554-p
-npmsdd-33-1554-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1554-pr1
-npmsdd-33-1554-pr2,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1554-pr2
-npmsdd-33-1554-pr3,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1554-pr3
-npmsdd-33-1554-pr4,Crustacea,urn:lsid:marinespecies.org:taxname:1066,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1554-pr4
-npmsdd-33-1554-pr5,Miscellaneous, ,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1554-pr5
-npmsdd-33-1554-pr6,Polychaeta,urn:lsid:marinespecies.org:taxname:883,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1554-pr6
-npmsdd-33-1554-pr7,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1554-pr7
-npmsdd-33-1555-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , ,npmsdd-33-1555-p
-npmsdd-33-1555-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1555-pr1
-npmsdd-33-1555-pr2,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1555-pr2
-npmsdd-33-1555-pr3,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1555-pr3
-npmsdd-33-1555-pr4,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1555-pr4
-npmsdd-33-1555-pr5,Miscellaneous, ,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1555-pr5
-npmsdd-33-1555-pr6,Polychaeta,urn:lsid:marinespecies.org:taxname:883,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1555-pr6
-npmsdd-33-1555-pr7,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1555-pr7
-npmsdd-33-1556-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , ,npmsdd-33-1556-p
-npmsdd-33-1556-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1556-pr1
-npmsdd-33-1556-pr2,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1556-pr2
-npmsdd-33-1556-pr3,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1556-pr3
-npmsdd-33-1556-pr4,Copepoda,urn:lsid:marinespecies.org:taxname:1080,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1556-pr4
-npmsdd-33-1556-pr5,Miscellaneous, ,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1556-pr5
-npmsdd-33-1556-pr6,Polychaeta,urn:lsid:marinespecies.org:taxname:883,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1556-pr6
-npmsdd-33-1556-pr7,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1556-pr7
-npmsdd-33-1557-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , ,npmsdd-33-1557-p
-npmsdd-33-1557-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1557-pr1
-npmsdd-33-1557-pr2,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1557-pr2
-npmsdd-33-1557-pr3,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1557-pr3
-npmsdd-33-1557-pr4,Copepoda,urn:lsid:marinespecies.org:taxname:1080,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1557-pr4
-npmsdd-33-1557-pr5,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1557-pr5
-npmsdd-33-1557-pr6,Polychaeta,urn:lsid:marinespecies.org:taxname:883,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1557-pr6
-npmsdd-33-1557-pr7,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1557-pr7
-npmsdd-33-1558-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , ,npmsdd-33-1558-p
-npmsdd-33-1558-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1558-pr1
-npmsdd-33-1558-pr2,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1558-pr2
-npmsdd-33-1558-pr3,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1558-pr3
-npmsdd-33-1558-pr4,Copepoda,urn:lsid:marinespecies.org:taxname:1080,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1558-pr4
-npmsdd-33-1558-pr5,Crustacea,urn:lsid:marinespecies.org:taxname:1066,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1558-pr5
-npmsdd-33-1558-pr6,Miscellaneous, ,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1558-pr6
-npmsdd-33-1558-pr7,Polychaeta,urn:lsid:marinespecies.org:taxname:883,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1558-pr7
-npmsdd-33-1558-pr8,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1558-pr8
-npmsdd-33-1559-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , ,npmsdd-33-1559-p
-npmsdd-33-1559-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1559-pr1
-npmsdd-33-1559-pr2,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1559-pr2
-npmsdd-33-1559-pr3,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1559-pr3
-npmsdd-33-1559-pr4,Crustacea,urn:lsid:marinespecies.org:taxname:1066,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1559-pr4
-npmsdd-33-1559-pr5,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1559-pr5
-npmsdd-33-1559-pr6,Polychaeta,urn:lsid:marinespecies.org:taxname:883,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1559-pr6
-npmsdd-33-1559-pr7,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1559-pr7
-npmsdd-33-1566-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , ,npmsdd-33-1566-p
-npmsdd-33-1566-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1566-pr1
-npmsdd-33-1566-pr2,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1566-pr2
-npmsdd-33-1566-pr3,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1566-pr3
-npmsdd-33-1566-pr4,Copepoda,urn:lsid:marinespecies.org:taxname:1080,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1566-pr4
-npmsdd-33-1566-pr5,Crustacea,urn:lsid:marinespecies.org:taxname:1066,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1566-pr5
-npmsdd-33-1566-pr6,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1566-pr6
-npmsdd-33-1566-pr7,Polychaeta,urn:lsid:marinespecies.org:taxname:883,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1566-pr7
-npmsdd-33-1566-pr8,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1566-pr8
-npmsdd-33-1567-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , ,npmsdd-33-1567-p
-npmsdd-33-1567-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1567-pr1
-npmsdd-33-1567-pr2,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1567-pr2
-npmsdd-33-1567-pr3,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1567-pr3
-npmsdd-33-1567-pr4,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1567-pr4
-npmsdd-33-1568-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , ,npmsdd-33-1568-p
-npmsdd-33-1568-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1568-pr1
-npmsdd-33-1568-pr2,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1568-pr2
-npmsdd-33-1568-pr3,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1568-pr3
-npmsdd-33-1568-pr4,Copepoda,urn:lsid:marinespecies.org:taxname:1080,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1568-pr4
-npmsdd-33-1568-pr5,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1568-pr5
-npmsdd-33-1569-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , ,npmsdd-33-1569-p
-npmsdd-33-1569-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1569-pr1
-npmsdd-33-1569-pr2,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1569-pr2
-npmsdd-33-1569-pr3,Crustacea,urn:lsid:marinespecies.org:taxname:1066,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1569-pr3
-npmsdd-33-1569-pr4,Polychaeta,urn:lsid:marinespecies.org:taxname:883,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1569-pr4
-npmsdd-33-1570-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , ,npmsdd-33-1570-p
-npmsdd-33-1570-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1570-pr1
-npmsdd-33-1570-pr2,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1570-pr2
-npmsdd-33-1570-pr3,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1570-pr3
-npmsdd-33-1570-pr4,Miscellaneous, ,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1570-pr4
-npmsdd-33-1570-pr5,Polychaeta,urn:lsid:marinespecies.org:taxname:883,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1570-pr5
-npmsdd-33-1571-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , ,npmsdd-33-1571-p
-npmsdd-33-1571-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1571-pr1
-npmsdd-33-1571-pr2,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1571-pr2
-npmsdd-33-1571-pr3,Miscellaneous, ,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1571-pr3
-npmsdd-33-1571-pr4,Polychaeta,urn:lsid:marinespecies.org:taxname:883,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1571-pr4
-npmsdd-33-1572-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , ,npmsdd-33-1572-p
-npmsdd-33-1572-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1572-pr1
-npmsdd-33-1572-pr2,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1572-pr2
-npmsdd-33-1573-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , ,npmsdd-33-1573-p
-npmsdd-33-1573-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1573-pr1
-npmsdd-33-1573-pr2,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1573-pr2
-npmsdd-33-1573-pr3,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1573-pr3
-npmsdd-33-1573-pr4,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1573-pr4
-npmsdd-33-1573-pr5,Polychaeta,urn:lsid:marinespecies.org:taxname:883,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1573-pr5
-npmsdd-33-1574-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , ,npmsdd-33-1574-p
-npmsdd-33-1574-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1574-pr1
-npmsdd-33-1574-pr2,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1574-pr2
-npmsdd-33-1574-pr3,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1574-pr3
-npmsdd-33-1574-pr4,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1574-pr4
-npmsdd-33-1574-pr5,Polychaeta,urn:lsid:marinespecies.org:taxname:883,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1574-pr5
-npmsdd-33-1574-pr6,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1574-pr6
-npmsdd-33-1575-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , ,npmsdd-33-1575-p
-npmsdd-33-1575-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1575-pr1
-npmsdd-33-1575-pr2,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1575-pr2
-npmsdd-33-1575-pr3,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1575-pr3
-npmsdd-33-1575-pr4,Copepoda,urn:lsid:marinespecies.org:taxname:1080,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1575-pr4
-npmsdd-33-1575-pr5,Crustacea,urn:lsid:marinespecies.org:taxname:1066,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1575-pr5
-npmsdd-33-1575-pr6,Miscellaneous, ,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1575-pr6
-npmsdd-33-1575-pr7,Polychaeta,urn:lsid:marinespecies.org:taxname:883,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1575-pr7
-npmsdd-33-1575-pr8,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1575-pr8
-npmsdd-33-1576-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , ,npmsdd-33-1576-p
-npmsdd-33-1576-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1576-pr1
-npmsdd-33-1576-pr2,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1576-pr2
-npmsdd-33-1576-pr3,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1576-pr3
-npmsdd-33-1576-pr4,Copepoda,urn:lsid:marinespecies.org:taxname:1080,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1576-pr4
-npmsdd-33-1577-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , ,npmsdd-33-1577-p
-npmsdd-33-1577-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1577-pr1
-npmsdd-33-1577-pr2,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1577-pr2
-npmsdd-33-1577-pr3,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1577-pr3
-npmsdd-33-1577-pr4,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1577-pr4
-npmsdd-33-1577-pr5,Copepoda,urn:lsid:marinespecies.org:taxname:1080,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1577-pr5
-npmsdd-33-1577-pr6,Crustacea,urn:lsid:marinespecies.org:taxname:1066,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1577-pr6
-npmsdd-33-1577-pr7,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1577-pr7
-npmsdd-33-1577-pr8,Polychaeta,urn:lsid:marinespecies.org:taxname:883,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1577-pr8
-npmsdd-33-1577-pr9,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1577-pr9
-npmsdd-33-1578-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , ,npmsdd-33-1578-p
-npmsdd-33-1578-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1578-pr1
-npmsdd-33-1578-pr2,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1578-pr2
-npmsdd-33-1578-pr3,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1578-pr3
-npmsdd-33-1578-pr4,Crustacea,urn:lsid:marinespecies.org:taxname:1066,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1578-pr4
-npmsdd-33-1578-pr5,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1578-pr5
-npmsdd-33-1578-pr6,Polychaeta,urn:lsid:marinespecies.org:taxname:883,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1578-pr6
-npmsdd-33-1578-pr7,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,present,NA,NA,PreservedSpecimen, , , ,npmsdd-33-1578-pr7
+eventID,scientificName,scientificNameID,occurrenceStatus,sex,lifeStage,basisOfRecord,institutionCode,collectionCode,catalogNumber,preparations,occurrenceID
+npmsdd-33-1541-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , , ,npmsdd-33-1541-p
+npmsdd-33-1541-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1541-pr1
+npmsdd-33-1541-pr2,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1541-pr2
+npmsdd-33-1541-pr3,Miscellaneous, ,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1541-pr3
+npmsdd-33-1541-pr4,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1541-pr4
+npmsdd-33-1542-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , , ,npmsdd-33-1542-p
+npmsdd-33-1542-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1542-pr1
+npmsdd-33-1542-pr2,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1542-pr2
+npmsdd-33-1542-pr3,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1542-pr3
+npmsdd-33-1542-pr4,Crustacea,urn:lsid:marinespecies.org:taxname:1066,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1542-pr4
+npmsdd-33-1542-pr5,Miscellaneous, ,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1542-pr5
+npmsdd-33-1542-pr6,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1542-pr6
+npmsdd-33-1543-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , , ,npmsdd-33-1543-p
+npmsdd-33-1543-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1543-pr1
+npmsdd-33-1543-pr2,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1543-pr2
+npmsdd-33-1543-pr3,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1543-pr3
+npmsdd-33-1543-pr4,Polychaeta,urn:lsid:marinespecies.org:taxname:883,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1543-pr4
+npmsdd-33-1543-pr5,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1543-pr5
+npmsdd-33-1544-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , , ,npmsdd-33-1544-p
+npmsdd-33-1544-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1544-pr1
+npmsdd-33-1544-pr2,Crustacea,urn:lsid:marinespecies.org:taxname:1066,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1544-pr2
+npmsdd-33-1544-pr3,Miscellaneous, ,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1544-pr3
+npmsdd-33-1544-pr4,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1544-pr4
+npmsdd-33-1545-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , , ,npmsdd-33-1545-p
+npmsdd-33-1545-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1545-pr1
+npmsdd-33-1545-pr2,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1545-pr2
+npmsdd-33-1545-pr3,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1545-pr3
+npmsdd-33-1545-pr4,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1545-pr4
+npmsdd-33-1545-pr5,Miscellaneous, ,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1545-pr5
+npmsdd-33-1545-pr6,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1545-pr6
+npmsdd-33-1546-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , , ,npmsdd-33-1546-p
+npmsdd-33-1546-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1546-pr1
+npmsdd-33-1546-pr2,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1546-pr2
+npmsdd-33-1546-pr3,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1546-pr3
+npmsdd-33-1546-pr4,Miscellaneous, ,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1546-pr4
+npmsdd-33-1547-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , , ,npmsdd-33-1547-p
+npmsdd-33-1547-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1547-pr1
+npmsdd-33-1547-pr2,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1547-pr2
+npmsdd-33-1547-pr3,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1547-pr3
+npmsdd-33-1547-pr4,Copepoda,urn:lsid:marinespecies.org:taxname:1080,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1547-pr4
+npmsdd-33-1547-pr5,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1547-pr5
+npmsdd-33-1547-pr6,Miscellaneous, ,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1547-pr6
+npmsdd-33-1547-pr7,Polychaeta,urn:lsid:marinespecies.org:taxname:883,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1547-pr7
+npmsdd-33-1547-pr8,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1547-pr8
+npmsdd-33-1548-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , , ,npmsdd-33-1548-p
+npmsdd-33-1548-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1548-pr1
+npmsdd-33-1548-pr2,Copepoda,urn:lsid:marinespecies.org:taxname:1080,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1548-pr2
+npmsdd-33-1549-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , , ,npmsdd-33-1549-p
+npmsdd-33-1549-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1549-pr1
+npmsdd-33-1549-pr2,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1549-pr2
+npmsdd-33-1549-pr3,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1549-pr3
+npmsdd-33-1549-pr4,Crustacea,urn:lsid:marinespecies.org:taxname:1066,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1549-pr4
+npmsdd-33-1549-pr5,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1549-pr5
+npmsdd-33-1549-pr6,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1549-pr6
+npmsdd-33-1550-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , , ,npmsdd-33-1550-p
+npmsdd-33-1550-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1550-pr1
+npmsdd-33-1550-pr2,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1550-pr2
+npmsdd-33-1550-pr3,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1550-pr3
+npmsdd-33-1550-pr4,Crustacea,urn:lsid:marinespecies.org:taxname:1066,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1550-pr4
+npmsdd-33-1550-pr5,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1550-pr5
+npmsdd-33-1550-pr6,Miscellaneous, ,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1550-pr6
+npmsdd-33-1550-pr7,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1550-pr7
+npmsdd-33-1551-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , , ,npmsdd-33-1551-p
+npmsdd-33-1551-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1551-pr1
+npmsdd-33-1551-pr2,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1551-pr2
+npmsdd-33-1551-pr3,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1551-pr3
+npmsdd-33-1551-pr4,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1551-pr4
+npmsdd-33-1552-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , , ,npmsdd-33-1552-p
+npmsdd-33-1552-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1552-pr1
+npmsdd-33-1552-pr2,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1552-pr2
+npmsdd-33-1552-pr3,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1552-pr3
+npmsdd-33-1552-pr4,Crustacea,urn:lsid:marinespecies.org:taxname:1066,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1552-pr4
+npmsdd-33-1552-pr5,Miscellaneous, ,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1552-pr5
+npmsdd-33-1552-pr6,Polychaeta,urn:lsid:marinespecies.org:taxname:883,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1552-pr6
+npmsdd-33-1552-pr7,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1552-pr7
+npmsdd-33-1553-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , , ,npmsdd-33-1553-p
+npmsdd-33-1553-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1553-pr1
+npmsdd-33-1553-pr2,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1553-pr2
+npmsdd-33-1553-pr3,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1553-pr3
+npmsdd-33-1553-pr4,Miscellaneous, ,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1553-pr4
+npmsdd-33-1553-pr5,Polychaeta,urn:lsid:marinespecies.org:taxname:883,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1553-pr5
+npmsdd-33-1553-pr6,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1553-pr6
+npmsdd-33-1554-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , , ,npmsdd-33-1554-p
+npmsdd-33-1554-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1554-pr1
+npmsdd-33-1554-pr2,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1554-pr2
+npmsdd-33-1554-pr3,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1554-pr3
+npmsdd-33-1554-pr4,Crustacea,urn:lsid:marinespecies.org:taxname:1066,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1554-pr4
+npmsdd-33-1554-pr5,Miscellaneous, ,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1554-pr5
+npmsdd-33-1554-pr6,Polychaeta,urn:lsid:marinespecies.org:taxname:883,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1554-pr6
+npmsdd-33-1554-pr7,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1554-pr7
+npmsdd-33-1555-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , , ,npmsdd-33-1555-p
+npmsdd-33-1555-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1555-pr1
+npmsdd-33-1555-pr2,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1555-pr2
+npmsdd-33-1555-pr3,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1555-pr3
+npmsdd-33-1555-pr4,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1555-pr4
+npmsdd-33-1555-pr5,Miscellaneous, ,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1555-pr5
+npmsdd-33-1555-pr6,Polychaeta,urn:lsid:marinespecies.org:taxname:883,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1555-pr6
+npmsdd-33-1555-pr7,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1555-pr7
+npmsdd-33-1556-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , , ,npmsdd-33-1556-p
+npmsdd-33-1556-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1556-pr1
+npmsdd-33-1556-pr2,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1556-pr2
+npmsdd-33-1556-pr3,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1556-pr3
+npmsdd-33-1556-pr4,Copepoda,urn:lsid:marinespecies.org:taxname:1080,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1556-pr4
+npmsdd-33-1556-pr5,Miscellaneous, ,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1556-pr5
+npmsdd-33-1556-pr6,Polychaeta,urn:lsid:marinespecies.org:taxname:883,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1556-pr6
+npmsdd-33-1556-pr7,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1556-pr7
+npmsdd-33-1557-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , , ,npmsdd-33-1557-p
+npmsdd-33-1557-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1557-pr1
+npmsdd-33-1557-pr2,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1557-pr2
+npmsdd-33-1557-pr3,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1557-pr3
+npmsdd-33-1557-pr4,Copepoda,urn:lsid:marinespecies.org:taxname:1080,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1557-pr4
+npmsdd-33-1557-pr5,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1557-pr5
+npmsdd-33-1557-pr6,Polychaeta,urn:lsid:marinespecies.org:taxname:883,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1557-pr6
+npmsdd-33-1557-pr7,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1557-pr7
+npmsdd-33-1558-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , , ,npmsdd-33-1558-p
+npmsdd-33-1558-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1558-pr1
+npmsdd-33-1558-pr2,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1558-pr2
+npmsdd-33-1558-pr3,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1558-pr3
+npmsdd-33-1558-pr4,Copepoda,urn:lsid:marinespecies.org:taxname:1080,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1558-pr4
+npmsdd-33-1558-pr5,Crustacea,urn:lsid:marinespecies.org:taxname:1066,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1558-pr5
+npmsdd-33-1558-pr6,Miscellaneous, ,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1558-pr6
+npmsdd-33-1558-pr7,Polychaeta,urn:lsid:marinespecies.org:taxname:883,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1558-pr7
+npmsdd-33-1558-pr8,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1558-pr8
+npmsdd-33-1559-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , , ,npmsdd-33-1559-p
+npmsdd-33-1559-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1559-pr1
+npmsdd-33-1559-pr2,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1559-pr2
+npmsdd-33-1559-pr3,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1559-pr3
+npmsdd-33-1559-pr4,Crustacea,urn:lsid:marinespecies.org:taxname:1066,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1559-pr4
+npmsdd-33-1559-pr5,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1559-pr5
+npmsdd-33-1559-pr6,Polychaeta,urn:lsid:marinespecies.org:taxname:883,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1559-pr6
+npmsdd-33-1559-pr7,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1559-pr7
+npmsdd-33-1566-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , , ,npmsdd-33-1566-p
+npmsdd-33-1566-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1566-pr1
+npmsdd-33-1566-pr2,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1566-pr2
+npmsdd-33-1566-pr3,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1566-pr3
+npmsdd-33-1566-pr4,Copepoda,urn:lsid:marinespecies.org:taxname:1080,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1566-pr4
+npmsdd-33-1566-pr5,Crustacea,urn:lsid:marinespecies.org:taxname:1066,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1566-pr5
+npmsdd-33-1566-pr6,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1566-pr6
+npmsdd-33-1566-pr7,Polychaeta,urn:lsid:marinespecies.org:taxname:883,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1566-pr7
+npmsdd-33-1566-pr8,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1566-pr8
+npmsdd-33-1567-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , , ,npmsdd-33-1567-p
+npmsdd-33-1567-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1567-pr1
+npmsdd-33-1567-pr2,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1567-pr2
+npmsdd-33-1567-pr3,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1567-pr3
+npmsdd-33-1567-pr4,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1567-pr4
+npmsdd-33-1568-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , , ,npmsdd-33-1568-p
+npmsdd-33-1568-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1568-pr1
+npmsdd-33-1568-pr2,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1568-pr2
+npmsdd-33-1568-pr3,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1568-pr3
+npmsdd-33-1568-pr4,Copepoda,urn:lsid:marinespecies.org:taxname:1080,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1568-pr4
+npmsdd-33-1568-pr5,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1568-pr5
+npmsdd-33-1569-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , , ,npmsdd-33-1569-p
+npmsdd-33-1569-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1569-pr1
+npmsdd-33-1569-pr2,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1569-pr2
+npmsdd-33-1569-pr3,Crustacea,urn:lsid:marinespecies.org:taxname:1066,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1569-pr3
+npmsdd-33-1569-pr4,Polychaeta,urn:lsid:marinespecies.org:taxname:883,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1569-pr4
+npmsdd-33-1570-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , , ,npmsdd-33-1570-p
+npmsdd-33-1570-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1570-pr1
+npmsdd-33-1570-pr2,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1570-pr2
+npmsdd-33-1570-pr3,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1570-pr3
+npmsdd-33-1570-pr4,Miscellaneous, ,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1570-pr4
+npmsdd-33-1570-pr5,Polychaeta,urn:lsid:marinespecies.org:taxname:883,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1570-pr5
+npmsdd-33-1571-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , , ,npmsdd-33-1571-p
+npmsdd-33-1571-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1571-pr1
+npmsdd-33-1571-pr2,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1571-pr2
+npmsdd-33-1571-pr3,Miscellaneous, ,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1571-pr3
+npmsdd-33-1571-pr4,Polychaeta,urn:lsid:marinespecies.org:taxname:883,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1571-pr4
+npmsdd-33-1572-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , , ,npmsdd-33-1572-p
+npmsdd-33-1572-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1572-pr1
+npmsdd-33-1572-pr2,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1572-pr2
+npmsdd-33-1573-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , , ,npmsdd-33-1573-p
+npmsdd-33-1573-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1573-pr1
+npmsdd-33-1573-pr2,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1573-pr2
+npmsdd-33-1573-pr3,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1573-pr3
+npmsdd-33-1573-pr4,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1573-pr4
+npmsdd-33-1573-pr5,Polychaeta,urn:lsid:marinespecies.org:taxname:883,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1573-pr5
+npmsdd-33-1574-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , , ,npmsdd-33-1574-p
+npmsdd-33-1574-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1574-pr1
+npmsdd-33-1574-pr2,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1574-pr2
+npmsdd-33-1574-pr3,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1574-pr3
+npmsdd-33-1574-pr4,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1574-pr4
+npmsdd-33-1574-pr5,Polychaeta,urn:lsid:marinespecies.org:taxname:883,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1574-pr5
+npmsdd-33-1574-pr6,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1574-pr6
+npmsdd-33-1575-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , , ,npmsdd-33-1575-p
+npmsdd-33-1575-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1575-pr1
+npmsdd-33-1575-pr2,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1575-pr2
+npmsdd-33-1575-pr3,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1575-pr3
+npmsdd-33-1575-pr4,Copepoda,urn:lsid:marinespecies.org:taxname:1080,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1575-pr4
+npmsdd-33-1575-pr5,Crustacea,urn:lsid:marinespecies.org:taxname:1066,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1575-pr5
+npmsdd-33-1575-pr6,Miscellaneous, ,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1575-pr6
+npmsdd-33-1575-pr7,Polychaeta,urn:lsid:marinespecies.org:taxname:883,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1575-pr7
+npmsdd-33-1575-pr8,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1575-pr8
+npmsdd-33-1576-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , , ,npmsdd-33-1576-p
+npmsdd-33-1576-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1576-pr1
+npmsdd-33-1576-pr2,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1576-pr2
+npmsdd-33-1576-pr3,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1576-pr3
+npmsdd-33-1576-pr4,Copepoda,urn:lsid:marinespecies.org:taxname:1080,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1576-pr4
+npmsdd-33-1577-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , , ,npmsdd-33-1577-p
+npmsdd-33-1577-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1577-pr1
+npmsdd-33-1577-pr2,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1577-pr2
+npmsdd-33-1577-pr3,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1577-pr3
+npmsdd-33-1577-pr4,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1577-pr4
+npmsdd-33-1577-pr5,Copepoda,urn:lsid:marinespecies.org:taxname:1080,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1577-pr5
+npmsdd-33-1577-pr6,Crustacea,urn:lsid:marinespecies.org:taxname:1066,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1577-pr6
+npmsdd-33-1577-pr7,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1577-pr7
+npmsdd-33-1577-pr8,Polychaeta,urn:lsid:marinespecies.org:taxname:883,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1577-pr8
+npmsdd-33-1577-pr9,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1577-pr9
+npmsdd-33-1578-p,Oncorhynchus mykiss,urn:lsid:marinespecies.org:taxname:127185,present,unspecified,NA,PreservedSpecimen, , , , ,npmsdd-33-1578-p
+npmsdd-33-1578-pr1,Actinopterygii,urn:lsid:marinespecies.org:taxname:10194,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1578-pr1
+npmsdd-33-1578-pr2,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1578-pr2
+npmsdd-33-1578-pr3,Coleoidea,urn:lsid:marinespecies.org:taxname:11709,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1578-pr3
+npmsdd-33-1578-pr4,Crustacea,urn:lsid:marinespecies.org:taxname:1066,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1578-pr4
+npmsdd-33-1578-pr5,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1578-pr5
+npmsdd-33-1578-pr6,Polychaeta,urn:lsid:marinespecies.org:taxname:883,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1578-pr6
+npmsdd-33-1578-pr7,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,present,NA,NA,PreservedSpecimen, , , , ,npmsdd-33-1578-pr7

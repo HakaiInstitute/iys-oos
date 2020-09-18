@@ -7,12 +7,18 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
+packages <- c("tidyverse", "lubridate", "devtools", "obistools", "readxl", "parsedate", "googledrive", "here")
+for (package in packages) {if (!(package %in% install.packages())) {install.packages(package)} 
+  else if (package %in% old.packages()) {install.packages(package)} }
+
 library(tidyverse)
 library(lubridate)
 library(readxl)
 library(parsedate)
 library(googledrive)
 library(here)
+library(obistools)
 ```
 
 Read in and filter for source_id == 33. I prefer reading in a .csv file rather than an .xlsx file because it seems parsing dates is easier from a .csv file (for some reason the date_min column changed when reading in .xlsx file). Additionally, the dates have to be changed to iso_8601 format. As stated in the OBIS [manual](https://obis.org/manual/darwincore/#time): _ISO 8601 dates can represent moments in time at different resolutions, as well as time intervals, which use / as a separator. Date and time are separated by T. Times can have a time zone indicator at the end, if this is not the case then the time is assumed to be local time. When a time is UTC, a Z is added._
@@ -52,8 +58,6 @@ source_id_33$footprintWKT <- with(source_id_33, ifelse(lon_min == "-180",
                                     paste0("LINESTRING (-145.00000 44.00000, -145.00000 56.00000)")))
 
 # Make sure you have devtools and obistools installed:
-# install.packages("devtools")
-# library(devtools)
 # devtools::install_github("iobis/obistools")
 
 # Find decimalLongitude, decimalLatitude and coordinateUncertaintyInMeters using obistools, and then join these columns to the source_id_44 dataframe. 
@@ -119,15 +123,15 @@ Additionally, perhaps we are required to make a resourceRelationship table, as b
 
 The resourceRelationshipID follows the format of e.g. `database - source_id - predator_id - predatorprey1` etc, the same format as used in the CSIRO sef diet dataset. Some salmonid individuals have more than 1 identified prey spp in their stomach. 
 
-```{r resourceRelationship}
+**IMPORTANT** In the example scripts, I noticed a column `id` - please note that this is **NOT** the same as the eventID, it's the id the IPT uses as the id for each row in the dataset, so it's not a column that has to be populated in the relationship or occurrence core. 
 
-id <- prey$eventID
+```{r resourceRelationship}
 resourceRelationship <- apply(cbind(prey$eventID, prey$prey_id), 1, function(x) paste(x[!is.na(x)], collapse = ""))
 resourceID <- prey$eventID
 relatedResourceID <-  str_replace(prey$eventID, "-p", (paste("-",prey$prey_id, sep = "")))
 relationshipOfResource <- "hasEaten"
 
-hs_33_resourcerelationship <- cbind(id, resourceRelationship, resourceID, relatedResourceID, relationshipOfResource) %>% as.data.frame()
+hs_33_resourcerelationship <- cbind(resourceRelationship, resourceID, relatedResourceID, relationshipOfResource) %>% as.data.frame()
 
 write_csv(hs_33_resourcerelationship, here::here("datasets", "npmsdd_data_from_caroline", "hs_33",
                                   "hs_33_resourcerelationship.csv"))
