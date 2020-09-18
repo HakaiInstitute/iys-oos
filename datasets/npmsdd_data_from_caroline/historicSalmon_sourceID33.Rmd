@@ -75,13 +75,13 @@ Finally, add a column `geodeticDatum`. As stated in OBIS _the spatial reference 
 
 ```{r}
 predator <- source_id_33 %>%
-  mutate(eventID = paste("npmsdd", source_id, predator_id, "p", sep = "-")) %>%
+  mutate(eventID = paste("npmsdd", source_id, predator_id, sep = "-")) %>%
   select(eventID, decimalLatitude, decimalLongitude, footprintWKT, eventDate,
          year, predator_lowest_taxonomic_level, predator_maturity, predator_sex,
          predator_replicates, coordinateUncertaintyInMeters)
 
 prey <- source_id_33 %>%
-  mutate(eventID = paste("npmsdd", source_id, predator_id, "p", sep = "-")) %>%
+  mutate(eventID = paste("npmsdd", source_id, predator_id, sep = "-")) %>%
   select(eventID, decimalLatitude, decimalLongitude, footprintWKT, eventDate, coordinateUncertaintyInMeters,
          year, Actinopterygii:Pteropoda) %>%
   pivot_longer(cols = Actinopterygii:Pteropoda,
@@ -90,26 +90,11 @@ prey <- source_id_33 %>%
 
 # Now, for each unique eventID, give a species that was present (i.e., presence = 1) a prey_id of pr with an assigned number, in ascending order. In other words, with each unique eventID, the first prey present in the stomach content would get prey_id pr1, the second would get pr2 (etc). 
 
-prey$id <- " " # create a dummy column to populate
-prey <- prey %>%
-  filter(presence == "1")
-for(i in unique(prey$eventID)) {
-  prey$id[prey$eventID == i] <- seq_len(sum(prey$eventID == i))
-}
-
-prey$prey_id <- paste0("pr", prey$id)
-prey$id <- str_replace(prey$eventID, "-p", (paste("-", prey$prey_id, sep = ""))) 
-prey1 <- prey %>% select(-eventID)
-prey1 <- prey1 %>% dplyr::rename(eventID = id)
-
-HS_33 <- full_join(predator, prey1)
+HS_33 <- full_join(predator, prey)
 hs_33_event <- HS_33 %>% select(eventID, eventDate, year, 
-                          decimalLatitude, decimalLongitude, footprintWKT, coordinateUncertaintyInMeters)
+                          decimalLatitude, decimalLongitude, footprintWKT, coordinateUncertaintyInMeters) %>%
+  distinct()
 
-# To get the order right:
-
-order2 <- stringr::str_sort(hs_33_event$eventID, numeric = TRUE)
-hs_33_event <- hs_33_event[match(order2, hs_33_event$eventID),]
 hs_33_event <- hs_33_event %>% 
   mutate(type = "Event",
          geodeticDatum = "EPSG:4326", 
@@ -126,12 +111,24 @@ The resourceRelationshipID follows the format of e.g. `database - source_id - pr
 **IMPORTANT** In the example scripts, I noticed a column `id` - please note that this is **NOT** the same as the eventID, it's the id the IPT uses as the id for each row in the dataset, so it's not a column that has to be populated in the relationship or occurrence core. 
 
 ```{r resourceRelationship}
-resourceRelationship <- apply(cbind(prey$eventID, prey$prey_id), 1, function(x) paste(x[!is.na(x)], collapse = ""))
-resourceID <- prey$eventID
-relatedResourceID <-  str_replace(prey$eventID, "-p", (paste("-",prey$prey_id, sep = "")))
+prey$id <- " " # create a dummy column to populate
+prey <- prey %>%
+  filter(presence == "1")
+for(i in unique(prey$eventID)) {
+  prey$id[prey$eventID == i] <- seq_len(sum(prey$eventID == i))
+}
+
+prey$prey_id <- paste0("pr", prey$id)
+prey$id <- str_replace(prey$eventID, "-p", (paste("-", prey$prey_id, sep = ""))) 
+
+
+resourceRelationshipID <- paste(prey$eventID, "p", sep = "-")
+resourceRelationshipID <- paste0(resourceRelationshipID, prey$prey_id)
+resourceID <- paste(prey$eventID, "p", sep = "-")
+relatedResourceID <-   paste(prey$eventID, prey$prey_id, sep = "-")
 relationshipOfResource <- "hasEaten"
 
-hs_33_resourcerelationship <- cbind(resourceRelationship, resourceID, relatedResourceID, relationshipOfResource) %>% as.data.frame()
+hs_33_resourcerelationship <- cbind(resourceRelationshipID, resourceID, relatedResourceID, relationshipOfResource) %>% as.data.frame()
 
 write_csv(hs_33_resourcerelationship, here::here("datasets", "npmsdd_data_from_caroline", "hs_33",
                                   "hs_33_resourcerelationship.csv"))
@@ -144,10 +141,11 @@ Next, we create the Occurrence Core, where we add the WoRMS URN to not just the 
 ``` {r prey_occurrence}
 # create two separate data frames of occurrences, one for the prey species (stomach content) and one for the predator (salmon) species, and then later merge these two data frames. The first step for our prey_occurrence core is to filter for the species found in the stomach (i.e., that have a prey_id)
 
-prey_occ <- HS_33 %>% filter(!is.na(prey_id)) %>%
+prey_occ <- HS_33 %>% filter(presence == "1") %>%
   select(eventID, prey, presence) %>%
   dplyr::rename(scientificName = prey) %>%
-  mutate(occurrenceStatus = ifelse(presence == "1", "present", "absent"))
+  mutate(occurrenceStatus = "present",
+         occurrenceID = paste(eventID, prey$prey_id, sep = "-"))
 
 # Perhaps we shouldn't remove the kingdom, phylum and infraorder classes in the initial data wrangling process, because those columns can be included in the Occurrence Core (line #184). 
 
@@ -170,7 +168,8 @@ prey_occ <- prey_occ %>%
     scientificName == "Polychaeta" ~ "urn:lsid:marinespecies.org:taxname:883",
     scientificName == "Pteropoda" ~ "urn:lsid:marinespecies.org:taxname:325345")
   ) %>%
-  select(eventID, scientificName, scientificNameID, occurrenceStatus)
+  select(eventID, scientificName, scientificNameID, occurrenceStatus, occurrenceID) %>%
+  filter(occurrenceStatus == "present")
 ```
 
 And to create the predator_occ core. In the Occurrence Core it is essential to add the `organismQuantity` as well (with associated `organismQuantityType`), which in the database is listed as `predator_replicates`. 
@@ -179,12 +178,14 @@ And to create the predator_occ core. In the Occurrence Core it is essential to a
 
 ``` {r predator_occ}
 # Filter for the predator species, i.e. ones that don't have a prey_id. 
-predator_occ <- HS_33 %>% filter(is.na(prey_id)) %>%
+predator_occ <- HS_33 %>% filter(presence == "1") %>%
   select(eventID, predator_lowest_taxonomic_level, 
          predator_maturity, predator_sex, presence,
          predator_replicates) %>%
   dplyr::rename(scientificName = predator_lowest_taxonomic_level) %>%
-  mutate(occurrenceStatus = "present") %>%
+  mutate(occurrenceStatus = "present",
+         occurrenceID = paste(eventID, "p", sep = "-")) %>%
+  distinct() %>%
   mutate(scientificNameID = case_when(
     scientificName == "Oncorhynchus mykiss" ~ "urn:lsid:marinespecies.org:taxname:127185")
   ) %>%
@@ -192,7 +193,7 @@ predator_occ <- HS_33 %>% filter(is.na(prey_id)) %>%
                 sex = predator_sex,
                 organismQuantity = predator_replicates) %>%
   mutate(organismQuantityType = "individuals") %>%
-  select(eventID, scientificName, scientificNameID, sex, lifeStage, occurrenceStatus)
+  select(eventID, scientificName, scientificNameID, sex, lifeStage, occurrenceStatus, occurrenceID)
 ```
 
 Join the two occurrence cores. Once occurrence cores are joined/merged, add an `occurrenceID`. As per OBIS, _if `basisOfRecord` is `PreservedSpecimen`, please also add the `institutionCode`, `collectionCode` and `catalogNumber` which will enable people to visit the collection and re-examine the material_. Additionally, I'd say that as we're talking about a preserved specimen, the `preparations` column also has to be populated. 
@@ -201,8 +202,8 @@ Join the two occurrence cores. Once occurrence cores are joined/merged, add an `
 hs_33_occ <- plyr::rbind.fill(prey_occ, predator_occ)
 
 # To re-order the eventID, use following code:
-order <- stringr::str_sort(hs_33_occ$eventID, numeric=TRUE)
-hs_33_occ <- hs_33_occ[match(order, hs_33_occ$eventID),]
+order <- stringr::str_sort(hs_33_occ$occurrenceID, numeric=TRUE)
+hs_33_occ <- hs_33_occ[match(order, hs_33_occ$occurrenceID),]
 
 # As basisOfRecord is `PreservedSpecimen`, it is recommended that we add `institutionCode`, `collectionCode` and `catalogNumber`. 
 hs_33_occ <- hs_33_occ %>%
@@ -210,8 +211,7 @@ hs_33_occ <- hs_33_occ %>%
          institutionCode = " ",
          collectionCode = " ", 
          catalogNumber = " ",
-         preparations = " ",
-         occurrenceID = eventID)
+         preparations = " ")
 
 write_csv(hs_33_occ, here::here("datasets", "npmsdd_data_from_caroline", "hs_33",
                                   "hs_33_occ.csv"))
