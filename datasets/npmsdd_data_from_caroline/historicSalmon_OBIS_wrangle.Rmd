@@ -253,8 +253,18 @@ To get a nice visual and see if perhaps some of the coordinates are wrong/off, w
 As the depth of the occurrence was not recorded, no depth checks can be done (for this specific dataset). 
 
 ``` {r maps_and_checks}
+# The images for salmon come from phylopic.org
+salmon <- leaflet::makeIcon("images/salmon_tiny.png",
+                            "images/salmon_small.png", 26, 14)
+
 obistools::plot_map(hs_44_fnl_event_occ, zoom = TRUE) # plot points on ggplot2 map
-obistools::plot_map_leaflet(hs_44_fnl_event_occ) # plot points on leaflet map. 
+salmon_leaflet <- obistools::plot_map_leaflet(hs_44_fnl_event_occ) %>%
+  setView(median(hs_44_fnl_event_occ$decimalLongitude), median(hs_44_fnl_event_occ$decimalLatitude), zoom = 4) %>%
+  addTiles() %>%
+  addMarkers(hs_44_fnl_event_occ$decimalLongitude, 
+             hs_44_fnl_event_occ$decimalLatitude, icon = salmon) # plot points on leaflet map. 
+salmon_leaflet 
+
 obistools::check_onland(hs_44_fnl_event_occ)
 
 obistools::plot_map(check_depth(data, depthmargin = 50), zoom = TRUE)
