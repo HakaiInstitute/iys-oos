@@ -21,9 +21,11 @@ library(here)
 library(obistools)
 ```
 
+In this script we will demonstrate how to read in and standardize, or format, historic salmon diet data to DwC standards so that we can host it on [OBIS](https://obis.org/). In order to do so, we have to create an Event and an Occurrence Core, with specific column headings. This script will illustrate how to create those cores. 
+
 Read in and filter for source_id == 33. I prefer reading in a .csv file rather than an .xlsx file because it seems parsing dates is easier from a .csv file (for some reason the date_min column changed when reading in .xlsx file). Additionally, the dates have to be changed to iso_8601 format. As stated in the OBIS [manual](https://obis.org/manual/darwincore/#time): _ISO 8601 dates can represent moments in time at different resolutions, as well as time intervals, which use / as a separator. Date and time are separated by T. Times can have a time zone indicator at the end, if this is not the case then the time is assumed to be local time. When a time is UTC, a Z is added._
 
-This dataset concerns aggregated data from the months June and July of several years. Darwin Core follows ISO 8601-1:2019 in this instance, so the `eventDate` should likely read e.g. `1994-06/07`, indicating that the aggregated data was collected across two months in 1994. 
+This dataset concerns aggregated data from the months June and July of several years. Darwin Core follows ISO 8601-1:2019 in this instance, so the `eventDate` should likely read e.g. `1994-06/07`, indicating that the aggregated data was collected across two months in 1994. However, as OBIS is also still evolving, this workflow might change in the future.  
 
 ```{r, message = FALSE, warning=FALSE}
 source_id_33 <- read_csv(here::here("datasets", "npmsdd_data_from_caroline", "diet_data_0_1.csv")) %>%
@@ -42,7 +44,9 @@ Next we need to create the Event Core. Required columns are: `eventDate`, `event
 
 From the paper we see that the aggregated data pertaining to the steelhead trouts were predominantly clustered around two specific transects (line strings). We want to automate the process where the coordinates of both the `LINESTRING` coordinates are provided from the three columns with coordinates. To get more accurate coordinates for the lineString; [this](https://github.com/iobis/obistools#calculate-centroid-and-radius-for-wkt-geometries) is a very useful link!
 
-To determine how the `footprintWKT`s are depicted (i.e., with the number of brackets), see [here](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry). The way to depict points, polygons, linestrings, multipolygons or a geometrycollection differs. Note: with _POINT_ and _LINESTRING_ it is imperative that the footprintWKT is in `(lon, lat)` **not** `(lat, lon)` (it'll give an error)
+To determine how the `footprintWKT`s are depicted (i.e., with the number of brackets), see [here](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry). The way to depict points, polygons, linestrings, multipolygons or a geometrycollection differs. Note: with _POINT_ and _LINESTRING_ it is imperative that the footprintWKT is in `(lon, lat)` **not** `(lat, lon)` (it'll give an error).
+
+Finally, as some data is collected in a linestring, OBIS will want to know what the `coordinateUncertaintyInMeters` is. Thankfully there is a neat package and function for this: `obistools::calculate_centroid()`. The function calculates the coordinateUncertainty from a single point along the linestring - please be aware that therefore the uncertainty can be quite big!
 
 ```{r}
 source_id_33 <- source_id_33 %>% 
@@ -57,33 +61,22 @@ source_id_33$footprintWKT <- with(source_id_33, ifelse(lon_min == "-180",
                                     paste0("LINESTRING (-180.00000 38.00000, -180.00000 58.00000)"),
                                     paste0("LINESTRING (-145.00000 44.00000, -145.00000 56.00000)")))
 
-# Make sure you have devtools and obistools installed:
-# devtools::install_github("iobis/obistools")
-
-# Find decimalLongitude, decimalLatitude and coordinateUncertaintyInMeters using obistools, and then join these columns to the source_id_44 dataframe. 
 coordinates <- obistools::calculate_centroid(source_id_33$footprintWKT)
 source_id_33 <- cbind(source_id_33, coordinates)
 ```
 
-As you can see in `coordinates`, the `coordinateUncertaintyInMeters` is fairly large, and that's because on this line transect, the exact coordinates of sampling are not clear. I do think the _linestring_ is the way to go, rather than e.g. _multipoint_ because then the `coordinateUncertaintyInMeters` would be very low, as it would expect the data to only be collected at four _distinct_ locations. 
+As you can see in `coordinates`, the `coordinateUncertaintyInMeters` is fairly large, and that's because on this line transect, the exact coordinates of sampling are not clear. I do think the _linestring_ is the way to go, rather than e.g. _multipoint_ because then the `coordinateUncertaintyInMeters` would be very low, as it would expect the data to only be collected at four _distinct_ point locations. 
 
-Additionally, an `eventID` column has to be created, with a unique row for each salmon individual and for each species identified in the stomach content. All salmon individuals in this regard are considered the predators, as indicate with a _p_. Prey species found in the stomach content will be indicated by _pr_ (see resourceRelationship). We want to make it such that if multiple species of prey are present (i.e., '1'), they will be assigned, in ascending order, pr1, pr2, independent of exactly which species were found in the stomach content.
+Additionally, an `eventID` column has to be created, which will be a unique identifier following the structure: database - source_id - predator_id. For this data standardization, we follow the format as demonstrated [here](http://ogc-act.csiro.au/ipt/resource?r=csiro_sef_diet), however this could change as the workflow for OBIS changes. Create a prey event core and predator event core, and join these together so that all required information in the final event core is listed in all the rows.
 
-Create a prey event core and predator event core, and join these together so that all required information in the final event core is listed in all the rows.
-
-Finally, add a column `geodeticDatum`. As stated in OBIS _the spatial reference system to be documented in `geodeticDatum` is `EPSG:4326`_
+Finally, add a column `geodeticDatum`. As stated in OBIS _the spatial reference system to be documented in `geodeticDatum` is `EPSG:4326`_, and the column `samplingProtocol` is added as well with a link to the paper DOI. 
 
 ```{r}
 predator <- source_id_33 %>%
-  mutate(eventID = paste("npmsdd", source_id, predator_id, sep = "-")) %>%
-  select(eventID, decimalLatitude, decimalLongitude, footprintWKT, eventDate,
-         year, predator_lowest_taxonomic_level, predator_maturity, predator_sex,
-         predator_replicates, coordinateUncertaintyInMeters)
+  mutate(eventID = paste("npmsdd", source_id, predator_id, sep = "-"))
 
 prey <- source_id_33 %>%
   mutate(eventID = paste("npmsdd", source_id, predator_id, sep = "-")) %>%
-  select(eventID, decimalLatitude, decimalLongitude, footprintWKT, eventDate, coordinateUncertaintyInMeters,
-         year, Actinopterygii:Pteropoda) %>%
   pivot_longer(cols = Actinopterygii:Pteropoda,
                names_to = "prey",
                values_to = "presence")
@@ -104,7 +97,7 @@ write_csv(hs_33_event, here::here("datasets", "npmsdd_data_from_caroline", "hs_3
                                   "hs_33_event.csv"))
 ```
 
-Additionally, perhaps we are required to make a resourceRelationship table, as both the salmon and the stomach content can be viewed as species occurrences. For an example of a resourceRelationship table and what that would look like in GBIF/OBIS, see: http://ogc-act.csiro.au/ipt/resource?r=csiro_sef_diet; and for the GitHub issue associated to this: https://github.com/iobis/obis-issues/issues/96.
+Additionally, following the previously mentioned example, we are required to make a resourceRelationship table, as both the salmon and the stomach content can be viewed as species occurrences. All salmon individuals in this regard are considered the predators, as indicate with a _p_. Prey species found in the stomach content will be indicated by _pr_. We want to make it such that if multiple species of prey are present (i.e., '1'), they will be assigned, in ascending order, pr1, pr2, independent of exactly which species were found in the stomach content.
 
 The resourceRelationshipID follows the format of e.g. `database - source_id - predator_id - predatorprey1` etc, the same format as used in the CSIRO sef diet dataset. Some salmonid individuals have more than 1 identified prey spp in their stomach. 
 
@@ -119,8 +112,6 @@ for(i in unique(prey$eventID)) {
 }
 
 prey$prey_id <- paste0("pr", prey$id)
-prey$id <- str_replace(prey$eventID, "-p", (paste("-", prey$prey_id, sep = ""))) 
-
 
 resourceRelationshipID <- paste(prey$eventID, "p", sep = "-")
 resourceRelationshipID <- paste0(resourceRelationshipID, prey$prey_id)
@@ -193,13 +184,14 @@ predator_occ <- HS_33 %>% filter(presence == "1") %>%
                 sex = predator_sex,
                 organismQuantity = predator_replicates) %>%
   mutate(organismQuantityType = "individuals") %>%
-  select(eventID, scientificName, scientificNameID, sex, lifeStage, occurrenceStatus, occurrenceID)
+  select(eventID, scientificName, scientificNameID, sex, lifeStage, occurrenceStatus, occurrenceID,
+         organismQuantity, organismQuantityType)
 ```
 
 Join the two occurrence cores. Once occurrence cores are joined/merged, add an `occurrenceID`. As per OBIS, _if `basisOfRecord` is `PreservedSpecimen`, please also add the `institutionCode`, `collectionCode` and `catalogNumber` which will enable people to visit the collection and re-examine the material_. Additionally, I'd say that as we're talking about a preserved specimen, the `preparations` column also has to be populated. 
 
 ``` {r occ}
-hs_33_occ <- plyr::rbind.fill(prey_occ, predator_occ)
+hs_33_occ <- bind_rows(prey_occ, predator_occ)
 
 # To re-order the eventID, use following code:
 order <- stringr::str_sort(hs_33_occ$occurrenceID, numeric=TRUE)
