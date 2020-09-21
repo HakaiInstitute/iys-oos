@@ -237,7 +237,7 @@ obistools::check_fields(hs_44_fnl_event_occ)
 
 To get a nice visual and see if perhaps some of the coordinates are wrong/off, we can plot the occurrences in a map or leaflet, and also perform checks to see if the data isn't on land when it should be in the ocean, or whether the depths are off.
 
-As the depth of the occurrence was not recorded, no depth checks can be done (for this specific dataset). As a fun little bonus, I've added salmon icons to the map and the script on how to add these to e.g. a leaflet map. The icons are from [phylopic](http://phylopic.org/). 
+As the depth of the occurrence was not recorded, no depth checks can be done (for this specific dataset). As a fun little bonus, I've added salmon icons to the map and the script on how to add these to e.g. a leaflet map. The icons are from [phylopic](http://phylopic.org/).
 
 ``` {r maps_and_checks}
 # The images for salmon come from phylopic.org
