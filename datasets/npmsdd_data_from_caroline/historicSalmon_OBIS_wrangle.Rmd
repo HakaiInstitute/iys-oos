@@ -193,7 +193,8 @@ predator_occ <- HS_44 %>% filter(presence == "1") %>%
                 sex = predator_sex,
                 organismQuantity = predator_replicates) %>%
   mutate(organismQuantityType = "individuals") %>%
-  select(eventID, occurrenceID, scientificName, scientificNameID, sex, lifeStage, occurrenceStatus)
+  select(eventID, occurrenceID, scientificName, scientificNameID, sex, lifeStage, occurrenceStatus,
+         organismQuantity, organismQuantityType)
 ```
 
 Join the two occurrence cores. As per OBIS, _if `basisOfRecord` is `PreservedSpecimen`, please also add the `institutionCode`, `collectionCode` and `catalogNumber` which will enable people to visit the collection and re-examine the material_. However, I don't know if these columns can be populated arbitrarily. Additionally, I'd say that as we're talking about a preserved specimen, the `preparations` column also has to be populated. 
