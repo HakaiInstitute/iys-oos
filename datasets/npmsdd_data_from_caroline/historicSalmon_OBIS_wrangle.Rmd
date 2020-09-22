@@ -23,7 +23,20 @@ library(obistools)
 
 In this script we will demonstrate how to read in and standardize, or format, historic salmon diet data to DwC standards so that we can host it on [OBIS](https://obis.org/). In order to do so, we have to create an Event and an Occurrence Core, with specific column headings. This script will illustrate how to create those cores. 
 
-Read in and filter for source_id == 44. I prefer reading in a .csv file rather than an .xlsx file because it seems parsing dates is easier from a .csv file (for some reason the date_min column changed when reading in .xlsx file). The dates have to be changed to iso_8601 format. As stated in the OBIS [manual](https://obis.org/manual/darwincore/#time): _ISO 8601 dates can represent moments in time at different resolutions, as well as time intervals, which use / as a separator. Date and time are separated by T. Times can have a time zone indicator at the end, if this is not the case then the time is assumed to be local time. When a time is UTC, a Z is added._
+Read in and filter for source_id == 44. I saved (.csv) the `diet_data_0_1` dataframe from the npmsdd_data_manipulation script. Alternatively, you can use the `save()` or `saveRDS()` function to save the dataframe and then load it in another data wrangling script (specific to the source_id). The difference between `save()` and `saveRDS()` is that with `saveRDS()` only one object can be saved and the name of the object is not forced to be the same after you load it. However, given that the data frame `diet_data_0_1` contains all the required information and you can simply filter for the specific source_id, I believe the `save()` function would suffice. The code in the original npmsdd_data_manipulation script could look along the lines of:
+
+``` {r example}
+save(diet_data_0_1, file = "diet_data.Rda")
+
+# or alternatively:
+saveRDS(diet_data_0_1, file = "diet_data.Rda")
+
+# Load it into a new script
+load("diet_data.Rda")
+diet_data <- readRDS(file = "diet_data.Rda")
+```
+
+When it comes to reading in .csv or .xlsx files I prefer reading in a .csv file rather than an .xlsx file because it seems parsing dates is easier from a .csv file (for some reason the date_min column changed when reading in .xlsx file). The dates have to be changed to iso_8601 format. As stated in the OBIS [manual](https://obis.org/manual/darwincore/#time): _ISO 8601 dates can represent moments in time at different resolutions, as well as time intervals, which use / as a separator. Date and time are separated by T. Times can have a time zone indicator at the end, if this is not the case then the time is assumed to be local time. When a time is UTC, a Z is added._
 
 As no times were recorded in this dataset, no `Z` is added, and any reference to time is removed after formatting to the iso_8601 standard. 
 
