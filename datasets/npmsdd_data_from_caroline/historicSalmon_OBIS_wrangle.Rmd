@@ -8,17 +8,15 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
-packages <- c("tidyverse", "lubridate", "devtools", "obistools", "readxl", "parsedate", "googledrive", "here")
-for (package in packages) {if (!(package %in% install.packages())) {install.packages(package)} 
-  else if (package %in% old.packages()) {install.packages(package)} }
+ipak <- function(pkg){
+    new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
+    if (length(new.pkg)) 
+        install.packages(new.pkg, dependencies = TRUE)
+    sapply(pkg, require, character.only = TRUE)
+}
 
-library(tidyverse)
-library(lubridate)
-library(readxl)
-library(parsedate)
-library(googledrive)
-library(here)
-library(obistools)
+packages <- c("tidyverse", "lubridate", "devtools", "obistools", "readxl", "parsedate", "googledrive", "here")
+ipak(packages)
 ```
 
 In this script we will demonstrate how to read in and standardize, or format, historic salmon diet data to DwC standards so that we can host it on [OBIS](https://obis.org/). In order to do so, we have to create an Event and an Occurrence Core, with specific column headings. This script will illustrate how to create those cores. 
@@ -38,14 +36,39 @@ diet_data <- readRDS(file = "diet_data.Rda")
 
 When it comes to reading in .csv or .xlsx files I prefer reading in a .csv file rather than an .xlsx file because it seems parsing dates is easier from a .csv file (for some reason the date_min column changed when reading in .xlsx file). The dates have to be changed to iso_8601 format. As stated in the OBIS [manual](https://obis.org/manual/darwincore/#time): _ISO 8601 dates can represent moments in time at different resolutions, as well as time intervals, which use / as a separator. Date and time are separated by T. Times can have a time zone indicator at the end, if this is not the case then the time is assumed to be local time. When a time is UTC, a Z is added._
 
-As no times were recorded in this dataset, no `Z` is added, and any reference to time is removed after formatting to the iso_8601 standard. 
+As no times were recorded in this dataset, no `Z` is added, and any reference to time is removed after formatting to the iso_8601 standard.
+
+Important to note is that if we want to OBIS with seperate columns for `year` and `month` etc, we need to make sure this column is numerical (i.e. '5' instead of 'May'). 
 
 ```{r, message = FALSE, warning=FALSE}
 source_id_44 <- read_csv(here::here("datasets", "npmsdd_data_from_caroline", "diet_data_0_1.csv")) %>%
   filter(source_id == "44") %>%
   mutate(eventDate = format_iso_8601(as.POSIXct(date_min,
                                                 format="%Y-%m-%d"))) %>%
-  mutate(eventDate = str_replace(eventDate, "\\T.+", ""))
+  mutate(eventDate = str_replace(eventDate, "\\T.+", "")) %>%
+  mutate(month_min = case_when(
+    month_min == "May" ~ "5",
+    month_min == "June" ~ "6",
+    month_min == "July" ~ "7",
+    month_min == "August" ~ "8"
+  )) %>%
+  mutate(month_min = as.numeric(source_id_44$month_min))
+```
+
+Next, we need to determine the `maximumDepthInMeters` and `minimumDepthInMeters`. Though these are not _required_ terms in the DwC standard or on OBIS, OBIS does report these values as 'missing' if they are not provided. For source_id 44 there is only 1 gear type reported `gear_type_predator_id1`, otherwise several columns would have to selected:
+
+```{r sampling_depth}
+hs_44_gear <- source_id_44 %>% dplyr::select(gear_type_predator_id1) %>% unique()
+
+gear <- read_csv(here::here("datasets", "npmsdd_data_from_caroline", "gear_type_predator.csv"), 
+                 col_types = "icnnncnnncnnncnnncnnncnnncnnncc") %>%
+  filter(gear_type_predator_id == "12") %>%
+  dplyr::select(gear_type_predator_id, fishing_depth_min, fishing_depth_max) %>%
+  dplyr::rename(gear_type_predator_id1 = gear_type_predator_id)
+
+source_id_44 <- left_join(source_id_44, gear, by = "gear_type_predator_id1") %>%
+  dplyr::rename(minimumDepthInMeters = fishing_depth_min,
+                maximumDepthInMeters = fishing_depth_max)
 ```
 
 Next we need to create the Event Core. Required columns, as per OBIS, are: `eventDate`, `eventID`. We also need to figure out how to add coordinates to the Event Core, especially given that for predator_id 116:125 the coordinates are those of a polygon (`lat_min`, `lat_max`, `lon_min` and `lon_max` are populated). For all other data entries, only the `lat_min` and `lon_min` are populated, and these will therefore correspond to the OBIS columns of `decimalLatitude` and `decimalLongitude`. Additionally, as per OBIS standards, latitude has to be in the range of -90 to 90, inclusive, and longitude has to be in the range of -180 to 180, inclusive. 
@@ -105,7 +128,7 @@ prey <- source_id_44 %>%
 
 HS_44 <- full_join(predator, prey) # We need this data frame for our occurrence core later.
 hs_44_event <- HS_44 %>%
-  select(eventID, eventDate, year, month, decimalLatitude, 
+  dplyr::select(eventID, eventDate, year, month, decimalLatitude, 
          decimalLongitude, footprintWKT, coordinateUncertaintyInMeters) %>%
   distinct() %>%
   mutate(type = "Event",
@@ -154,11 +177,14 @@ Next, we create the Occurrence Core, where we add the WoRMS URN to not just the 
 # create two separate data frames of occurrences, one for the prey species (stomach content) and one for the predator (salmon) species, and then later merge these two data frames. The first step for our prey_occurrence core is to filter for the species found in the stomach (i.e., that have a prey_id)
 
 prey_occ <- HS_44 %>% filter(presence == "1") %>%
-  select(eventID, prey, presence) %>%
+  dplyr::select(eventID, prey, presence,
+         prey_kingdom:prey_species) %>%
   dplyr::rename(scientificName = prey) %>%
   mutate(occurrenceStatus = "present",
          occurrenceID = paste(eventID, prey$prey_id, sep = "-"))
 
+# Upon inspection, we can see that some columns for e.g. family or species contains a 0, whereas these should be NA if they haven't been specified further:
+prey_occ <- na_if(prey_occ, 0)
 # Perhaps we shouldn't remove the kingdom, phylum and infraorder classes in the initial data wrangling process, because those columns can be included in the Occurrence Core (line #184). 
 
 prey_occ <- prey_occ %>%
@@ -180,8 +206,13 @@ prey_occ <- prey_occ %>%
     scientificName == "Polychaeta" ~ "urn:lsid:marinespecies.org:taxname:883",
     scientificName == "Pteropoda" ~ "urn:lsid:marinespecies.org:taxname:325345")
   ) %>%
-  select(eventID, scientificName, scientificNameID, occurrenceStatus, occurrenceID) %>%
-  filter(occurrenceStatus == "present")
+  dplyr::select(eventID, scientificName, scientificNameID, occurrenceStatus, occurrenceID,
+         prey_kingdom, prey_phylum, prey_class, prey_order) %>%
+  filter(occurrenceStatus == "present") %>%
+  dplyr::rename(kingdom = prey_kingdom,
+                phylum = prey_phylum,
+                class = prey_class,
+                order = prey_order)
 ```
 
 And to create the predator_occ core:
@@ -189,7 +220,7 @@ And to create the predator_occ core:
 ``` {r predator_occ}
 # Filter for the predator species, i.e. ones that don't have a prey_id. 
 predator_occ <- HS_44 %>% filter(presence == "1") %>%
-  select(eventID, predator_lowest_taxonomic_level, 
+  dplyr::select(eventID, predator_lowest_taxonomic_level, 
          predator_maturity, predator_sex, predator_replicates, presence) %>%
   dplyr::rename(scientificName = predator_lowest_taxonomic_level) %>%
   mutate(occurrenceStatus = "present",
@@ -206,7 +237,7 @@ predator_occ <- HS_44 %>% filter(presence == "1") %>%
                 sex = predator_sex,
                 organismQuantity = predator_replicates) %>%
   mutate(organismQuantityType = "individuals") %>%
-  select(eventID, occurrenceID, scientificName, scientificNameID, sex, lifeStage, occurrenceStatus,
+  dplyr::select(eventID, occurrenceID, scientificName, scientificNameID, sex, lifeStage, occurrenceStatus,
          organismQuantity, organismQuantityType)
 ```
 

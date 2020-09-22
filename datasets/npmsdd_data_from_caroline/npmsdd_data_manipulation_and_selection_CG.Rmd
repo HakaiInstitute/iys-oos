@@ -181,7 +181,6 @@ Here I remove all the detailed prey information so that we are left with just 'p
 
 #removing detailed prey information
 diet_data_rm_prey_details <- diet_data_select_source %>%
-  dplyr::select(-prey_kingdom:-prey_species) %>% 
   dplyr::select(-prey_sex:-prey_notes)
 
 #converting data frame to wide format

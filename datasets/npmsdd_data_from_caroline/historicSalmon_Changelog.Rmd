@@ -1,0 +1,11 @@
+---
+title: "Changelog"
+author: "Tim van der Stap"
+date: "9/22/2020"
+output: html_document
+---
+
+In this changelog I want to keep track of any changes I have made to Caroline's original data manipulation and selection script (`npmsdd_data_manipulation_and_select_CG.Rmd`). 
+
+Changes made:
+- line 184: removed the following line of code: `dplyr::select(-prey_kingdom:-prey_species) %>%` - as these columns are useful for the data standardization for OBIS. 
