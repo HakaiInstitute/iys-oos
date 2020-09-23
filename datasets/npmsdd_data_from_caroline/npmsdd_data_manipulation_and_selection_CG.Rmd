@@ -196,7 +196,7 @@ diet_data_wide <- spread(diet_data_rm_prey_details, key = prey_lowest_taxonomic_
 ncol <- ncol(diet_data_wide)
 
 #converting diet data to presence/absence data
-diet_data_0_1 <- diet_data_wide %>% dplyr::mutate_at(c(51:ncol), funs(ifelse (is.na(.), 0, 1)))
+diet_data_0_1 <- diet_data_wide %>% dplyr::mutate_at(c(58:ncol), funs(ifelse (is.na(.), 0, 1)))
 
 ```
 

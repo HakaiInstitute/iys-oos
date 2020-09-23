@@ -9,3 +9,4 @@ In this changelog I want to keep track of any changes I have made to Caroline's 
 
 Changes made:
 - line 184: removed the following line of code: `dplyr::select(-prey_kingdom:-prey_species) %>%` - as these columns are useful for the data standardization for OBIS. 
+- As a result of previous change, in line #199 I change `51:ncol` to `58:ncol`. If I didn't do this, columns that included information on lat_max etc were also mutated and consequently no correct geographic representation could be provided for OBIS. 
