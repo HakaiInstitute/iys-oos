@@ -250,10 +250,21 @@ hs_44_occ <- bind_rows(prey_occ, predator_occ)
 # To re-order the eventID, use following code:
 order <- stringr::str_sort(hs_44_occ$occurrenceID, numeric=TRUE)
 hs_44_occ <- hs_44_occ[match(order, hs_44_occ$occurrenceID),]
+```
+
+As an alternative to a resourceRelation core, we can - and perhaps should - add an `associatedTaxa` column. As defined by the [TDWG](https://dwc.tdwg.org/terms/), associatedTaxa is _a list (concatenated and separated) of identifiers or names of taxa and their associations with the Occurrence_, and is typically formulated like e.g., "prey of":"Apis mellifera". However, as the stomach content (prey) is an Occurrence itself, I am unsure whether this column applies. Right now, I am following the structure: "prey of: npmsd-44-116-p" to indicate that it's a prey of a specific predator, which has a unique occurrenceID. 
+
+The questions that I am left with are:
+
+- [ ] I am unsure whether the associatedTaxa can refer back to the occurrenceID of a predator or prey (i.e., "prey of: npmsdd-44-116-pr") or whether it necessarily has to refer to a specific predator (i.e., "prey of: Oncorhynchus nerka"). 
+- [ ] I don't know whether each _predator_ needs it's own associatedTaxa, i.e., "predator of: Amphipoda". It would seem a bit superfluous if the prey already have an associatedTaxa. 
+- [ ] I wonder if associatedTaxa is a correct column to populate, or whether a resourceRelation core is a better, more viable, alternative, as the prey is an occurrence itself, and therefore not necessarily an 'association with the occurrence', as per definition. 
+
+``` {r occ}
 
 # As basisOfRecord is `PreservedSpecimen`, it is recommended that we add `institutionCode`, `collectionCode` and `catalogNumber`. 
 hs_44_occ <- hs_44_occ %>%
-  mutate(basisOfRecord = "PreservedSpecimen",
+    mutate(basisOfRecord = "PreservedSpecimen",
          institutionCode = " ",
          collectionCode = " ", 
          catalogNumber = " ",
@@ -261,10 +272,16 @@ hs_44_occ <- hs_44_occ %>%
 
 write_csv(hs_44_occ, here::here("datasets", "npmsdd_data_from_caroline", "hs_44",
                                   "hs_44_occ.csv"))
+```
 
-# The `obistools::flatten_occurrence(hs_44_event, hs_44_occ)` does not seem to be working, because it is missing parentEventID. In most of the datasets that I've wrangled there is a parentEventID, but with historic salmon I haven't this because I don't know what the common parentEventID would be for data associated to both salmon (predator) and it's stomach content (prey). Therefore, should the event and occurrence cores need to be combined, use:
+The Integrated Publishing Tool (IPT), which needs to be used to upload data to OBIS, requires the event and occurrence cores to be merged into one core prior to uploading. Hence the final core would be:
 
+``` {r event_occ}
 hs_44_fnl_event_occ <- left_join(hs_44_event, hs_44_occ, by = "eventID")
+
+hs_44_fnl_event_occ$associatedTaxa <-   " "
+hs_44_fnl_event_occ$associatedTaxa <- ifelse(grepl("pr", hs_44_fnl_event_occ$occurrenceID), 
+paste("prey of: ", hs_44_fnl_event_occ$eventID, "-p", sep = ""), "")
 
 write_csv(hs_44_fnl_event_occ, here::here("datasets", "npmsdd_data_from_caroline", "hs_44",
                                           "hs_44_event_occ.csv"))
