@@ -51,11 +51,10 @@ source_id_44 <- read_csv(here::here("datasets", "npmsdd_data_from_caroline", "di
     month_min == "June" ~ "6",
     month_min == "July" ~ "7",
     month_min == "August" ~ "8"
-  )) %>%
-  mutate(month_min = as.numeric(source_id_44$month_min))
+  ))
 ```
 
-Next, we need to determine the `maximumDepthInMeters` and `minimumDepthInMeters`. Though these are not _required_ terms in the DwC standard or on OBIS, OBIS does report these values as 'missing' if they are not provided. For source_id 44 there is only 1 gear type reported `gear_type_predator_id1`, otherwise several columns would have to selected:
+Next, we need to determine the `maximumDepthInMeters` and `minimumDepthInMeters`. Though these are not _required_ terms in the DwC standard or on OBIS, OBIS does report these values as 'missing' if they are not provided. For source_id 44 there is only 1 gear type reported `gear_type_predator_id1`, otherwise several columns would have to selected. From reading the paper, we noticed a minor discrepancy with what was reported in the database and what information was provided in the paper. We have manually added the range in depth in this script rather than add it to the original data manipulation script. 
 
 ```{r sampling_depth}
 hs_44_gear <- source_id_44 %>% dplyr::select(gear_type_predator_id1) %>% unique()
@@ -69,6 +68,8 @@ gear <- read_csv(here::here("datasets", "npmsdd_data_from_caroline", "gear_type_
 source_id_44 <- left_join(source_id_44, gear, by = "gear_type_predator_id1") %>%
   dplyr::rename(minimumDepthInMeters = fishing_depth_min,
                 maximumDepthInMeters = fishing_depth_max)
+source_id_44$minimumDepthInMeters = 0
+source_id_44$maximumDepthInMeters = 70
 ```
 
 Next we need to create the Event Core. Required columns, as per OBIS, are: `eventDate`, `eventID`. We also need to figure out how to add coordinates to the Event Core, especially given that for predator_id 116:125 the coordinates are those of a polygon (`lat_min`, `lat_max`, `lon_min` and `lon_max` are populated). For all other data entries, only the `lat_min` and `lon_min` are populated, and these will therefore correspond to the OBIS columns of `decimalLatitude` and `decimalLongitude`. Additionally, as per OBIS standards, latitude has to be in the range of -90 to 90, inclusive, and longitude has to be in the range of -180 to 180, inclusive. 
