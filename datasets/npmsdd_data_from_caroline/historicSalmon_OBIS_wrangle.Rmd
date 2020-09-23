@@ -130,7 +130,8 @@ prey <- source_id_44 %>%
 HS_44 <- full_join(predator, prey) # We need this data frame for our occurrence core later.
 hs_44_event <- HS_44 %>%
   dplyr::select(eventID, eventDate, year, month, decimalLatitude, 
-         decimalLongitude, footprintWKT, coordinateUncertaintyInMeters) %>%
+         decimalLongitude, footprintWKT, coordinateUncertaintyInMeters,
+         minimumDepthInMeters, maximumDepthInMeters) %>%
   distinct() %>%
   mutate(type = "Event",
          geodeticDatum = "EPSG:4326",

@@ -8,17 +8,15 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
-packages <- c("tidyverse", "lubridate", "devtools", "obistools", "readxl", "parsedate", "googledrive", "here")
-for (package in packages) {if (!(package %in% install.packages())) {install.packages(package)} 
-  else if (package %in% old.packages()) {install.packages(package)} }
+ipak <- function(pkg){
+    new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
+    if (length(new.pkg)) 
+        install.packages(new.pkg, dependencies = TRUE)
+    sapply(pkg, require, character.only = TRUE)
+}
 
-library(tidyverse)
-library(lubridate)
-library(readxl)
-library(parsedate)
-library(googledrive)
-library(here)
-library(obistools)
+packages <- c("tidyverse", "lubridate", "devtools", "obistools", "readxl", "parsedate", "googledrive", "here")
+ipak(packages)
 ```
 
 In this script we will demonstrate how to read in and standardize, or format, historic salmon diet data to DwC standards so that we can host it on [OBIS](https://obis.org/). In order to do so, we have to create an Event and an Occurrence Core, with specific column headings. This script will illustrate how to create those cores. 
@@ -36,11 +34,27 @@ source_id_33 <- source_id_33 %>%
          month_max = str_replace(source_id_33$month_max, "July", "07"))
 
 source_id_33 <- source_id_33 %>%
-  mutate(eventDate = paste(year_min, month_min, sep = "-"),
-         eventDate = paste(eventDate, month_max, sep = "/"))
+  mutate(eventDate = paste(year_min, month_min, sep = "-")) %>%
+  mutate(eventDate = paste(eventDate, month_max, sep = "/"))
 ```
 
-Next we need to create the Event Core. Required columns are: `eventDate`, `eventID`. We also need to figure out how to add coordinates to the Event Core, especially given that for these data entries the coordinates are those of a line string. For all data entries, only the `lat_min`, `lat_max` and `lon_min` are populated, and these will therefore correspond to the OBIS columns of `decimalLatitude` and `decimalLongitude`. Additionally, as per OBIS standards, latitude has to be in the range of -90 to 90, inclusive, and longitude has to be in the range of -180 to 180, inclusive. 
+Next, we need to determine the `maximumDepthInMeters` and `minimumDepthInMeters`. Though these are not _required_ terms in the DwC standard or on OBIS, OBIS does report these values as 'missing' if they are not provided. For source_id 33 there are two gear types reported: `gear_type_predator_id1` and `gear_type_predator_id2`. `gear_type_predator_id` is renamed to `gear_type_predator_id1` so that it can easily be joined with the original dataframe. 
+
+```{r sampling_depth}
+hs_33_gear <- source_id_33 %>% dplyr::select(gear_type_predator_id1, gear_type_predator_id2) %>% unique()
+
+gear <- read_csv(here::here("datasets", "npmsdd_data_from_caroline", "gear_type_predator.csv"), 
+                 col_types = "icnnncnnncnnncnnncnnncnnncnnncc") %>%
+  filter(gear_type_predator_id %in% c("12", "18")) %>%
+  dplyr::select(gear_type_predator_id, fishing_depth_min, fishing_depth_max) %>%
+  dplyr::rename(gear_type_predator_id1 = gear_type_predator_id)
+
+source_id_33 <- left_join(source_id_33, gear, by = "gear_type_predator_id1") %>%
+  dplyr::rename(minimumDepthInMeters = fishing_depth_min,
+                maximumDepthInMeters = fishing_depth_max)
+```
+
+No information pertaining to the fishing depth was found in the paper. Next we need to create the Event Core. Required columns are: `eventDate`, `eventID`. We also need to figure out how to add coordinates to the Event Core, especially given that for these data entries the coordinates are those of a line string. For all data entries, only the `lat_min`, `lat_max` and `lon_min` are populated, and these will therefore correspond to the OBIS columns of `decimalLatitude` and `decimalLongitude`. Additionally, as per OBIS standards, latitude has to be in the range of -90 to 90, inclusive, and longitude has to be in the range of -180 to 180, inclusive. 
 
 From the paper we see that the aggregated data pertaining to the steelhead trouts were predominantly clustered around two specific transects (line strings). We want to automate the process where the coordinates of both the `LINESTRING` coordinates are provided from the three columns with coordinates. To get more accurate coordinates for the lineString; [this](https://github.com/iobis/obistools#calculate-centroid-and-radius-for-wkt-geometries) is a very useful link!
 
@@ -81,11 +95,10 @@ prey <- source_id_33 %>%
                names_to = "prey",
                values_to = "presence")
 
-# Now, for each unique eventID, give a species that was present (i.e., presence = 1) a prey_id of pr with an assigned number, in ascending order. In other words, with each unique eventID, the first prey present in the stomach content would get prey_id pr1, the second would get pr2 (etc). 
-
-HS_33 <- full_join(predator, prey)
-hs_33_event <- HS_33 %>% select(eventID, eventDate, year, 
-                          decimalLatitude, decimalLongitude, footprintWKT, coordinateUncertaintyInMeters) %>%
+HS_33 <- full_join(predator, prey) # We need this data frame for our occurrence core later.
+hs_33_event <- HS_33 %>%  dplyr::select(eventID, eventDate, year, 
+                          decimalLatitude, decimalLongitude, footprintWKT, coordinateUncertaintyInMeters,
+                          minimumDepthInMeters, maximumDepthInMeters) %>%
   distinct()
 
 hs_33_event <- hs_33_event %>% 
@@ -133,7 +146,8 @@ Next, we create the Occurrence Core, where we add the WoRMS URN to not just the 
 # create two separate data frames of occurrences, one for the prey species (stomach content) and one for the predator (salmon) species, and then later merge these two data frames. The first step for our prey_occurrence core is to filter for the species found in the stomach (i.e., that have a prey_id)
 
 prey_occ <- HS_33 %>% filter(presence == "1") %>%
-  select(eventID, prey, presence) %>%
+  dplyr::select(eventID, prey, presence,
+         prey_kingdom:prey_species) %>%
   dplyr::rename(scientificName = prey) %>%
   mutate(occurrenceStatus = "present",
          occurrenceID = paste(eventID, prey$prey_id, sep = "-"))
@@ -159,8 +173,13 @@ prey_occ <- prey_occ %>%
     scientificName == "Polychaeta" ~ "urn:lsid:marinespecies.org:taxname:883",
     scientificName == "Pteropoda" ~ "urn:lsid:marinespecies.org:taxname:325345")
   ) %>%
-  select(eventID, scientificName, scientificNameID, occurrenceStatus, occurrenceID) %>%
-  filter(occurrenceStatus == "present")
+  dplyr::select(eventID, scientificName, scientificNameID, occurrenceStatus, occurrenceID,
+                prey_kingdom, prey_phylum, prey_class, prey_order) %>%
+  filter(occurrenceStatus == "present") %>%
+  dplyr::rename(kingdom = prey_kingdom,
+                phylum = prey_phylum,
+                class = prey_class,
+                order = prey_order)
 ```
 
 And to create the predator_occ core. In the Occurrence Core it is essential to add the `organismQuantity` as well (with associated `organismQuantityType`), which in the database is listed as `predator_replicates`. 
@@ -170,7 +189,7 @@ And to create the predator_occ core. In the Occurrence Core it is essential to a
 ``` {r predator_occ}
 # Filter for the predator species, i.e. ones that don't have a prey_id. 
 predator_occ <- HS_33 %>% filter(presence == "1") %>%
-  select(eventID, predator_lowest_taxonomic_level, 
+  dplyr::select(eventID, predator_lowest_taxonomic_level, 
          predator_maturity, predator_sex, presence,
          predator_replicates) %>%
   dplyr::rename(scientificName = predator_lowest_taxonomic_level) %>%
@@ -184,7 +203,7 @@ predator_occ <- HS_33 %>% filter(presence == "1") %>%
                 sex = predator_sex,
                 organismQuantity = predator_replicates) %>%
   mutate(organismQuantityType = "individuals") %>%
-  select(eventID, scientificName, scientificNameID, sex, lifeStage, occurrenceStatus, occurrenceID,
+  dplyr::select(eventID, scientificName, scientificNameID, sex, lifeStage, occurrenceStatus, occurrenceID,
          organismQuantity, organismQuantityType)
 ```
 
@@ -211,6 +230,10 @@ write_csv(hs_33_occ, here::here("datasets", "npmsdd_data_from_caroline", "hs_33"
 # The `obistools::flatten_occurrence(hs_44_event, hs_44_occ)` does not seem to be working, because it is missing parentEventID. In most of the datasets that I've wrangled there is a parentEventID, but with historic salmon I haven't this because I don't know what the common parentEventID would be for data associated to both salmon (predator) and it's stomach content (prey). Therefore, should the event and occurrence cores need to be combined, use:
 
 hs_33_fnl_event_occ <- left_join(hs_33_event, hs_33_occ, by = "eventID")
+
+hs_33_fnl_event_occ$associatedTaxa <-   " "
+hs_33_fnl_event_occ$associatedTaxa <- ifelse(grepl("pr", hs_33_fnl_event_occ$occurrenceID), 
+paste("prey of: ", hs_33_fnl_event_occ$eventID, "-p", sep = ""), "")
 
 write_csv(hs_33_fnl_event_occ, here::here("datasets", "npmsdd_data_from_caroline", "hs_33",
                                           "hs_33_event_occ.csv"))
