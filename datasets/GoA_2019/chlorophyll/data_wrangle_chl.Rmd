@@ -72,7 +72,7 @@ chl_station <- chl %>%
 
 chl_cast <- chl %>%
   select(eventID = cast,
-         parenteventID = station,
+         parentEventID = station,
          eventDate = dateTime,
          decimalLatitude = Latitude,
          decimalLongitude = Longitude) %>%
@@ -129,7 +129,8 @@ The Darwin Core Archive (DwC-A) works with "long" datatables, whereas usually da
 ``` {r chl_measurement, eval = FALSE}
 # Select the correct eventID layer and the parameters measured
 chl_measurement <- chl %>%
-  select(eventID = sample, 
+  select(eventID = sample,
+         Latitude, Longitude, dateTime,
          Chl:Phe) %>%
   # Gather Chl and Phe into measurement types
   pivot_longer(c(`Chl`, `Phe`), names_to = "measurementType", 
@@ -148,7 +149,11 @@ chl_measurement <- chl %>%
                                        measurementType == "phaeopigments" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UMMC/")
          
   ) %>%
-  select(measurementID, measurementType, measurementTypeID,
+  dplyr::rename(decimalLatitude = Latitude,
+                decimalLongitude = Longitude,
+                eventDate = dateTime) %>%
+  select(eventID, decimalLatitude, decimalLongitude, eventDate,
+         measurementID, measurementType, measurementTypeID,
          measurementValue, measurementUnit, measurementUnitID)
 
 # Write up csv file and upload to GoogleDrive folder
