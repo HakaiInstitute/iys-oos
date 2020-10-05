@@ -54,13 +54,15 @@ source_id_33 <- left_join(source_id_33, gear, by = "gear_type_predator_id1") %>%
                 maximumDepthInMeters = fishing_depth_max)
 ```
 
-No information pertaining to the fishing depth was found in the paper. Next we need to create the Event Core. Required columns are: `eventDate`, `eventID`. We also need to figure out how to add coordinates to the Event Core, especially given that for these data entries the coordinates are those of a line string. For all data entries, only the `lat_min`, `lat_max` and `lon_min` are populated, and these will therefore have to correspond to the OBIS columns of `decimalLatitude` and `decimalLongitude`. Additionally, as per OBIS standards, latitude has to be in the range of -90 to 90, inclusive, and longitude has to be in the range of -180 to 180, inclusive. 
+The minimumDepthInMeters and maximumDepthInMeters is _NA_, and no information pertaining to the fishing depth was found in the paper, so we'll just leave it.
+
+Next we need to create the Event Core. Required columns are: `eventDate`, `eventID`. We also need to figure out how to add coordinates to the Event Core, especially given that for these data entries the coordinates are those of a line string. For all data entries, only the `lat_min`, `lat_max` and `lon_min` are populated, and these will therefore have to correspond to the OBIS columns of `decimalLatitude` and `decimalLongitude`. Additionally, as per OBIS standards, latitude has to be in the range of -90 to 90, inclusive, and longitude has to be in the range of -180 to 180, inclusive. 
 
 From the paper we see that the aggregated data pertaining to the steelhead trouts were predominantly clustered around two specific transects (line strings). We want to automate the process where the coordinates of both the `LINESTRING` coordinates are provided from the three columns with coordinates. To get more accurate coordinates for the lineString; [this](https://github.com/iobis/obistools#calculate-centroid-and-radius-for-wkt-geometries) is a very useful link!
 
 To determine how the `footprintWKT`s are depicted (i.e., with the number of brackets), see [here](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry). The way to depict points, polygons, linestrings, multipolygons or a geometrycollection differs. Note: with _POINT_ and _LINESTRING_ it is imperative that the footprintWKT is in `(lon, lat)` **not** `(lat, lon)` (it'll give an error).
 
-Finally, as some data is collected in a linestring, OBIS will want to know what the `coordinateUncertaintyInMeters` is. Thankfully there is a neat package and function for this: `obistools::calculate_centroid()`. The function calculates the coordinateUncertainty from a single point along the linestring - please be aware that therefore the uncertainty can be quite big!
+Finally, as the data is collected in a linestring, OBIS will want to know what the `coordinateUncertaintyInMeters` is. Thankfully there is a neat package and function for this: `obistools::calculate_centroid()`. The function calculates the coordinate uncertainty from a single point (centroid) along the linestring - please be aware that therefore the uncertainty can be quite big!
 
 ```{r}
 source_id_33 <- source_id_33 %>% 
@@ -70,6 +72,8 @@ source_id_33$lon_min[source_id_33$lon_min>0] = source_id_33$lon_min[source_id_33
 
 source_id_33 <- source_id_33 %>% 
   dplyr::rename(year = year_min)
+
+# Only two lon_min values are in this source ID, making it easy to use the ifelse() function.
 
 source_id_33$footprintWKT <- with(source_id_33, ifelse(lon_min == "-180", 
                                     paste0("LINESTRING (-180.00000 38.00000, -180.00000 58.00000)"),
@@ -112,7 +116,7 @@ write_csv(hs_33_event, here::here("datasets", "npmsdd_data_from_caroline", "hs_3
 
 Additionally, following the previously mentioned example, we are required to make a resourceRelationship table, as both the salmon and the stomach content can be viewed as species occurrences. All salmon individuals in this regard are considered the predators, as indicate with a _p_. Prey species found in the stomach content will be indicated by _pr_. We want to make it such that if multiple species of prey are present (i.e., '1'), they will be assigned, in ascending order, pr1, pr2, independent of exactly which species were found in the stomach content.
 
-The resourceRelationshipID follows the format of e.g. `database - source_id - predator_id - predatorprey1` etc, the same format as used in the CSIRO sef diet dataset. Some salmonid individuals have more than 1 identified prey spp in their stomach. 
+The resourceRelationshipID follows the format of e.g. `database - source_id - predator_id - predatorprey1` etc, the same format as used in the CSIRO sef diet dataset. Some salmonid individuals have more than 1 identified prey spp in their stomach. **However, I haven't found out yet whether uploading the resourceRelationship core through the IPT is needed for OBIS. Instead, currently we have opted to include a column `associatedTaxa` to highlight the relationship. But I would suggest to still make the resourceRelationship core in case workflow changes.**
 
 **IMPORTANT** In the example scripts, I noticed a column `id` - please note that this is **NOT** the same as the eventID, it's the id the IPT uses as the id for each row in the dataset, so it's not a column that has to be populated in the relationship or occurrence core. 
 
