@@ -35,7 +35,8 @@ source_id_33 <- source_id_33 %>%
 
 source_id_33 <- source_id_33 %>%
   mutate(eventDate = paste(year_min, month_min, sep = "-")) %>%
-  mutate(eventDate = paste(eventDate, month_max, sep = "/"))
+  mutate(eventDate = paste(eventDate, year_min, sep = "/")) %>%
+  mutate(eventDate = paste(eventDate, month_max, sep = "-"))
 ```
 
 Next, we need to determine the `maximumDepthInMeters` and `minimumDepthInMeters`. Though these are not _required_ terms in the DwC standard or on OBIS, OBIS does report these values as 'missing' if they are not provided. For source_id 33 there are two gear types reported: `gear_type_predator_id1` and `gear_type_predator_id2`. `gear_type_predator_id` is renamed to `gear_type_predator_id1` so that it can easily be joined with the original dataframe. 
