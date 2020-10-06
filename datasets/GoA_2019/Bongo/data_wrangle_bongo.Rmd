@@ -36,7 +36,7 @@ bongo <- read_excel(here("Bongo", "raw_data",
                   sheet = "Samples collected") %>%
   janitor::clean_names() %>%
   # Convert the standalone time value (UTC+12) into ISO8601 extended format
-  mutate(Date = lubridate::dmy(date),
+  mutate(Date = lubridate::ymd(date),
          Time = format(start_time, format = "%H:%M:%S"),
          dateTime = format_iso_8601(as.POSIXct(paste(Date, Time), 
                                                format="%Y-%m-%d %H:%M:%S", 
@@ -72,9 +72,12 @@ bongo_cast <- bongo %>%
          eventDate = dateTime,
          decimalLatitude = start_latitude,
          decimalLongitude = start_longitude,
-         minimumDepthInMetres = sample_depth,
-         maximumDepthInMetres = sample_depth) %>%
+         minimumDepthInMeters = sample_depth,
+         maximumDepthInMeters = sample_depth) %>%
   mutate(samplingProtocol = "vertical Bongo Net deployment") %>%
+  
+  # Ideally samplingProtocol would link the DOI of the paper. 
+  
   distinct(eventID, .keep_all = TRUE)
 bongo_cast <- bongo_cast %>%
   mutate(eventRemarks = "cast",
@@ -94,9 +97,12 @@ bongo_sample <- bongo %>%
   mutate(eventRemarks = "sample")
 
 bongo_event <- bind_rows(bongo_cruise,bongo_station,bongo_cast, bongo_sample) %>% 
-  select(eventID, parentEventID:maximumDepthInMetres, coordinateUncertaintyInMeters, eventRemarks) %>%
+  select(eventID, parentEventID:maximumDepthInMeters, coordinateUncertaintyInMeters, eventRemarks) %>%
   mutate(type = "HumanObservation",
         geodeticDatum = "EPSG:4326")
+
+# To recursively add event information from parent events to child events:
+bongo_event <- obistools::flatten_event(bongo_event)
 
 # Make sure the folder path exists already (e.g. ./Bongo/tidy_data)
 write_csv(bongo_event, here("Bongo", "tidy_data", "bongo_event.csv"))
@@ -114,13 +120,11 @@ div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
 Two columns that might still need to be added to the Event Core: `sampleSizeValue` and `sampleSizeUnit`. The sampling protocol for the Bongo measurements is described [here](https://npafc.org/wp-content/uploads/Public-Documents/2019/1858Prof-Kaganovskiy-Cruise-Summary.pdf). In the [DwC terms](https://dwc.tdwg.org/terms/) it is stated that the definition of the samplingProtocol is "the name of, reference to, or description of the method or protocol used during an Event". For this data set that would be: Bongo net(s) (0.5 m2, mesh size = 236 microns) was deployed to a depth of 250m and towed up vertically. Net 1 of the Bongo was preserved in a 4% formaldehyde seawater solution, net 2 was size fractioned. All net 2 samples were immediately transferred to a -40C blast freezer, and 12 hours later to a -40C storage freezer. 
 
 `samplingProtocol` = "Vertical deployment of Bongo net" - alternatively this could be the link to the Cruise Summary, or DOI once the paper is published?
-`samplingEffort` = volume of water filtered? Time (length) of tow?
+`samplingEffort` = volume of water filtered? Time (length) of tow? Answer: volumen of water filtered, though I still need to receive (raw) data of the flowmeter attached to the Bongo net. 
 
 </div>
 
 ## Occurrence Core
-
-TO DO: Add life stage to occurrence core. 
 
 An `occurrenceID` and `occurrenceStatus` will only be provided to data entries where species have been identified to a level for which we can find a WoRMS taxon. Only for these species can a URN be associated from WoRMS. So first we inspect all the unique input for the `species` column, and filter for all these species by filtering out the species that can _not_ be identified to a species or genus level. Measurements of weight, length, life stage and taxonomic group will still be included, however they will linked directly to the `eventID` (the sampleID) rather than the `occurrenceID`. In other words, these data entries will not be included in the Occurrence Core!
 
@@ -553,6 +557,13 @@ div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
 Q: All species that are listed as `size fraction` belong to the group "Zooplankton". How can we best represent this group according to OBIS / WoRMS standards?
 A: As no species name or genus is provided, rather than creating an `occurrenceID` for these species, we link the measurements associated to this data entry directly to the `eventID`. To indicate that it does concern measurements associated to 'Zooplankton', one of the measurement parameters is the column `Group`. 
 </div>
+
+For OBIS, it is preferred if the Event Core and Occurrence Core are combined into a single Core. As you can see, a lot of `eventID` do not have an associated `occurrenceID`, and this is mostly because these `eventIDs` are for zooplankton, which will have measurements directly linked to the `eventID`. 
+
+``` {r}
+bongo_event_occ <- left_join(bongo_event, bongo_occ_core, by = "eventID")
+write_csv(bongo_event_occ, here("Bongo", "tidy_data", "bongo_event_occ.csv"))
+```
 
 ## extended measurementOrFact
 
