@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.999992 (TeX Live 2020/W32TeX) (preloaded format=xelatex 2020.10.6)  6 OCT 2020 15:39
+This is XeTeX, Version 3.14159265-2.6-0.999992 (TeX Live 2020/W32TeX) (preloaded format=xelatex 2020.10.6)  6 OCT 2020 16:37
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -989,37 +989,37 @@ File: Hakai Institute Logo Vector.png Graphic file (type bmp)
 <Hakai Institute Logo Vector.png>
 [5]
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
-(Font)              scaled to size 8.4pt on input line 422.
+(Font)              scaled to size 8.4pt on input line 430.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
-(Font)              scaled to size 6.0pt on input line 422.
+(Font)              scaled to size 6.0pt on input line 430.
 LaTeX Font Info:    Trying to load font information for OML+lmm on input line 4
-22.
+30.
 (c:/Users/Admin/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/omllmm.fd
 File: omllmm.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/m/n' will be
-(Font)              scaled to size 12.0011pt on input line 422.
+(Font)              scaled to size 12.0011pt on input line 430.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/m/n' will be
-(Font)              scaled to size 8.40076pt on input line 422.
+(Font)              scaled to size 8.40076pt on input line 430.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/m/n' will be
-(Font)              scaled to size 6.00055pt on input line 422.
+(Font)              scaled to size 6.00055pt on input line 430.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
-(Font)              scaled to size 11.99872pt on input line 422.
+(Font)              scaled to size 11.99872pt on input line 430.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
-(Font)              scaled to size 8.3991pt on input line 422.
+(Font)              scaled to size 8.3991pt on input line 430.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
-(Font)              scaled to size 5.99936pt on input line 422.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 422
+(Font)              scaled to size 5.99936pt on input line 430.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 430
 .
 (c:/Users/Admin/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 422
+LaTeX Font Info:    Trying to load font information for U+msb on input line 430
 .
 (c:/Users/Admin/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-Underfull \hbox (badness 10000) in paragraph at lines 437--438
+Underfull \hbox (badness 10000) in paragraph at lines 445--446
 
  []
 
@@ -1031,6 +1031,10 @@ File: Hakai Institute Logo Vector.png Graphic file (type bmp)
 File: Hakai Institute Logo Vector.png Graphic file (type bmp)
 <Hakai Institute Logo Vector.png>
 [7]
+Underfull \hbox (badness 10000) in paragraph at lines 516--517
+
+ []
+
 File: IYS Communication Scheme.png Graphic file (type bmp)
 <IYS Communication Scheme.png>
 File: Hakai Institute Logo Vector.png Graphic file (type bmp)
@@ -1039,15 +1043,15 @@ File: Hakai Institute Logo Vector.png Graphic file (type bmp)
 File: Hakai Institute Logo Vector.png Graphic file (type bmp)
 <Hakai Institute Logo Vector.png>
 [9]
-Underfull \hbox (badness 10000) in paragraph at lines 616--619
+File: Hakai Institute Logo Vector.png Graphic file (type bmp)
+<Hakai Institute Logo Vector.png>
+[10]
+Underfull \hbox (badness 10000) in paragraph at lines 626--629
 []\TU/lmr/m/n/12 NERC Vocabulary: []$[][][][][] [] [] [] [][][] [] [][][][] [] 
 [][] [] [][] [] [][][][][][][][][] [] [][][][][][][][] [] [][][] [] [][][][][][
 ][][] []
  []
 
-File: Hakai Institute Logo Vector.png Graphic file (type bmp)
-<Hakai Institute Logo Vector.png>
-[10]
 File: Hakai Institute Logo Vector.png Graphic file (type bmp)
 <Hakai Institute Logo Vector.png>
 [11] (./IYS-OOS-Data-Mobilization-and-Communication-Plan.aux)
@@ -1058,11 +1062,11 @@ Plan.out' has not changed.
 Here is how much of TeX's memory you used:
  16544 strings out of 479444
  294682 string characters out of 5879673
- 756006 words of memory out of 5000000
+ 755006 words of memory out of 5000000
  35668 multiletter control sequences out of 15000+600000
  538685 words of font info for 70 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 84i,12n,121p,510b,442s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 84i,13n,121p,510b,442s stack positions out of 5000i,500n,10000p,200000b,80000s
 
 Output written on IYS-OOS-Data-Mobilization-and-Communication-Plan.pdf (11 page
 s).

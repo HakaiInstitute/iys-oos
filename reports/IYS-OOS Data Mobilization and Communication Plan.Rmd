@@ -73,10 +73,10 @@ This document is initially created for internal use between the Hakai Institute,
 
 Successful science depends on how standardized, integrated and accessible data are. Therefore, it is important that the data are open source and follow the FAIR data principles: the data should be Findable, Accessible, Interoperable, and Reusable (Tanhua et al. 2019). 
 
-Findable: Data and supplemental materials need to have sufficiently rich metadata and a unique and persistent identifier. 
-Accessible: Metadata and data are understandable to humans and machines. Data are deposited in a trusted, secure repository. 
-Interoperable: Metadata use a formal, accessible, shared and broadly applicable language for knowledge representation.
-Reusable: Data and collections have clear usage licenses and provide accurate information on provenance. 
+* **F**indable: Data and supplemental materials need to have sufficiently rich metadata and a unique and persistent identifier. 
+* **A**ccessible: Metadata and data are understandable to humans and machines. Data are deposited in a trusted, secure repository. 
+* **I**nteroperable: Metadata use a formal, accessible, shared and broadly applicable language for knowledge representation.
+* **R**eusable: Data and collections have clear usage licenses and provide accurate information on provenance. 
 
 Open source data are data that can be freely used, shared, and built-on by anyone, anywhere and for any purpose. Having open data allows for version control and collaboration between scientists, improving data collection procedures, data recording, statistical analyses and the quality of the data output. By integrating/re-formatting - often referred to as 'tidying' or 'data wrangling' - the IYS salmon ocean ecology data to an international standard, the interoperability is improved as it becomes easier to search and filter for the correct data in various data repositories, increasing both the longevity and reusability of the data. Ensuring the data is interoperable allows building upon prior work, accelerating results and improving access to specialized knowledge, ultimately improving the credibility and reproducibility of the data collected. 
 
@@ -136,7 +136,8 @@ A clear and well-defined communication scheme is essential to having an organize
 Data mobilization, standardization and integration processes of the 2019 and 2020 datasets will identify key areas of attention, any current roadblocks, and help develop discipline-specific data mobilization and communication plans for the 2022 High Seas Expedition. Through initial communications, we further aim to address uncertainties and incorporate feedback regarding the data mobilization and standardization approach. After finalizing the standardization process, a presentation will be given to the Lead Scientists involved in the upcoming research cruise, with a case study that highlights the workflow for both biological as well as chemical or physical data. A finalized document on the data mobilization and standardization process can then be distributed to the principal investigators (PIs) and cruise scientists within each Research Area by the Lead Scientists (Figure 2). 
 
 To demonstrate the mobilization and standardization approach for biological data, we recommend using a subset of historic salmon diet data to format to international standards and host on OBIS. A subset of historic salmon diet data was mobilized and integrated into OBIS to determine the process for integrating disparate, heterogeneous datasets that remain relevant today. The salmon diet data can be particularly useful for this, as essentially it can be regarded as ‘occurrence’ data, i.e. which species occurred in the stomach content of the salmon caught. The metadata associated with the data will be hosted on our IYS-OOS CKAN repository and in a ‘parent’ record on OBIS. In addition to demonstrating the standardization process for biological data, hosting the historic salmon diet data on OBIS will also provide an excellent case example of how our approach can be used to ‘rescue’ and integrate historic data with the salmon ocean ecology data collected during the IYS research cruises, thereby ensuring interoperability and longevity of the data.  The data mobilization process for physical or geochemical data will be demonstrated using e.g. chlorophyll or CTD data collected during the 2019 or 2020 IYS High Seas Expedition. 
-<br>
+
+\hfill\break
  
 ![](IYS Communication Scheme.png)
 
@@ -154,6 +155,8 @@ Data can be stored in a private repository, accessible only to the scientist and
 This data repository provides version control for the data, making it very easy to see what version is the latest and what the changes are between versions. This ensures that the data wrangling is done to the latest version. 
 The standardization R and Python scripts are also stored in the repository, allowing scientists to see what progress has been made on the standardization process if they so choose. 
 GitHub offers a platform for communication, and questions related to the (meta)data can be asked directly to scientists tagged. 
+
+After researchers are identified for the various research groups, it is imperative that communications are established quickly and the DMAC, or the information in the DMAC, distributed as well. Both the names/organizations are required. I think it's important to identify each of the science disciplines for the 2022 High Seas Expedition, understand under which Research Group this falls, and how this ties in with the GOOS EOVs so that key variables can be identified or defined prior to the expedition. 
 
 Once the data is published by the scientists, the discipline-specific repository can be made public, thereby adhering to the FAIR data principles. 
 
