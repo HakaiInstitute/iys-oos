@@ -596,6 +596,43 @@ bongo_bottomdepth <- bongo %>%
          measurementUnit, measurementUnitID)
 ```
 
+Add information on the sampling instrument used:
+
+``` {r samplingInstrument, eval = FALSE}
+bongo_instrument <- bongo %>%
+  select(eventID = cast,
+         gear) %>%
+  mutate(bongo_mesh = 236,
+         bongo_opening = 0.5) %>%
+  distinct(eventID, .keep_all = TRUE) %>%
+  mutate_all(as.character) %>%
+  pivot_longer(cols = gear:bongo_opening,
+               names_to = "measurementType",
+               values_to = "measurementValue") %>%
+  mutate(measurementID = paste(eventID, "bongo", sep = ":"),
+         measurementTypeID = case_when(
+           measurementType == "gear" ~ "http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/",
+           measurementType == "bongo_mesh" ~ "http://vocab.nerc.ac.uk/collection/Q01/current/Q0100015/",
+           measurementType == "bongo_opening" ~ "http://vocab.nerc.ac.uk/collection/Q01/current/Q0100017/"))
+
+bongo_instrument$measurementType <- sub("gear", "Sampling instrument name", bongo_instrument$measurementType)
+bongo_instrument$measurementType <- sub("bongo_mesh", "Sampling net mesh size", bongo_instrument$measurementType)
+bongo_instrument$measurementType <- sub("bongo_opening", 
+                                        "Sampling net opening size", bongo_instrument$measurementType)
+
+bongo_instrument <- bongo_instrument %>%
+  mutate(measurementUnit = case_when(
+           measurementType == "Sampling net mesh size" ~ "um",
+           measurementType == "Sampling net opening size" ~ "m^2"),
+         measurementUnitID = case_when(
+           measurementUnit == "um" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UMIC/",
+           measurementUnit == "m^2" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UMSQ/"),
+         measurementValueID = case_when(
+           measurementValue == "Bongo" ~ "http://vocab.nerc.ac.uk/collection/L22/current/NETT0176/")) %>%
+  select(eventID, measurementID, measurementType, measurementTypeID, measurementValue,
+         measurementValueID, measurementUnit, measurementUnitID)
+```
+
 Though an occurrenceID was not created for each data entry, measurements can be linked either directly to the `eventID` or to the `occurrenceID`. The following measurements are linked to either the `eventID` or `occurrenceID`: `length_mm`, `length_type`, `weight_mg`, `number` and `(taxonomic) group`. Additional information that might in the future be included as well could be `Stage`, which reflects a lifeStage of an organism. However, because the datasheet includes a wide variety of organisms, all with different 'levels' of a life stage, to what extent is it necessary to choose a uniform 'coding' system for this variable? Finally, `size_fraction` needs to be added to `eventID`, but perhaps also to the `occurrenceID`. 
 
 We first create the eMoF table that links directly to the `eventID`. First we have to filter for all the data entries for which no `occurrenceID` has been created. In other words, remove any rows (data entries) for which an `occurrenceID` has been created:
@@ -613,13 +650,11 @@ bongo_emof <- bongo_emof %>%
          weight = weight_mg,
          length_type,
          group) %>%
-  mutate(bongo_mesh = 236,
-         bongo_opening = 0.5) %>%
 
-  # As there is no NERC vocab (it appears) for milligram (for the weight), we transform this column to reflect the weight in grams: 
+    # As there is no NERC vocab (it appears) for milligram (for the weight), we transform this column to reflect the weight in grams: 
   mutate(weight = as.numeric(weight) / 1000) %>%
   mutate_all(as.character) %>%
-  pivot_longer(cols = number:bongo_opening, 
+  pivot_longer(cols = number:group,
                names_to = "measurementType",
                values_to = "measurementValue") %>%
   mutate(
@@ -629,9 +664,7 @@ bongo_emof <- bongo_emof %>%
       measurementType == "length" ~ paste(eventID, "length", sep = ":"),
       measurementType == "length_type" ~ paste(eventID, "length_type", sep = ":"),
       measurementType == "weight" ~ paste(eventID, "weight", sep = ":"),
-      measurementType == "group" ~ paste(eventID, "taxonomic group", sep = ":"),
-      measurementType == "bongo_mesh" ~ paste(eventID, "bongo_mesh_size", sep = ":"),
-      measurementType == "bongo_opening" ~ paste(eventID, "bongo_opening", sep = ":")
+      measurementType == "group" ~ paste(eventID, "taxonomic group", sep = ":")
       # Not really happy with the nomenclature for bongo_opening
     ),
     measurementTypeID = case_when(
@@ -641,25 +674,19 @@ bongo_emof <- bongo_emof %>%
       # I want to check if maybe there is a better Controlled Vocab for body size
       measurementType == "length_type" ~ "http://vocab.nerc.ac.uk/collection/P01/current/OBSINDLX/",
       measurementType == "weight" ~ "http://vocab.nerc.ac.uk/collection/S06/current/S0600087/",
-      measurementType == "group" ~ "http://vocab.nerc.ac.uk/collection/P01/current/SCNAME01/",
-      measurementType == "bongo_mesh" ~ "http://vocab.nerc.ac.uk/collection/Q01/current/Q0100015/",
-      measurementType == "bongo_opening" ~ "http://vocab.nerc.ac.uk/collection/Q01/current/Q0100017/"
+      measurementType == "group" ~ "http://vocab.nerc.ac.uk/collection/P01/current/SCNAME01/"
     ), 
     measurementUnit = case_when(
       measurementType == "number" ~ "individuals",
       measurementType == "length" ~ "mm",
       measurementType == "weight" ~ "g",
-      measurementType == "size_fraction" ~ "mm", 
-      measurementType == "bongo_mesh" ~ "um",
-      measurementType == "bongo_opening" ~ "m^2"
+      measurementType == "size_fraction" ~ "mm"
       # If this is equal to mesh size
     ), 
     measurementUnitID = case_when(
       measurementUnit == "individuals" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UUUU/", 
       measurementUnit == "mm" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UXMM/",
-      measurementUnit == "g" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UGRM/",
-      measurementUnit == "um" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UMIC/",
-      measurementUnit == "m^2" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UMSQ/"
+      measurementUnit == "g" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UGRM/"
       # Reminder: there is no NERC Controlled Vocabulary for mg, so values are formatted to 'grams'. 
     )
     )
@@ -670,14 +697,12 @@ When the species or genus has been identified, the measurements are associated t
 ``` {r, eval = FALSE}
 bongo_emof2 <- bongo_occ_fnl %>%
   select(eventID, occurrenceID,
-         number, size_fraction,
+         individualCount, size_fraction,
          length = length_mm,
          weight = weight_mg,
          length_type,
          stage,
          group) %>%
-    mutate(bongo_mesh = 236,
-         bongo_opening = 0.5) %>%
   mutate(weight = as.numeric(weight) / 1000) %>% 
   mutate_all(as.character)
 ```
@@ -715,7 +740,7 @@ Q: For sampleID SS146, the life stage is `gravid female`. Should I create column
 ``` {r, eval = FALSE}
 bongo_emof2 <- bongo_emof2 %>%
   mutate_all(as.character) %>%
-  pivot_longer(cols = number:length, 
+  pivot_longer(cols = individualCount:length, 
                names_to = "measurementType",
                values_to = "measurementValue") %>%
   mutate(
@@ -728,10 +753,7 @@ bongo_emof2 <- bongo_emof2 %>%
       # Have to check whether this is dry weight or wet weight. 
       measurementType == "group" ~ paste(eventID, "taxonomic group", sep = ":"),
       measurementType == "maximumLength" ~ paste(eventID, "maxLength", sep = ":"),
-      measurementType == "minimumLength" ~ paste(eventID, "minLenght", sep = ":"),
-      measurementType == "bongo_mesh" ~ paste(eventID, "bongo_mesh_size", sep = ":"),
-      measurementType == "bongo_opening" ~ paste(eventID, "bongo_opening", sep = ":")
-      # Not really happy with the nomenclature for bongo_opening
+      measurementType == "minimumLength" ~ paste(eventID, "minLenght", sep = ":")
     ),
     measurementValueID = case_when(
       measurementValue == "Copepod" ~ "urn:lsid:marinespecies.org:taxname:1080",
@@ -776,9 +798,7 @@ bongo_emof2 <- bongo_emof2 %>%
       measurementType == "length_type" ~ "http://vocab.nerc.ac.uk/collection/P01/current/OBSINDLX/",
       measurementType == "weight" ~ "http://vocab.nerc.ac.uk/collection/S06/current/S0600253/",
       # As per communication with Brian Hunt: weight refers to net dry weight!
-      measurementType == "group" ~ "http://vocab.nerc.ac.uk/collection/P01/current/SCNAME01/",
-      measurementType == "bongo_mesh" ~ "http://vocab.nerc.ac.uk/collection/Q01/current/Q0100015/",
-      measurementType == "bongo_opening" ~ "http://vocab.nerc.ac.uk/collection/Q01/current/Q0100017/"
+      measurementType == "group" ~ "http://vocab.nerc.ac.uk/collection/P01/current/SCNAME01/"
     ), 
     measurementUnit = case_when(
       measurementType == "number" ~ "individuals",
@@ -786,16 +806,12 @@ bongo_emof2 <- bongo_emof2 %>%
       measurementType == "minimumLength" ~ "mm",
       measurementType == "maximumLength" ~ "mm",
       measurementType == "weight" ~ "g",
-      measurementType == "size_fraction" ~ "mm",
-      measurementType == "bongo_mesh" ~ "um",
-      measurementType == "bongo_opening" ~ "m^2"
+      measurementType == "size_fraction" ~ "mm"
     ), 
     measurementUnitID = case_when(
       measurementUnit == "individuals" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UUUU/",
       measurementUnit == "mm" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UXMM/",
-      measurementUnit == "g" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UGRM/",
-      measurementUnit == "um" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UMIC/",
-      measurementUnit == "m^2" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UMSQ/"
+      measurementUnit == "g" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UGRM/"
       # Reminder: there is no NERC Controlled Vocabulary for mg, so values are formatted to 'grams'. 
       # Reminder2: The size_fraction is often times measured in microns, but in the data set it is reported in 'mm', 
       # or 1/1000th of a micron. 
@@ -827,7 +843,7 @@ bongo_measurementRemarks <-  bongo_measurementRemarks %>%
 Finally, join all the tables together to form the measurementOrFact Core, and save it locally and on GoogleDrive: 
 
 ``` {r bongo_measurementOrFact Core, eval = FALSE}
-bongo_measurementOrFact <- bind_rows(bongo_bottomdepth, bongo_emof, bongo_emof2) %>%
+bongo_measurementOrFact <- bind_rows(bongo_bottomdepth, bongo_instrument, bongo_emof, bongo_emof2) %>%
   left_join(bongo_measurementRemarks) %>%
   select(
     eventID,
