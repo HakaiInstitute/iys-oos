@@ -157,18 +157,18 @@ We also assign sampling instrument models as a `measurementValue` and `measureme
 ``` {r samplingInstrument, eval = FALSE}
 ctd_samplingInstrument <- sheet2 %>%
   select(eventID = model, samplingInstrument) %>%
-  distinct(eventID, .keep_all = TRUE) %>%
   pivot_longer(cols = samplingInstrument, 
                names_to = "measurementType",
                values_to = "measurementValue") %>%
   mutate(measurementValue = as.character(measurementValue),
          measurementID = paste(eventID, "SI", sep = ":"),
          measurementType = recode(measurementType,
-                                  samplingInstrument = "sampling instrument")) %>%
+                                  samplingInstrument = "Sampling instrument name"),
+         measurementTypeID = "http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/") %>%
   mutate(measurementValueID = case_when(
          measurementValue == "SBE911plus" ~ "http://vocab.nerc.ac.uk/collection/L22/current/TOOL0058/",
          measurementValue == "Rinko" ~ " ")) %>%
-  select(eventID, measurementID, measurementType, measurementValue, measurementValueID)
+  select(eventID, measurementID, measurementType, measurementTypeID, measurementValue, measurementValueID)
 ```
 
 Next, we select the appropriate columns and use the pivot_longer function to transpose the data. As EC25 is measured in microSiemens/cm, which is not (yet) in NERCs controlled vocabulary, we convert this column to milliSiemens/cm. 
