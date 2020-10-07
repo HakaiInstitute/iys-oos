@@ -39,9 +39,22 @@ sheet2 <- sheet2 %>%
          ) %>%
   mutate(cruise = "GoA2019",
          station = paste(cruise, `NO.Trawl`, sep="_Stn"),
-         cast = paste(station, "cast1", sep = ":"),
-         ndepth = paste(cast, DEPTH, sep=":ctd:"),
-         sample = paste(ndepth, sep = ":"))
+         cast = paste(station, "cast1", sep = ":"))
+
+model_Rinko <- sheet2 %>% select(-TEM_S, -SAL_S) %>%
+  mutate(samplingInstrument = "Rinko", 
+         model = paste(cast, "Rinko", sep = ":"),
+         ndepth = paste(model, DEPTH, sep = ":"))
+
+model_SBE <- sheet2 %>% select(-TEM_R:-`BOD5[ml/l]`) %>%
+  mutate(samplingInstrument = "SBE911plus",
+         model = paste(cast, "SBE911plus", sep = ":"),
+         ndepth = paste(model, DEPTH, sep = ":"))
+
+sheet2 <- full_join(model_Rinko, model_SBE)
+
+# I like to reorder the dataframe on No.Trawl and depth, in ascending order.
+sheet2 <- sheet2[with(sheet2, order(NO.Trawl, DEPTH)), ]
 ```
 
 The longitude was recorded as positive values, however, after QC and cross-reference to other data recorded during the same cruise, it is clear that the values should be negative.
@@ -81,23 +94,27 @@ ctd_cast <- sheet2 %>%
 coordinates <- obistools::calculate_centroid(ctd_cast$footprintWKT) %>% select(coordinateUncertaintyInMeters)
 ctd_cast <- cbind(ctd_cast, coordinates)
 
+ctd_model <- sheet2 %>%
+  select(eventID = model,
+         parentEventID = cast) %>%
+  distinct(eventID, .keep_all = TRUE) %>%
+  mutate(eventRemarks = "samplingInstrument")
+
 ctd_ndepth <- sheet2 %>% 
   select(eventID = ndepth,
-         parentEventID = cast,
+         parentEventID = model,
          minimumDepthInMetres = DEPTH,
          maximumDepthInMetres = DEPTH) %>% 
   distinct(eventID, .keep_all = TRUE) %>% 
   mutate(eventRemarks = "sample")
 
-ctd_sample <- sheet2 %>%
-  select(eventID = sample,
-         parentEventID = ndepth) %>%
-  distinct(eventID, .keep_all = TRUE) %>%
-  mutate(eventRemarks = "subsample")
-
-ctd_event <- bind_rows(ctd_cruise, ctd_station, ctd_cast, ctd_ndepth, ctd_sample) %>% select(eventID, parentEventID:maximumDepthInMetres, coordinateUncertaintyInMeters, eventRemarks) %>% select(-footprintWKT) %>%
+ctd_event <- bind_rows(ctd_cruise, ctd_station, ctd_cast, ctd_model, ctd_ndepth) %>% select(eventID, parentEventID:maximumDepthInMetres, coordinateUncertaintyInMeters, eventRemarks) %>% select(-footprintWKT) %>%
   mutate(type = "Event",
-         geodeticDatum = "EPSG:4326")
+         geodeticDatum = "EPSG:4326",
+         samplingProtocol = " ", # Link to paper DOI
+         samplingEffort = " ",
+         samplingSize = " ",
+         samplingSizeUnit = " ")
 
 # If you wish to re-order the Event Core, use the following code:
 # order <- stringr::str_sort(ctd_event$eventID, numeric=TRUE)
@@ -135,6 +152,25 @@ ctd_botdepth <- sheet2 %>%
          measurementUnit, measurementUnitID)
 ```
 
+We also assign sampling instrument models as a `measurementValue` and `measurementValueID` to the event layer (model): 
+
+``` {r samplingInstrument, eval = FALSE}
+ctd_samplingInstrument <- sheet2 %>%
+  select(eventID = model, samplingInstrument) %>%
+  distinct(eventID, .keep_all = TRUE) %>%
+  pivot_longer(cols = samplingInstrument, 
+               names_to = "measurementType",
+               values_to = "measurementValue") %>%
+  mutate(measurementValue = as.character(measurementValue),
+         measurementID = paste(eventID, "SI", sep = ":"),
+         measurementType = recode(measurementType,
+                                  samplingInstrument = "sampling instrument")) %>%
+  mutate(measurementValueID = case_when(
+         measurementValue == "SBE911plus" ~ "http://vocab.nerc.ac.uk/collection/L22/current/TOOL0058/",
+         measurementValue == "Rinko" ~ " ")) %>%
+  select(eventID, measurementID, measurementType, measurementValue, measurementValueID)
+```
+
 Next, we select the appropriate columns and use the pivot_longer function to transpose the data. As EC25 is measured in microSiemens/cm, which is not (yet) in NERCs controlled vocabulary, we convert this column to milliSiemens/cm. 
 
 Additionally, turbidity is measured in FTU. From personal communication with Anna Vazhova, _FTU is the Formazine Turbidity Unit. According to ISO 7027 (Water quality - Determination of turbidity), the turbidity unit is FNU (Formazine Nephelometric Unit). The United States Environmental Protection Agency (U.S. EPA) and the World Health Organization (WHO) use the NTU (Nephelometric Turbidity Unit). The ratio between the main units of turbidity is as follows: 1 FTU (EMF in Russia) = 1 FNU = 1 NTU_. As FTU is currently not a `measurementUnit` in the NERC vocab, we have changed this `measurementUnit` to NTU.
@@ -143,13 +179,15 @@ Finally, it is important to note that 3 columns within the dataset are _not_ in-
 
 ``` {r measurement data_wrangle, eval = FALSE}
 ctd_measurement <- sheet2 %>% 
-  select(eventID = sample, 
-         `TEM_S`:`BOD5[ml/l]`) %>%
+  select(eventID = ndepth, 
+         `TEM_R`:`BOD5[ml/l]`,
+         TEM_S,
+         SAL_S) %>%
   distinct(eventID, .keep_all = TRUE) %>%
   mutate(`EC25 [mS/cm]_R` = as.numeric(`EC25 [uS/cm]_R`) / 1000) %>%
   dplyr::select(-`EC25 [uS/cm]_R`) %>%
   mutate_all(as.character) %>%
-  pivot_longer(cols = `TEM_S`:`EC25 [mS/cm]_R`,
+  pivot_longer(cols = `TEM_R`:`EC25 [mS/cm]_R`,
                names_to = "measurementType",
                values_to = "measurementValue") %>% 
   mutate(measurementID = case_when(measurementType == "TEM_S" ~ paste(eventID,"temp_s",sep=":"),
@@ -249,9 +287,9 @@ ctd_measurement <- sheet2 %>%
   filter(measurementValue != "NaN")
 
 # Join the dataframes: 
-ctd_measurementOrFact <- bind_rows(ctd_botdepth, ctd_measurement) %>%
+ctd_measurementOrFact <- bind_rows(ctd_botdepth, ctd_samplingInstrument, ctd_measurement) %>%
   select(measurementID, eventID, measurementType, measurementTypeID,
-         measurementValue, measurementUnit, measurementUnitID)
+         measurementValue, measurementValueID, measurementUnit, measurementUnitID)
 
 # Save locally and on GoogleDrive: 
 write_csv(ctd_measurementOrFact, here("CTD", "tidy_data", "CTD_measurement.csv"))
