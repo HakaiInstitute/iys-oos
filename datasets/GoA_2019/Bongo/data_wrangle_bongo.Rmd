@@ -457,8 +457,9 @@ To create the final occurrence table, the five occurrence tables are joined. As 
 bongo_occ_fnl <- rbind(bongo_occ1, bongo_occ2, bongo_occ3, bongo_occ4, bongo_occ5) 
 bongo_occ_fnl <- bongo_occ_fnl[mixedorder(as.character(bongo_occ_fnl$eventID)),]
 bongo_occ_fnl <- bongo_occ_fnl %>%
-  rename(individualCount = number) %>%
-  mutate(occurrenceID = paste("IYS_GoA2019_zocc", row_number(), sep = ""),
+  rename(organismQuantity = number) %>%
+  mutate(organismQuantityType = "individuals",
+         occurrenceID = paste("IYS_GoA2019_zocc", row_number(), sep = ""),
   scientificNameID = case_when(
       scientificName == "Thysanoessa spinifera" ~ "urn:lsid:marinespecies.org:taxname:237874", 
       scientificName == "Sergestes similis" ~ "urn:lsid:marinespecies.org:taxname:514127",
@@ -539,7 +540,7 @@ bongo_occ_fnl <- bongo_occ_fnl %>%
 bongo_occ_core <- bongo_occ_fnl %>%
   rename(Preparations = preservation) %>%
   select(eventID, occurrenceID, scientificName, scientificNameID, occurrenceStatus, Preparations,
-         individualCount, stage, lifeStage, sex, reproductiveCondition, occurrenceRemarks)
+         organismQuantity, organismQuantityType, stage, lifeStage, sex, reproductiveCondition, occurrenceRemarks)
 # I change bongo_occ_fnl into a new dataframe because we're going to use the bongo_occ_fnl dataset in the eMoF table.
 
 # Make sure the folder path exists already (e.g. ./Bongo/tidy_data)
