@@ -113,7 +113,7 @@ trawl <- read_excel(here("Salmon Diet", "raw_data", "2019_GoA_Fish_data_Hakai.xl
   mutate(station = paste("GoA2019", NUMBER, sep = "_Stn"))
 ```
 
-**Please note that the date and coordinates could change as the trawl data is not finalized.** 
+**Please note that the date and coordinates could change as the trawl data is not finalized.** From an NPAFC document () we gather that the trawling was conducted at surface level, to a depth of 30 meters (confirm!). 
 
 ``` {r salmondiet_event, eval = FALSE}
 salmon_cruise <- salmon %>% 
@@ -132,18 +132,33 @@ salmon_trawl <- salmon %>%
   left_join(select(
     trawl,
     station,
-    UTC_start,
+    eventDate,
     X,
     Y
   )) %>%
-  select(eventID = trawl,
-         parentEventID = station,
-         eventDate = UTC_start,
-         decimalLatitude = Y,
-         decimalLongitude = X) %>%
+  dplyr::rename(eventID = trawl, 
+                parentEventID = station,
+                decimalLatitude = Y,
+                decimalLongitude = X) %>%
+  dplyr::select(eventID,
+         parentEventID,
+         eventDate,
+         decimalLatitude,
+         decimalLongitude,
+         minimumDepthInMeters = 0,
+         maximumDepthInMeters = 30) %>%
   distinct(eventID, .keep_all = TRUE) %>%
-  mutate(eventRemarks = "trawl")
+  mutate(eventRemarks = "trawl") %>%
+  select(-th_longipes)
 
+salmon_trawl <- salmon_trawl %>%
+  mutate(footprintWKT = " ")
+salmon_trawl$footprintWKT <- paste0("POINT (", salmon_trawl$decimalLongitude, " ",
+                                    salmon_trawl$decimalLatitude, ")") 
+salmon_trawl <- salmon_trawl %>% dplyr::select(-decimalLatitude, -decimalLongitude)
+
+coordinates <- obistools::calculate_centroid(salmon_trawl$footprintWKT)
+salmon_trawl <- cbind(salmon_trawl, coordinates)
 # The Salmon Diet data does not include information as to at what depths the trawls were conducted. Currently I believe this information is also not present in the general Trawl data. Should this information become available it should be connected to the general trawl information, along with info such as: volume water filter, speed at which the vessel was traveling during trawl, starting & finish lat/longs of trawl.
 ```
 
@@ -176,8 +191,9 @@ salmon_sample <- salmon %>%
 
 # To connect them all together: 
 salmon_event <- bind_rows(salmon_cruise,salmon_station,salmon_trawl, salmon_sample) %>%
-  select(eventID, parentEventID:decimalLongitude, eventRemarks) %>%
-  mutate(type = "HumanObservation")
+  mutate(type = "HumanObservation",
+         geodeticDatum = "EPSG:4326",
+         samplingProtocol = " ")
 
 # Make sure the folder path exists already (e.g. ./Salmon Diet/tidy_data)
 write_csv(salmon_event, here("Salmon Diet", "tidy_data", "salmon_event.csv"))
@@ -256,7 +272,7 @@ scientificName == "sebastes" ~ "urn:lsid:marinespecies.org:taxname:126175",
 scientificName == "mictostomus_pacificus" ~ "urn:lsid:marinespecies.org:taxname:274294")
 # Spelling error? Accepted name is Microstomus pacificus?
 ) %>%
-  rename(id = sample)
+  rename(eventID = sample)
 
 salmon_prey_occ <- salmon_prey %>%
   select(id, occurrenceID, scientificName, scientificNameID, occurrenceStatus) %>%
