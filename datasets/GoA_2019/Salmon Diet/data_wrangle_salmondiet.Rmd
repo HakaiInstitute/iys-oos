@@ -140,25 +140,42 @@ salmon_trawl <- salmon %>%
                 parentEventID = station,
                 decimalLatitude = Y,
                 decimalLongitude = X) %>%
+  mutate(minimumDepthInMeters = 0,
+         maximumDepthInMeters = 30,
+         eventRemarks = "trawl")
+
+predator <- salmon_trawl %>%
+  mutate(eventID = paste(eventID, species, sep = ":"))
+
+prey <- salmon_trawl %>%
+  mutate(eventID = paste(eventID, species, sep = ":")) %>%
+  select(-digested_food) %>%
+  pivot_longer(cols = boreoteuthis_borealis:mictostomus_pacificus,
+               names_to = "prey", 
+               values_to = "presence") %>%
+  distinct()
+
+spp_occ <- full_join(predator, prey)
+spp_occ <- spp_occ[!is.na(spp_occ$presence), ] %>% distinct()
+
+salmon_sample <- spp_occ %>%
   dplyr::select(eventID,
-         parentEventID,
-         eventDate,
-         decimalLatitude,
-         decimalLongitude,
-         minimumDepthInMeters = 0,
-         maximumDepthInMeters = 30) %>%
-  distinct(eventID, .keep_all = TRUE) %>%
-  mutate(eventRemarks = "trawl") %>%
-  select(-th_longipes)
+                parentEventID,
+                eventDate,
+                decimalLatitude,
+                decimalLongitude
+                ) %>%
+  mutate(eventRemarks = "sample")
 
-salmon_trawl <- salmon_trawl %>%
+salmon_sample <- salmon_sample %>%
   mutate(footprintWKT = " ")
-salmon_trawl$footprintWKT <- paste0("POINT (", salmon_trawl$decimalLongitude, " ",
-                                    salmon_trawl$decimalLatitude, ")") 
-salmon_trawl <- salmon_trawl %>% dplyr::select(-decimalLatitude, -decimalLongitude)
+salmon_sample$footprintWKT <- paste0("POINT (", salmon_sample$decimalLongitude, " ",
+                                     salmon_sample$decimalLatitude, ")")
+#salmon_sample <- salmon_sample %>% dplyr::select(-decimalLatitude, -decimalLongitude)
 
-coordinates <- obistools::calculate_centroid(salmon_trawl$footprintWKT)
-salmon_trawl <- cbind(salmon_trawl, coordinates)
+#coordinates <- obistools::calculate_centroid(salmon_sample$footprintWKT)
+#salmon_sample <- cbind(salmon_sample, coordinates)
+
 # The Salmon Diet data does not include information as to at what depths the trawls were conducted. Currently I believe this information is also not present in the general Trawl data. Should this information become available it should be connected to the general trawl information, along with info such as: volume water filter, speed at which the vessel was traveling during trawl, starting & finish lat/longs of trawl.
 ```
 
@@ -182,15 +199,11 @@ Currently the data is reformatted data is structured as shown in **option A**. H
 ``` {r, eval = FALSE}
 
 # If we treat every salmon entry for which the stomach has been removed and examined as a sampling event, we essentially treat the salmon like a sampling instrument of their direct surroundings! 
- 
-salmon_sample <- salmon %>% 
-  select(eventID = sample,
-         parentEventID = trawl) %>% 
-  distinct(eventID, .keep_all = TRUE) %>% 
-  mutate(eventRemarks = "sample")
 
 # To connect them all together: 
 salmon_event <- bind_rows(salmon_cruise,salmon_station,salmon_trawl, salmon_sample) %>%
+  dplyr::select(eventID, parentEventID, eventDate, decimalLatitude, decimalLongitude, footprintWKT,
+                minimumDepthInMeters, maximumDepthInMeters, eventRemarks) %>%
   mutate(type = "HumanObservation",
          geodeticDatum = "EPSG:4326",
          samplingProtocol = " ")
@@ -221,14 +234,26 @@ The Occurrence core connected to each salmon stomach examined consists of the oc
 As all the prey species are listed as columns, we first have to investigate all the unique prey species consumed, as these will get their associated WoRMS URN. There is also a column `digested_food` which will not have an associated URN, as it likely reflects unidentified prey species consumed -- this will have to be confirmed! This column will get added as a measurement linking directly to the salmon (Event Core). 
 
 ``` {r prey_occurrence, eval = FALSE}
-salmon_prey <- salmon  %>%
-  pivot_longer(cols = boreoteuthis_borealis:mictostomus_pacificus, 
-               names_to = "scientificName", values_to = "Mass") 
-salmon_prey <- salmon_prey[ !(salmon_prey$scientificName %in% "digested_food"),]
-salmon_prey <- salmon_prey %>%
-  mutate(occurrenceStatus = ifelse(is.na(salmon_prey$Mass), "absent", "present"),
-         occurrenceID = paste(sample, "stomach_content", scientificName, sep = ":"),
-         scientificNameID = case_when(
+# Create prey_id for each prey species in the stomach:
+
+prey$id <- " "
+prey <- prey %>% filter(presence > 0)
+
+for(i in unique(prey$eventID)) {
+  prey$id[prey$eventID == i] <- seq_len(sum(prey$eventID == i))
+}
+
+prey$prey_id <- paste0("pr", prey$id)
+
+
+prey_occ <- spp_occ %>%
+  dplyr::select(eventID, prey, presence) %>%
+  dplyr::rename(scientificName = prey) %>%
+  mutate(occurrenceStatus = "presence",
+         occurrenceID = paste(eventID, prey$prey_id, sep = ":"))
+
+prey_occ <- prey_occ %>%
+  mutate(scientificNameID = case_when(
 scientificName == "boreoteuthis_borealis" ~ "urn:lsid:marinespecies.org:taxname:342326",
 # Boreoteuthis is not an accepted genus, Gonatopsis is the accepted version?
 scientificName == "neocalanus_cristatus" ~ "urn:lsid:marinespecies.org:taxname:104470",
