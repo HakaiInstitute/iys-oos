@@ -142,32 +142,40 @@ salmon_trawl <- salmon %>%
                 decimalLongitude = X) %>%
   mutate(minimumDepthInMeters = 0,
          maximumDepthInMeters = 30,
-         eventRemarks = "trawl")
+         eventRemarks = "trawl") %>%
+  distinct()
+
+salmon_trawl <- salmon_trawl %>%
+  mutate(footprintWKT = " ")
+salmon_trawl$footprintWKT <- paste0("POINT (", salmon_trawl$decimalLongitude, " ",
+                                     salmon_trawl$decimalLatitude, ")")
 
 predator <- salmon_trawl %>%
-  mutate(eventID = paste(eventID, species, sep = ":"))
+  mutate(eventID = paste(eventID, species, sep = ":")) %>%
+  distinct()
 
 predator$id <- " "
-predator <- predator %>% 
-  select(eventID, species, n_stomachs) %>% distinct()
 
 for(i in unique(predator$eventID)) {
   predator$id[predator$eventID == i] <- seq_len(sum(predator$eventID == i))
 }
 
-predator$predator_id <- paste0("p", predator$id)
-predator$eventID <- paste(predator$eventID, predator$predator_id, sep = ":")
+predator$eventID <- paste(predator$eventID, predator$id, sep = ":")
 
-prey <- salmon_trawl %>%
-  mutate(eventID = paste(eventID, species, sep = ":")) %>%
+prey <- predator %>%
   select(-digested_food) %>%
   pivot_longer(cols = boreoteuthis_borealis:mictostomus_pacificus,
                names_to = "prey", 
-               values_to = "presence") %>%
-  distinct()
+               values_to = "presence")
+prey <- prey[!is.na(prey$presence), ] 
+
+for(i in unique(prey$eventID)) {
+  prey$id[prey$eventID == i] <- seq_len(sum(prey$eventID == i))
+}
+
+prey$prey_id <- paste0("pr", prey$id)
 
 spp_occ <- full_join(predator, prey)
-spp_occ <- spp_occ[!is.na(spp_occ$presence), ] %>% distinct()
 
 salmon_sample <- spp_occ %>%
   dplyr::select(eventID,
@@ -178,10 +186,6 @@ salmon_sample <- spp_occ %>%
                 ) %>%
   mutate(eventRemarks = "sample")
 
-salmon_sample <- salmon_sample %>%
-  mutate(footprintWKT = " ")
-salmon_sample$footprintWKT <- paste0("POINT (", salmon_sample$decimalLongitude, " ",
-                                     salmon_sample$decimalLatitude, ")")
 #salmon_sample <- salmon_sample %>% dplyr::select(-decimalLatitude, -decimalLongitude)
 
 #coordinates <- obistools::calculate_centroid(salmon_sample$footprintWKT)
@@ -246,16 +250,7 @@ As all the prey species are listed as columns, we first have to investigate all 
 
 ``` {r prey_occurrence, eval = FALSE}
 # Create prey_id for each prey species in the stomach:
-prey$id <- " "
-prey <- prey %>% filter(presence > 0) 
-
-for(i in unique(prey$eventID)) {
-  prey$id[prey$eventID == i] <- seq_len(sum(prey$eventID == i))
-}
-
-prey$prey_id <- paste0("pr", prey$id)
-
-prey_occ <- spp_occ %>%
+prey_occ <- prey %>%
   dplyr::select(eventID, prey, presence) %>%
   dplyr::rename(scientificName = prey) %>%
   mutate(occurrenceStatus = "present",
@@ -323,12 +318,11 @@ drive_upload(here("Salmon Diet", "tidy_data", "salmon_prey_occ.csv"),
 If we choose option B then the following chunk of code is also needed to create the Occurrence Core specifically for the salmon caught and whose stomach contents have been examined. Somehow through binding rows it duplicates some - I am unsure why. As a result, I've occassionally used distinct() to make sure only unique rows are provided.  
 
 ``` {r salmon_occ, eval = FALSE}
-
-predator$occurrenceID <- predatorpaste(predator$eventID, predator$predator_id, sep = ":")
+predator$occurrenceID <- paste(predator$eventID, "p", sep = ":")
 
 predator_occ <- predator %>%
   dplyr::select(eventID, occurrenceID, species,
-                n_stomachs, predator_id) %>%
+                n_stomachs) %>%
   dplyr::mutate(occurrenceStatus = "present",
                 organismQuantityType = "stomachs") %>%
   dplyr::rename(scientificName = species,
@@ -345,7 +339,7 @@ scientificName == "Oncorhynchus tschawytscha" ~ "urn:lsid:marinespecies.org:taxn
   distinct()
 
 # Join the two occurrence cores:
-diet_data_occ <- bind_rows(salmon_prey_occ, predator_occ)
+diet_data_occ <- full_join(salmon_prey_occ, predator_occ)
 
 # To reorder the eventID, use the following code:
 order <- stringr::str_sort(diet_data_occ$occurrenceID, numeric=TRUE)
@@ -366,8 +360,7 @@ salmondiet_event_occ <- salmondiet_event_occ %>%
   mutate(institutionCode = " ",
          collectionCode = " ",
          catalogNumber = " ",
-         preparations = " ") %>%
-  distinct()
+         preparations = " ")
 
 write_csv(salmondiet_event_occ, here("Salmon Diet", "tidy_data", "salmondiet_event_occ.csv"))
 
