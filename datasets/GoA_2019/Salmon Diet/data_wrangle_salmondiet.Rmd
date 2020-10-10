@@ -147,6 +147,17 @@ salmon_trawl <- salmon %>%
 predator <- salmon_trawl %>%
   mutate(eventID = paste(eventID, species, sep = ":"))
 
+predator$id <- " "
+predator <- predator %>% 
+  select(eventID, species, n_stomachs) %>% distinct()
+
+for(i in unique(predator$eventID)) {
+  predator$id[predator$eventID == i] <- seq_len(sum(predator$eventID == i))
+}
+
+predator$predator_id <- paste0("p", predator$id)
+predator$eventID <- paste(predator$eventID, predator$predator_id, sep = ":")
+
 prey <- salmon_trawl %>%
   mutate(eventID = paste(eventID, species, sep = ":")) %>%
   select(-digested_food) %>%
@@ -235,9 +246,8 @@ As all the prey species are listed as columns, we first have to investigate all 
 
 ``` {r prey_occurrence, eval = FALSE}
 # Create prey_id for each prey species in the stomach:
-
 prey$id <- " "
-prey <- prey %>% filter(presence > 0)
+prey <- prey %>% filter(presence > 0) 
 
 for(i in unique(prey$eventID)) {
   prey$id[prey$eventID == i] <- seq_len(sum(prey$eventID == i))
@@ -245,11 +255,10 @@ for(i in unique(prey$eventID)) {
 
 prey$prey_id <- paste0("pr", prey$id)
 
-
 prey_occ <- spp_occ %>%
   dplyr::select(eventID, prey, presence) %>%
   dplyr::rename(scientificName = prey) %>%
-  mutate(occurrenceStatus = "presence",
+  mutate(occurrenceStatus = "present",
          occurrenceID = paste(eventID, prey$prey_id, sep = ":"))
 
 prey_occ <- prey_occ %>%
@@ -296,11 +305,10 @@ scientificName == "okutania_anonycha" ~ "urn:lsid:marinespecies.org:taxname:3422
 scientificName == "sebastes" ~ "urn:lsid:marinespecies.org:taxname:126175",
 scientificName == "mictostomus_pacificus" ~ "urn:lsid:marinespecies.org:taxname:274294")
 # Spelling error? Accepted name is Microstomus pacificus?
-) %>%
-  rename(eventID = sample)
+) 
 
-salmon_prey_occ <- salmon_prey %>%
-  select(id, occurrenceID, scientificName, scientificNameID, occurrenceStatus) %>%
+salmon_prey_occ <- prey_occ %>%
+  select(eventID, occurrenceID, scientificName, scientificNameID, occurrenceStatus) %>%
   mutate(basisOfRecord = "HumanObservation") %>%
   filter(occurrenceStatus == "present")
 
@@ -312,23 +320,57 @@ drive_upload(here("Salmon Diet", "tidy_data", "salmon_prey_occ.csv"),
              overwrite = TRUE)
 ```
 
-If we choose option B then the following chunk of code is also needed to create the Occurrence Core specifically for the salmon caught and whose stomach contents have been examined: 
+If we choose option B then the following chunk of code is also needed to create the Occurrence Core specifically for the salmon caught and whose stomach contents have been examined. Somehow through binding rows it duplicates some - I am unsure why. As a result, I've occassionally used distinct() to make sure only unique rows are provided.  
 
 ``` {r salmon_occ, eval = FALSE}
-salmon_spp_occ <- salmon %>%
-  complete(trawl, species, fill = list(n_stomachs = 0)) %>%
-  rename(scientificName = species) %>% 
-  mutate(occurrenceStatus = ifelse(n_stomachs > 0, "present", "absent"),
-         occurrenceID = paste(trawl, scientificName, sep = ":"),
-         scientificNameID = case_when(
+
+predator$occurrenceID <- predatorpaste(predator$eventID, predator$predator_id, sep = ":")
+
+predator_occ <- predator %>%
+  dplyr::select(eventID, occurrenceID, species,
+                n_stomachs, predator_id) %>%
+  dplyr::mutate(occurrenceStatus = "present",
+                organismQuantityType = "stomachs") %>%
+  dplyr::rename(scientificName = species,
+                organismQuantity = n_stomachs) %>%
+  mutate(scientificNameID = case_when(
 scientificName == "Oncorhynchus gorbuscha" ~ "urn:lsid:marinespecies.org:taxname:127182",
 scientificName == "Oncorhynchus kisutch" ~ "urn:lsid:marinespecies.org:taxname:127184",
 scientificName == "Oncorhynchus keta" ~ "urn:lsid:marinespecies.org:taxname:127183",
 scientificName == "Oncorhynchus nerka" ~ "urn:lsid:marinespecies.org:taxname:254569",
 scientificName == "Oncorhynchus tschawytscha" ~ "urn:lsid:marinespecies.org:taxname:158075")) %>%
   # Accepted name has slightly different species name: O. tshawytscha
-  rename(eventID = trawl) %>%
-  select(eventID, occurrenceID, scientificName, scientificNameID, occurrenceStatus)
+  select(eventID, occurrenceID, scientificName, scientificNameID, occurrenceStatus,
+         organismQuantity, organismQuantityType) %>%
+  distinct()
+
+# Join the two occurrence cores:
+diet_data_occ <- bind_rows(salmon_prey_occ, predator_occ)
+
+# To reorder the eventID, use the following code:
+order <- stringr::str_sort(diet_data_occ$occurrenceID, numeric=TRUE)
+diet_data_occ <- diet_data_occ[match(order, diet_data_occ$occurrenceID),]
+diet_data_occ <- diet_data_occ %>% select(eventID, occurrenceID, occurrenceStatus,
+                                          scientificName, scientificNameID, 
+                                          organismQuantity, organismQuantityType) %>%
+  distinct()
+
+write_csv(diet_data_occ, here("Salmon Diet", "tidy_data", "diet_data_occ.csv"))
+
+# Join the event and the occurrence core:
+salmondiet_event_occ <- left_join(salmon_event, diet_data_occ)
+salmondiet_event_occ$associatedTaxa <- " "
+salmondiet_event_occ$associatedTaxa <- ifelse(grepl("pr", salmondiet_event_occ$occurrenceID), 
+paste("prey of: ", salmondiet_event_occ$eventID, sep = ""), "")
+salmondiet_event_occ <- salmondiet_event_occ %>%
+  mutate(institutionCode = " ",
+         collectionCode = " ",
+         catalogNumber = " ",
+         preparations = " ") %>%
+  distinct()
+
+write_csv(salmondiet_event_occ, here("Salmon Diet", "tidy_data", "salmondiet_event_occ.csv"))
+
 
 # Make sure the folder path exists already (e.g. ./Salmon Diet/tidy_data)
 write_csv(salmon_spp_occ, here("Salmon Diet", "tidy_data", "salmon_spp_occ.csv"))
