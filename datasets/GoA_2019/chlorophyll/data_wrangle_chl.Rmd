@@ -180,4 +180,20 @@ chl_map <- obistools::plot_map(chl_event, zoom = TRUE)
 ggsave(filename = "chl_map.png", plot = chl_map, path = here::here("chlorophyll", "maps"))
 ```
 
+ERDDAP is used as a repository to host physical and geochemical data, among other things. Therefore, we want to have a separate output for ERDDAP, where the data is structured and reformatted in a way that flows well with ERDDAP. ERDDAP works with a wide format, rather than a long format (OBIS). The column is renamed to standard convention following the CF Conventions (https://cfconventions.org/Data/cf-standard-names/75/build/cf-standard-name-table.html).
+
+**However, for phaeopigment concentration I have not yet been able to find standardized vocabulary in CF Conventions - perhaps there is another naming convention that can be applied?**. 
+
+``` {r erddap, eval = FALSE}
+chl_erddap <- chl_measurement %>% select(eventID, decimalLatitude,
+                                         decimalLongitude, eventDate,
+                                         measurementType, measurementValue, measurementUnit)
+chl_erddap <- pivot_wider(chl_erddap, names_from = measurementType,
+                          values_from = measurementValue) %>%
+  rename(Chl = `chlorophyll a`,
+         Phe = phaeopigments) %>%
+  mutate(mass_concentration_of_chlorophyll_a_in_sea_water = paste(Chl, measurementUnit),
+         phaeopigment_concentration = paste(Phe, measurementUnit))
+```
+
 
