@@ -89,6 +89,10 @@ The following list indicates the relevant GOOS domains and three example EOVs th
   * Phytoplankton biomass and diversity
   *	Zooplankton biomass and diversity
   * Fish abundance and distribution
+  
+## Communication Model 
+
+A communication model will need to be developed that demonstrates how the data mobilization approach taken will be communicated to the National Lead Scientists, the principal investigators and the Expedition Scientists. Additionally, public outreach is essential to build interest within the scientific community, ensuring adoption of best practices and technologies related to salmon ocean ecology, connecting and engaging stakeholders and partner organizations, and deepening the impact of the IYS High Seas Expeditions. We recommend a framework to be established on how the approach is best communicated to a the broader scientific community and the general public, perhaps in collaboration with the Hakai Media Team. 
 
 # Timeline
 
