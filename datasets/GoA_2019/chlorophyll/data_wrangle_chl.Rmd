@@ -201,6 +201,7 @@ chl_new <- chl %>% select(Depth, sample) %>%
   rename(eventID = sample)
 
 chl_erddap <- left_join(chl_erddap, chl_new, by = "eventID")
+write_csv(chl_erddap, here("chlorophyll", "tidy_data", "chl_erddap.csv"))
 ```
 
 
