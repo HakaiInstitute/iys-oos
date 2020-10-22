@@ -26,27 +26,37 @@ drive_download("https://docs.google.com/spreadsheets/d/1vvIwlsIkuc9vHtVrv2l3pXey
                path = here::here("Bongo", "raw_data", 
                                  "Zoop Bongo Isotopes_IYS_Dry Weight_Mar31.xlsx"),
                overwrite = TRUE)
+
+drive_download("https://docs.google.com/spreadsheets/d/1Yp4tNZmzlAKGXo6b3LRckdnFtMB4q0ei/edit#gid=1001885079",
+               path = here::here("Bongo", "raw_data",
+                                 "IYS cruise logbook_2019.xlsx"), 
+               overwrite = TRUE)
 ```
 
-Read in the dataset from your local drive:
+Read in the datasets from your local drive. To connect additional metadata information regarding the bongo set deployments, we join another sheet from a different dataset. 
 
 ``` {r data wrangle, eval = FALSE}
 bongo <- read_excel(here("Bongo", "raw_data", 
                        "Zoop Bongo Isotopes_IYS_Dry Weight_Mar31.xlsx"), 
                   sheet = "Samples collected") %>%
-  janitor::clean_names() %>%
+  janitor::clean_names() 
+
+bongo_date <- bongo_metadata <- read_excel(here("Bongo", "raw_data",
+                                  "IYS cruise logbook_2019.xlsx"),
+                             sheet = "Bongo metadata") %>%
+  janitor::clean_names() %>% 
   # Convert the standalone time value (UTC+12) into ISO8601 extended format
   mutate(Date = lubridate::ymd(date),
-         Time = format(start_time, format = "%H:%M:%S"),
+         Time = format(time, format = "%H:%M:%S"),
          dateTime = format_iso_8601(as.POSIXct(paste(Date, Time), 
                                                format="%Y-%m-%d %H:%M:%S", 
                                                tz="Asia/Kamchatka")),
-         dateTime = str_replace(dateTime, "\\+00:00", "Z"),
-         cruise = "GoA2019",
+         dateTime = str_replace(dateTime, "\\+00:00", "Z"))
+
+bongo_fnl <- bongo_date %>%
+  mutate(cruise = "GoA2019",
          station = paste(cruise, station, sep="_Stn"),
-         cast = paste(station, net, sep = ":bongo:Net"),
-         sample = paste(cast, sample_id, sep=":")
-  )
+         cast = paste(station, net_number, sep = ":bongo:Net")) 
 ```
 
 Dataframes are created for each unique `eventID` layer, with unique associated columns. Eventually, the data frames get joined, and the event table gets saved locally and in Google Drive. The column `eventRemarks` is not a required column, and currently only contains descriptive information. However, it is a good method to understand the structure in the dataset. A visual diagram of the structure of the Bongo data set is provided [here](https://app.diagrams.net/#G1YG5AVLwawocrr18XwbZG-1mDwwcc4ewM). 
@@ -54,50 +64,41 @@ Dataframes are created for each unique `eventID` layer, with unique associated c
 ## Event Core
 
 ``` {r bongo_event, eval = FALSE}
-bongo_cruise <- bongo %>% 
+bongo_cruise <- bongo_fnl %>% 
   select(eventID = cruise) %>%
   distinct(eventID) %>%
   mutate(eventRemarks = "cruise")
 
-bongo_station <- bongo %>%
+bongo_station <- bongo_fnl %>%
   select(eventID = station,
          parentEventID = cruise) %>% 
   distinct(eventID, .keep_all = TRUE) %>% 
   mutate(eventRemarks = "station")
 
 # Join date and coordinates to cast (bongo tow)
-bongo_cast <- bongo %>%
+bongo_cast <- bongo_fnl %>%
   select(eventID = cast,
          parentEventID = station,
          eventDate = dateTime,
-         decimalLatitude = start_latitude,
-         decimalLongitude = start_longitude,
+         decimalLatitude = latitude,
+         decimalLongitude = longitude,
          minimumDepthInMeters = sample_depth,
-         maximumDepthInMeters = sample_depth) %>%
-  mutate(samplingProtocol = "vertical Bongo Net deployment") %>%
-  
-  # Ideally samplingProtocol would link the DOI of the paper. 
-  
+         maximumDepthInMeters = sample_depth,
+         sampleSizeValue = final_volume_filtered) %>%
+  mutate(sampleSizeUnit = "L",
+         samplingProtocol = "vertical Bongo Net deployment") %>%
   distinct(eventID, .keep_all = TRUE)
-bongo_cast <- bongo_cast %>%
+
+# No Bongo sets were conducted at station 51 and 52 due to bad weather, so not coordinate information was collected. Therefore, when calculating decimalLat and long, and the associated coordinateUncertaintyInMeters, these need to be removed. However -- in the final event core they need to be added, along with associated notes/eventRemarks. 
+bongo_cast <- subset(bongo_cast, decimalLatitude != "ND") %>%
   mutate(eventRemarks = "cast",
-         footprintWKT = paste("POINT", " (", bongo_cast$decimalLongitude,
-                              " ", bongo_cast$decimalLatitude, ")"))
+         footprintWKT = paste("POINT"," (", bongo_cast$decimalLongitude, " ", bongo_cast$decimalLatitude, ")"))
 
 coordinates <- obistools::calculate_centroid(bongo_cast$footprintWKT) %>% select(coordinateUncertaintyInMeters)
 bongo_cast <- cbind(bongo_cast, coordinates)
 
-# sampleSizeUnit and sampleSizeValue are included in the eMOF core
-# Ideally, the samplingProtocol also includes a DOI of the paper that includes the sampling protocol. 
-
-bongo_sample <- bongo %>%
-  select(eventID = sample,
-         parentEventID = cast) %>%
-  distinct(eventID, .keep_all = TRUE) %>%
-  mutate(eventRemarks = "sample")
-
-bongo_event <- bind_rows(bongo_cruise,bongo_station,bongo_cast, bongo_sample) %>% 
-  select(eventID, parentEventID:maximumDepthInMeters, coordinateUncertaintyInMeters, eventRemarks) %>%
+bongo_event <- bind_rows(bongo_cruise,bongo_station,bongo_cast) %>% 
+  select(eventID, parentEventID:samplingProtocol, eventRemarks) %>%
   mutate(type = "HumanObservation",
         geodeticDatum = "EPSG:4326")
 
