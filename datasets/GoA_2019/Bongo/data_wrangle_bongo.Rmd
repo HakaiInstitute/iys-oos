@@ -33,13 +33,17 @@ drive_download("https://docs.google.com/spreadsheets/d/1Yp4tNZmzlAKGXo6b3LRckdnF
                overwrite = TRUE)
 ```
 
-Read in the datasets from your local drive. To connect additional metadata information regarding the bongo set deployments, we join another sheet from a different dataset. 
+Read in the datasets from your local drive. To connect additional metadata information regarding the bongo set deployments, we join another sheet from a different dataset. The dataframe bongo will include the sample_id as well, whereas the bongo_metadata dataframe does not include this information. 
 
 ``` {r data wrangle, eval = FALSE}
 bongo <- read_excel(here("Bongo", "raw_data", 
                        "Zoop Bongo Isotopes_IYS_Dry Weight_Mar31.xlsx"), 
                   sheet = "Samples collected") %>%
-  janitor::clean_names() 
+  janitor::clean_names() %>%
+  mutate(cruise = "GoA2019",
+         station = paste(cruise, station, sep = "_Stn"),
+         cast = paste(station, net, sep = ":bongo:Net"),
+         sample = paste(cast, sample_id, sep = ":"))
 
 bongo_date <- bongo_metadata <- read_excel(here("Bongo", "raw_data",
                                   "IYS cruise logbook_2019.xlsx"),
@@ -56,7 +60,8 @@ bongo_date <- bongo_metadata <- read_excel(here("Bongo", "raw_data",
 bongo_fnl <- bongo_date %>%
   mutate(cruise = "GoA2019",
          station = paste(cruise, station, sep="_Stn"),
-         cast = paste(station, net_number, sep = ":bongo:Net")) 
+         cast = paste(station, net_number, sep = ":bongo:Net")) %>%
+  dplyr::rename(net = net_number)
 ```
 
 Dataframes are created for each unique `eventID` layer, with unique associated columns. Eventually, the data frames get joined, and the event table gets saved locally and in Google Drive. The column `eventRemarks` is not a required column, and currently only contains descriptive information. However, it is a good method to understand the structure in the dataset. A visual diagram of the structure of the Bongo data set is provided [here](https://app.diagrams.net/#G1YG5AVLwawocrr18XwbZG-1mDwwcc4ewM). 
@@ -75,7 +80,6 @@ bongo_station <- bongo_fnl %>%
   distinct(eventID, .keep_all = TRUE) %>% 
   mutate(eventRemarks = "station")
 
-# Join date and coordinates to cast (bongo tow)
 bongo_cast <- bongo_fnl %>%
   select(eventID = cast,
          parentEventID = station,
@@ -86,21 +90,27 @@ bongo_cast <- bongo_fnl %>%
          maximumDepthInMeters = sample_depth,
          sampleSizeValue = final_volume_filtered) %>%
   mutate(sampleSizeUnit = "L",
-         samplingProtocol = "vertical Bongo Net deployment") %>%
+         samplingProtocol = "vertical Bongo Net deployment",
+         samplingEffort = "Volume sea water filtered") %>%
   distinct(eventID, .keep_all = TRUE)
 
 # No Bongo sets were conducted at station 51 and 52 due to bad weather, so not coordinate information was collected. Therefore, when calculating decimalLat and long, and the associated coordinateUncertaintyInMeters, these need to be removed. However -- in the final event core they need to be added, along with associated notes/eventRemarks. 
-bongo_cast <- subset(bongo_cast, decimalLatitude != "ND") %>%
-  mutate(eventRemarks = "cast",
+bongo_cast <- subset(bongo_cast, decimalLatitude != "ND")
+bongo_cast <- bongo_cast %>% mutate(eventRemarks = "cast",
          footprintWKT = paste("POINT"," (", bongo_cast$decimalLongitude, " ", bongo_cast$decimalLatitude, ")"))
 
 coordinates <- obistools::calculate_centroid(bongo_cast$footprintWKT) %>% select(coordinateUncertaintyInMeters)
 bongo_cast <- cbind(bongo_cast, coordinates)
 
-bongo_event <- bind_rows(bongo_cruise,bongo_station,bongo_cast) %>% 
-  select(eventID, parentEventID:samplingProtocol, eventRemarks) %>%
+bongo_sample <- bongo %>%
+  select(eventID = sample,
+         parentEventID = cast) %>% 
+  distinct(eventID, .keep_all = TRUE) %>% 
+  mutate(eventRemarks = "sample")
+
+bongo_event <- bind_rows(bongo_cruise,bongo_station,bongo_cast, bongo_sample) %>% 
   mutate(type = "HumanObservation",
-        geodeticDatum = "EPSG:4326")
+         geodeticDatum = "EPSG:4326")
 
 # To recursively add event information from parent events to child events:
 bongo_event <- obistools::flatten_event(bongo_event)
@@ -112,18 +122,6 @@ drive_upload(here("Bongo", "tidy_data", "bongo_event.csv"),
              name = "bongo_event.csv",
              overwrite = TRUE)
 ```
-
-<style>
-div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
-</style>
-<div class = "blue">
-
-Two columns that might still need to be added to the Event Core: `sampleSizeValue` and `sampleSizeUnit`. The sampling protocol for the Bongo measurements is described [here](https://npafc.org/wp-content/uploads/Public-Documents/2019/1858Prof-Kaganovskiy-Cruise-Summary.pdf). In the [DwC terms](https://dwc.tdwg.org/terms/) it is stated that the definition of the samplingProtocol is "the name of, reference to, or description of the method or protocol used during an Event". For this data set that would be: Bongo net(s) (0.5 m2, mesh size = 236 microns) was deployed to a depth of 250m and towed up vertically. Net 1 of the Bongo was preserved in a 4% formaldehyde seawater solution, net 2 was size fractioned. All net 2 samples were immediately transferred to a -40C blast freezer, and 12 hours later to a -40C storage freezer. 
-
-`samplingProtocol` = "Vertical deployment of Bongo net" - alternatively this could be the link to the Cruise Summary, or DOI once the paper is published?
-`samplingEffort` = volume of water filtered? Time (length) of tow? Answer: volumen of water filtered, though I still need to receive (raw) data of the flowmeter attached to the Bongo net. 
-
-</div>
 
 ## Occurrence Core
 
@@ -453,6 +451,8 @@ bongo_occ5 <- bongo_occ5[ !(bongo_occ5$sample_id %in% bongo_petri$sample_id), ] 
 
 To create the final occurrence table, the five occurrence tables are joined. As individual measurements are associated to these data entries, an `occurrenceID` is created for them. Additionally, for each species the proper scientificNameID (WoRMS URN) is provided. 
 
+The bongo_occ_fnl dataframe is initially saved, and columns are manually added for `kingdom`, `phylum`, `class`, `order`, `family` and `genus`, where applicable. This is done manually because I don't know if it's possible to auto-populate these columns from the WoRMS site directly. Afterwards, this new dataframe is read in. 
+
 ``` {r bongo_combined_occ, eval = FALSE}
 # Next, combine bongo_occ_wr with the original dataframe (bongo)
 bongo_occ_fnl <- rbind(bongo_occ1, bongo_occ2, bongo_occ3, bongo_occ4, bongo_occ5) 
@@ -510,8 +510,14 @@ bongo_occ_fnl <- bongo_occ_fnl %>%
       scientificName == "E pacifica" ~ "urn:lsid:marinespecies.org:taxname:237851",
       scientificName == "T spinifera" ~ "urn:lsid:marinespecies.org:taxname:237874",
       scientificName == "Crab zoea" ~ "urn:lsid:marinespecies.org:taxname:1130"
-    ),
-  lifeStage = case_when(
+    )
+  )
+
+# Save this dataframe locally so that additional columns on species taxonomic rank can be added manually:
+write_csv(bongo_occ_fnl, here("Bongo", "tidy_data", "bongo_species.csv"))
+bongo_occ_fnl <- read_excel(here("Bongo", "tidy_data", 
+                       "bongo_species.xlsx")) %>%
+  mutate(lifeStage = case_when(
       stage == "NA" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1131/",
       stage == "2" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1165/",
       stage == "4" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1165/",
@@ -536,12 +542,16 @@ bongo_occ_fnl <- bongo_occ_fnl %>%
   occurrenceRemarks = case_when(
     stage == "Spent" ~ "Spent"
   )
-  )
+  ) %>%
+  select(-preservation) # I've noticed that in bongo_fnl there is a column 'preservation', indicating whether a Net (with its samples) was preserved in formalin or size fractioned and frozen. In the bongo_occ_fnl dataframe, there is also a column 'preservation', which is "Freeze: -20". I would recommend adding the bongo_fnl preservation column to the occurrence core. FOr this reason, this column is removed from the bongo_occ_fnl dataframe.
+
+preservation <- bongo_fnl %>% select(station, net, preservation)
+preservation$net <- as.numeric(preservation$net)
+bongo_occ_fnl <- left_join(bongo_occ_fnl, preservation, by = c("station", "net"))
 
 bongo_occ_core <- bongo_occ_fnl %>%
   rename(Preparations = preservation) %>%
-  select(eventID, occurrenceID, scientificName, scientificNameID, occurrenceStatus, Preparations,
-         organismQuantity, organismQuantityType, stage, lifeStage, sex, reproductiveCondition, occurrenceRemarks)
+  select(eventID, occurrenceID, scientificName, scientificNameID, kingdom, phylum, class, order, family, genus, occurrenceStatus, Preparations, organismQuantity, organismQuantityType, stage, lifeStage, sex, reproductiveCondition, occurrenceRemarks)
 # I change bongo_occ_fnl into a new dataframe because we're going to use the bongo_occ_fnl dataset in the eMoF table.
 
 # Make sure the folder path exists already (e.g. ./Bongo/tidy_data)
