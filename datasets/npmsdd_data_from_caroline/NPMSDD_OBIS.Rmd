@@ -1,0 +1,87 @@
+---
+title: "NPMSDD_OBIS"
+author: "Tim van der Stap"
+date: "10/30/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+ipak <- function(pkg){
+    new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
+    if (length(new.pkg)) 
+        install.packages(new.pkg, dependencies = TRUE)
+    sapply(pkg, require, character.only = TRUE)
+}
+
+packages <- c("tidyverse", "lubridate", "devtools", "obistools", "readxl", "parsedate", "googledrive", "here")
+ipak(packages) 
+```
+
+For all the source_ids, reformat the dates in such a way that it is compatible with DwC terminology. First, select all the columns that are associated to the date and time. Inspection of the NPMSDD database reveals that (currently) there is no values in the `date_max` column. Consequently, this column is not selected. 
+
+```{r eventdate, message = FALSE, warning=FALSE}
+eventdate <- read_csv(here::here("datasets", "npmsdd_data_from_caroline", "diet_data.csv")) %>%
+  select(source_id, year_min, year_max, warm_cool_years, odd_even_years, season_min, season_max,
+         month_min, month_max, date_min, time_min, time_max) %>%
+  mutate(month_min = case_when(
+    month_min == "January" ~ "1",
+    month_min == "February" ~ "2",
+    month_min == "March" ~ "3",
+    month_min == "April" ~ "4",
+    month_min == "May" ~ "5",
+    month_min == "June" ~ "6",
+    month_min == "July" ~ "7",
+    month_min == "August" ~ "8", 
+    month_min == "September" ~ "9",
+    month_min == "October" ~ "10",
+    month_min == "November" ~ "11",
+    month_min == "December" ~ "12"),
+    month_max = case_when(
+    month_max == "January" ~ "1",
+    month_max == "February" ~ "2",
+    month_max == "March" ~ "3",
+    month_max == "April" ~ "4",
+    month_max == "May" ~ "5",
+    month_max == "June" ~ "6",
+    month_max == "July" ~ "7",
+    month_max == "August" ~ "8", 
+    month_max == "September" ~ "9",
+    month_max == "October" ~ "10",
+    month_max == "November" ~ "11",
+    month_max == "December" ~ "12"))
+  
+for (i in length(eventdate$date_min)) {
+  if (!is.na(eventdate$date_min[i])) {
+   eventdate$eventDate <- format_iso_8601(as.POSIXct(eventdate$date_min, format = "%Y-%m-%d"))
+  }
+}  
+
+# When inspecting all entries with season_min, we notice that there are no entries where a season_max is associated to a season_min. However, sometimes a year_min and year_max is associated with season_min. 
+
+
+for (i in 1:nrow(eventdate)) {
+  if (!is.na(eventdate$season_min[i]) & is.na(eventdate$year_max[i])) {
+    eventdate$verbatimEventDate[i] <- paste(eventdate$season_min[i], eventdate$year_min[i], sep = " ")
+  } else if (!is.na(eventdate$season_min[i]) & !is.na(eventdate$year_max[i])) {
+    eventdate$verbatimEventDate[i] <- paste(eventdate$season_min[i], eventdate$year_min[i], " - ",
+                                            eventdate$season_min[i], eventdate$year_max[i], sep = " ")
+  }
+}
+
+
+eventdate <- eventdate %>%
+  mutate(eventDate = str_replace(eventDate, "\\T.+", ""))
+```
+
+
+
+
+
+
+
+
+
+
+
