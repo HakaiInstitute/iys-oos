@@ -70,11 +70,67 @@ for (i in 1:nrow(eventdate)) {
   }
 }
 
+# For all entries with month_min but no month_max, we create a column 'month'. 
+for (i in 1:nrow(eventdate)) {
+  if (is.na(eventdate$month_max[i])) {
+    eventdate$month[i] <- eventdate$month_min[i]
+  }
+}
 
 eventdate <- eventdate %>%
   mutate(eventDate = str_replace(eventDate, "\\T.+", ""))
 ```
 
+Each source_id will have its own associated decimalLatitude and decimalLongitude, along with uncertaintyCoordinatesInMeters and footprintWKT. Different source_ids have their coordinates recorded in varying granularity. In the database there are columns for lat_min, lat_max, lon_min and lon_max. If only lat_min and lon_min are provided, this is a `Point`, if either lat_max or lon_max is missing, this is a `Linestring`. If all columns are filled out for a specific row/source_id, this signals a `Polygon`. 
+
+``` {r event_coordinates, eval = FALSE}
+coordinates <- read_csv(here::here("datasets", "npmsdd_data_from_caroline", "diet_data.csv")) %>%
+  select(source_id, lat_min, lat_max, lon_min, lon_max) %>%
+  mutate(footprintWKT = " ") %>%
+  distinct()
+
+coordinates$footprintWKT <- ifelse(!is.na(coordinates$lat_max & coordinates$lon_max), "POLYGON", 
+                                   ifelse(is.na(coordinates$lat_max | coordinates$lon_max), "POINT", "LINESTRING"))
+
+# Create three separate dataframes for POINT, LINESTRING, and POLYGON, and then merge these. 
+point_coordinates <- coordinates %>% filter(footprintWKT == "POINT") %>% 
+  mutate(footprintWKT = paste0("POINT", " (", lon_min, " ", lat_min, ")")) 
+point <- obistools::calculate_centroid(point_coordinates$footprintWKT)
+point <- cbind(point_coordinates, point)
+
+polygon_coordinates <- coordinates %>% filter(footprintWKT == "POLYGON") %>%
+  mutate(footprintWKT = paste("POLYGON ((", lon_min, lat_min, ",",
+                                lon_min, lat_max, ",",
+                                lon_max, lat_min, ",",
+                                lon_max, lat_max, ",",
+                                lon_min, lat_min, "))"))
+polygon <- obistools::calculate_centroid(polygon_coordinates$footprintWKT)
+polygon <- cbind(polygon_coordinates, polygon)
+
+# Two datasets for LINESTRING, one where lat_max is NA, and another lon_max is NA. 
+linestring_coordinates_1 <- coordinates %>% filter(footprintWKT == "LINESTRING") %>% filter(is.na(lat_max)) %>%
+  mutate(footprintWKT = paste("LINESTRING (", lon_min, lat_min, ",", lon_max, lat_min, ")"))
+linestring_coordinates_2 <- coordinates %>% filter(footprintWKT == "LINESTRING") %>%  filter(is.na(lon_max)) %>%
+  mutate(footprintWKT = paste("LINESTRING (", lon_min, lat_min, ",", lon_min, lat_max, ")"))
+linestring_coordinates <- rbind(linestring_coordinates_1, linestring_coordinates_2)
+linestring <- obistools::calculate_centroid(linestring_coordinates$footprintWKT) 
+linestring <- cbind(linestring_coordinates, linestring)
+
+event_coordinates <- rbind(point, polygon, linestring) %>%
+  select(source_id, footprintWKT, decimalLatitude, decimalLongitude, coordinateUncertaintyInMeters)
+```
+
+
+Create a dataframe for the gear - this will provide information on minimumDepthInMeters, maximumDepthInMeters, as well as any information on sampling effort. Dependent on gear type we can assign sampleSizeUnit, sampleSizeValue and perhaps also specific information regarding the gear_type. 
+
+``` {r gear, eval = FALSE}
+gear <- read_csv(here::here("datasets", "npmsdd_data_from_caroline", "gear_type_predator.csv"), 
+                 col_types = "icnnncnnncnnncnnncnnncnnncnnncc") %>%
+  transform(minimumDepthInMeters = pmin(gear_depth_value, gear_depth_min, 
+                                        fishing_depth_value, fishing_depth_min, na.rm = TRUE),
+            maximumDepthInMeters = pmax(gear_depth_value, gear_depth_max, 
+                                        fishing_depth_value, fishing_depth_max, na.rm = TRUE))
+```
 
 
 
