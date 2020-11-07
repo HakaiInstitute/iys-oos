@@ -21,9 +21,41 @@ ipak(packages)
 
 For all the source_ids, reformat the dates in such a way that it is compatible with DwC terminology. First, select all the columns that are associated to the date and time. Inspection of the NPMSDD database reveals that (currently) there is no values in the `date_max` column. Consequently, this column is not selected. 
 
+``` {r, eval = FALSE, warning = FALSE, message = FALSE}
+source <- read_csv(here::here("datasets", "npmsdd_data_from_caroline", "diet_data.csv"), col_types = "iiiiccccccccttnnnncccciiiiiicccnnnnnnicciciiiiicccccccccccnccccnnnnnnc")
+
+gear <- source %>%  select(source_id, gear_type_predator_id1, gear_type_predator_id2,
+         gear_type_predator_id3, gear_type_predator_id4, gear_type_predator_id5) %>%
+  pivot_longer(cols = gear_type_predator_id1:gear_type_predator_id5,
+               values_to = "gear_type_predator_id",
+               names_to = "gear") %>%
+  select(source_id, gear_type_predator_id) %>%
+  filter(!is.na(gear_type_predator_id)) %>%
+  distinct()
+
+gear_type <- read_csv(here::here("datasets", "npmsdd_data_from_caroline", "gear_type_predator.csv"), 
+                 col_types = "icnnncnnncnnncnnncnnncnnncnnncc")
+
+npmsdd <- left_join(gear, gear_type, by = "gear_type_predator_id")
+npmsdd <- left_join(npmsdd, source, by = "source_id") %>%
+  mutate(database = "NPMSDD",
+         source_id = paste(database, source_id, sep = "_sourceID:"),
+         gear_type = paste(source_id, gear_type, sep = ":"))
+```
+
+Our Event Core will consist of three layers: `database`, `source_id`, and `gear_type`. Information pertaining to sampling location coordinates and any geo-spatial data is associated to the source_id. Even if multiple dates are associated to a source_id, we need to ensure that the eventDate reflects one aggregated date (range). Information pertaining to the minimum- and maximumDepthInMeters and sampling effort is associated to the gear_type. The reason for this layering is because some datasets within the NPMSDD consists of aggregated data across different gear types, which have different associated sampling units and protocols.
+
+Given the heterogeneity and varying granularity of date and times recording, even within each source_id, the following steps have to be followed to accurately represent the eventDate or verbatimEventDate of the different source_ids, once grouped: Our granularity in steps goes from very accurate (dates), to less accurate (months - seasons).
+
+1. If a source_id _only_ has a single value in the `date_min` column, the `date_min` column becomes the `eventDate`; 
+2. If a source_id has _no_ `NA` in the `date_min` column for any of the entries, the `eventDate` will have to represent a range of `date_min` values;
+3. If a source_id has _no_ `date_min` column associated this means that we check for values in `month_min` and `month_max` columns. If, within a source_id, all entries have an associated `month_min`, this will be represented in the `eventDate`. If any `month_max` values are depicted, these will also have to be recorded in the eventDate, perhaps as a range. 
+4. If no values are provided for `date_min` and `month_min`, and only for a `season_min`, this will be recorded (in a range or a single cell value) in `verbatimEventDate`. 
+
 ```{r eventdate, message = FALSE, warning=FALSE}
-eventdate <- read_csv(here::here("datasets", "npmsdd_data_from_caroline", "diet_data.csv")) %>%
-  select(source_id, year_min, year_max, warm_cool_years, odd_even_years, season_min, season_max,
+eventdate <- npmsdd %>%
+  select(eventID = source_id, 
+         year_min, year_max, warm_cool_years, odd_even_years, season_min, season_max,
          month_min, month_max, date_min, time_min, time_max) %>%
   mutate(month_min = case_when(
     month_min == "January" ~ "1",
@@ -50,16 +82,72 @@ eventdate <- read_csv(here::here("datasets", "npmsdd_data_from_caroline", "diet_
     month_max == "September" ~ "9",
     month_max == "October" ~ "10",
     month_max == "November" ~ "11",
-    month_max == "December" ~ "12"))
+    month_max == "December" ~ "12")) %>% 
+  distinct() 
+
+# Step 1: If a source_id only(!) has a single associated date_min, this becomes the eventDate. It is not possible to filter for date_min because some source_ids have date_min provided, alongside other entries where that's not provided. 
+
+dates <- eventdate %>% group_by(eventID) %>% filter(!any(is.na(date_min))) %>% 
+  mutate(min = min(date_min), max = max(date_min)) %>%
+  mutate(eventDate = ifelse(min == max, min, paste(min, max, sep = "/"))) %>%
+  select(eventID, eventDate) %>% distinct()
+
+
+
+eventdate$eventDate <- ifelse(eventdate$min == eventdate$max, eventdate$min, paste(eventdate$min, 
+                                                                                    eventdate$max, sep = "/"))
+
+  mutate(eventDate = ifelse(min(dates$date_min) == max(dates$date_min), min(dates$date_min), 
+                            paste(min(dates$date_min), max(dates$date_min), sep = "/")))
+for (i in 1:nrow(dates)) {
+  dates$eventDate[i] <- ifelse(min(dates$date_min) == max(dates$date_min), min(dates$date_min),
+                            paste(min(dates$date_min), max(dates$date_min), sep = "/"))
   
-for (i in length(eventdate$date_min)) {
-  if (!is.na(eventdate$date_min[i])) {
-   eventdate$eventDate <- format_iso_8601(as.POSIXct(eventdate$date_min, format = "%Y-%m-%d"))
   }
-}  
 
-# When inspecting all entries with season_min, we notice that there are no entries where a season_max is associated to a season_min. However, sometimes a year_min and year_max is associated with season_min. 
+%>%
+  mutate(eventDate = ifelse(min(dates$date_min) == max(dates$date_min), min(dates$date_min), 
+                             paste(min(dates$date_min), max(dates$date_min), sep = "/")))
 
+for (i in 1:nrow(eventdate)) {
+  if(is.na(eventdate$year_max) & is.na(eventdate$month_min) & is.na(eventdate$month_max)
+     & is.na(eventdate$season_min) & is.na(eventdate$season_max)) {
+    eventdate$eventDate <- eventdate$date_min
+  } else if (is.na(eventdate$date_min)) {
+       eventdate$eventDate <- NA
+     }
+}
+
+x <- eventdate %>% group_by(eventID) %>% filter(is.na(date_min))
+
+  
+for (i in 1:nrow(eventdate)) {
+  if(is.na(eventdate$min)) {
+    eventdate$eventDate <- NA
+  } 
+}
+
+eventdate$eventDate <- ifelse(eventdate$min == eventdate$max, eventdate$min, paste(eventdate$min, 
+                                                                                    eventdate$max, sep = "/"))
+eventdate <- eventdate %>% ungroup(eventID)
+
+# When inspecting all entries with season_min, we notice that there are no entries where a season_max is associated to a season_min. However, sometimes a year_min and year_max is associated with season_min. Again, this will need to be aggregated within the source_id. 
+
+eventdate <- eventdate %>% 
+  mutate(season_min = case_when(
+    season_min == "spring" ~ 96,
+    season_min == "summer" ~ 97,
+    season_min == "autumn" ~ 98
+  )) %>% distinct() %>% group_by(eventID, year_min) %>%
+  mutate(min = min(eventdate$season_min[is.finite(eventdate$season_min)]))
+         max = max(eventdate$season_min[is.finite(eventdate$season_min)]))
+
+for (i in 1:nrow(eventdate)) {
+  if (!is.na(eventdate$season_min) & is.na(eventdate$year_max)) {
+    eventdate$verbatimEventDate <- paste(min(eventdate$season_min), " - ", 
+                                            max(eventdate$season_min), eventdate$year_min)
+  }
+}
 
 for (i in 1:nrow(eventdate)) {
   if (!is.na(eventdate$season_min[i]) & is.na(eventdate$year_max[i])) {
@@ -70,22 +158,22 @@ for (i in 1:nrow(eventdate)) {
   }
 }
 
-# For all entries with month_min but no month_max, we create a column 'month'. 
-for (i in 1:nrow(eventdate)) {
-  if (is.na(eventdate$month_max[i])) {
-    eventdate$month[i] <- eventdate$month_min[i]
-  }
-}
+# For all entries with month_min but no month_max, we create a column 'month'. Similarly, for all entries with year_min but no year_max, we create a column 'year'. However, in the eventDate, this can be represented as year-month_min/month_max: 
+
+eventdate$month <- ifelse(is.na(eventdate$month_max), eventdate$month_min, NA)
+eventdate$year <- ifelse(is.na(eventdate$year_max), eventdate$year_min, NA)
 
 eventdate <- eventdate %>%
-  mutate(eventDate = str_replace(eventDate, "\\T.+", ""))
+  mutate(eventDate = str_replace(eventDate, "\\T.+", "")) %>%
+  select(eventID, eventDate, verbatimEventDate, month, year) %>% distinct()
 ```
 
 Each source_id will have its own associated decimalLatitude and decimalLongitude, along with uncertaintyCoordinatesInMeters and footprintWKT. Different source_ids have their coordinates recorded in varying granularity. In the database there are columns for lat_min, lat_max, lon_min and lon_max. If only lat_min and lon_min are provided, this is a `Point`, if either lat_max or lon_max is missing, this is a `Linestring`. If all columns are filled out for a specific row/source_id, this signals a `Polygon`. 
 
 ``` {r event_coordinates, eval = FALSE}
-coordinates <- read_csv(here::here("datasets", "npmsdd_data_from_caroline", "diet_data.csv")) %>%
-  select(source_id, lat_min, lat_max, lon_min, lon_max) %>%
+coordinates <- npmsdd %>%
+  select(eventID = source_id, 
+         lat_min, lat_max, lon_min, lon_max) %>%
   mutate(footprintWKT = " ") %>%
   distinct()
 
@@ -117,21 +205,67 @@ linestring <- obistools::calculate_centroid(linestring_coordinates$footprintWKT)
 linestring <- cbind(linestring_coordinates, linestring)
 
 event_coordinates <- rbind(point, polygon, linestring) %>%
-  select(source_id, footprintWKT, decimalLatitude, decimalLongitude, coordinateUncertaintyInMeters)
+  select(eventID, footprintWKT, decimalLatitude, decimalLongitude, coordinateUncertaintyInMeters)
 ```
-
 
 Create a dataframe for the gear - this will provide information on minimumDepthInMeters, maximumDepthInMeters, as well as any information on sampling effort. Dependent on gear type we can assign sampleSizeUnit, sampleSizeValue and perhaps also specific information regarding the gear_type. 
 
 ``` {r gear, eval = FALSE}
-gear <- read_csv(here::here("datasets", "npmsdd_data_from_caroline", "gear_type_predator.csv"), 
+sampling_gears <- npmsdd %>%
+  select(eventID = gear_type, 
+         gear_type_predator_id1, gear_type_predator_id2,
+         gear_type_predator_id3, gear_type_predator_id4, gear_type_predator_id5) %>%
+  pivot_longer(cols = gear_type_predator_id1:gear_type_predator_id5,
+               values_to = "gear_type_predator_id",
+               names_to = "gear") %>%
+  select(eventID, gear_type_predator_id) %>%
+  filter(!is.na(gear_type_predator_id)) %>%
+  distinct()
+
+sampling_depth <- read_csv(here::here("datasets", "npmsdd_data_from_caroline", "gear_type_predator.csv"), 
                  col_types = "icnnncnnncnnncnnncnnncnnncnnncc") %>%
   transform(minimumDepthInMeters = pmin(gear_depth_value, gear_depth_min, 
                                         fishing_depth_value, fishing_depth_min, na.rm = TRUE),
             maximumDepthInMeters = pmax(gear_depth_value, gear_depth_max, 
                                         fishing_depth_value, fishing_depth_max, na.rm = TRUE))
+
+gears <- left_join(sampling_gears, sampling_depth, by = "gear_type_predator_id") %>%
+  select(eventID, minimumDepthInMeters, maximumDepthInMeters)
 ```
 
+Add all the dataframes together to form the Event Core, and associate the different variables to each specific layer of the Event Core. In the sourceID layer I also want to add a link to the paper specific to each source_id, because that explains the samplingProtocol. In the gear layer I will only add information pertaining to the minimum and maximumDepthInMeters of the sampling. Information on sampleSizeUnit, sampleSizeValue and samplingEffort will be added to the extended Measurements or Facts (eMoF) core. 
+
+
+``` {r eventCore, eval = FALSE}
+NPMSDD_database <- npmsdd %>%
+  select(eventID = database) %>%
+  distinct(eventID) %>%
+  mutate(eventRemarks = "database")
+
+NPMSDD_sourceID <- npmsdd %>%
+  select(eventID = source_id,
+         parentEventID = database) %>%
+  distinct(eventID, .keep_all = TRUE) %>%
+  mutate(eventRemarks = "source")
+NPMSDD_sourceID <- left_join(NPMSDD_sourceID, eventdate, by = "eventID")
+NPMSDD_sourceID <- left_join(NPMSDD_sourceID, event_coordinates, by = "eventID")
+
+sources <- read_csv("sources.csv", col_types = "iiccccccccccccccccc") %>% 
+  select(eventID = source_id, 
+         samplingProtocol = citation) %>%
+  mutate(eventID = paste("NPMSDD_sourceID:", eventID, sep = ""))
+NPMSDD_sourceID <- left_join(NPMSDD_sourceID, sources, by = "eventID") %>% distinct()
+
+NPMSDD_gear <- npmsdd %>%
+  select(eventID = gear_type,
+         parentEventID = source_id) %>%
+  distinct(eventID, .keep_all = TRUE) %>%
+  mutate(eventRemarks = "gear type")
+NPMSDD_gear <- left_join(NPMSDD_gear, gears, by = "eventID") %>% distinct()
+
+NPMSDD_event_core <- bind_rows(NPMSDD_database, NPMSDD_sourceID, NPMSDD_gear) %>%
+  mutate(geodeticDatum = "EPSG:4326")
+```
 
 
 
