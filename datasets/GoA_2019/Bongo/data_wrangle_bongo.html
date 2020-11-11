@@ -369,62 +369,90 @@ summary {
 </div>
 
 
-<p>The raw data is stored on GoogleDrive. The first step is to download the file from Google Drive to a local folder on your computer’s hard drive.</p>
+<p>The raw data is stored on GoogleDrive. The first step is to download the files from Google Drive to a local folder on your computer’s hard drive.</p>
 <pre class="r"><code># Make sure your folder path exists already (e.g. ./Bongo/raw_data)
 drive_download(&quot;https://docs.google.com/spreadsheets/d/1vvIwlsIkuc9vHtVrv2l3pXeyoWpEX_gw/edit#gid=287253584&quot;, 
                path = here::here(&quot;Bongo&quot;, &quot;raw_data&quot;, 
                                  &quot;Zoop Bongo Isotopes_IYS_Dry Weight_Mar31.xlsx&quot;),
+               overwrite = TRUE)
+
+drive_download(&quot;https://docs.google.com/spreadsheets/d/1Yp4tNZmzlAKGXo6b3LRckdnFtMB4q0ei/edit#gid=1001885079&quot;,
+               path = here::here(&quot;Bongo&quot;, &quot;raw_data&quot;,
+                                 &quot;IYS cruise logbook_2019.xlsx&quot;), 
                overwrite = TRUE)</code></pre>
-<p>Read in the dataset from your local drive:</p>
+<p>Read in the datasets from your local drive. To connect additional metadata information regarding the bongo set deployments, we join another sheet from a different dataset. The dataframe bongo includes the sample_ids of only the zooplankton , whereas the bongo_metadata dataframe does not include this information.</p>
 <pre class="r"><code>bongo &lt;- read_excel(here(&quot;Bongo&quot;, &quot;raw_data&quot;, 
                        &quot;Zoop Bongo Isotopes_IYS_Dry Weight_Mar31.xlsx&quot;), 
                   sheet = &quot;Samples collected&quot;) %&gt;%
   janitor::clean_names() %&gt;%
+  mutate(cruise = &quot;GoA2019&quot;,
+         station = paste(cruise, station, sep = &quot;_Stn&quot;),
+         cast = paste(station, net, sep = &quot;:bongo:Net&quot;),
+         sample = paste(cast, sample_id, sep = &quot;:&quot;))
+
+bongo_fnl &lt;- bongo_metadata &lt;- read_excel(here(&quot;Bongo&quot;, &quot;raw_data&quot;,
+                                  &quot;IYS cruise logbook_2019.xlsx&quot;),
+                             sheet = &quot;Bongo metadata&quot;) %&gt;%
+  janitor::clean_names() %&gt;% 
   # Convert the standalone time value (UTC+12) into ISO8601 extended format
-  mutate(Date = lubridate::dmy(date),
-         Time = format(start_time, format = &quot;%H:%M:%S&quot;),
+  mutate(Date = lubridate::ymd(date),
+         Time = format(time, format = &quot;%H:%M:%S&quot;),
          dateTime = format_iso_8601(as.POSIXct(paste(Date, Time), 
                                                format=&quot;%Y-%m-%d %H:%M:%S&quot;, 
                                                tz=&quot;Asia/Kamchatka&quot;)),
-         dateTime = str_replace(dateTime, &quot;\\+00:00&quot;, &quot;Z&quot;),
-         cruise = &quot;GoA2019&quot;,
-         station = paste(cruise, station, sep=&quot;_Stn&quot;),
-         cast = paste(station, net, sep = &quot;:bongo:Net&quot;),
-         sample = paste(cast, sample_id, sep=&quot;:&quot;)
-  )</code></pre>
-<p>Dataframes are created for each unique <code>eventID</code> layer, with unique associated columns. Eventually, the data frames get joined, and the event table gets saved locally and in Google Drive. The column <code>eventRemarks</code> is not a required column, and currently only contains descriptive information. However, it is a good method to understand the structure in the dataset. A visual diagram of the structure of the Bongo data set is provided <a href="https://app.diagrams.net/#G1YG5AVLwawocrr18XwbZG-1mDwwcc4ewM">here</a>.</p>
-<pre class="r"><code>bongo_cruise &lt;- bongo %&gt;% 
+         dateTime = str_replace(dateTime, &quot;\\+00:00&quot;, &quot;Z&quot;)) %&gt;%
+  mutate(cruise = &quot;GoA2019&quot;,
+         station = paste(cruise, station, sep = &quot;_Stn&quot;),
+         cast = paste(station, net_number, sep = &quot;:bongo:Net&quot;)) %&gt;%
+  dplyr::rename(net = net_number)</code></pre>
+<p>Dataframes are created for each unique <code>eventID</code> layer (cruise, station, cast, sample), with unique associated columns. Eventually, the data frames get joined, and the event table gets saved locally and in Google Drive. The column <code>eventRemarks</code> is not a required column, and currently only contains descriptive information. However, it is a good method to understand the structure in the dataset. A visual diagram of the structure of the Bongo data set is provided <a href="https://app.diagrams.net/#G1YG5AVLwawocrr18XwbZG-1mDwwcc4ewM">here</a>. For the Event Core, most of the information for the unique layers can come from the <code>bongo_fnl</code> dataframe, whereas information pertaining specifically to the sample_ids will have to come from the <code>bongo</code> dataframe.</p>
+<div id="event-core" class="section level2">
+<h2>Event Core</h2>
+<pre class="r"><code>bongo_cruise &lt;- bongo_fnl %&gt;% 
   select(eventID = cruise) %&gt;%
   distinct(eventID) %&gt;%
   mutate(eventRemarks = &quot;cruise&quot;)
 
-bongo_station &lt;- bongo %&gt;%
+bongo_station &lt;- bongo_fnl %&gt;%
   select(eventID = station,
          parentEventID = cruise) %&gt;% 
   distinct(eventID, .keep_all = TRUE) %&gt;% 
   mutate(eventRemarks = &quot;station&quot;)
 
-# Join date and coordinates to cast (bongo tow)
-bongo_cast &lt;- bongo %&gt;%
+bongo_cast &lt;- bongo_fnl %&gt;%
   select(eventID = cast,
          parentEventID = station,
          eventDate = dateTime,
-         decimalLatitude = start_latitude,
-         decimalLongitude = start_longitude,
-         minimumDepthInMetres = sample_depth,
-         maximumDepthInMetres = sample_depth) %&gt;%
-  distinct(eventID, .keep_all = TRUE) %&gt;%
-  mutate(eventRemarks = &quot;cast&quot;)
+         decimalLatitude = latitude,
+         decimalLongitude = longitude,
+         minimumDepthInMeters = sample_depth,
+         maximumDepthInMeters = sample_depth,
+         sampleSizeValue = final_volume_filtered) %&gt;%
+  mutate(sampleSizeUnit = &quot;L&quot;,
+         samplingProtocol = &quot;vertical Bongo Net deployment&quot;,
+         samplingEffort = &quot;Volume sea water filtered&quot;) %&gt;%
+  distinct(eventID, .keep_all = TRUE)
+
+# No Bongo sets were conducted at station 51 and 52 due to bad weather, so not coordinate information was collected (reflected as &#39;ND&#39;). Therefore, these need to be removed before calculating the associated coordinateUncertaintyInMeters. However -- in the final event core they need to be added, along with associated notes/eventRemarks. 
+bongo_cast &lt;- subset(bongo_cast, decimalLatitude != &quot;ND&quot;)
+bongo_cast &lt;- bongo_cast %&gt;% mutate(eventRemarks = &quot;cast&quot;,
+         footprintWKT = paste(&quot;POINT&quot;,&quot; (&quot;, bongo_cast$decimalLongitude, &quot; &quot;, bongo_cast$decimalLatitude, &quot;)&quot;))
+
+coordinates &lt;- obistools::calculate_centroid(bongo_cast$footprintWKT) %&gt;% select(coordinateUncertaintyInMeters)
+bongo_cast &lt;- cbind(bongo_cast, coordinates)
 
 bongo_sample &lt;- bongo %&gt;%
   select(eventID = sample,
-         parentEventID = cast) %&gt;%
-  distinct(eventID, .keep_all = TRUE) %&gt;%
+         parentEventID = cast) %&gt;% 
+  distinct(eventID, .keep_all = TRUE) %&gt;% 
   mutate(eventRemarks = &quot;sample&quot;)
 
 bongo_event &lt;- bind_rows(bongo_cruise,bongo_station,bongo_cast, bongo_sample) %&gt;% 
-  select(eventID, parentEventID:maximumDepthInMetres, eventRemarks) %&gt;%
- mutate(type = &quot;HumanObservation&quot;)
+  mutate(type = &quot;HumanObservation&quot;,
+         geodeticDatum = &quot;EPSG:4326&quot;)
+
+# To recursively add event information from parent events to child events:
+bongo_event &lt;- obistools::flatten_event(bongo_event)
 
 # Make sure the folder path exists already (e.g. ./Bongo/tidy_data)
 write_csv(bongo_event, here(&quot;Bongo&quot;, &quot;tidy_data&quot;, &quot;bongo_event.csv&quot;))
@@ -432,36 +460,41 @@ drive_upload(here(&quot;Bongo&quot;, &quot;tidy_data&quot;, &quot;bongo_event.cs
              path = &quot;https://drive.google.com/drive/u/0/folders/1cAJP-DGSQZdRhrIYraX8MJXO-h_7qbn2&quot;,
              name = &quot;bongo_event.csv&quot;,
              overwrite = TRUE)</code></pre>
+</div>
 <div id="occurrence-core" class="section level2">
 <h2>Occurrence Core</h2>
-<p>An <code>occurrenceID</code> and <code>occurrenceStatus</code> will only be provided to data entries where species have been identified to a species or genus level. Only for these species can a URN be associated from WoRMS. So first we inspect all the unique input for the <code>species</code> column, and filter for all these species by filtering out the species that can <em>not</em> be identified to a species or genus level. Measurements of weight, length, life stage and taxonomic group will still be included, however they will linked directly to the <code>eventID</code> (the sampleID) rather than the <code>occurrenceID</code>. In other words, these data entries will not be included in the Occurrence Core!</p>
-<p>After a brief discussion with Julian, it was agreed on that entries where Species = <code>Size fraction</code>, will not have an Occurrence Core associated to it, because it is not possible to associate a URN from WoRMS to this class or group (<code>Zooplankton</code>). The same goes for entries where no common rank can be associated, such as <code>Jellyfish, radiolarian, chaetognath</code> and <code>Gelatinous</code>. For other entries where no clear classification is provided, e.g. <code>crab zoea</code> and <code>jelly mass</code>, the lowest common rank URN is listed.</p>
+<p>An <code>occurrenceID</code> and <code>occurrenceStatus</code> will only be provided to data entries where species have been identified to a level for which we can find a WoRMS URN. So first we inspect all the unique input for the <code>species</code> column, and filter out the species that can <em>not</em> be identified. Measurements of weight, length, life stage and taxonomic group will still be included, however they will linked directly to the <code>eventID</code> (the sample_id) rather than the <code>occurrenceID</code>. In other words, these data entries will not be included in the Occurrence Core!</p>
+<p>After a brief discussion with Julian, it was agreed on that entries where Species = <code>Size fraction</code>, will not have an Occurrence Core associated to it, because it is not possible to associate a URN from WoRMS to this class or group (<code>Zooplankton</code>). The same goes for entries where no common rank can be associated, such as <code>Jellyfish, radiolarian, chaetognath</code> and <code>Gelatinous</code>.</p>
 <style>
 div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
 </style>
 <div class="blue">
-<p>Q: Where do we draw the line when it comes to associating an Occurrence(ID) to an entry? Would this only be for species that have been identified to Species or Genus level, as perhaps a classification on phylum or kingdom level does not really provide any information?</p>
+<p>Q: Where do we draw the line when it comes to associating a taxonomic occurrence record (occurrenceID) to an entry?</p>
 </div>
+<p><strong>A</strong>: After internal discussion, it was opted to associate an occurrence(ID) to an entry as long as we can find a WoRMS taxon / URN, even if a species can only be identified up to a phylum or kingdom level. For data entries where multiple groups are lumped together (i.e. “Jelly fish, radiolarian and chaetognath”), we have opted <em>not</em> to split them into separate occurrenceIDs because it is not possible to associate any measurements to the entry.</p>
 <pre class="r"><code>unique(bongo$species)
 
 # Identify all entries that have not been identified to species or genus level: 
 bongo_occ_spp &lt;- bongo %&gt;% filter(!(species %in% c(&quot;Size fraction&quot;, &quot;Chaetognath &amp; Ctenophore&quot;, &quot;Jelly mass&quot;,
-                                              &quot;Crab zoea&quot;, &quot;Jellyfish, radiolarian, chaetognath&quot;, &quot;Gelatinous&quot;,
+                                              &quot;Jellyfish, radiolarian, chaetognath&quot;, &quot;Gelatinous&quot;,
                                               &quot;Ctenophore / jellyfish&quot;)))</code></pre>
 <style>
 div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
 </style>
 <div class="blue">
 <p>Q: Upon inspection of the species filtered out of the bongo dataset, some sample_ids have associated notes in which sometimes species are specified, see e.g. sample_id Z80, Z15, SS102 etc. Where the notes specify the species and individual measurements (e.g. SS81) I have dealt with these samples in a later stage. However, the other sample_ids I have left as is – notes are eventually added to the eMoF table in a column labelled measurementRemarks. Would you reckon that is sufficient?</p>
-<p>Q: When examining samples SS177, SS178 and SS82, it appears that these data entries have a life stage listed in the species column (hydromedusae and crab zoea). Should we manually make changes in the data to reflect this?</p>
+<p>Q2: When examining samples SS177, SS178 and SS82, it appears that these data entries have a life stage listed in the species column (hydromedusae and crab zoea). Should we manually make changes in the data to reflect this?</p>
 </div>
-<p>When examining the bongo_occ_spp dataset, numerous bongo tows have the sample_id ‘Petri dish’ associated to them, with the only distinguishable feature being a difference in length measurement. In our current set up, all Petri dish sample_ids belong to the same Station have the same sample (GoA2019_Stn10:cast1:bongo:Net1:Petri dish), although they are different data entries. Therefore we attach a unique sample to them and then merge them back to the dataframe:</p>
+<p><strong>A</strong>: For Q2, these changes have indeed been made in the script in a later stage to reflect that these species reflect a lifestage, rather than a species.</p>
+<p>When examining the bongo_occ_spp dataset, numerous data entries have the sample_id ‘Petri dish’ associated to them, with the only distinguishable feature being a difference in length measurement. In our current set up, all Petri dish sample_ids belonging to the same station have the same sample (e.g. GoA2019_Stn10:cast1:bongo:Net1:Petri dish), although they are different data entries. Therefore we attach a unique sample to them and then merge them back to the dataframe. Make sure that the value reported in the <code>number</code> column is numeric.</p>
 <pre class="r"><code>bongo_occ_petri &lt;- bongo_occ_spp %&gt;% filter(sample_id == &quot;Petri dish&quot;) %&gt;%
   mutate(sample_id = paste(sample_id, row_number(), sep = &quot;_&quot;))
 bongo_occ_spp_temp &lt;- bongo_occ_spp %&gt;% filter(!sample_id == &quot;Petri dish&quot;)
 bongo_occ_spp &lt;- rbind(bongo_occ_spp_temp, bongo_occ_petri)</code></pre>
-<p>Upon close inspection of the data entries that we filtered out, there are two sample_ids (SS81 and SS133) for which the species are mentioned in the <em>notes</em> column, <em>along</em> with their length measured. For these two sample_ids we can add an <code>occurrenceID</code> and <code>occurrenceStatus</code>. Both sample_ids require special attention: For sampleID SS81 the number = 7, but the notes distinguish 8 unique measurements. Additionally, sample_id SS133 requires special attention because although number = 1, in the notes it says that jellies were observed (length range: 10 - 15mm) and 3 sagitta spp. were observed, with individual lengths measured. <strong>For those data entries where some species are specified in the notes but no individual measurements are provided, no additional splitting is done!</strong></p>
-<p>Before creating occurrence tables that will eventually be merged into an Occurrence Core, we will split up the data entries for these two sample_id’s, thereby creating unique entries, and join it back with the dataset bongo_occ_spp. To create unique rows for these data entries, we manually change the value in the <code>number</code> column. Then we duplicate the row of each sample_id based onthe value in the number column. The newly created dataframe will consist only of the duplicated rows, and will later be merged again with the original dataset. The reason for this is that no weight_mg value is associated to any of the individual measurements (weight_mg = NA).</p>
+<p>Upon close inspection of the data entries that we filtered out, there are two sample_ids (SS81 and SS133) for which the species are mentioned in the <em>notes</em> column, <em>along</em> with their length measured. For these two sample_ids we can add an <code>occurrenceID</code> and <code>occurrenceStatus</code>. Both sample_ids require special attention: For sampleID SS81 the number = 7, but the notes distinguish 8 unique measurements. Additionally, sample_id SS133 requires special attention because although number = 1, in the notes it says that two jellies were observed (length range: 10 - 15mm) and 3 sagitta spp. were observed, with individual lengths measured. <strong>For those data entries where some species are specified in the notes but no individual measurements are provided, no additional splitting is done!</strong></p>
+<p>Before creating occurrence tables that will eventually be merged into an Occurrence Core, we will split up the data entries for these two sample_id’s, thereby creating unique entries, and join it back with the dataset bongo_occ_spp. While this can be done manually in the raw file, I choose to write it in the script to mess with the raw data as little as possible. To create unique rows for these data entries, we manually change the value in the <code>number</code> column. Then we duplicate the row of each sample_id based on the value in the number column. The newly created dataframe will consist only of the duplicated rows, and will later be merged again with the original dataset. The reason for this is that no weight_mg value is associated to any of the individual measurements (weight_mg = NA).</p>
+<p><strong>Please note, that for sample SS133, I change the number to 4, instead of 5. The reason for this is that in the notes, a length range is provided, rather than individual length measurements. In the eMOF Core this will be reflected as two columns: minimumLength and maximumLength, with associated number = 2</strong>.</p>
+<p>Finally, the dataframe of these two sample_ids will be joined with the <code>bongo_occ_spp</code> dataframe.</p>
 <pre class="r"><code>bongo_pre_wrangle &lt;- bongo %&gt;% filter(sample_id %in% c(&quot;SS81&quot;, &quot;SS133&quot;))
 
 bongo_pre_wrangle$number[1] &lt;- 8
@@ -526,26 +559,31 @@ bongo_pre_wrangle_fnl &lt;- bongo_pre_wrangle_fnl %&gt;%
 bongo_pre_wrangle_fnl$length_mm[5] &lt;- &quot;10-15mm&quot; 
 # This line can be removed if length_mm for SS133_4 can easily be replaced. 
 
-# Add bongo_pre_wrangle_fnl to the dataframe where we filtered out the all entries that have not been identified to species or genus level to obtain the dataset which we&#39;ll use to create our occurrence tables and eventually our Occurrence Core. 
 bongo_occ_spp &lt;- rbind(bongo_occ_spp, bongo_pre_wrangle_fnl)</code></pre>
-<p>When examining the remaining data entries in the bongo_occ_spp dataset, we can identify some problems, especially in the columns <code>number</code> and <code>length_mm</code>. The <code>number</code> column indicates the count of a species observed in each trawl, and <code>count</code> and <code>number</code> will be used synonymous throughout this script. Some problems that we encountered are the following:</p>
+<p>When examining the remaining data entries in the bongo_occ_spp dataset, we can identify some problems, especially in the columns <code>number</code> and <code>length_mm</code>. The <code>number</code> column indicates the count of a species observed in each cast, and <code>count</code> and <code>number</code> will be used synonymous throughout this script. Some problems that we encountered are the following:</p>
 <ol style="list-style-type: decimal">
 <li>Some data entries have counts that are not a specific number (i.e., &gt;3, &gt;4 and &gt;1);</li>
-<li>Some data entries that have a count &gt; 1, appear to be aggregated entries, as only a single length measurement is associated. However, sometimes individual measurements or classifications are provided in the <code>notes</code> column. As we don’t want to mess with the raw data .csv file, we have to manually inspect these entries to ensure that no (individual) measurements get overlooked * ;</li>
+<li>Some data entries that have a count &gt; 1, appear to be aggregated entries, as only a single length measurement is associated. However, sometimes individual measurements or classifications are provided in the <code>notes</code> column. As we don’t want to mess with the raw data .csv file, we have to manually inspect these entries to ensure that no (individual) measurements get overlooked</li>
 <li>Some data entries have a count &gt; 1, and an associated range in the length measurement (i.e., 15 - 17mm)</li>
 </ol>
 <style>
 div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
 </style>
 <div class="blue">
-<p>Q: If a data entry has number &gt; 1, but only one associated length measurement, does that mean that all individuals in that row have that length? If so - these should all receive a unique <code>occurrenceID</code> and <code>occurrenceStatus</code>! Right now I haven’t split these data entries, but have included a measurement in the eMoF table for “number”.</p>
+<p>The assumption here is made that if a data entry has number &gt; 1, but only a single associated length measurement, all individuals have the length reported.</p>
 </div>
 <p><strong>To address these issues, a total of five different occurrence tables will be created, that eventually get merged to a single Occurrence Core! Reminder: in all these occurrence tables only data entries are included where species have been identified to species or genus level, and will therefore have an associated occurrenceID and occurrenceStatus.</strong></p>
 <p>The five Occurrence tables are:</p>
-<p>bongo_occ1. Occurrence table for entries with no distinct number recorded (i.e., &gt;4, &gt;3 or &gt;1); bongo_occ2. Occurrence table for entries where count &gt; 1, but individual measurements (length) are provided in the notes. These entries will be split up and unique <code>occurrenceID</code>s will be created; bongo_occ3. Occurrence table for entries where count &gt; 1, and a range of length measurements is provided in the <code>length_mm</code> column; bongo_occ4. Occurrence table for individual data entries (i.e., where <code>number</code> = 1). bongo_occ5. Occurrence table for data entries where count &gt; 1, but only a single length measurement is provided.</p>
+<ul>
+<li>bongo_occ1. Occurrence table for entries with no distinct number recorded (i.e., ‘&gt;4’, ‘&gt;3’ or ‘&gt;1’);</li>
+<li>bongo_occ2. Occurrence table for entries where count &gt; 1, but individual measurements (length) are provided in the notes. The number of individual measurements reported matches the value reported in the <code>number</code> column. These entries will be split up and unique <code>occurrenceID</code>s will be created;</li>
+<li>bongo_occ3. Occurrence table for entries where count &gt; 1, and a range of length measurements is provided in the <code>length_mm</code> column;</li>
+<li>bongo_occ4. Occurrence table for individual data entries (i.e., where <code>number</code> = 1).</li>
+<li>bongo_occ5. Occurrence table for data entries where count &gt; 1, but only a single length measurement is provided.</li>
+</ul>
 <p>These five occurrence tables will eventually be concatenated into a single Occurrence Core.</p>
 <hr />
-<p>Let’s first examine the data entries where the counts do not have a specific number associated to it. As the species has been identified to a species or genus-level, we do want to assign <code>occurrenceID</code> and <code>occurrenceStatus</code> columns to them. An <code>occurrenceID</code> will be associated at a later stage when all the created occurrence tables are joined.</p>
+<p>Let’s first examine the data entries where the counts do not have a specific number associated to it. We do want to assign <code>occurrenceID</code> and <code>occurrenceStatus</code> columns to them. An <code>occurrenceID</code> will be associated at a later stage when all the created occurrence tables are joined.</p>
 <pre class="r"><code>unique(bongo_occ_spp$number)
 
 # This identifies that there are three entries where the number (or count) is not specified: &quot;&gt;1&quot;, &quot;&gt;3&quot; and &quot;&gt;4&quot;.
@@ -558,18 +596,14 @@ bongo_occ1 &lt;- bongo_occ_spp %&gt;% filter(number == &quot;&gt;3&quot; | numbe
 <p>We create a separate table for the unique sample_id’s that have number &gt; 1 and where the number matches the individual length measurements in <code>length_mm</code>. Our intention here is to <em>add</em> duplicate rows for each unique sample_id equal to the value under <code>number</code> associated to that data entry. We want to keep the original data entry row (the <code>eventID</code>) intact, as this data entry usually contains the weight measurement. In other words, if four individual length measurements are provided in the <code>length_mm</code> column, we want to make sure these all get a unique <code>occurrenceID</code>, associated to the same <code>eventID</code>.</p>
 <pre class="r"><code>bongo_occ2 &lt;- bongo_occ_spp %&gt;% filter(number &gt; 1)
 
-# We filter for the sample_ids where number is more than 1, and unique length measurements are provided. . 
-
+# We filter for the sample_ids where number is more than 1, and unique length measurements are provided in the notes. 
 bongo_occ2_ind &lt;- bongo_occ2 %&gt;% filter(sample_id %in% c(&quot;SS12&quot;, &quot;SS38&quot;, &quot;SS42B&quot;, &quot;22020&quot;, &quot;22021&quot;,
                                                &quot;SS59&quot;, &quot;SS58&quot;, &quot;SS57&quot;, &quot;SS55&quot;, &quot;Z318&quot;, &quot;SS68&quot;, &quot;SS69&quot;,
                                                &quot;SS119&quot;, &quot;SS126&quot;, &quot;SS176&quot;, &quot;SS185&quot;))</code></pre>
-<p>When filtering for number &gt; 1, we noticed that there are four data entries (rows) with a similar sample_id (“Petri dish”). So in our current set up these all have the same <code>sample_id</code> (GoA2019_Stn11:cast1:bongo:Net1:Petri dish). We will deal with these entries separate. So our first step here is to filter out this sample_id and assign a unique <code>eventID</code>. However, unique length measurements are provided in the notes for only three of these data entries.</p>
-<p>Therefore we have to deal with sample_id ‘Petri dish’ by creating unique <code>eventID</code>s, and then splitting three of those uniquely created <code>eventID</code>s as they have individual measurements associated to them. The fourth uniquely created <code>eventID</code> will have number = 3, but only a single length measurement associated. Therefore this row will be removed and be dealt with under bongo_occ3.</p>
-<pre class="r"><code>bongo_petri &lt;- bongo_occ2 %&gt;% filter(sample_id == c(&quot;Petri dish_13&quot;,&quot;Petri dish_14&quot;, 
+<p>When filtering for number &gt; 1, we observe that there are data entries for Station 11 that are all for the same species, but unique length measurements are provided for three data entries, and the four includes a length measurement range. We therefore split three of those uniquely created <code>eventID</code>s as they have individual measurements associated to them. The fourth uniquely created <code>eventID</code> will have number = 3, but only a single length measurement associated. Therefore this row will be removed and be dealt with under bongo_occ3.</p>
+<pre class="r"><code>bongo_petri &lt;- bongo_occ2 %&gt;% filter(sample_id %in% c(&quot;Petri dish_13&quot;,&quot;Petri dish_14&quot;, 
                                                     &quot;Petri dish_15&quot;, &quot;Petri dish_16&quot;))
-
 bongo_petri &lt;- bongo_petri[-4, ]
-
 # Merge this dataframe back in with the bongo_occ2_ind: 
 bongo_occ_new &lt;- rbind(bongo_occ2_ind, bongo_petri)</code></pre>
 <p>The next step is to create duplicate rows of these data entries, equal to the count in the <code>number</code> column. These duplicated rows will need to reflect the individual length (mm) measurements and also reflect that it now represents just a single measurement (i.e., number = 1). For all the split unique data entries in this dataframe, the weight_mg measurement will be NA. The weight_mg measurements for these data entries combined will still be reflected in the original data. In a later stage, this newly created dataframe will be merged with the original dataframe.</p>
@@ -588,7 +622,7 @@ bongo_occ2$sample_id &lt;- sub(&#39;[.]&#39;, &#39;_&#39;, make.names(bongo_occ2
 # For some reason this adds an X for sample_id 22020 and 22021 so this needs to get removed: 
 bongo_occ2$sample_id &lt;- gsub(&quot;X&quot;, &quot;&quot;, bongo_occ2$sample_id)
 
-# Now we have both the original data entry and duplicated rows in a dataframe. The only things that needs to be changed in the dataframe is the length measurements within the duplicated rows, to reflect the individual measurements. I am unsure if there is a faster way to do this, but a cumbersome way is: 
+# Now we have both the original data entry and duplicated rows in a dataframe. The only things that needs to be changed in the dataframe is the length measurements within the duplicated rows, to reflect the individual measurements. I am unsure if there is a faster way to do this, but the cumbersome way is: 
 
 bongo_occ2 &lt;- bongo_occ2 %&gt;% 
  mutate(length_mm = case_when(
@@ -668,9 +702,9 @@ bongo_occ3 &lt;- bongo_occ_spp %&gt;%
   rename(eventID = sample, 
          scientificName = species)</code></pre>
 <p>So far, for all the data entries where species have been identified to a species or genus level, we’ve created occurrence tables for:</p>
-<pre><code>*- Data entries where the number is not a specific number (i.e., &gt;3, &gt;4 and &gt;1)
-*- Data entries where number &gt; 1 and individual measurements are depicted in the notes
-*- Data entries where number &gt; 1 and a range is provided in the `length_mm` column. </code></pre>
+<pre><code>*- Data entries where the number is not a specific number (i.e., &gt;3, &gt;4 and &gt;1) (bongo_occ1)
+*- Data entries where number &gt; 1 and individual measurements are depicted in the notes (bongo_occ2)
+*- Data entries where number &gt; 1 and a range is provided in the `length_mm` column (bongo_occ3) </code></pre>
 <p>This leaves two occurrence tables that need to be created:</p>
 <ol style="list-style-type: decimal">
 <li>all data entries where species or genus has been identified and individual measurements are associated (i.e., the rows where number = 1), and;</li>
@@ -680,7 +714,7 @@ bongo_occ3 &lt;- bongo_occ_spp %&gt;%
   filter(number == 1) %&gt;%
   filter(!sample_id %in% c(&quot;22003&quot;, &quot;Z372&quot;)) %&gt;%
   
-# Upon inspection, bongo_occ4 has sample_id 22003 and Z372 as well. These is a samples where number = 1, but the length measurement is a range. Therefore, these samples are already included in bongo_occ3 dataset and are therefore omitted from this dataset. 
+# Upon inspection, bongo_occ3 has sample_id 22003 and Z372 as well. These is a samples where number = 1, but the length measurement is a range. Therefore, these samples are already included in bongo_occ3 dataset and are therefore omitted from this dataset. 
   
   mutate(occurrenceID = &quot; &quot;,
          occurrenceStatus = &quot;present&quot;) %&gt;%
@@ -689,6 +723,7 @@ bongo_occ3 &lt;- bongo_occ_spp %&gt;%
 <p>There are also data entries where the species have been identified to a species or genus level, and where the number &gt; 1, but no individual length measurements (or range) is associated with it. We will also associate an <code>occurrenceID</code> and <code>occurrenceStatus</code> to these species, and in the extended measurementOrFact table the number (count) will be linked to the <code>occurrenceID</code> as a measurement.</p>
 <pre class="r"><code>bongo_occ5 &lt;- bongo_occ_spp %&gt;%
   filter(number &gt; 1)
+bongo_occ5$number &lt;- as.numeric(bongo_occ5$number)
 # Remove the rows where sample_id matches with those in bongo_occ3 (where length_mm have ranged value)
 bongo_occ5 &lt;- bongo_occ5[ !(bongo_occ5$sample_id %in% bongo_occ3$sample_id), ] 
 # Remove the rows where sample_id matches with those in bongo_occ2 (where individual length measurements have been recorded in the notes)
@@ -700,11 +735,14 @@ bongo_occ5 &lt;- bongo_occ5[ !(bongo_occ5$sample_id %in% bongo_petri$sample_id),
   rename(eventID = sample,
          scientificName = species)</code></pre>
 <p>To create the final occurrence table, the five occurrence tables are joined. As individual measurements are associated to these data entries, an <code>occurrenceID</code> is created for them. Additionally, for each species the proper scientificNameID (WoRMS URN) is provided.</p>
+<p>The bongo_occ_fnl dataframe is saved, and columns are manually added for <code>kingdom</code>, <code>phylum</code>, <code>class</code>, <code>order</code>, <code>family</code> and <code>genus</code>, where applicable. This is done manually because I don’t know if it’s possible to auto-populate these columns from the WoRMS site directly. Afterwards, this new dataframe is read in.</p>
 <pre class="r"><code># Next, combine bongo_occ_wr with the original dataframe (bongo)
 bongo_occ_fnl &lt;- rbind(bongo_occ1, bongo_occ2, bongo_occ3, bongo_occ4, bongo_occ5) 
 bongo_occ_fnl &lt;- bongo_occ_fnl[mixedorder(as.character(bongo_occ_fnl$eventID)),]
 bongo_occ_fnl &lt;- bongo_occ_fnl %&gt;%
-  mutate(occurrenceID = paste(&quot;IYS_GoA2019_zocc&quot;, row_number(), sep = &quot;&quot;),
+  rename(organismQuantity = number) %&gt;%
+  mutate(organismQuantityType = &quot;individuals&quot;,
+         occurrenceID = paste(&quot;IYS_GoA2019_zocc&quot;, row_number(), sep = &quot;&quot;),
   scientificNameID = case_when(
       scientificName == &quot;Thysanoessa spinifera&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:237874&quot;, 
       scientificName == &quot;Sergestes similis&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:514127&quot;,
@@ -752,12 +790,46 @@ bongo_occ_fnl &lt;- bongo_occ_fnl %&gt;%
       # Order: Siphonophorae
       scientificName == &quot;Sagitta&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:105410&quot;, 
       scientificName == &quot;E pacifica&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:237851&quot;,
-      scientificName == &quot;T spinifera&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:237874&quot;
+      scientificName == &quot;T spinifera&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:237874&quot;,
+      scientificName == &quot;Crab zoea&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:1130&quot;
     )
+  )</code></pre>
+<p>Next, this Occurrence Core is saved locally, and manually the columns for kingdom, phylum, class etc are added. For the 2020 IYS Bongo dataset, Natalie M. has indicated that she will add these columns. Once this is done, the dataframe is opened in R again:</p>
+<pre class="r"><code>write_csv(bongo_occ_fnl, here(&quot;Bongo&quot;, &quot;tidy_data&quot;, &quot;bongo_species.csv&quot;))
+bongo_occ_fnl &lt;- read_excel(here(&quot;Bongo&quot;, &quot;tidy_data&quot;, 
+                       &quot;bongo_species_fnl.xlsx&quot;)) %&gt;%
+  mutate(lifeStage = case_when(
+      stage == &quot;NA&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/S11/current/S1131/&quot;,
+      stage == &quot;2&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/S11/current/S1165/&quot;,
+      stage == &quot;4&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/S11/current/S1165/&quot;,
+      stage == &quot;1to2&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/S11/current/S1165/&quot;,
+      stage == &quot;CV&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/S11/current/S1112/&quot;,
+      stage == &quot;Spent&quot; ~ &quot; &quot;, #https://www.tdwg.org/community/osr/how-did-it-die/ 
+      stage == &quot;Solitary&quot; ~ &quot; &quot;,
+      stage == &quot;juvenile&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/S11/current/S1127/&quot;,
+      stage == &quot;adult&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/S11/current/S1116/&quot;,
+      
+      # Additionally, for two data entries the scientificName is actually more a lifeStage then an actual species, so we record the life stage for these as well:
+      scientificName == &quot;Hydromedusae&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/S11/current/S1126/&quot;,
+      scientificName == &quot;Crab zoea&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/S11/current/S1137/&quot;
+  ),
+  sex = case_when(
+    stage == &quot;Gravid female&quot; ~ &quot;female&quot;),
+  reproductiveCondition = case_when(
+    stage == &quot;Gravid female&quot; ~ &quot;gravid&quot;),
+  occurrenceRemarks = case_when(
+    stage == &quot;Spent&quot; ~ &quot;Spent&quot;
   )
+  ) %&gt;%
+  select(-preservation) # I&#39;ve noticed that in bongo_fnl there is a column &#39;preservation&#39;, indicating whether a Net was preserved in formalin or size fractioned and frozen. In the bongo_occ_fnl dataframe, there is also a column &#39;preservation&#39;, which is &quot;Freeze: -20&quot;. I would recommend adding the bongo_fnl preservation column to the occurrence core. FOr this reason, this column is removed from the bongo_occ_fnl dataframe.
+
+preservation &lt;- bongo_fnl %&gt;% select(station, net, preservation)
+preservation$net &lt;- as.numeric(preservation$net)
+bongo_occ_fnl &lt;- left_join(bongo_occ_fnl, preservation, by = c(&quot;station&quot;, &quot;net&quot;))
+
 bongo_occ_core &lt;- bongo_occ_fnl %&gt;%
   rename(Preparations = preservation) %&gt;%
-  select(eventID, occurrenceID, scientificName, scientificNameID, occurrenceStatus, Preparations)
+  select(eventID, occurrenceID, scientificName, scientificNameID, kingdom, phylum, class, order, family, genus, occurrenceStatus, Preparations, organismQuantity, organismQuantityType, stage, lifeStage, sex, reproductiveCondition, occurrenceRemarks)
 # I change bongo_occ_fnl into a new dataframe because we&#39;re going to use the bongo_occ_fnl dataset in the eMoF table.
 
 # Make sure the folder path exists already (e.g. ./Bongo/tidy_data)
@@ -766,16 +838,13 @@ drive_upload(here(&quot;Bongo&quot;, &quot;tidy_data&quot;, &quot;bongo_occ.csv&
              path = &quot;https://drive.google.com/drive/u/0/folders/1cAJP-DGSQZdRhrIYraX8MJXO-h_7qbn2&quot;,
              name = &quot;bongo_occ.csv&quot;,
              overwrite = TRUE)</code></pre>
-<style>
-div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
-</style>
-<div class="blue">
-<p>Q: All species that are listed as <code>size fraction</code> belong to the group “Zooplankton”. How can we best represent this group according to OBIS / WoRMS standards? A: As no species name or genus is provided, rather than creating an <code>occurrenceID</code> for these species, we link the measurements associated to this data entry directly to the <code>eventID</code>. To indicate that it does concern measurements associated to ‘Zooplankton’, one of the measurement parameters is the column <code>Group</code>.</p>
-</div>
+<p>For OBIS, it is preferred if the Event Core and Occurrence Core are combined into a single Core. As you can see, a lot of <code>eventID</code> do not have an associated <code>occurrenceID</code>, and this is mostly because these <code>eventIDs</code> are for zooplankton, which will have measurements directly linked to the <code>eventID</code>.</p>
+<pre class="r"><code>bongo_event_occ &lt;- left_join(bongo_event, bongo_occ_core, by = &quot;eventID&quot;)
+write_csv(bongo_event_occ, here(&quot;Bongo&quot;, &quot;tidy_data&quot;, &quot;bongo_event_occ.csv&quot;))</code></pre>
 </div>
 <div id="extended-measurementorfact" class="section level2">
 <h2>extended measurementOrFact</h2>
-<p>In our extended measurementOrFact table(s), we associate the measurements to either the <code>eventID</code> (if species was not identified to species or genus level), or the <code>occurrenceID</code> (if species was identified to species or genus level). As a first step though, we associate the <em>seafloor depth</em> and <em>sampling depth</em> to the cast.</p>
+<p>In our extended measurementOrFact table(s), we associate the measurements to either the <code>eventID</code> (if species was not identified to species or genus level), or the <code>occurrenceID</code> (if species was identified to species or genus level). As a first step though, we associate the <em>seafloor depth</em>, <em>sampling depth</em>, <em>sampleSizeValue</em> and <em>sampleSizeUnit</em> to the cast. There is still debate on whether information regarding the sampleSizeValue and sampleSizeUnit need to be included, as we are essentially recording metadata in the data. Do note that that this Core standards for measurements and <em>facts</em>, and these Bongo net details are <em>facts</em> linked to the Event. For the time being therefore, this information is recorded in this Core.</p>
 <pre class="r"><code>bongo_bottomdepth &lt;- bongo %&gt;% 
   select(eventID = cast, 
          depth, sample_depth) %&gt;%
@@ -800,7 +869,67 @@ div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
     measurementUnit == &quot;m&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P06/current/ULAA/&quot;)) %&gt;%
   select(eventID, measurementID, measurementType, measurementTypeID, measurementValue, 
          measurementUnit, measurementUnitID)</code></pre>
-<p>Though an occurrenceID was not created for each data entry, measurements can be linked either directly to the <code>eventID</code> or to the <code>occurrenceID</code>. The following measurements are linked to either the <code>eventID</code> or <code>occurrenceID</code>: <code>length_mm</code>, <code>length_type</code>, <code>weight_mg</code>, <code>number</code> and <code>(taxonomic) group</code>. Additional information that might in the future be included as well could be <code>Stage</code>, which reflects a lifeStage of an organism. However, because the datasheet includes a wide variety of organisms, all with different ‘levels’ of a lifeStage, to what extent is it necessary to choose a uniform ‘coding’ system for this variable? Finally, <code>size_fraction</code> needs to be added to <code>eventID</code>, but perhaps also to the <code>occurrenceID</code>.</p>
+<p>Add information on the sampling instrument used, as well as the sampling effort (both the volume of sea water filtered, tow distance and speed of tow).</p>
+<pre class="r"><code>bongo_sampling &lt;- bongo_fnl %&gt;%
+  select(eventID = cast, 
+         tow_distance,
+         final_volume_filtered) %&gt;%
+  mutate(speed_tow = 1) %&gt;%
+  distinct(eventID, .keep_all = TRUE) %&gt;%
+  mutate_all(as.character) %&gt;%
+  pivot_longer(cols = tow_distance:speed_tow,
+               names_to = &quot;measurementType&quot;,
+               values_to = &quot;measurementValue&quot;) %&gt;%
+  mutate(measurementID = paste(eventID, &quot;bongo&quot;, measurementType, sep = &quot;:&quot;),
+         measurementTypeID = case_when(
+           measurementType == &quot;tow_distance&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P01/current/LENTRACK/&quot;,
+           measurementType == &quot;final_volume_filtered&quot; ~ &quot; &quot;,
+           measurementType == &quot;speed_tow&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P01/current/TOWSPEED/&quot;
+         ),
+  measurementUnit = case_when(
+    measurementType == &quot;tow_distance&quot; ~ &quot;m&quot;,
+    measurementType == &quot;final_volume_filtered&quot; ~ &quot;L&quot;,
+    measurementType == &quot;speed_tow&quot; ~ &quot;m/s&quot;),
+  measurementUnitID = case_when(
+    measurementUnit == &quot;m&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P06/current/ULAA/&quot;,
+    measurementUnit == &quot;L&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P06/current/ULIT/&quot;,
+    measurementUnit == &quot;m/s&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P06/current/UVAA/&quot;
+  )) %&gt;%
+    select(eventID, measurementID, measurementType, measurementTypeID, measurementValue,
+           measurementUnit, measurementUnitID)</code></pre>
+<p>And for the sampling instrument:</p>
+<pre class="r"><code>bongo_instrument &lt;- bongo %&gt;%
+  select(eventID = cast,
+         gear) %&gt;%
+  mutate(bongo_mesh = 236,
+         bongo_opening = 0.5,
+         bongo_length = 3) %&gt;%
+  distinct(eventID, .keep_all = TRUE) %&gt;%
+  mutate_all(as.character) %&gt;%
+  pivot_longer(cols = gear:bongo_length,
+               names_to = &quot;measurementType&quot;,
+               values_to = &quot;measurementValue&quot;) %&gt;%
+  mutate(measurementID = paste(eventID, &quot;bongo&quot;, measurementType, sep = &quot;:&quot;),
+         measurementTypeID = case_when(
+           measurementType == &quot;gear&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/&quot;,
+           measurementType == &quot;bongo_mesh&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/Q01/current/Q0100015/&quot;,
+           measurementType == &quot;bongo_opening&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/Q01/current/Q0100017/&quot;,
+           measurementType == &quot;bongo_length&quot; ~ &quot; &quot;))
+
+bongo_instrument &lt;- bongo_instrument %&gt;%
+  mutate(measurementUnit = case_when(
+           measurementType == &quot;bongo_mesh&quot; ~ &quot;um&quot;,
+           measurementType == &quot;bongo_length&quot; ~ &quot;m&quot;,
+           measurementType == &quot;bongo_opening&quot; ~ &quot;m^2&quot;),
+         measurementUnitID = case_when(
+           measurementUnit == &quot;um&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P06/current/UMIC/&quot;,
+           measurementUnit == &quot;m^2&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P06/current/UMSQ/&quot;,
+           measurementUnit == &quot;m&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P06/current/ULAA/&quot;),
+         measurementValueID = case_when(
+           measurementValue == &quot;Bongo&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/L22/current/NETT0176/&quot;)) %&gt;%
+  select(eventID, measurementID, measurementType, measurementTypeID, measurementValue,
+         measurementValueID, measurementUnit, measurementUnitID)</code></pre>
+<p>Though an occurrenceID was not created for each data entry, measurements can be linked either directly to the <code>eventID</code> or to the <code>occurrenceID</code>. The following measurements are linked to either the <code>eventID</code> or <code>occurrenceID</code>: <code>length_mm</code>, <code>length_type</code>, and <code>weight_mg</code>. Finally, <code>size_fraction</code> needs to be added to <code>eventID</code>, but perhaps also to the <code>occurrenceID</code>.</p>
 <p>We first create the eMoF table that links directly to the <code>eventID</code>. First we have to filter for all the data entries for which no <code>occurrenceID</code> has been created. In other words, remove any rows (data entries) for which an <code>occurrenceID</code> has been created:</p>
 <pre class="r"><code>bongo_occID &lt;- bongo_occ_fnl %&gt;% rename(sample = eventID)
 bongo_emof &lt;- bongo[ !(bongo$sample %in% bongo_occID$sample), ]
@@ -809,61 +938,45 @@ bongo_emof &lt;- bongo[ !(bongo$sample %in% bongo_occID$sample), ]
 
 bongo_emof &lt;- bongo_emof %&gt;%
   select(eventID = sample, 
-         number, size_fraction, 
+         size_fraction, 
          length = length_mm,
          weight = weight_mg,
-         length_type,
-         group) %&gt;%
+         length_type) %&gt;%
 
-  # As there is no NERC vocab (it appears) for milligram (for the weight), we transform this column to reflect the weight in grams: 
+    # As there is no NERC vocab (it appears) for milligram (for the weight), we transform this column to reflect the weight in grams: 
   mutate(weight = as.numeric(weight) / 1000) %&gt;%
   mutate_all(as.character) %&gt;%
-  pivot_longer(cols = number:group, 
+  pivot_longer(cols = length:length_type,
                names_to = &quot;measurementType&quot;,
                values_to = &quot;measurementValue&quot;) %&gt;%
   mutate(
     measurementID = case_when(
-      measurementType == &quot;number&quot; ~ paste(eventID, &quot;number&quot;, sep = &quot;:&quot;),
       measurementType == &quot;size_fraction&quot; ~ paste(eventID, &quot;size_fraction&quot;, sep = &quot;:&quot;),
       measurementType == &quot;length&quot; ~ paste(eventID, &quot;length&quot;, sep = &quot;:&quot;),
       measurementType == &quot;length_type&quot; ~ paste(eventID, &quot;length_type&quot;, sep = &quot;:&quot;),
-      measurementType == &quot;weight&quot; ~ paste(eventID, &quot;weight&quot;, sep = &quot;:&quot;),
-      # Have to check whether this is dry weight or wet weight. 
-      measurementType == &quot;group&quot; ~ paste(eventID, &quot;group&quot;, sep = &quot;:&quot;)
-    ),
+      measurementType == &quot;weight&quot; ~ paste(eventID, &quot;weight&quot;, sep = &quot;:&quot;)),
     measurementTypeID = case_when(
-      measurementType == &quot;number&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/S06/current/S0600008/&quot;,
       measurementType == &quot;size_fraction&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P01/current/MSHSIZE1/&quot;,
-      # samplingProtocol
       measurementType == &quot;length&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/S06/current/S0600015/&quot;,
       # I want to check if maybe there is a better Controlled Vocab for body size
-      measurementType == &quot;length_type&quot; ~ &quot; &quot;,
-      measurementType == &quot;weight&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/S06/current/S0600087/&quot;,
-      # As per communication with Brian Hunt: weight refers to net dry weight!
-      measurementType == &quot;group&quot; ~ &quot; &quot;
-    ), 
+      measurementType == &quot;length_type&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P01/current/OBSINDLX/&quot;,
+      measurementType == &quot;weight&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/S06/current/S0600087/&quot;), 
     measurementUnit = case_when(
-      measurementType == &quot;number&quot; ~ &quot;individuals&quot;,
       measurementType == &quot;length&quot; ~ &quot;mm&quot;,
       measurementType == &quot;weight&quot; ~ &quot;g&quot;,
-      measurementType == &quot;size_fraction&quot; ~ &quot;mm&quot; 
-      # If this is equal to mesh size
+      measurementType == &quot;size_fraction&quot; ~ &quot;mm&quot;
     ), 
     measurementUnitID = case_when(
       measurementUnit == &quot;individuals&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P06/current/UUUU/&quot;, 
       measurementUnit == &quot;mm&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P06/current/UXMM/&quot;,
-      measurementUnit == &quot;g&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P06/current/UGRM/&quot;,
-      # Reminder: there is no NERC Controlled Vocabulary for mg, so values are formatted to &#39;grams&#39;. 
-    )
-    )</code></pre>
+      measurementUnit == &quot;g&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P06/current/UGRM/&quot;))</code></pre>
 <p>When the species or genus has been identified, the measurements are associated to the occurrenceID. The reason for this is that URNs from <a href="http://www.marinespecies.org/">WoRMS</a> can be associated to the species entries. For the entries where the <code>Species</code> are more descriptive or which haven’t been able to get associated to a URN from WoRMS, the measurements are linked directly to the <code>eventID</code>. This concerns the following listed “Species”: <code>Gelatinous</code>, <code>Jellyfish, radiolarian, chaetognath</code>, and <code>size fraction</code>.</p>
 <pre class="r"><code>bongo_emof2 &lt;- bongo_occ_fnl %&gt;%
   select(eventID, occurrenceID,
-         number, size_fraction,
+         size_fraction,
          length = length_mm,
          weight = weight_mg,
-         length_type,
-         group) %&gt;%
+         length_type) %&gt;%
   mutate(weight = as.numeric(weight) / 1000) %&gt;% 
   mutate_all(as.character)</code></pre>
 <p>Within this dataframe, there are still the data entries that have a length measurements associated to them that’s a range (i.e., 15 - 17mm). For these <code>occurrenceID</code>s we want to split this column into two, with minimumLength and maximumLength. Afterwards, that dataframe can be merged back in with bongo_emof2.</p>
@@ -884,70 +997,96 @@ bongo_emof2 &lt;- rbind(range, temp)</code></pre>
 <p>So now we have a dataframe where: * - Species have been identified to a species or genus level * - Length measurement ranges have been split up into columns of minimumLength and maximumLength.</p>
 <pre class="r"><code>bongo_emof2 &lt;- bongo_emof2 %&gt;%
   mutate_all(as.character) %&gt;%
-  pivot_longer(cols = number:length, 
+  pivot_longer(cols = size_fraction:length, 
                names_to = &quot;measurementType&quot;,
                values_to = &quot;measurementValue&quot;) %&gt;%
   mutate(
     measurementID = case_when(
-      measurementType == &quot;number&quot; ~ paste(eventID, &quot;number&quot;, sep = &quot;:&quot;),
       measurementType == &quot;size_fraction&quot; ~ paste(eventID, &quot;size_fraction&quot;, sep = &quot;:&quot;),
       measurementType == &quot;length&quot; ~ paste(eventID, &quot;length&quot;, sep = &quot;:&quot;),
       measurementType == &quot;length_type&quot; ~ paste(eventID, &quot;length_type&quot;, sep = &quot;:&quot;),
       measurementType == &quot;weight&quot; ~ paste(eventID, &quot;weight&quot;, sep = &quot;:&quot;),
-      # Have to check whether this is dry weight or wet weight. 
-      measurementType == &quot;group&quot; ~ paste(eventID, &quot;group&quot;, sep = &quot;:&quot;),
       measurementType == &quot;maximumLength&quot; ~ paste(eventID, &quot;maxLength&quot;, sep = &quot;:&quot;),
-      measurementType == &quot;minimumLength&quot; ~ paste(eventID, &quot;minLenght&quot;, sep = &quot;:&quot;)
-    ),
+      measurementType == &quot;minimumLength&quot; ~ paste(eventID, &quot;minLenght&quot;, sep = &quot;:&quot;)),
+    measurementValueID = case_when(
+      measurementValue == &quot;Copepod&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:1080&quot;,
+      measurementValue == &quot;Chaetognath&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:2081&quot;,
+      measurementValue == &quot;Siphonphore&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:1371&quot;,
+      measurementValue == &quot;Euphausiid&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:110671&quot;,
+      measurementValue == &quot;Zooplankton&quot; ~ &quot; &quot;,
+      measurementValue == &quot;Pteropod&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:325345&quot;,
+      measurementValue == &quot;Decapod&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:1130&quot;,
+      measurementValue == &quot;Tunicate&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:146420&quot;,
+      measurementValue == &quot;Amphipod&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:1135&quot;,
+      measurementValue == &quot;Ctenophore&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:1248&quot;,
+      measurementValue == &quot;Hydromedusae&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:1337&quot;,
+      # Hydromedusae is a life stage of Hydrozoa (URN provided)
+      measurementValue == &quot;Fish&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:11676&quot;,
+      measurementValue == &quot;Squid&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:11707&quot;,
+      measurementValue == &quot;Gastropod&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:101&quot;),
+    measurementValueID = case_when(
+      measurementValue == &quot;NA&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/S11/current/S1131/&quot;,
+      measurementValue == &quot;2&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/S11/current/S1165/&quot;,
+      measurementValue == &quot;4&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/S11/current/S1165/&quot;,
+      measurementValue == &quot;1to2&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/S11/current/S1165/&quot;,
+      # Perhaps http://vocab.nerc.ac.uk/collection/S11/current/S1165/ is appropriate?
+      measurementValue == &quot;CV&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/S11/current/S1112/&quot;,
+      measurementValue == &quot;Hydromedusae&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/S11/current/S1126/&quot;,
+      measurementValue == &quot;Crab zoea&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/S11/current/S1137/&quot;,
+      measurementValue == &quot;Spent&quot; ~ &quot; &quot;,
+      measurementValue == &quot;Solitary&quot; ~ &quot; &quot;,
+      measurementValue == &quot;juvenile&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/S11/current/S1127/&quot;,
+      measurementValue == &quot;adult&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/S11/current/S1116/&quot;,
+      measurementValue == &quot;Gravid female&quot; ~ &quot; &quot;),
     measurementTypeID = case_when(
-      measurementType == &quot;number&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/S06/current/S0600008/&quot;,
       measurementType == &quot;size_fraction&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P01/current/MSHSIZE1/&quot;,
       # samplingProtocol
-      measurementType == &quot;length&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/S06/current/S0600015/&quot;,
+      measurementType == &quot;length&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P01/current/OBSINDLX/&quot;,
       # I want to check if maybe there is a better Controlled Vocab for body size
       measurementType == &quot;maximumLength&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P01/current/OBSMAXLX/&quot;,
       measurementType == &quot;minimumLength&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P01/current/OBSMINLX/&quot;,
-      measurementType == &quot;length_type&quot; ~ &quot; &quot;,
-      measurementType == &quot;weight&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/S06/current/S0600253/&quot;,
-      # As per communication with Brian Hunt: weight refers to net dry weight!
-      measurementType == &quot;group&quot; ~ &quot; &quot;
-    ), 
+      measurementType == &quot;length_type&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P01/current/OBSINDLX/&quot;,
+      measurementType == &quot;weight&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/S06/current/S0600253/&quot;), 
     measurementUnit = case_when(
-      measurementType == &quot;number&quot; ~ &quot;individuals&quot;,
       measurementType == &quot;length&quot; ~ &quot;mm&quot;,
       measurementType == &quot;minimumLength&quot; ~ &quot;mm&quot;,
       measurementType == &quot;maximumLength&quot; ~ &quot;mm&quot;,
       measurementType == &quot;weight&quot; ~ &quot;g&quot;,
-      measurementType == &quot;size_fraction&quot; ~ &quot;mm&quot; 
-      # If this is equal to mesh size
-    ), 
+      measurementType == &quot;size_fraction&quot; ~ &quot;mm&quot;), 
     measurementUnitID = case_when(
       measurementUnit == &quot;individuals&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P06/current/UUUU/&quot;,
       measurementUnit == &quot;mm&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P06/current/UXMM/&quot;,
       measurementUnit == &quot;g&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P06/current/UGRM/&quot;
-      # Reminder: there is no NERC Controlled Vocabulary for mg, so values are formatted to &#39;grams&#39;. 
-      # Reminder2: The size_fraction is often times measured in microns, but in the data set it is reported in &#39;mm&#39;, 
-      # or 1/1000th of a micron. T
       # The measurementUnitID for microns, if needed, is: http://vocab.nerc.ac.uk/collection/P06/current/UMIC/
     )
     )</code></pre>
-<p>As there were also comments in the dataset, we have to make sure we include those in the measurementOrFact table, as they might be important to the measurements.</p>
+<p>As there were also comments in the dataset, we have to make sure we include those in the measurementOrFact table, as they might be important to the measurements. Additionally, as there is NERC vocabulary for the different length types in this dataset, we include this column in the measurementRemarks, alongside the original notes.</p>
 <pre class="r"><code>bongo_measurementRemarks &lt;- bongo %&gt;%
-  select(eventID = sample, notes) %&gt;%
+  select(eventID = sample, length_type, notes)
+bongo_measurementRemarks &lt;- bongo_measurementRemarks %&gt;%
+  mutate(notes = paste(notes, &quot;Length type&quot;, sep = &quot;. &quot;),
+         notes = paste(notes, length_type, sep = &quot;: &quot;))
+
+# As not all data entries had a comment, some were left with NA. This string needs to be removed.
+
+bongo_measurementRemarks$notes &lt;- gsub(&quot;NA. &quot;, &quot;&quot;, bongo_measurementRemarks$notes)
+bongo_measurementRemarks &lt;-  bongo_measurementRemarks %&gt;%
+  select(eventID, notes) %&gt;% 
   pivot_longer(cols = notes, values_to = &quot;measurementRemarks&quot;) %&gt;%
   mutate(measurementID = case_when(
     name == &quot;notes&quot; ~ paste(eventID, &quot;notes&quot;, sep = &quot;:&quot;))) %&gt;%
   select(measurementID, measurementRemarks)</code></pre>
 <p>Finally, join all the tables together to form the measurementOrFact Core, and save it locally and on GoogleDrive:</p>
-<pre class="r"><code>bongo_measurementOrFact &lt;- bind_rows(bongo_bottomdepth, bongo_emof, bongo_emof2) %&gt;%
+<pre class="r"><code>bongo_measurementOrFact &lt;- bind_rows(bongo_bottomdepth, bongo_sampling, bongo_instrument, bongo_emof, bongo_emof2) %&gt;%
   left_join(bongo_measurementRemarks) %&gt;%
   select(
-    measurementID,
-    occurrenceID,
     eventID,
+    occurrenceID,
+    measurementID,
     measurementType,
     measurementTypeID,
     measurementValue,
+    measurementValueID,
     measurementUnit,
     measurementUnitID,
     measurementRemarks)
@@ -962,6 +1101,11 @@ drive_upload(here(&quot;Bongo&quot;, &quot;tidy_data&quot;, &quot;bongo_emof.csv
              path = &quot;https://drive.google.com/drive/u/0/folders/1cAJP-DGSQZdRhrIYraX8MJXO-h_7qbn2&quot;,
              name = &quot;bongo_emof.csv&quot;,
              overwrite = TRUE)</code></pre>
+<p>To visualize the sampling stations in a map:</p>
+<pre class="r"><code>bongo_leaflet &lt;- obistools::plot_map_leaflet(bongo_event)
+bongo_map &lt;- obistools::plot_map(bongo_event, zoom = TRUE)
+ggsave(filename = &quot;bongo_map.png&quot;, plot = bongo_map, path = here::here(&quot;Bongo&quot;, &quot;maps&quot;))</code></pre>
+<p>```</p>
 </div>
 
 
