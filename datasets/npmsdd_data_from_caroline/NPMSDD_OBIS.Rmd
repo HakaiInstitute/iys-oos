@@ -92,44 +92,40 @@ dates <- eventdate %>% group_by(eventID) %>% filter(!any(is.na(date_min))) %>%
   mutate(eventDate = ifelse(min == max, min, paste(min, max, sep = "/"))) %>%
   select(eventID, eventDate) %>% distinct()
 
+# Step 2: Months. If a date_min is not provided within every data entry for a specific sourceID, the eventDate will have to be recorded on a different granularity. The first is to remove all the eventIDs from the teh dates dataframe from the original 'eventdate' dataframe.
 
+months <- anti_join(eventdate, dates, by = "eventID") %>%
+  select(eventID, year_min, year_max, month_min, month_max) %>% group_by(eventID) %>% filter(!is.na(month_min))
+months$month_max <- as.numeric(months$month_max)
+months$month_min <- as.numeric(months$month_min)
+months$year_min <- as.numeric(months$year_min)
+months$year_max <- as.numeric(months$year_max)
 
-eventdate$eventDate <- ifelse(eventdate$min == eventdate$max, eventdate$min, paste(eventdate$min, 
-                                                                                    eventdate$max, sep = "/"))
+months <- months %>% group_by(eventID) %>%
+  mutate(month_max = ifelse( !all(is.na(month_max)), max(month_max, na.rm = TRUE), NA),
+         year_max = ifelse( !all(is.na(year_max)), max(year_max, na.rm = TRUE), NA)) %>%
+  mutate(month_min = min(month_min),
+         year_min = min(year_min))
 
-  mutate(eventDate = ifelse(min(dates$date_min) == max(dates$date_min), min(dates$date_min), 
-                            paste(min(dates$date_min), max(dates$date_min), sep = "/")))
-for (i in 1:nrow(dates)) {
-  dates$eventDate[i] <- ifelse(min(dates$date_min) == max(dates$date_min), min(dates$date_min),
-                            paste(min(dates$date_min), max(dates$date_min), sep = "/"))
-  
-  }
+months_single <- months %>%
+  mutate(eventDate = ifelse(is.na(year_max) & is.na(month_max), paste(year_min, month_min, sep = "-"), NA)) %>%
+  filter(!is.na(eventDate)) %>% distinct()
+months_range <- months %>% filter(is.na(eventDate)) %>% filter(is.na(year_max)) %>%
+  mutate(eventDate = paste(year_min, month_min, sep = "-"),
+         eventDate = paste(eventDate, month_max, sep = "/")) %>% distinct()
+year_range <- months %>% filter(!is.na(year_max)) %>% filter(is.na(month_max)) %>%
+  mutate(eventDate = paste(year_min, year_max, sep = "/"),
+         eventDate = paste(eventDate, month_min, sep = "-")) %>% distinct()
+month_year_range <- months %>% filter(!is.na(year_max)) %>% filter(!is.na(month_max)) %>%
+  mutate(eventDate = paste(year_min, year_max, sep = "/"),
+         eventDate = paste(eventDate, month_min, sep = "-"),
+         eventDate = paste(eventDate, month_max, sep = "/")) %>% distinct()
 
-%>%
-  mutate(eventDate = ifelse(min(dates$date_min) == max(dates$date_min), min(dates$date_min), 
-                             paste(min(dates$date_min), max(dates$date_min), sep = "/")))
+months_final <- bind_rows(months_single, months_range, year_range, month_year_range)
 
-for (i in 1:nrow(eventdate)) {
-  if(is.na(eventdate$year_max) & is.na(eventdate$month_min) & is.na(eventdate$month_max)
-     & is.na(eventdate$season_min) & is.na(eventdate$season_max)) {
-    eventdate$eventDate <- eventdate$date_min
-  } else if (is.na(eventdate$date_min)) {
-       eventdate$eventDate <- NA
-     }
-}
+# Step 3: Seasons. Of the remaining sourceIDs, no month_min or month_max should have been provided, but only a season. The first step is to confirm this. As there is no controlled vocabulary for seasons in DwC, these entries won't be listed under eventDate but under verbatimEventDate. 
 
-x <- eventdate %>% group_by(eventID) %>% filter(is.na(date_min))
-
-  
-for (i in 1:nrow(eventdate)) {
-  if(is.na(eventdate$min)) {
-    eventdate$eventDate <- NA
-  } 
-}
-
-eventdate$eventDate <- ifelse(eventdate$min == eventdate$max, eventdate$min, paste(eventdate$min, 
-                                                                                    eventdate$max, sep = "/"))
-eventdate <- eventdate %>% ungroup(eventID)
+### Till here it works!
 
 # When inspecting all entries with season_min, we notice that there are no entries where a season_max is associated to a season_min. However, sometimes a year_min and year_max is associated with season_min. Again, this will need to be aggregated within the source_id. 
 
