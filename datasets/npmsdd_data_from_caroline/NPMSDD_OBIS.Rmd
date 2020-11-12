@@ -123,43 +123,51 @@ month_year_range <- months %>% filter(!is.na(year_max)) %>% filter(!is.na(month_
 
 months_final <- bind_rows(months_single, months_range, year_range, month_year_range)
 
-# Step 3: Seasons. Of the remaining sourceIDs, no month_min or month_max should have been provided, but only a season. The first step is to confirm this. As there is no controlled vocabulary for seasons in DwC, these entries won't be listed under eventDate but under verbatimEventDate. 
+# Step 3: Seasons. Of the remaining sourceIDs, no month_min or month_max should have been provided, but only a season. The first step is to confirm this. As there is no controlled vocabulary for seasons in DwC, these entries won't be listed under eventDate but under verbatimEventDate. Season_max is always NA so this column does not get included in the selection. 
 
-### Till here it works!
+# The only problem here is that eventID "NPMSDD_sourceID:1" contains two entries where only a year is recorded, and then three entries where season is also included. How to deal with this?
 
-# When inspecting all entries with season_min, we notice that there are no entries where a season_max is associated to a season_min. However, sometimes a year_min and year_max is associated with season_min. Again, this will need to be aggregated within the source_id. 
+seasons <- anti_join(eventdate, dates, by = "eventID")
+seasons <- anti_join(seasons, months_final, by = "eventID")
 
-eventdate <- eventdate %>% 
+seasons <- seasons %>% select(eventID, year_min, year_max, season_min) %>% group_by(eventID) %>%
   mutate(season_min = case_when(
-    season_min == "spring" ~ 96,
-    season_min == "summer" ~ 97,
-    season_min == "autumn" ~ 98
-  )) %>% distinct() %>% group_by(eventID, year_min) %>%
-  mutate(min = min(eventdate$season_min[is.finite(eventdate$season_min)]))
-         max = max(eventdate$season_min[is.finite(eventdate$season_min)]))
+    season_min == "spring" ~ 41,
+    season_min == "summer" ~ 42,
+    season_min == "autumn" ~ 43
+  )) %>%
+  mutate(
+    max = ifelse( !all(is.na(season_min)), max(season_min, na.rm = TRUE), NA),
+    max_year = ifelse( !all(is.na(year_max)), max(year_max, na.rm = TRUE), NA),
+    min = min(season_min, na.rm = TRUE))
 
-for (i in 1:nrow(eventdate)) {
-  if (!is.na(eventdate$season_min) & is.na(eventdate$year_max)) {
-    eventdate$verbatimEventDate <- paste(min(eventdate$season_min), " - ", 
-                                            max(eventdate$season_min), eventdate$year_min)
-  }
-}
+seasons_single <- seasons %>% filter(eventID == "NPMSDD_sourceID:1") %>% 
+  mutate(verbatimEventDate = paste(min, max, sep = " - "),
+         verbatimEventDate = paste(verbatimEventDate, min(year_min), sep = ", "),
+         verbatimEventDate = paste(verbatimEventDate, max(year_min), sep = "/"))
+seasons_range <- seasons %>% filter(eventID == "NPMSDD_sourceID:14") %>%
+  mutate(verbatimEventDate = paste(min, min(year_min), sep = " - "),
+         verbatimEventDate = paste(verbatimEventDate, max_year, sep = "/"))
+seasons_year_range <- seasons %>% filter(eventID == "NPMSDD_sourceID:28") %>%
+  mutate(verbatimEventDate = paste(min, max, sep = " - "),
+         verbatimEventDate = paste(verbatimEventDate, min(year_min), sep = ", "),
+         verbatimEventDate = paste(verbatimEventDate, max(year_min), sep = "/"))
 
-for (i in 1:nrow(eventdate)) {
-  if (!is.na(eventdate$season_min[i]) & is.na(eventdate$year_max[i])) {
-    eventdate$verbatimEventDate[i] <- paste(eventdate$season_min[i], eventdate$year_min[i], sep = " ")
-  } else if (!is.na(eventdate$season_min[i]) & !is.na(eventdate$year_max[i])) {
-    eventdate$verbatimEventDate[i] <- paste(eventdate$season_min[i], eventdate$year_min[i], " - ",
-                                            eventdate$season_min[i], eventdate$year_max[i], sep = " ")
-  }
-}
+seasons_final <- bind_rows(seasons_single, seasons_range, seasons_year_range) %>% 
+  select(eventID, verbatimEventDate) %>% distinct()
+seasons_final$verbatimEventDate <- gsub('41', 'spring', seasons_final$verbatimEventDate)
+seasons_final$verbatimEventDate <- gsub('42', 'summer', seasons_final$verbatimEventDate)
+seasons_final$verbatimEventDate <- gsub('43', 'autumn', seasons_final$verbatimEventDate)
 
-# For all entries with month_min but no month_max, we create a column 'month'. Similarly, for all entries with year_min but no year_max, we create a column 'year'. However, in the eventDate, this can be represented as year-month_min/month_max: 
 
-eventdate$month <- ifelse(is.na(eventdate$month_max), eventdate$month_min, NA)
-eventdate$year <- ifelse(is.na(eventdate$year_max), eventdate$year_min, NA)
+date <- plyr::rbind.fill(dates, months_final, seasons_final)
+  
+left_overs <- anti_join(eventdate, date, by = "eventID") # this shows all source_ids have an associated date/time. 
 
-eventdate <- eventdate %>%
+date$year <- ifelse(is.na(date$year_max), date$year_min, NA)
+date$month <- ifelse(is.na(date$month_max), date$month_min, NA)
+
+eventdate <- date %>%
   mutate(eventDate = str_replace(eventDate, "\\T.+", "")) %>%
   select(eventID, eventDate, verbatimEventDate, month, year) %>% distinct()
 ```
