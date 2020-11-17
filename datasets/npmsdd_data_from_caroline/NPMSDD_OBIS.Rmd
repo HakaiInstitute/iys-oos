@@ -22,16 +22,19 @@ ipak(packages)
 For all the source_ids, reformat the dates in such a way that it is compatible with DwC terminology. First, select all the columns that are associated to the date and time. Inspection of the NPMSDD database reveals that (currently) there is no values in the `date_max` column. Consequently, this column is not selected. 
 
 ``` {r, eval = FALSE, warning = FALSE, message = FALSE}
-source <- read_csv(here::here("datasets", "npmsdd_data_from_caroline", "diet_data.csv"), col_types = "iiiiccccccccttnnnncccciiiiiicccnnnnnnicciciiiiicccccccccccnccccnnnnnnc")
+source <- read_csv(here::here("datasets", "npmsdd_data_from_caroline", "diet_final.csv"), col_types = "iiiiccccccccttnnnncccciiiiiicccnnnnnnicciciiiiicccccccccccnccccnnnnnnc")
 
 gear <- source %>%  select(source_id, gear_type_predator_id1, gear_type_predator_id2,
-         gear_type_predator_id3, gear_type_predator_id4, gear_type_predator_id5) %>%
+         gear_type_predator_id3, gear_type_predator_id4, gear_type_predator_id5) %>% 
+  mutate_all(as.character) %>%
   pivot_longer(cols = gear_type_predator_id1:gear_type_predator_id5,
                values_to = "gear_type_predator_id",
                names_to = "gear") %>%
   select(source_id, gear_type_predator_id) %>%
   filter(!is.na(gear_type_predator_id)) %>%
-  distinct()
+  distinct() %>%
+  mutate(gear_type_predator_id = as.integer(gear_type_predator_id),
+         source_id = as.integer(source_id))
 
 gear_type <- read_csv(here::here("datasets", "npmsdd_data_from_caroline", "gear_type_predator.csv"), 
                  col_types = "icnnncnnncnnncnnncnnncnnncnnncc")
@@ -52,141 +55,246 @@ Given the heterogeneity and varying granularity of date and times recording, eve
 3. If a source_id has _no_ `date_min` column associated this means that we check for values in `month_min` and `month_max` columns. If, within a source_id, all entries have an associated `month_min`, this will be represented in the `eventDate`. If any `month_max` values are depicted, these will also have to be recorded in the eventDate, perhaps as a range. 
 4. If no values are provided for `date_min` and `month_min`, and only for a `season_min`, this will be recorded (in a range or a single cell value) in `verbatimEventDate`. 
 
-```{r eventdate, message = FALSE, warning=FALSE}
-eventdate <- npmsdd %>%
-  select(eventID = source_id, 
-         year_min, year_max, warm_cool_years, odd_even_years, season_min, season_max,
-         month_min, month_max, date_min, time_min, time_max) %>%
-  mutate(month_min = case_when(
-    month_min == "January" ~ "1",
-    month_min == "February" ~ "2",
-    month_min == "March" ~ "3",
-    month_min == "April" ~ "4",
-    month_min == "May" ~ "5",
-    month_min == "June" ~ "6",
-    month_min == "July" ~ "7",
-    month_min == "August" ~ "8", 
-    month_min == "September" ~ "9",
-    month_min == "October" ~ "10",
-    month_min == "November" ~ "11",
-    month_min == "December" ~ "12"),
-    month_max = case_when(
-    month_max == "January" ~ "1",
-    month_max == "February" ~ "2",
-    month_max == "March" ~ "3",
-    month_max == "April" ~ "4",
-    month_max == "May" ~ "5",
-    month_max == "June" ~ "6",
-    month_max == "July" ~ "7",
-    month_max == "August" ~ "8", 
-    month_max == "September" ~ "9",
-    month_max == "October" ~ "10",
-    month_max == "November" ~ "11",
-    month_max == "December" ~ "12")) %>% 
-  distinct() 
 
-# Step 1: If a source_id only(!) has a single associated date_min, this becomes the eventDate. It is not possible to filter for date_min because some source_ids have date_min provided, alongside other entries where that's not provided. 
-
-dates <- eventdate %>% group_by(eventID) %>% filter(!any(is.na(date_min))) %>% 
-  mutate(min = min(date_min), max = max(date_min)) %>%
-  mutate(eventDate = ifelse(min == max, min, paste(min, max, sep = "/"))) %>%
-  select(eventID, eventDate) %>% distinct()
-
-# Step 2: Months. If a date_min is not provided within every data entry for a specific sourceID, the eventDate will have to be recorded on a different granularity. The first is to remove all the eventIDs from the teh dates dataframe from the original 'eventdate' dataframe.
-
-months <- anti_join(eventdate, dates, by = "eventID") %>%
-  select(eventID, year_min, year_max, month_min, month_max) %>% group_by(eventID) %>% filter(!is.na(month_min))
-months$month_max <- as.numeric(months$month_max)
-months$month_min <- as.numeric(months$month_min)
-months$year_min <- as.numeric(months$year_min)
-months$year_max <- as.numeric(months$year_max)
-
-months <- months %>% group_by(eventID) %>%
-  mutate(month_max = ifelse( !all(is.na(month_max)), max(month_max, na.rm = TRUE), NA),
-         year_max = ifelse( !all(is.na(year_max)), max(year_max, na.rm = TRUE), NA)) %>%
-  mutate(month_min = min(month_min),
-         year_min = min(year_min))
-
-months_single <- months %>%
-  mutate(eventDate = ifelse(is.na(year_max) & is.na(month_max), paste(year_min, month_min, sep = "-"), NA)) %>%
-  filter(!is.na(eventDate)) %>% distinct()
-months_range <- months %>% filter(is.na(eventDate)) %>% filter(is.na(year_max)) %>%
-  mutate(eventDate = paste(year_min, month_min, sep = "-"),
-         eventDate = paste(eventDate, month_max, sep = "/")) %>% distinct()
-year_range <- months %>% filter(!is.na(year_max)) %>% filter(is.na(month_max)) %>%
-  mutate(eventDate = paste(year_min, year_max, sep = "/"),
-         eventDate = paste(eventDate, month_min, sep = "-")) %>% distinct()
-month_year_range <- months %>% filter(!is.na(year_max)) %>% filter(!is.na(month_max)) %>%
-  mutate(eventDate = paste(year_min, year_max, sep = "/"),
-         eventDate = paste(eventDate, month_min, sep = "-"),
-         eventDate = paste(eventDate, month_max, sep = "/")) %>% distinct()
-
-months_final <- bind_rows(months_single, months_range, year_range, month_year_range)
-
-# Step 3: Seasons. Of the remaining sourceIDs, no month_min or month_max should have been provided, but only a season. The first step is to confirm this. As there is no controlled vocabulary for seasons in DwC, these entries won't be listed under eventDate but under verbatimEventDate. Season_max is always NA so this column does not get included in the selection. 
-
-# The only problem here is that eventID "NPMSDD_sourceID:1" contains two entries where only a year is recorded, and then three entries where season is also included. How to deal with this?
-
-seasons <- anti_join(eventdate, dates, by = "eventID")
-seasons <- anti_join(seasons, months_final, by = "eventID")
-
-seasons <- seasons %>% select(eventID, year_min, year_max, season_min) %>% group_by(eventID) %>%
-  mutate(season_min = case_when(
-    season_min == "spring" ~ 41,
-    season_min == "summer" ~ 42,
-    season_min == "autumn" ~ 43
-  )) %>%
-  mutate(
-    max = ifelse( !all(is.na(season_min)), max(season_min, na.rm = TRUE), NA),
-    max_year = ifelse( !all(is.na(year_max)), max(year_max, na.rm = TRUE), NA),
-    min = min(season_min, na.rm = TRUE))
-
-seasons_single <- seasons %>% filter(eventID == "NPMSDD_sourceID:1") %>% 
-  mutate(verbatimEventDate = paste(min, max, sep = " - "),
-         verbatimEventDate = paste(verbatimEventDate, min(year_min), sep = ", "),
-         verbatimEventDate = paste(verbatimEventDate, max(year_min), sep = "/"))
-seasons_range <- seasons %>% filter(eventID == "NPMSDD_sourceID:14") %>%
-  mutate(verbatimEventDate = paste(min, min(year_min), sep = " - "),
-         verbatimEventDate = paste(verbatimEventDate, max_year, sep = "/"))
-seasons_year_range <- seasons %>% filter(eventID == "NPMSDD_sourceID:28") %>%
-  mutate(verbatimEventDate = paste(min, max, sep = " - "),
-         verbatimEventDate = paste(verbatimEventDate, min(year_min), sep = ", "),
-         verbatimEventDate = paste(verbatimEventDate, max(year_min), sep = "/"))
-
-seasons_final <- bind_rows(seasons_single, seasons_range, seasons_year_range) %>% 
-  select(eventID, verbatimEventDate) %>% distinct()
-seasons_final$verbatimEventDate <- gsub('41', 'spring', seasons_final$verbatimEventDate)
-seasons_final$verbatimEventDate <- gsub('42', 'summer', seasons_final$verbatimEventDate)
-seasons_final$verbatimEventDate <- gsub('43', 'autumn', seasons_final$verbatimEventDate)
+Each source_id will have its own associated decimalLatitude and decimalLongitude, along with uncertaintyCoordinatesInMeters and footprintWKT. Different source_ids have their coordinates recorded in varying granularity. In the database there are columns for lat_min, lat_max, lon_min and lon_max. If only lat_min and lon_min are provided, this is a `Point`. If only a single lon_min and lat_min is provided for the source_id, this will be a `Point`. If each data entry within the source_id has a lon_min and lat_min, _but no lon_max or lat_max_, it will create a `Multipoint`. If either lat_max or lon_max is missing, this is a `Linestring`. If all columns are filled out for a specific row/source_id, this signals a `Polygon`. 
 
 
-date <- plyr::rbind.fill(dates, months_final, seasons_final)
-  
-left_overs <- anti_join(eventdate, date, by = "eventID") # this shows all source_ids have an associated date/time. 
+Perhaps the way forward is only creating an Occurrence Core, identifying the prey
 
-date$year <- ifelse(is.na(date$year_max), date$year_min, NA)
-date$month <- ifelse(is.na(date$month_max), date$month_min, NA)
+``` {r NPMSDD_Occ, eval = FALSE}
+npmsdd <- read_csv(here::here("datasets", "npmsdd_data_from_caroline", "diet_final.csv"))
+npmsdd <- npmsdd %>% select(source_id, lat_min, lat_max, lon_min, lon_max, year_min, year_max, 
+                            warm_cool_years, odd_even_years, season_min, season_max,
+                            month_min, month_max, date_min, time_min, time_max, predator_id,
+                            prey_lowest_taxonomic_level, prey_kingdom, prey_phylum, prey_class, 
+                            prey_order, prey_family, prey_genus, prey_species,
+                            gear_type_predator_id1, gear_type_predator_id2, gear_type_predator_id3,
+                            gear_type_predator_id4, gear_type_predator_id5)
 
-eventdate <- date %>%
-  mutate(eventDate = str_replace(eventDate, "\\T.+", "")) %>%
-  select(eventID, eventDate, verbatimEventDate, month, year) %>% distinct()
-```
-
-Each source_id will have its own associated decimalLatitude and decimalLongitude, along with uncertaintyCoordinatesInMeters and footprintWKT. Different source_ids have their coordinates recorded in varying granularity. In the database there are columns for lat_min, lat_max, lon_min and lon_max. If only lat_min and lon_min are provided, this is a `Point`, if either lat_max or lon_max is missing, this is a `Linestring`. If all columns are filled out for a specific row/source_id, this signals a `Polygon`. 
-
-``` {r event_coordinates, eval = FALSE}
-coordinates <- npmsdd %>%
-  select(eventID = source_id, 
-         lat_min, lat_max, lon_min, lon_max) %>%
-  mutate(footprintWKT = " ") %>%
+#importing predator (salmon) and prey biological data
+pred_bio <- read_csv("predator_biological_data.csv", col_types = "iiiiccccccccttnnnncccciiiiiicccnnnnnnicciciiiiiccnnnnnc") %>% 
+  select(predator_id, predator_lowest_taxonomic_level) %>%
   distinct()
+
+prey_bio <- prey_bio <- read_csv("prey_biological_data.csv", col_types = "iiiiiccccccccttnnnncccciiiiiicccnnnnnnicciciiiiicccccccccccnnnnnnciiciiiiiccnnnnnc") %>%
+  select(prey_id, predator_id) 
+
+# Join dataframes and select only for those data entries where prey has been identified (i.e. there is at least a value recorded in prey_kingdom), and where this prey can be linked to predator. 
+NPMSDD_occ <- left_join(npmsdd, pred_bio, by = "predator_id") %>%
+  filter(!is.na(predator_lowest_taxonomic_level)) %>%
+  filter(!is.na(prey_kingdom)) %>% dplyr::rename(eventID = source_id) %>%
+  mutate(eventID = paste("NPMSDD_sourceID", eventID, sep = ":"),
+         occurrenceStatus = "present",
+         occurrenceID = paste(eventID, predator_id, sep = ":predID"),
+         occurrenceID = paste(occurrenceID, prey_lowest_taxonomic_level, sep = ":"),
+         occurrenceID = paste(occurrenceID, "pr", sep = "-")) %>%
+  dplyr::rename(scientificName = prey_lowest_taxonomic_level) %>% 
+  mutate(scientificNameID = case_when(
+    scientificName == "Actinopterygii" ~ "urn:lsid:marinespecies.org:taxname:10194",
+    scientificName == "Brachyura" ~ "urn:lsid:marinespecies.org:taxname:106673",
+    scientificName == "Copepoda" ~ "urn:lsid:marinespecies.org:taxname:1080",
+    scientificName == "Euphausiacea" ~ "urn:lsid:marinespecies.org:taxname:1128",
+    scientificName == "Hyperiidae" ~ "urn:lsid:marinespecies.org:taxname:101417",
+    scientificName == "Limacina" ~ "urn:lsid:marinespecies.org:taxname:138122",
+    scientificName == "Sagitta" ~ "urn:lsid:marinespecies.org:taxname:105410",
+    scientificName == "Oikopleura" ~ "urn:lsid:marinespecies.org:taxname:103367",
+    scientificName == "Coleoidea" ~ "urn:lsid:marinespecies.org:taxname:11709",
+    scientificName == "Berryteuthis magister" ~ "urn:lsid:marinespecies.org:taxname:342286",
+    scientificName == "Engraulis japonicus" ~ "urn:lsid:marinespecies.org:taxname:219984",
+    scientificName == "Euphausia pacifica" ~ "urn:lsid:marinespecies.org:taxname:237851",
+    scientificName == "Gonatopsis borealis" ~ "urn:lsid:marinespecies.org:taxname:342326",
+    scientificName == "Gonatus kamtschaticus" ~ "urn:lsid:marinespecies.org:taxname:341857",
+    scientificName == "Hemilepidotus" ~ "urn:lsid:marinespecies.org:taxname:248338",
+    scientificName == "Sardinops sagax" ~ "urn:lsid:marinespecies.org:taxname:217452",
+    scientificName == "Thysanoessa longipes" ~ "urn:lsid:marinespecies.org:taxname:237873",
+    scientificName == "Thysanoessa raschii" ~ "urn:lsid:marinespecies.org:taxname:110711",
+    scientificName == "Ammodytes hexapterus" ~ "urn:lsid:marinespecies.org:taxname:254510",
+    scientificName == "Clione limacina" ~ "urn:lsid:marinespecies.org:taxname:139178",
+    scientificName == "Gadus chalcogrammus" ~ "urn:lsid:marinespecies.org:taxname:300735",
+    scientificName == "Leuroglossus schmidti" ~ "urn:lsid:marinespecies.org:taxname:254551",
+    scientificName == "Clupea pallasii" ~ "urn:lsid:marinespecies.org:taxname:151159",
+    scientificName == "Mallotus villosus" ~ "urn:lsid:marinespecies.org:taxname:126735",
+    scientificName == "Themisto" ~ "urn:lsid:marinespecies.org:taxname:101800",
+    scientificName == "Cephalopoda" ~ "urn:lsid:marinespecies.org:taxname:11707",
+    scientificName == "Coelenterata" ~ " ",
+    scientificName == "Hyperia galba" ~ "urn:lsid:marinespecies.org:taxname:103251",
+    scientificName == "Pleurogrammus monopterigius" ~ "urn:lsid:marinespecies.org:taxname:282289",
+    # Name: pleurogrammus monopterygius
+    scientificName == "Themisto japonica" ~ "urn:lsid:marinespecies.org:taxname:744579",
+    scientificName == "Neocalanus cristatus" ~ "urn:lsid:marinespecies.org:taxname:104470",
+    scientificName == "Limacina helicina" ~ "urn:lsid:marinespecies.org:taxname:140223",
+    scientificName == "Cololabis saira" ~ "urn:lsid:marinespecies.org:taxname:280366",
+    scientificName == "Stenobrachius leucopsarus" ~ "urn:lsid:marinespecies.org:taxname:254363",
+    scientificName == "Chionoecetes opilio" ~ "urn:lsid:marinespecies.org:taxname:107315",
+    scientificName == "Eucalanus bungii" ~ "urn:lsid:marinespecies.org:taxname:196775",
+    scientificName == "Oikopleura (Vexillaria) labradoriensis" ~ "urn:lsid:marinespecies.org:taxname:103413",
+    scientificName == "Parasagitta elegans" ~ "urn:lsid:marinespecies.org:taxname:105440",
+    scientificName == "Scopelosaurus harryi" ~ "urn:lsid:marinespecies.org:taxname:272082",
+    scientificName == "Themisto pacifica" ~ "urn:lsid:marinespecies.org:taxname:254453",
+    scientificName == "Thysanoessa inermis" ~ "urn:lsid:marinespecies.org:taxname:110708",
+    scientificName == "Thysanoessa inspinata" ~ "urn:lsid:marinespecies.org:taxname:237872",
+    scientificName == "Decapoda" ~ "urn:lsid:marinespecis.org:taxname:1130",
+    scientificName == "Diaphus theta" ~ "urn:lsid:marinespecies.org:taxname:272694",
+    scientificName == "Pagurus" ~ "urn:lsid:marinespecies.org:taxname:106854",
+    scientificName == "Primno abyssalis" ~ "urn:lsid:marinespecies.org:taxname:421603",
+    scientificName == "Stenobrachius nannochir" ~ "urn:lsid:marinespecies.org:taxname:254364",
+    scientificName == "Neocalanus plumchrus" ~ "urn:lsid:marinespecies.org:taxname:196772",
+    scientificName == "Polychaeta" ~ "urn:lsid:marinespecies.org:taxname:883",
+    scientificName == "Aglantha digitale" ~ "urn:lsid:marinespecies.org:taxname:117849",
+    scientificName == "Amphipoda" ~ "urn:lsid:marinespecies.org:taxname:1135",
+    scientificName == "Anomura" ~ "urn:lsid:marinespecies.org:taxname:106671",
+    scientificName == "Pandalus goniurus" ~ "urn:lsid:marinespecies.org:taxname:254483",
+    scientificName == "Beroe cucumis" ~ "urn:lsid:marinespecies.org:taxname:106358", 
+    scientificName == "Calanus glacialis" ~ "urn:lsid:marinespecies.org:taxname:104465",
+    scientificName == "Primno macropa" ~ "urn:lsid:marinespecies.org:taxname:180759",
+    scientificName == "Gonatopsis okutanii" ~ "urn:lsid:marinespecies.org:taxname:342330",
+    scientificName == "Pleurogrammus" ~ "urn:lsid:marinespecies.org:taxname:270458",
+    scientificName == "Myctophidae" ~ "urn:lsid:marinespecies.org:taxname:125498",
+    scientificName == "Lumpenus" ~ "urn:lsid:marinespecies.org:taxname:126088",
+    scientificName == "Pleuronectes" ~ "urn:lsid:marinespecies.org:taxname:126120",
+    scientificName == "Ctenophora" ~ "urn:lsid:marinespecies.org:taxname:1248",
+    scientificName == "Gonatus" ~ "urn:lsid:marinespecies.org:taxname:138036",
+    scientificName == "Euphausiidae" ~ "urn:lsid:marinespecies.org:taxname:110671",
+    scientificName == "Euphausia" ~ "urn:lsid:marinespecies.org:taxname:110673",
+    scientificName == "Eumicrotremus" ~ "urn:lsid:marinespecies.org:taxname:126159",
+    scientificName == "Gymnocanthus" ~ "urn:lsid:marinespecies.org:taxname:126149",
+    scientificName == "Gonatopsis" ~ "urn:lsid:marinespecies.org:taxname:341428",
+    scientificName == "Pleuronectidae" ~ "urn:lsid:marinespecies.org:taxname:125579",
+    scientificName == "Themisto libellula" ~ "urn:lsid:marinespecies.org:taxname:156452",
+    scientificName == "Todarodes pacificus" ~ "urn:lsid:marinespecies.org:taxname:342067",
+    scientificName == "Thysanoessa" ~ "urn:lsid:marinespecies.org:taxname:110679",
+    scientificName == "Watasenia scintillans" ~ "urn:lsid:marinespecies.org:taxname:342419",
+    scientificName == "Siphonophorae" ~ "urn:lsid:marinespecies.org:taxname:1371",
+    scientificName == "Pteropoda" ~ "urn:lsid:marinespecies.org:taxname:325345",
+    scientificName == "Hexagrammidae" ~ "urn:lsid:marinespecies.org:taxname:154415",
+    scientificName == "Hyperia medusarum" ~ "urn:lsid:marinespecies.org:taxname:103253",
+    scientificName == "Rhynchonereella angelini" ~ "urn:lsid:marinespecies.org:taxname:416504",
+    scientificName == "Arthropoda (terrestrial)" ~ "urn:lsid:marinespecies.org:taxname:1065",
+    # WoRMS URN: Arthropoda
+    scientificName == "Chaetognatha" ~ "urn:lsid:marinespecies.org:taxname:2081",
+    scientificName == "Crustacea" ~ "urn:lsid:marinespecies.org:taxname:1066",
+    scientificName == "Ammodytes" ~ "urn:lsid:marinespecies.org:taxname:125909",
+    scientificName == "Insecta" ~ "urn:lsid:marinespecies.org:taxname:1307",
+    scientificName == "Ostracoda" ~ "urn:lsid:marinespecies.org:taxname:1078",
+    scientificName == "Calanoida" ~ "urn:lsid:marinespecies.org:taxname:1100",
+    scientificName == "Gastropoda" ~ "urn:lsid:marinespecies.org:taxname:101",
+    scientificName == "Calanus sinicus" ~ "urn:lsid:marinespecies.org:taxname:346214",
+    scientificName == "Centropages abdominalis" ~ "urn:lsid:marinespecies.org:taxname:196774",
+    scientificName == "Evadne normanni" ~ "urn:lsid:marinespecies.org:taxname:106273",
+    # WoRMNS URN: Evadne nordmanni
+    scientificName == "Gammaridae" ~ "urn:lsid:marinespecies.org:taxname:101383",
+    scientificName == "Oikopleuridae" ~ "urn:lsid:marinepecies.org:taxname:103356",
+    scientificName == "Oithona" ~ "urn:lsid:marinespecies.org:taxname:106485",
+    scientificName == "Paracalanus" ~ "urn:lsid:marinespecies.org:taxname:104196",
+    scientificName == "Podon" ~ "urn:lsid:marinespecies.org:taxname:106269", 
+    scientificName == "Paraeuchaeta elongata" ~ "urn:lsid:marinespecies.org:taxname:196779",
+    scientificName == "Cnidaria" ~ "urn:lsid:marinespecies.org:taxname:1267",
+    scientificName == "Gammaroidea" ~ "urn:lsid:marinespecies.org:taxname:720708",
+    scientificName == "Tunicata" ~ "urn:lsid:marinespecies.org:taxname:146420",
+    scientificName == "Metridia pacifica" ~ "urn:lsid:marinespecies.org:taxname:196784",
+    scientificName == "Neocalanus flemingeri" ~ "urn:lsid:marinespecies.org:taxname:353708",
+    scientificName == "Callianassa" ~ "urn:lsid:marinespecies.org:taxname:107072",
+    scientificName == "Calanus" ~ "urn:lsid:marinespecies.org:taxname:104152",
+    scientificName == "Fritillaria" ~ "urn:lsid:marinespecies.org:taxname:103358",
+    scientificName == "Oncaea" ~ "urn:lsid:marinespecies.org:taxname:128690",
+    scientificName == "Pseudocalanus" ~ "urn:lsid:marinespecies.org:taxname:104165",
+    scientificName == "Pseudocalanus newmani" ~ "urn:lsid:marinespecies.org:taxname:157679",
+    scientificName == "Neocalanus" ~ "urn:lsid:marinespecies.org:taxname:104155",
+    scientificName == "Harpacticoida" ~ "urn:lsid:marinespecies.org:taxname:1102",
+    scientificName == "Mesocalanus tenuicornis" ~ "urn:lsid:marinespecies.org:taxname:104468",
+    scientificName == "Gaetanus brevispinus" ~ "urn:lsid:marinespecies.org:taxname:254602",
+    scientificName == "Conchoecia" ~ "urn:lsid:marinespecies.org:taxname:127533",
+    scientificName == "Metridia okhotensis" ~ "urn:lsid:marinespecies.org:taxname:196783",
+    scientificName == "Nudibranchia" ~ "urn:lsid:marinespecies.org:taxname:1762",
+    scientificName == "Isopoda" ~ "urn:lsid:marinespecies.org:taxname:1131",
+    scientificName == "Mysida" ~ "urn:lsid:marinespecies.org:taxname:149668",
+    scientificName == "Salpidae" ~ "urn:lsid:marinespecies.org:taxname:137217",
+    scientificName == "Pterotracheoidea" ~ "urn:lsid:marinespecies.org:taxname:387338",
+    scientificName == "Clione" ~ "urn:lsid:marinespecies.org:taxname:137793",
+    scientificName == "Hyperioides" ~ "urn:lsid:marinespecies.org:taxname:101797",
+    scientificName == "Hyperoche medusarum" ~ "urn:lsid:marinespecies.org:taxname:103256",
+    scientificName == "Hyperia spinigera" ~ "urn:lsid:marinespecies.org:taxname:103254",
+    scientificName == "Ammodytidae" ~ "urn:lsid:marinespecies.org:taxname:125516",
+    scientificName == "Sebastes" ~ "urn:lsid:marinespecies.org:taxname:126175",
+    scientificName == "Podothecus" ~ "urn:lsid:marinespecies.org:taxname:254386",
+    scientificName == "Hemilepidotus hemilepidotus" ~ "urn:lsid:marinespecies.org:taxname:254521",
+    scientificName == "Maurolicus japonicus" ~ "urn:lsid:marinespecies.org:taxname:274972",
+    scientificName == "Hydrozoa" ~ "urn:lsid:marinespecies.org:taxname:1337",
+    scientificName == "Pseudocalanus elongatus" ~ "urn:lsid:marinespecies.org:taxname:104515",
+    scientificName == "Microcalanus" ~ "urn:lsid:marinespecies.org:taxname:104164",
+    scientificName == "Oithona similis" ~ "urn:lsid:marinespecies.org:taxname:106656",
+    scientificName == "Microsetella norvegica" ~ "urn:lsid:marinespecies.org:taxname:116115",
+    scientificName == "Gammarus" ~ "urn:lsid:marinespecies.org:taxname:101537",
+    scientificName == "Phronima sedentaria" ~ "urn:lsid:marinespecies.org:taxname:103272",
+    scientificName == "Paralithodes camtschaticus" ~ "urn:lsid:marinespecies.org:taxname:233889",
+    scientificName == "Gymnocanthus detrisus" ~ "urn:lsid:marinespecies.org:taxname:274372",
+    scientificName == "Trichodontidae" ~ "urn:lsid:marinespecies.org:taxname:151408",
+    scientificName == "Oligochaeta" ~ "urn:lsid:marinespecies.org:taxname:2036",
+    scientificName == "Neomysis" ~ "urn:lsid:marinespecies.org:taxname:119888", 
+    scientificName == "Diptera" ~ "urn:lsid:marinespecies.org:taxname:118088",
+    scientificName == "Aglantha" ~ "urn:lsid:marinespecies.org:taxname:117212",
+    scientificName == "Miscellaneous" ~ " "))
+
+predator_occ <- NPMSDD_occ %>% 
+  dplyr::select(eventID, predator_lowest_taxonomic_level, predator_id, lat_min, lat_max, lon_min, lon_max, 
+                year_min, year_max, warm_cool_years, odd_even_years, season_min, season_max, 
+                month_min, month_max, date_min, time_min, time_max, gear_type_predator_id1, gear_type_predator_id2,
+                gear_type_predator_id3, gear_type_predator_id4, gear_type_predator_id5) %>%
+  dplyr::rename(scientificName = predator_lowest_taxonomic_level) %>%
+  mutate(occurrenceStatus = "present",
+         occurrenceID = paste(eventID, predator_id, sep = ":predID"),
+         occurrenceID = paste(occurrenceID, "p", sep = "-")) %>% 
+  # I like to add this line to indicate that its the predator. 
+  mutate(scientificNameID = case_when(
+    scientificName == "Oncorhynchus keta" ~ "urn:lsid:marinespecies.org:taxname:127183",
+    scientificName == "Oncorhynchus nerka" ~ "urn:lsid:marinespecies.org:taxname:254569",
+    scientificName == "Oncorhynchus gorbuscha" ~ "urn:lsid:marinespecies.org:taxname:127182",
+    scientificName == "Oncorhynchus kisutch" ~ "urn:lsid:marinespecies.org:taxname:127184",
+    scientificName == "Oncorhynchus mykiss" ~ "urn:lsid:marinespecies.org:taxname:127185",
+    scientificName == "Oncorhynchus tshawytscha" ~ "urn:lsid:marinespecies.org:taxname:158075")
+  ) %>% select(-predator_id) %>%
+  distinct()
+
+prey_occ <- NPMSDD_occ %>%
+    dplyr::select(eventID, lat_min, lat_max, lon_min, lon_max, year_min, year_max, 
+                            warm_cool_years, odd_even_years, season_min, season_max,
+                            month_min, month_max, date_min, time_min, time_max,
+                scientificName, scientificNameID, occurrenceStatus, occurrenceID,
+                prey_kingdom, prey_phylum, prey_class, prey_order, prey_family, prey_genus, prey_species,
+                gear_type_predator_id1, gear_type_predator_id2, gear_type_predator_id3, gear_type_predator_id4,
+                gear_type_predator_id5) %>%
+    dplyr::rename(kingdom = prey_kingdom,
+                phylum = prey_phylum,
+                class = prey_class,
+                order = prey_order,
+                family = prey_family,
+                genus = prey_genus,
+                species = prey_species)
+
+NPMSDD_occ <- bind_rows(prey_occ, predator_occ)
+
+# To re-order the eventID, use following code:
+order <- stringr::str_sort(NPMSDD_occ$occurrenceID, numeric=TRUE)
+NPMSDD_occ <- NPMSDD_occ[match(order, NPMSDD_occ$occurrenceID),]
+
+coordinates <- NPMSDD_occ %>%
+  select(eventID,lat_min, lat_max, lon_min, lon_max) %>%
+  mutate(footprintWKT = " ") %>%
+  mutate(lat_min = as.numeric(lat_min),
+         lat_max = as.numeric(lat_max),
+         lon_min = as.numeric(lon_min),
+         lon_max = as.numeric(lon_max))
+
+coordinates$lon_max <- ifelse(coordinates$lon_max >= 180, coordinates$lon_max - 360, coordinates$lon_max)
+coordinates$lon_max <- ifelse(coordinates$lon_max > 0, -coordinates$lon_max, coordinates$lon_max)
+coordinates$lon_min <- ifelse(coordinates$lon_min >= 180, coordinates$lon_min - 360, coordinates$lon_min)
+coordinates$lon_min <- ifelse(coordinates$lon_min > 0, -coordinates$lon_min, coordinates$lon_min)
 
 coordinates$footprintWKT <- ifelse(!is.na(coordinates$lat_max & coordinates$lon_max), "POLYGON", 
                                    ifelse(is.na(coordinates$lat_max | coordinates$lon_max), "POINT", "LINESTRING"))
 
-# Create three separate dataframes for POINT, LINESTRING, and POLYGON, and then merge these. 
-point_coordinates <- coordinates %>% filter(footprintWKT == "POINT") %>% 
-  mutate(footprintWKT = paste0("POINT", " (", lon_min, " ", lat_min, ")")) 
+point_coordinates <- coordinates %>% filter(footprintWKT == "POINT") %>%
+mutate(footprintWKT = paste0("POINT", " (", lon_min, " ", lat_min, ")")) 
 point <- obistools::calculate_centroid(point_coordinates$footprintWKT)
 point <- cbind(point_coordinates, point)
 
@@ -209,73 +317,133 @@ linestring <- obistools::calculate_centroid(linestring_coordinates$footprintWKT)
 linestring <- cbind(linestring_coordinates, linestring)
 
 event_coordinates <- rbind(point, polygon, linestring) %>%
-  select(eventID, footprintWKT, decimalLatitude, decimalLongitude, coordinateUncertaintyInMeters)
+  select(footprintWKT, decimalLatitude, decimalLongitude, coordinateUncertaintyInMeters)
+
+NPMSDD_occ <- cbind(NPMSDD_occ, event_coordinates)
+
+occdate <- NPMSDD_occ %>%
+  select(eventID, occurrenceID, year_min, year_max, warm_cool_years, odd_even_years, season_min, season_max,
+         month_min, month_max, date_min, time_min, time_max) %>%
+  mutate(month_min = case_when(
+    month_min == "January" ~ "01",
+    month_min == "February" ~ "02",
+    month_min == "March" ~ "03",
+    month_min == "April" ~ "04",
+    month_min == "May" ~ "05",
+    month_min == "June" ~ "06",
+    month_min == "July" ~ "07",
+    month_min == "August" ~ "08", 
+    month_min == "September" ~ "09",
+    month_min == "October" ~ "10",
+    month_min == "November" ~ "11",
+    month_min == "December" ~ "12"),
+    month_max = case_when(
+    month_max == "January" ~ "01",
+    month_max == "February" ~ "02",
+    month_max == "March" ~ "03",
+    month_max == "April" ~ "04",
+    month_max == "May" ~ "05",
+    month_max == "June" ~ "06",
+    month_max == "July" ~ "07",
+    month_max == "August" ~ "08", 
+    month_max == "September" ~ "09",
+    month_max == "October" ~ "10",
+    month_max == "November" ~ "11",
+    month_max == "December" ~ "12"))
+
+# Step 1: If a source_id only(!) has a single associated date_min, this becomes the eventDate. It is not possible to filter for date_min because some source_ids have date_min provided, alongside other entries where that's not provided. 
+
+dates <- occdate %>% filter(!is.na(date_min)) %>% 
+  mutate(year = year_min, 
+         month = month_min,
+         eventDate = date_min)
+dates <- dates %>% 
+  mutate(eventDate = as.character(eventDate))
+
+year <- occdate %>% filter(is.na(date_min) & is.na(month_min) & is.na(year_max) & is.na(season_min)) %>%
+  mutate(eventDate = year_min)
+
+# Step 2: Months. If a date_min is not provided within every data entry for a specific sourceID, the eventDate will have to be recorded on a different granularity. The first is to remove all the eventIDs from the teh dates dataframe from the original 'eventdate' dataframe.
+
+months <- anti_join(occdate, dates, by = "occurrenceID") %>% filter(!is.na(month_min))
+
+months_single <- months %>% filter(is.na(year_max) & is.na(month_max)) %>% 
+  mutate(eventDate = paste(year_min, month_min, sep = "-"))
+month_range <- months %>% filter(is.na(year_max) & !is.na(month_max)) %>%
+  mutate(eventDate = paste(year_min, month_min, sep = "-"),
+         eventDate = paste(eventDate, month_max, sep = "/"))
+year_range <- months %>% filter(!is.na(year_max) & is.na(month_max)) %>%
+  mutate(eventDate = paste(year_min, year_max, sep = "/"),
+         eventDate = paste(eventDate, month_min, sep = "-"))
+month_year_range <- months %>% filter(!is.na(year_max) & !is.na(month_max)) %>%
+  mutate(eventDate = paste(year_min, year_max, sep = "/"),
+         eventDate = paste(eventDate, month_min, sep = "-"),
+         eventDate = paste(eventDate, month_max, sep = "/"))
+
+months <- rbind(months_single, month_range, year_range, month_year_range)
+
+seasons <- occdate %>% filter(!is.na(season_min))
+
+season_single_year <- seasons %>% filter(is.na(year_max)) %>%
+  mutate(verbatimEventDate = paste(season_min, year_min, sep = " - "))
+season_years <- seasons %>% filter(!is.na(year_max)) %>%
+  mutate(verbatimEventDate = paste(season_min, year_min, sep = " - "),
+         verbatimEventDate = paste(verbatimEventDate, year_max, sep = "/"))
+
+seasons <- rbind(season_single_year, season_years)
+
+date <- plyr::rbind.fill(dates, year, months, seasons) %>%
+  select(occurrenceID, eventDate, verbatimEventDate, year, month)
+
+NPMSDD_occ <- left_join(NPMSDD_occ, date, by = "occurrenceID") %>%
+  select(eventID, occurrenceID, eventDate, verbatimEventDate, year, month, decimalLatitude, decimalLongitude, footprintWKT, coordinateUncertaintyInMeters, scientificName, scientificNameID, occurrenceStatus, kingdom, phylum, class, order, family, genus, species) %>%
+  mutate(basisOfRecord = "HumanObservation")
+
+# Add additional column 'associatedTaxa' to indicate that species are prey of others. 
+
+NPMSDD_occ$associatedTaxa <-   " "
+NPMSDD_occ$associatedTaxa <- ifelse(grepl("-pr", NPMSDD_occ$occurrenceID), 
+paste("prey of: ", NPMSDD_occ$eventID, "-p", sep = ""), "")
 ```
 
-Create a dataframe for the gear - this will provide information on minimumDepthInMeters, maximumDepthInMeters, as well as any information on sampling effort. Dependent on gear type we can assign sampleSizeUnit, sampleSizeValue and perhaps also specific information regarding the gear_type. 
+Although it is not a required term in the DwC standards, minimumDepthInMeters and maximumDepthInMeters are recorded as 'missing' if not provided. The information regarding sampling depth is recorded in the `gear_type_predator` file, and - depending on what gear was used - is listed under one of the following columns: gear_depth_value, gear_depth_min, fishing_depth_value and fishing_depth_min. Therefore, to obtain the minimumDepthInMeters, first the data from the gear_type_predator dataframe is joined with our initial NPMSDD_Occ dataframe. 
 
-``` {r gear, eval = FALSE}
-sampling_gears <- npmsdd %>%
-  select(eventID = gear_type, 
+``` {r sampling depth, eval = FALSE}
+sampling_gears <- N %>%
+  select(occurrenceID, 
          gear_type_predator_id1, gear_type_predator_id2,
          gear_type_predator_id3, gear_type_predator_id4, gear_type_predator_id5) %>%
   pivot_longer(cols = gear_type_predator_id1:gear_type_predator_id5,
                values_to = "gear_type_predator_id",
                names_to = "gear") %>%
-  select(eventID, gear_type_predator_id) %>%
+  select(occurrenceID, gear_type_predator_id) %>%
   filter(!is.na(gear_type_predator_id)) %>%
   distinct()
 
 sampling_depth <- read_csv(here::here("datasets", "npmsdd_data_from_caroline", "gear_type_predator.csv"), 
-                 col_types = "icnnncnnncnnncnnncnnncnnncnnncc") %>%
+                 col_types = "icnnncnnncnnncnnncnnncnnncnnncc") %>% 
+  select(gear_type_predator_id, gear_depth_value, gear_depth_min, fishing_depth_value, 
+         fishing_depth_min, gear_depth_max, fishing_depth_max)
+  
+depth <- left_join(sampling_gears, sampling_depth, by = "gear_type_predator_id") %>%
   transform(minimumDepthInMeters = pmin(gear_depth_value, gear_depth_min, 
                                         fishing_depth_value, fishing_depth_min, na.rm = TRUE),
             maximumDepthInMeters = pmax(gear_depth_value, gear_depth_max, 
-                                        fishing_depth_value, fishing_depth_max, na.rm = TRUE))
+                                        fishing_depth_value, fishing_depth_max, na.rm = TRUE)) %>%
+  group_by(occurrenceID) %>% 
+  mutate(minimumDepthInMeters = min(minimumDepthInMeters),
+         maximumDepthInMeters = max(maximumDepthInMeters)) %>%
+  select(occurrenceID, minimumDepthInMeters, maximumDepthInMeters) %>% distinct()
 
-gears <- left_join(sampling_gears, sampling_depth, by = "gear_type_predator_id") %>%
-  select(eventID, minimumDepthInMeters, maximumDepthInMeters)
+NPMSDD_occ <- left_join(NPMSDD_occ, depth, by = "occurrenceID")
 ```
 
-Add all the dataframes together to form the Event Core, and associate the different variables to each specific layer of the Event Core. In the sourceID layer I also want to add a link to the paper specific to each source_id, because that explains the samplingProtocol. In the gear layer I will only add information pertaining to the minimum and maximumDepthInMeters of the sampling. Information on sampleSizeUnit, sampleSizeValue and samplingEffort will be added to the extended Measurements or Facts (eMoF) core. 
+To save any maps etc, use the following chunk of code:
 
-
-``` {r eventCore, eval = FALSE}
-NPMSDD_database <- npmsdd %>%
-  select(eventID = database) %>%
-  distinct(eventID) %>%
-  mutate(eventRemarks = "database")
-
-NPMSDD_sourceID <- npmsdd %>%
-  select(eventID = source_id,
-         parentEventID = database) %>%
-  distinct(eventID, .keep_all = TRUE) %>%
-  mutate(eventRemarks = "source")
-NPMSDD_sourceID <- left_join(NPMSDD_sourceID, eventdate, by = "eventID")
-NPMSDD_sourceID <- left_join(NPMSDD_sourceID, event_coordinates, by = "eventID")
-
-sources <- read_csv("sources.csv", col_types = "iiccccccccccccccccc") %>% 
-  select(eventID = source_id, 
-         samplingProtocol = citation) %>%
-  mutate(eventID = paste("NPMSDD_sourceID:", eventID, sep = ""))
-NPMSDD_sourceID <- left_join(NPMSDD_sourceID, sources, by = "eventID") %>% distinct()
-
-NPMSDD_gear <- npmsdd %>%
-  select(eventID = gear_type,
-         parentEventID = source_id) %>%
-  distinct(eventID, .keep_all = TRUE) %>%
-  mutate(eventRemarks = "gear type")
-NPMSDD_gear <- left_join(NPMSDD_gear, gears, by = "eventID") %>% distinct()
-
-NPMSDD_event_core <- bind_rows(NPMSDD_database, NPMSDD_sourceID, NPMSDD_gear) %>%
-  mutate(geodeticDatum = "EPSG:4326")
+``` {r save_plots_images}
+obistools::plot_map(NPMSDD_occ, zoom = TRUE)
+ggsave(here::here("datasets", "npmsdd_data_from_caroline", "NPMSDD_occurrence.png"))
 ```
-
-
-
-
-
-
 
 
 
