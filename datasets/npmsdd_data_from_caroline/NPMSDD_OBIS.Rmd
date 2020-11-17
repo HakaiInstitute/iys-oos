@@ -19,47 +19,7 @@ packages <- c("tidyverse", "lubridate", "devtools", "obistools", "readxl", "pars
 ipak(packages) 
 ```
 
-For all the source_ids, reformat the dates in such a way that it is compatible with DwC terminology. First, select all the columns that are associated to the date and time. Inspection of the NPMSDD database reveals that (currently) there is no values in the `date_max` column. Consequently, this column is not selected. 
-
-``` {r, eval = FALSE, warning = FALSE, message = FALSE}
-source <- read_csv(here::here("datasets", "npmsdd_data_from_caroline", "diet_final.csv"), col_types = "iiiiccccccccttnnnncccciiiiiicccnnnnnnicciciiiiicccccccccccnccccnnnnnnc")
-
-gear <- source %>%  select(source_id, gear_type_predator_id1, gear_type_predator_id2,
-         gear_type_predator_id3, gear_type_predator_id4, gear_type_predator_id5) %>% 
-  mutate_all(as.character) %>%
-  pivot_longer(cols = gear_type_predator_id1:gear_type_predator_id5,
-               values_to = "gear_type_predator_id",
-               names_to = "gear") %>%
-  select(source_id, gear_type_predator_id) %>%
-  filter(!is.na(gear_type_predator_id)) %>%
-  distinct() %>%
-  mutate(gear_type_predator_id = as.integer(gear_type_predator_id),
-         source_id = as.integer(source_id))
-
-gear_type <- read_csv(here::here("datasets", "npmsdd_data_from_caroline", "gear_type_predator.csv"), 
-                 col_types = "icnnncnnncnnncnnncnnncnnncnnncc")
-
-npmsdd <- left_join(gear, gear_type, by = "gear_type_predator_id")
-npmsdd <- left_join(npmsdd, source, by = "source_id") %>%
-  mutate(database = "NPMSDD",
-         source_id = paste(database, source_id, sep = "_sourceID:"),
-         gear_type = paste(source_id, gear_type, sep = ":"))
-```
-
-Our Event Core will consist of three layers: `database`, `source_id`, and `gear_type`. Information pertaining to sampling location coordinates and any geo-spatial data is associated to the source_id. Even if multiple dates are associated to a source_id, we need to ensure that the eventDate reflects one aggregated date (range). Information pertaining to the minimum- and maximumDepthInMeters and sampling effort is associated to the gear_type. The reason for this layering is because some datasets within the NPMSDD consists of aggregated data across different gear types, which have different associated sampling units and protocols.
-
-Given the heterogeneity and varying granularity of date and times recording, even within each source_id, the following steps have to be followed to accurately represent the eventDate or verbatimEventDate of the different source_ids, once grouped: Our granularity in steps goes from very accurate (dates), to less accurate (months - seasons).
-
-1. If a source_id _only_ has a single value in the `date_min` column, the `date_min` column becomes the `eventDate`; 
-2. If a source_id has _no_ `NA` in the `date_min` column for any of the entries, the `eventDate` will have to represent a range of `date_min` values;
-3. If a source_id has _no_ `date_min` column associated this means that we check for values in `month_min` and `month_max` columns. If, within a source_id, all entries have an associated `month_min`, this will be represented in the `eventDate`. If any `month_max` values are depicted, these will also have to be recorded in the eventDate, perhaps as a range. 
-4. If no values are provided for `date_min` and `month_min`, and only for a `season_min`, this will be recorded (in a range or a single cell value) in `verbatimEventDate`. 
-
-
-Each source_id will have its own associated decimalLatitude and decimalLongitude, along with uncertaintyCoordinatesInMeters and footprintWKT. Different source_ids have their coordinates recorded in varying granularity. In the database there are columns for lat_min, lat_max, lon_min and lon_max. If only lat_min and lon_min are provided, this is a `Point`. If only a single lon_min and lat_min is provided for the source_id, this will be a `Point`. If each data entry within the source_id has a lon_min and lat_min, _but no lon_max or lat_max_, it will create a `Multipoint`. If either lat_max or lon_max is missing, this is a `Linestring`. If all columns are filled out for a specific row/source_id, this signals a `Polygon`. 
-
-
-Perhaps the way forward is only creating an Occurrence Core, identifying the prey
+For the NPMSDD it was opted to create an Occurrence Core, rather than an Event Core with an associated Occurrence Core. The reason for this is that most data sources in the database consisted of aggregated data, with a lot of heterogeneity within geo-spatial scale. Therefore, if only a single time and spatial frame was associated with each source, the granularity would be very low and potentially important information would be lost. Therefore, it was opted to create an Occurrence Core, and associate date, time and spatial coordinates to each occurrenceID (i.e., the capture of a salmon or identification of prey from stomach content). This way, all the geo-spatio information for each capture and identification can be recorded and no information is lost due from aggregation. 
 
 ``` {r NPMSDD_Occ, eval = FALSE}
 npmsdd <- read_csv(here::here("datasets", "npmsdd_data_from_caroline", "diet_final.csv"))
@@ -276,7 +236,11 @@ NPMSDD_occ <- bind_rows(prey_occ, predator_occ)
 # To re-order the eventID, use following code:
 order <- stringr::str_sort(NPMSDD_occ$occurrenceID, numeric=TRUE)
 NPMSDD_occ <- NPMSDD_occ[match(order, NPMSDD_occ$occurrenceID),]
+```
 
+After we've created the NPMSDD Occurrence Core, we can associate each `occurrenceID` with its respective spatio-temporal information:
+
+``` {r NPMSDD_coordinates, eval = FALSE}
 coordinates <- NPMSDD_occ %>%
   select(eventID,lat_min, lat_max, lon_min, lon_max) %>%
   mutate(footprintWKT = " ") %>%
@@ -320,7 +284,11 @@ event_coordinates <- rbind(point, polygon, linestring) %>%
   select(footprintWKT, decimalLatitude, decimalLongitude, coordinateUncertaintyInMeters)
 
 NPMSDD_occ <- cbind(NPMSDD_occ, event_coordinates)
+```
 
+And the associated dates and times:
+
+``` {r NPMSDD_eventDate, eval = FALSE}
 occdate <- NPMSDD_occ %>%
   select(eventID, occurrenceID, year_min, year_max, warm_cool_years, odd_even_years, season_min, season_max,
          month_min, month_max, date_min, time_min, time_max) %>%
@@ -351,7 +319,7 @@ occdate <- NPMSDD_occ %>%
     month_max == "November" ~ "11",
     month_max == "December" ~ "12"))
 
-# Step 1: If a source_id only(!) has a single associated date_min, this becomes the eventDate. It is not possible to filter for date_min because some source_ids have date_min provided, alongside other entries where that's not provided. 
+# Step 1: If an occurrenceID has a single associated date_min, this becomes the eventDate. Similarly, if only a year_min is provided for the occurrenceID, this becomes the eventDate. 
 
 dates <- occdate %>% filter(!is.na(date_min)) %>% 
   mutate(year = year_min, 
@@ -363,7 +331,11 @@ dates <- dates %>%
 year <- occdate %>% filter(is.na(date_min) & is.na(month_min) & is.na(year_max) & is.na(season_min)) %>%
   mutate(eventDate = year_min)
 
-# Step 2: Months. If a date_min is not provided within every data entry for a specific sourceID, the eventDate will have to be recorded on a different granularity. The first is to remove all the eventIDs from the teh dates dataframe from the original 'eventdate' dataframe.
+# A range in years is depicted using the following code; though it's currently not required. 
+year_range <- occdate %>% filter(is.na(date_min) & !is.na(year_max) & is.na(month_min) & is.na(season_min)) %>%
+  mutate(eventDate = paste(year_min, year_max, sep = " - "))
+
+# Step 2: Months. If a date_min is not provided within every data entry for a specific sourceID, the eventDate will have to be recorded on a different granularity. The first is to remove all the eventIDs from the the dates dataframe from the original 'eventdate' dataframe. We need to make sure that if months or years are represented as a range, this is accurately displayed in eventDate. 
 
 months <- anti_join(occdate, dates, by = "occurrenceID") %>% filter(!is.na(month_min))
 
@@ -396,11 +368,13 @@ date <- plyr::rbind.fill(dates, year, months, seasons) %>%
   select(occurrenceID, eventDate, verbatimEventDate, year, month)
 
 NPMSDD_occ <- left_join(NPMSDD_occ, date, by = "occurrenceID") %>%
-  select(eventID, occurrenceID, eventDate, verbatimEventDate, year, month, decimalLatitude, decimalLongitude, footprintWKT, coordinateUncertaintyInMeters, scientificName, scientificNameID, occurrenceStatus, kingdom, phylum, class, order, family, genus, species) %>%
+  select(eventID, occurrenceID, eventDate, verbatimEventDate, year, month, decimalLatitude, decimalLongitude, footprintWKT, coordinateUncertaintyInMeters, scientificName, scientificNameID, occurrenceStatus, kingdom, phylum, class, order, family, genus, species, gear_type_predator_id1, gear_type_predator_id2, gear_type_predator_id3, gear_type_predator_id4, gear_type_predator_id5) %>%
   mutate(basisOfRecord = "HumanObservation")
+```
 
-# Add additional column 'associatedTaxa' to indicate that species are prey of others. 
+Given that we are dealing with predator-prey data, we add an additional column `associatedTaxa` to indicate which species are predators and which are prey, and how these are linked.  
 
+``` {r associatedTaxa, eval = FALSE}
 NPMSDD_occ$associatedTaxa <-   " "
 NPMSDD_occ$associatedTaxa <- ifelse(grepl("-pr", NPMSDD_occ$occurrenceID), 
 paste("prey of: ", NPMSDD_occ$eventID, "-p", sep = ""), "")
@@ -409,7 +383,7 @@ paste("prey of: ", NPMSDD_occ$eventID, "-p", sep = ""), "")
 Although it is not a required term in the DwC standards, minimumDepthInMeters and maximumDepthInMeters are recorded as 'missing' if not provided. The information regarding sampling depth is recorded in the `gear_type_predator` file, and - depending on what gear was used - is listed under one of the following columns: gear_depth_value, gear_depth_min, fishing_depth_value and fishing_depth_min. Therefore, to obtain the minimumDepthInMeters, first the data from the gear_type_predator dataframe is joined with our initial NPMSDD_Occ dataframe. 
 
 ``` {r sampling depth, eval = FALSE}
-sampling_gears <- N %>%
+sampling_gears <- NPMSDD_occ %>%
   select(occurrenceID, 
          gear_type_predator_id1, gear_type_predator_id2,
          gear_type_predator_id3, gear_type_predator_id4, gear_type_predator_id5) %>%
@@ -435,7 +409,8 @@ depth <- left_join(sampling_gears, sampling_depth, by = "gear_type_predator_id")
          maximumDepthInMeters = max(maximumDepthInMeters)) %>%
   select(occurrenceID, minimumDepthInMeters, maximumDepthInMeters) %>% distinct()
 
-NPMSDD_occ <- left_join(NPMSDD_occ, depth, by = "occurrenceID")
+NPMSDD_occ <- left_join(NPMSDD_occ, depth, by = "occurrenceID") %>%
+  select(-gear_type_predator_id1:-gear_type_predator_id5)
 ```
 
 To save any maps etc, use the following chunk of code:
@@ -445,5 +420,5 @@ obistools::plot_map(NPMSDD_occ, zoom = TRUE)
 ggsave(here::here("datasets", "npmsdd_data_from_caroline", "NPMSDD_occurrence.png"))
 ```
 
-
+To do: add in some fail safes. Furthermore, an extended Measurement Or Fact (eMOF) Core can be added as well, linking to the `occurrenceID`. Information in the eMOF core can be i.e. length and weight measurements associated to both the predators and the prey. 
 
