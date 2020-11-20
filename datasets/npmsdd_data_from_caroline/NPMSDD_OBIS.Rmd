@@ -216,13 +216,12 @@ predator_occ <- NPMSDD_occ %>%
   distinct()
 
 prey_occ <- NPMSDD_occ %>%
-    dplyr::select(eventID, lat_min, lat_max, lon_min, lon_max, year_min, year_max, 
+    dplyr::select(eventID, occurrenceID, occurrenceStatus, lat_min, lat_max, lon_min, lon_max, year_min, year_max, 
                             warm_cool_years, odd_even_years, season_min, season_max,
-                            month_min, month_max, date_min, time_min, time_max,
-                scientificName, scientificNameID, occurrenceStatus, occurrenceID,
-                prey_kingdom, prey_phylum, prey_class, prey_order, prey_family, prey_genus, prey_species,
-                gear_type_predator_id1, gear_type_predator_id2, gear_type_predator_id3, gear_type_predator_id4,
-                gear_type_predator_id5) %>%
+                            month_min, month_max, date_min, time_min, time_max, scientificName, scientificNameID,
+                            prey_kingdom, prey_phylum, prey_class, prey_order, prey_family, prey_genus, prey_species,
+                            gear_type_predator_id1, gear_type_predator_id2, gear_type_predator_id3,
+                            gear_type_predator_id4, gear_type_predator_id5) %>%
     dplyr::rename(kingdom = prey_kingdom,
                 phylum = prey_phylum,
                 class = prey_class,
@@ -231,7 +230,9 @@ prey_occ <- NPMSDD_occ %>%
                 genus = prey_genus,
                 species = prey_species)
 
-NPMSDD_occ <- bind_rows(prey_occ, predator_occ)
+# Bind rows and remove eventID because it's an Occurrence Core. 
+NPMSDD_occ <- bind_rows(prey_occ, predator_occ) %>% select(-eventID)
+
 
 # To re-order the eventID, use following code:
 order <- stringr::str_sort(NPMSDD_occ$occurrenceID, numeric=TRUE)
@@ -242,7 +243,7 @@ After we've created the NPMSDD Occurrence Core, we can associate each `occurrenc
 
 ``` {r NPMSDD_coordinates, eval = FALSE}
 coordinates <- NPMSDD_occ %>%
-  select(eventID,lat_min, lat_max, lon_min, lon_max) %>%
+  select(occurrenceID,lat_min, lat_max, lon_min, lon_max) %>%
   mutate(footprintWKT = " ") %>%
   mutate(lat_min = as.numeric(lat_min),
          lat_max = as.numeric(lat_max),
@@ -290,7 +291,7 @@ And the associated dates and times:
 
 ``` {r NPMSDD_eventDate, eval = FALSE}
 occdate <- NPMSDD_occ %>%
-  select(eventID, occurrenceID, year_min, year_max, warm_cool_years, odd_even_years, season_min, season_max,
+  select(occurrenceID, year_min, year_max, warm_cool_years, odd_even_years, season_min, season_max,
          month_min, month_max, date_min, time_min, time_max) %>%
   mutate(month_min = case_when(
     month_min == "January" ~ "01",
@@ -368,7 +369,7 @@ date <- plyr::rbind.fill(dates, year, months, seasons) %>%
   select(occurrenceID, eventDate, verbatimEventDate, year, month)
 
 NPMSDD_occ <- left_join(NPMSDD_occ, date, by = "occurrenceID") %>%
-  select(eventID, occurrenceID, eventDate, verbatimEventDate, year, month, decimalLatitude, decimalLongitude, footprintWKT, coordinateUncertaintyInMeters, scientificName, scientificNameID, occurrenceStatus, kingdom, phylum, class, order, family, genus, species, gear_type_predator_id1, gear_type_predator_id2, gear_type_predator_id3, gear_type_predator_id4, gear_type_predator_id5) %>%
+  select(occurrenceID, eventDate, verbatimEventDate, year, month, decimalLatitude, decimalLongitude, footprintWKT, coordinateUncertaintyInMeters, scientificName, scientificNameID, occurrenceStatus, kingdom, phylum, class, order, family, genus, species, gear_type_predator_id1, gear_type_predator_id2, gear_type_predator_id3, gear_type_predator_id4, gear_type_predator_id5) %>%
   mutate(basisOfRecord = "HumanObservation")
 ```
 
