@@ -44,9 +44,9 @@ NPMSDD_occ <- left_join(npmsdd, pred_bio, by = "predator_id") %>%
   filter(!is.na(predator_lowest_taxonomic_level)) %>%
   filter(!is.na(prey_kingdom)) %>% dplyr::rename(eventID = source_id) %>%
   mutate(eventID = paste("NPMSDD_sourceID", eventID, sep = ":"),
+         eventID = paste(eventID, predator_id, sep = ":predID"),
          occurrenceStatus = "present",
-         occurrenceID = paste(eventID, predator_id, sep = ":predID"),
-         occurrenceID = paste(occurrenceID, prey_lowest_taxonomic_level, sep = ":"),
+         occurrenceID = paste(eventID, prey_lowest_taxonomic_level, sep = ":"),
          occurrenceID = paste(occurrenceID, "pr", sep = "-")) %>%
   dplyr::rename(scientificName = prey_lowest_taxonomic_level) %>% 
   mutate(scientificNameID = case_when(
@@ -202,8 +202,7 @@ predator_occ <- NPMSDD_occ %>%
                 gear_type_predator_id3, gear_type_predator_id4, gear_type_predator_id5) %>%
   dplyr::rename(scientificName = predator_lowest_taxonomic_level) %>%
   mutate(occurrenceStatus = "present",
-         occurrenceID = paste(eventID, predator_id, sep = ":predID"),
-         occurrenceID = paste(occurrenceID, "p", sep = "-")) %>% 
+         occurrenceID = paste(eventID, "p", sep = "-")) %>% 
   # I like to add this line to indicate that its the predator. 
   mutate(scientificNameID = case_when(
     scientificName == "Oncorhynchus keta" ~ "urn:lsid:marinespecies.org:taxname:127183",
@@ -230,8 +229,8 @@ prey_occ <- NPMSDD_occ %>%
                 genus = prey_genus,
                 species = prey_species)
 
-# Bind rows and remove eventID because it's an Occurrence Core. 
-NPMSDD_occ <- bind_rows(prey_occ, predator_occ) %>% select(-eventID)
+# Bind rows
+NPMSDD_occ <- bind_rows(prey_occ, predator_occ)
 
 
 # To re-order the eventID, use following code:
@@ -291,7 +290,7 @@ And the associated dates and times:
 
 ``` {r NPMSDD_eventDate, eval = FALSE}
 occdate <- NPMSDD_occ %>%
-  select(occurrenceID, year_min, year_max, warm_cool_years, odd_even_years, season_min, season_max,
+  select(eventID, occurrenceID, year_min, year_max, warm_cool_years, odd_even_years, season_min, season_max,
          month_min, month_max, date_min, time_min, time_max) %>%
   mutate(month_min = case_when(
     month_min == "January" ~ "01",
@@ -369,7 +368,7 @@ date <- plyr::rbind.fill(dates, year, months, seasons) %>%
   select(occurrenceID, eventDate, verbatimEventDate, year, month)
 
 NPMSDD_occ <- left_join(NPMSDD_occ, date, by = "occurrenceID") %>%
-  select(occurrenceID, eventDate, verbatimEventDate, year, month, decimalLatitude, decimalLongitude, footprintWKT, coordinateUncertaintyInMeters, scientificName, scientificNameID, occurrenceStatus, kingdom, phylum, class, order, family, genus, species, gear_type_predator_id1, gear_type_predator_id2, gear_type_predator_id3, gear_type_predator_id4, gear_type_predator_id5) %>%
+  select(eventID, occurrenceID, eventDate, verbatimEventDate, year, month, decimalLatitude, decimalLongitude, footprintWKT, coordinateUncertaintyInMeters, scientificName, scientificNameID, occurrenceStatus, kingdom, phylum, class, order, family, genus, species, gear_type_predator_id1, gear_type_predator_id2, gear_type_predator_id3, gear_type_predator_id4, gear_type_predator_id5) %>%
   mutate(basisOfRecord = "HumanObservation")
 ```
 
@@ -412,6 +411,9 @@ depth <- left_join(sampling_gears, sampling_depth, by = "gear_type_predator_id")
 
 NPMSDD_occ <- left_join(NPMSDD_occ, depth, by = "occurrenceID") %>%
   select(-gear_type_predator_id1:-gear_type_predator_id5)
+
+write_csv(NPMSDD_occ, here::here("datasets", "npmsdd_data_from_caroline", 
+                                  "NPMSDD_occ.csv"))
 ```
 
 To save any maps etc, use the following chunk of code:
