@@ -154,7 +154,7 @@ pom_botdepth <- sheet1 %>%
   )
 ```
 
-``` {r eMoF}  
+``` {r eMoF, eval = FALSE}  
 # These are measurements taken from the niskin water samples. For each niskin collection, two samples were processed; one sample was acidified, and the other was  Some `measurementTypeIDs` were left blank ("") because I could not find any appropriate NERC vocab based on the current information available.
 pom_measurement <- sheet1 %>%
   select(
