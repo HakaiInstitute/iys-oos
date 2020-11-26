@@ -35,7 +35,7 @@ Next, we are going to create new columns that will eventually become our `eventI
 The file that has been read in has been changed slightly to 
 
 ```{r excel_wrangle}
-plastic <- openxlsx::read.xlsx(xlsxFile = here("Plastics", "raw_data", "Egger_GoA_dataset.xlsx"), fillMergedCells = TRUE)
+plastic <- openxlsx::read.xlsx(xlsxFile = here("Plastics", "raw_data", "Egger_Goa_dataset.xlsx"), fillMergedCells = TRUE)
 names(plastic) <- paste(names(plastic), plastic[1,], sep = "_")
 names(plastic) <- gsub("_NA", "", names(plastic))
 plastic <- plastic[-c(1:2),]
@@ -82,7 +82,8 @@ plastic <- plastic %>%
          plasticType = paste(trawl, `Plastic Type`, sep = ":"),
          sizeRange = paste(plasticType, `Size Range_cm`, sep = ":"))
 plastic <- plastic %>% 
-  mutate(eventDate = format_iso_8601(as.POSIXct(eventDate, format = "%Y-%m-%d")))
+  mutate(eventDate = format_iso_8601(as.POSIXct(eventDate, format = "%Y-%m-%d")),
+         eventDate = gsub("\\T.*", "", eventDate))
 ```
 
 ```{r event}
