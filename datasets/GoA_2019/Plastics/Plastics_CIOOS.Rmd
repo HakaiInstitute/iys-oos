@@ -86,6 +86,8 @@ plastic <- plastic %>%
          eventDate = gsub("\\T.*", "", eventDate))
 ```
 
+Next we create the Event Core. 
+
 ```{r event}
 plastic_cruise <- plastic %>%
   select(eventID = cruise) %>%
@@ -143,3 +145,5 @@ obistools::check_eventids(plastic_event)
 
 write_csv(plastic_event, here("Plastics", "tidy_data", "plastic_event.csv"))
 ```
+
+Next, we create the eMOF Core. In this table, measurements or facts associated to the measurement or sampling instrument are recorded. Therefore, these include: the width and height (70x40cm) of the neuston net, the square nylon mesh (300 um), speed and duration of the tow (15 min at <2.5knots). Additionally, information pertaining to the size range of the microplastic particles is recorded. 
