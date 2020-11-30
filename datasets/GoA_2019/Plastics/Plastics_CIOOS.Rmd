@@ -200,7 +200,7 @@ plastic_instrument <- plastic %>%
            measurementType == "gear" ~ "http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/",
            measurementType == "neuston_mesh" ~ "http://vocab.nerc.ac.uk/collection/Q01/current/Q0100015/",
            measurementType == "neuston_opening_width" ~ "http://vocab.nerc.ac.uk/collection/P01/current/MTHWDTH1/",
-           measurementType == "neuston_opening_height" ~ ""))
+           measurementType == "neuston_opening_height" ~ "http://vocab.nerc.ac.uk/collection/P01/current/MTHHGHT1/"))
 
 plastic_instrument <- plastic_instrument %>%
   mutate(measurementUnit = case_when(
