@@ -76,7 +76,8 @@ NPMSDD_occ <- left_join(npmsdd, pred_bio, by = "predator_id") %>%
     scientificName == "Mallotus villosus" ~ "urn:lsid:marinespecies.org:taxname:126735",
     scientificName == "Themisto" ~ "urn:lsid:marinespecies.org:taxname:101800",
     scientificName == "Cephalopoda" ~ "urn:lsid:marinespecies.org:taxname:11707",
-    scientificName == "Coelenterata" ~ " ",
+    scientificName == "Coelenterata" ~ "urn:lsid:marinespecies.org:taxname:152230",
+    # Please note: status of URN is 'nomen nudum', it's not a monophyletic group. 
     scientificName == "Hyperia galba" ~ "urn:lsid:marinespecies.org:taxname:103251",
     scientificName == "Pleurogrammus monopterigius" ~ "urn:lsid:marinespecies.org:taxname:282289",
     # Name: pleurogrammus monopterygius
@@ -192,8 +193,10 @@ NPMSDD_occ <- left_join(npmsdd, pred_bio, by = "predator_id") %>%
     scientificName == "Oligochaeta" ~ "urn:lsid:marinespecies.org:taxname:2036",
     scientificName == "Neomysis" ~ "urn:lsid:marinespecies.org:taxname:119888", 
     scientificName == "Diptera" ~ "urn:lsid:marinespecies.org:taxname:118088",
-    scientificName == "Aglantha" ~ "urn:lsid:marinespecies.org:taxname:117212",
-    scientificName == "Miscellaneous" ~ " "))
+    scientificName == "Aglantha" ~ "urn:lsid:marinespecies.org:taxname:117212")) %>%
+  distinct()
+
+# Create occurrence core for the predators. Please note that no columns are provided for kingdom, phylum, class, order, family, genus or species. Therefore these have to be added manually:
 
 predator_occ <- NPMSDD_occ %>% 
   dplyr::select(eventID, predator_lowest_taxonomic_level, predator_id, lat_min, lat_max, lon_min, lon_max, 
@@ -211,7 +214,16 @@ predator_occ <- NPMSDD_occ %>%
     scientificName == "Oncorhynchus kisutch" ~ "urn:lsid:marinespecies.org:taxname:127184",
     scientificName == "Oncorhynchus mykiss" ~ "urn:lsid:marinespecies.org:taxname:127185",
     scientificName == "Oncorhynchus tshawytscha" ~ "urn:lsid:marinespecies.org:taxname:158075")
-  ) %>% select(-predator_id) %>%
+  ) %>% 
+  mutate(kingdom = "Animalia",
+         phylum = "Chordata",
+         class = "Actinopterygii",
+         order = "Salmoniformes",
+         family = "Salmonidae",
+         genus = "Oncorhynchus") %>%
+  mutate(specificEpithet = scientificName,
+         specificEpithet = gsub("Oncorhynchus ", "", specificEpithet)) %>%
+    select(-predator_id) %>%
   distinct()
 
 prey_occ <- NPMSDD_occ %>%
@@ -227,7 +239,7 @@ prey_occ <- NPMSDD_occ %>%
                 order = prey_order,
                 family = prey_family,
                 genus = prey_genus,
-                species = prey_species)
+                specificEpithet = prey_species)
 
 # Bind rows
 NPMSDD_occ <- bind_rows(prey_occ, predator_occ)
@@ -329,7 +341,8 @@ dates <- dates %>%
   mutate(eventDate = as.character(eventDate))
 
 year <- occdate %>% filter(is.na(date_min) & is.na(month_min) & is.na(year_max) & is.na(season_min)) %>%
-  mutate(eventDate = year_min)
+  mutate(eventDate = year_min,
+         year = year_min)
 
 # A range in years is depicted using the following code; though it's currently not required. 
 year_range <- occdate %>% filter(is.na(date_min) & !is.na(year_max) & is.na(month_min) & is.na(season_min)) %>%
@@ -340,10 +353,12 @@ year_range <- occdate %>% filter(is.na(date_min) & !is.na(year_max) & is.na(mont
 months <- anti_join(occdate, dates, by = "occurrenceID") %>% filter(!is.na(month_min))
 
 months_single <- months %>% filter(is.na(year_max) & is.na(month_max)) %>% 
-  mutate(eventDate = paste(year_min, month_min, sep = "-"))
+  mutate(eventDate = paste(year_min, month_min, sep = "-"),
+         year = year_min)
 month_range <- months %>% filter(is.na(year_max) & !is.na(month_max)) %>%
   mutate(eventDate = paste(year_min, month_min, sep = "-"),
-         eventDate = paste(eventDate, month_max, sep = "/"))
+         eventDate = paste(eventDate, month_max, sep = "/"),
+         year = year_min)
 year_range <- months %>% filter(!is.na(year_max) & is.na(month_max)) %>%
   mutate(eventDate = paste(year_min, year_max, sep = "/"),
          eventDate = paste(eventDate, month_min, sep = "-"))
@@ -352,24 +367,26 @@ month_year_range <- months %>% filter(!is.na(year_max) & !is.na(month_max)) %>%
          eventDate = paste(eventDate, month_min, sep = "-"),
          eventDate = paste(eventDate, month_max, sep = "/"))
 
-months <- rbind(months_single, month_range, year_range, month_year_range)
+months <- plyr::rbind.fill(months_single, month_range, year_range, month_year_range)
 
 seasons <- occdate %>% filter(!is.na(season_min))
 
 season_single_year <- seasons %>% filter(is.na(year_max)) %>%
-  mutate(verbatimEventDate = paste(season_min, year_min, sep = " - "))
+  mutate(verbatimEventDate = paste(season_min, year_min, sep = " - "),
+         year = year_min)
 season_years <- seasons %>% filter(!is.na(year_max)) %>%
   mutate(verbatimEventDate = paste(season_min, year_min, sep = " - "),
          verbatimEventDate = paste(verbatimEventDate, year_max, sep = "/"))
 
-seasons <- rbind(season_single_year, season_years)
+seasons <- plyr::rbind.fill(season_single_year, season_years)
 
 date <- plyr::rbind.fill(dates, year, months, seasons) %>%
   select(occurrenceID, eventDate, verbatimEventDate, year, month)
 
 NPMSDD_occ <- left_join(NPMSDD_occ, date, by = "occurrenceID") %>%
-  select(eventID, occurrenceID, eventDate, verbatimEventDate, year, month, decimalLatitude, decimalLongitude, footprintWKT, coordinateUncertaintyInMeters, scientificName, scientificNameID, occurrenceStatus, kingdom, phylum, class, order, family, genus, species, gear_type_predator_id1, gear_type_predator_id2, gear_type_predator_id3, gear_type_predator_id4, gear_type_predator_id5) %>%
-  mutate(basisOfRecord = "HumanObservation")
+  select(eventID, occurrenceID, eventDate, verbatimEventDate, year, month, decimalLatitude, decimalLongitude, footprintWKT, coordinateUncertaintyInMeters, scientificName, scientificNameID, occurrenceStatus, kingdom, phylum, class, order, family, genus, specificEpithet, gear_type_predator_id1, gear_type_predator_id2, gear_type_predator_id3, gear_type_predator_id4, gear_type_predator_id5) %>%
+  mutate(basisOfRecord = "HumanObservation",
+         geodeticDatum = "EPSG:4326 WGS84")
 ```
 
 Given that we are dealing with predator-prey data, we add an additional column `associatedTaxa` to indicate which species are predators and which are prey, and how these are linked.  
@@ -424,4 +441,13 @@ ggsave(here::here("datasets", "npmsdd_data_from_caroline", "NPMSDD_occurrence.pn
 ```
 
 To do: add in some fail safes. Furthermore, an extended Measurement Or Fact (eMOF) Core can be added as well, linking to the `occurrenceID`. Information in the eMOF core can be i.e. length and weight measurements associated to both the predators and the prey. 
+
+``` {r fail safes, eval = FALSE}
+# Ensure that occurrenceIDs are unique (i.e. no duplicates):
+NPMSDD_occ[dupliated(NPMSDD_occ$occurrenceID),]
+
+# Ensure that all occurrenceIDs have an associated eventDate:
+missing_eventDate <- NPMSDD_occ[is.na(NPMSDD_occ$eventDate),]
+
+```
 
