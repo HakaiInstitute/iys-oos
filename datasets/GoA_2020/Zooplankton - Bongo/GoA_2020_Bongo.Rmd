@@ -1,0 +1,27 @@
+---
+title: "GoA 2020 Bongo"
+author: "Tim van der Stap"
+date: "12/1/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
+library(tidyverse)
+library(lubridate)
+library(readxl)
+library(parsedate)
+library(googledrive)
+library(here)
+```
+
+## Getting started
+
+The following line only needs to be run once to download the tidied data from Google Drive to your computer's hard drive
+
+```{r drive_download}
+# Make sure your folder path exists already (e.g. ./POM/raw_data)
+
+drive_download("", path = here("Zooplankton - Bongo", "raw_data", "Bongo.xlsx"))
+```
+
