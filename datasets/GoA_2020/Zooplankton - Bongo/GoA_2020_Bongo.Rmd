@@ -22,6 +22,28 @@ The following line only needs to be run once to download the tidied data from Go
 ```{r drive_download}
 # Make sure your folder path exists already (e.g. ./POM/raw_data)
 
-drive_download("", path = here("Zooplankton - Bongo", "raw_data", "Bongo.xlsx"))
+drive_download("https://docs.google.com/spreadsheets/d/1Y4FL6zFq7jU4mUD5k1HRaBj-XKhUTs6m/edit?usp=drive_web&ouid=110988987704080303629&rtpof=true", path = here("Zooplankton - Bongo", "raw_data", "Bongo.xlsx"))
 ```
 
+Now we need to read in the Excel file and the correct sheets we want to work with. In the Excel file there are two sheets that we want to work with, one that includes the metadata, whereas the other sheet includes taxonomic occurrences of zooplankton in the bongo net. 
+
+``` {r read_file}
+bongo2020_metadata <- read_excel(here("Zooplankton - Bongo", "raw_data", "Bongo.xlsx"), sheet = "Bongo metadata")
+bongo2020_data <- read_excel(here("Zooplankton - Bongo", "raw_data", "Bongo.xlsx"), sheet = "Animal samples")
+```
+
+Next we start with creating the Event Core for this Bongo dataset. 
+
+``` {r bongo2020_event}
+bongo2020_event <- bongo2020_metadata %>%
+  mutate(Time = format(Time, "%H:%M:%S"),
+         eventDate = format_iso_8601(as.POSIXct(paste(Date, Time), 
+                                                format = "%Y-%m-%d %H:%M:%S",
+                                                # Time is recorded in PDT, must ensure that timezone is correct
+                                                tz = "Asia/Kamchatka")),
+         eventDate = str_replace(eventDate, "\\+00:00", "Z"),
+         cruise = "GoA2020",
+         station = paste(cruise, Station, sep = "_Stn"),
+         cast = paste()
+
+```
