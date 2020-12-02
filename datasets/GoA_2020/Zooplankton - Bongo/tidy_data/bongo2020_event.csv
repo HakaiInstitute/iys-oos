@@ -1,0 +1,426 @@
+eventID,eventRemarks,parentEventID,eventDate,decimalLatitude,decimalLongitude,minimumDepthInMetres,maximumDepthInMetres,sampleSizeValue,sampleSizeUnit,samplingProtocol,samplingEffort,footprintWKT,coordinateUncertaintyInMeters,type,geodeticDatum
+GoA2020,cruise,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn1,station,GoA2020,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn2,station,GoA2020,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn3,station,GoA2020,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn4,station,GoA2020,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn5,station,GoA2020,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn6,station,GoA2020,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn7,station,GoA2020,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn8,station,GoA2020,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn9,station,GoA2020,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn10,station,GoA2020,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn11,station,GoA2020,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn12,station,GoA2020,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn13,station,GoA2020,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn14,station,GoA2020,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn15,station,GoA2020,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn16,station,GoA2020,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn21,station,GoA2020,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn22,station,GoA2020,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn23,station,GoA2020,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn28,station,GoA2020,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnP,station,GoA2020,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnQ,station,GoA2020,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnS28,station,GoA2020,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnS27,station,GoA2020,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnY27,station,GoA2020,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAB,station,GoA2020,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAJ,station,GoA2020,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAI,station,GoA2020,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAH,station,GoA2020,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAK,station,GoA2020,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAL,station,GoA2020,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAM,station,GoA2020,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnI,station,GoA2020,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAV,station,GoA2020,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAW,station,GoA2020,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAX,station,GoA2020,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn1:bongo:Net1,cast,GoA2020_Stn1,2020-03-12T07:45:00Z,48.3975,-127.99611666666667,250,250,96.725669375669383,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -127.996116666667   48.3975 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn1:bongo:Net2,cast,GoA2020_Stn1,2020-03-12T07:45:00Z,48.3975,-127.99611666666667,250,250,97.870133402633414,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -127.996116666667   48.3975 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn2:bongo:Net1,cast,GoA2020_Stn2,2020-03-12T18:50:00Z,48.3758333333333,-129.51333333333332,250,250,88.155374242874245,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -129.513333333333   48.3758333333333 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn2:bongo:Net2,cast,GoA2020_Stn2,2020-03-12T18:50:00Z,48.3758333333333,-129.51333333333332,250,250,"NA",m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -129.513333333333   48.3758333333333 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn3:bongo:Net1,cast,GoA2020_Stn3,2020-03-14T22:10:00Z,47.4338333333333,-136.958,250,250,79.91206883206884,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -136.958   47.4338333333333 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn3:bongo:Net2,cast,GoA2020_Stn3,2020-03-14T22:10:00Z,47.4338333333333,-136.958,250,250,93.076042156042149,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -136.958   47.4338333333333 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn4:bongo:Net1,cast,GoA2020_Stn4,2020-03-15T09:02:00Z,47.4275,-138.46816666666666,250,250,39.191300388800386,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -138.468166666667   47.4275 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn4:bongo:Net2,cast,GoA2020_Stn4,2020-03-15T09:02:00Z,47.4275,-138.46816666666666,250,250,77.849923972423966,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -138.468166666667   47.4275 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn5:bongo:Net1,cast,GoA2020_Stn5,2020-03-15T20:55:00Z,47.4275,-139.99233333333333,250,250,62.360104400104404,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -139.992333333333   47.4275 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn5:bongo:Net2,cast,GoA2020_Stn5,2020-03-15T20:55:00Z,47.4275,-139.99233333333333,250,250,68.483250645750658,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -139.992333333333   47.4275 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn6:bongo:Net1,cast,GoA2020_Stn6,2020-03-16T06:17:00Z,47.425,-141.4795,250,250,48.494685382185381,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -141.4795   47.425 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn6:bongo:Net2,cast,GoA2020_Stn6,2020-03-16T06:17:00Z,47.425,-141.4795,250,250,54.238101628101631,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -141.4795   47.425 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn7:bongo:Net1,cast,GoA2020_Stn7,2020-03-16T14:59:00Z,47.4325,-142.98083333333332,250,250,43.642579830079832,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -142.980833333333   47.4325 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn7:bongo:Net2,cast,GoA2020_Stn7,2020-03-16T14:59:00Z,47.4325,-142.98083333333332,250,250,42.941134136134139,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -142.980833333333   47.4325 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn8:bongo:Net1,cast,GoA2020_Stn8,2020-03-17T00:45:00Z,48.3838333333333,-143.0095,250,250,49.164486909486911,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -143.0095   48.3838333333333 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn8:bongo:Net2,cast,GoA2020_Stn8,2020-03-17T00:45:00Z,48.3838333333333,-143.0095,250,250,49.169760937260939,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -143.0095   48.3838333333333 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn9:bongo:Net1,cast,GoA2020_Stn9,2020-03-17T09:08:00Z,48.4016666666667,-144.488,250,250,41.712285664785668,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -144.488   48.4016666666667 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn9:bongo:Net2,cast,GoA2020_Stn9,2020-03-17T09:08:00Z,48.4016666666667,-144.488,250,250,41.506598581598588,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -144.488   48.4016666666667 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn10:bongo:Net1,cast,GoA2020_Stn10,2020-03-17T17:49:00Z,48.4213333333333,-145.994,250,250,37.239910112410115,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -145.994   48.4213333333333 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn10:bongo:Net2,cast,GoA2020_Stn10,2020-03-17T17:49:00Z,48.4213333333333,-145.994,250,250,43.094080941580941,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -145.994   48.4213333333333 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn11:bongo:Net1,cast,GoA2020_Stn11,2020-03-18T02:17:00Z,48.4013333333333,-147.4955,250,250,45.330268717768718,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -147.4955   48.4013333333333 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn11:bongo:Net2,cast,GoA2020_Stn11,2020-03-18T02:17:00Z,48.4013333333333,-147.4955,250,250,43.152095247095254,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -147.4955   48.4013333333333 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn12:bongo:Net1,cast,GoA2020_Stn12,2020-03-18T11:10:00Z,49.4176666666667,-147.53416666666666,250,250,52.603153018153023,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -147.534166666667   49.4176666666667 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn12:bongo:Net2,cast,GoA2020_Stn12,2020-03-18T11:10:00Z,49.4176666666667,-147.53416666666666,250,250,54.396322461322463,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -147.534166666667   49.4176666666667 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn13:bongo:Net1,cast,GoA2020_Stn13,2020-03-18T22:20:00Z,50.4156666666667,-147.51266666666666,250,250,60.514194679194681,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -147.512666666667   50.4156666666667 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn13:bongo:Net2,cast,GoA2020_Stn13,2020-03-18T22:20:00Z,50.4156666666667,-147.51266666666666,250,250,64.111081621081624,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -147.512666666667   50.4156666666667 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn14:bongo:Net1,cast,GoA2020_Stn14,2020-03-19T10:22:00Z,51.4173333333333,-147.50066666666666,250,250,52.851032323532323,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -147.500666666667   51.4173333333333 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn14:bongo:Net2,cast,GoA2020_Stn14,2020-03-19T10:22:00Z,51.4173333333333,-147.50066666666666,250,250,51.669650102150101,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -147.500666666667   51.4173333333333 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn15:bongo:Net1,cast,GoA2020_Stn15,2020-03-19T19:10:00Z,51.4281666666667,-146.01616666666666,250,250,50.904916074916081,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -146.016166666667   51.4281666666667 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn15:bongo:Net2,cast,GoA2020_Stn15,2020-03-19T19:10:00Z,51.4281666666667,-146.01616666666666,250,250,48.194065799065804,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -146.016166666667   51.4281666666667 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn16:bongo:Net1,cast,GoA2020_Stn16,2020-03-20T06:10:00Z,50.431,-146.00583333333333,250,250,20.964260401760402,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -146.005833333333   50.431 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn16:bongo:Net2,cast,GoA2020_Stn16,2020-03-20T06:10:00Z,50.431,-146.00583333333333,250,250,49.312159687159685,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -146.005833333333   50.431 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn21:bongo:Net1,cast,GoA2020_Stn21,2020-03-20T14:55:00Z,50.4173333333333,-144.5095,250,250,13.280001935001934,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -144.5095   50.4173333333333 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn21:bongo:Net2,cast,GoA2020_Stn21,2020-03-20T14:55:00Z,50.4173333333333,-144.5095,250,250,44.206900801900801,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -144.5095   50.4173333333333 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn22:bongo:Net1,cast,GoA2020_Stn22,2020-03-21T00:05:00Z,51.4911666666667,-144.53816666666665,250,250,40.820974970974973,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -144.538166666667   51.4911666666667 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn22:bongo:Net2,cast,GoA2020_Stn22,2020-03-21T00:05:00Z,51.4911666666667,-144.53816666666665,250,250,67.080359257859257,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -144.538166666667   51.4911666666667 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn23:bongo:Net1,cast,GoA2020_Stn23,2020-03-21T08:15:00Z,51.4716666666667,-143.035,250,250,18.147929570429572,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -143.035   51.4716666666667 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn23:bongo:Net2,cast,GoA2020_Stn23,2020-03-21T08:15:00Z,51.4716666666667,-143.035,250,250,64.59101814851816,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -143.035   51.4716666666667 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn28:bongo:Net1,cast,GoA2020_Stn28,2020-03-23T19:28:00Z,54.4296666666667,-135.5465,250,250,36.923468445968453,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -135.5465   54.4296666666667 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn28:bongo:Net2,cast,GoA2020_Stn28,2020-03-23T19:28:00Z,54.4296666666667,-135.5465,250,250,66.943234535734533,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -135.5465   54.4296666666667 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnP:bongo:Net1,cast,GoA2020_StnP,2020-03-24T03:27:00Z,54.565,-134.04833333333335,300,300,36.063801918801921,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -134.048333333333   54.565 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnP:bongo:Net2,cast,GoA2020_StnP,2020-03-24T03:27:00Z,54.565,-134.04833333333335,300,300,49.728807881307887,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -134.048333333333   54.565 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnQ:bongo:Net1,cast,GoA2020_StnQ,2020-03-25T15:41:00Z,54.4046666666667,-132.41583333333332,250,250,42.445375525375525,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -132.415833333333   54.4046666666667 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnQ:bongo:Net2,cast,GoA2020_StnQ,2020-03-25T15:41:00Z,54.4046666666667,-132.41583333333332,250,250,71.336499671499681,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -132.415833333333   54.4046666666667 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnS28:bongo:Net1,cast,GoA2020_StnS28,2020-03-26T19:25:00Z,53.43,-135.49666666666667,250,250,40.298846221346224,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -135.496666666667   53.43 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnS28:bongo:Net2,cast,GoA2020_StnS28,2020-03-26T19:25:00Z,53.43,-135.49666666666667,250,250,54.660023850023855,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -135.496666666667   53.43 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnS27:bongo:Net1,cast,GoA2020_StnS27,2020-03-27T01:52:00Z,53.4195,-137.05866666666665,250,250,41.62790122040122,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -137.058666666667   53.4195 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnS27:bongo:Net2,cast,GoA2020_StnS27,2020-03-27T01:52:00Z,53.4195,-137.05866666666665,250,250,61.352765095265099,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -137.058666666667   53.4195 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnY27:bongo:Net1,cast,GoA2020_StnY27,2020-03-27T13:20:00Z,52.4081666666667,-137.08883333333333,250,250,26.950281925281928,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -137.088833333333   52.4081666666667 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnY27:bongo:Net2,cast,GoA2020_StnY27,2020-03-27T13:20:00Z,52.4081666666667,-137.08883333333333,250,250,77.73916938916939,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -137.088833333333   52.4081666666667 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAB:bongo:Net1,cast,GoA2020_StnAB,2020-03-28T23:00:00Z,51.4183333333333,-138.61833333333334,250,250,70.392448699948702,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -138.618333333333   51.4183333333333 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAB:bongo:Net2,cast,GoA2020_StnAB,2020-03-28T23:17:00Z,51.4183333333333,-138.61833333333334,250,250,49.085376492876492,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -138.618333333333   51.4183333333333 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAJ:bongo:Net1,cast,GoA2020_StnAJ,2020-03-31T01:00:00Z,49.4783333333333,-138.52166666666668,250,250,38.015192195192192,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -138.521666666667   49.4783333333333 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAJ:bongo:Net2,cast,GoA2020_StnAJ,2020-03-31T01:00:00Z,49.4783333333333,-138.52166666666668,250,250,54.000770378270374,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -138.521666666667   49.4783333333333 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAI:bongo:Net1,cast,GoA2020_StnAI,2020-03-31T09:35:00Z,49.445,-140.00166666666667,250,250,27.24562748062748,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -140.001666666667   49.445 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAI:bongo:Net2,cast,GoA2020_StnAI,2020-03-31T09:35:00Z,49.445,-140.00166666666667,250,250,49.871206631206633,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -140.001666666667   49.445 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAH:bongo:Net1,cast,GoA2020_StnAH,2020-03-31T19:09:00Z,49.435,-141.49833333333333,250,250,31.675810810810816,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -141.498333333333   49.435 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAH:bongo:Net2,cast,GoA2020_StnAH,2020-03-31T19:09:00Z,49.435,-141.49833333333333,250,250,49.03791024291025,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -141.498333333333   49.435 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAK:bongo:Net1,cast,GoA2020_StnAK,2020-04-01T03:20:00Z,48.4051666666667,-141.47616666666667,250,250,29.133729423729424,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -141.476166666667   48.4051666666667 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAK:bongo:Net2,cast,GoA2020_StnAK,2020-04-01T03:20:00Z,48.4051666666667,-141.47616666666667,250,250,45.077115384615382,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -141.476166666667   48.4051666666667 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAL:bongo:Net1,cast,GoA2020_StnAL,2020-04-01T11:45:00Z,48.3666666666667,-140.01666666666668,250,250,21.227961790461791,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -140.016666666667   48.3666666666667 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAL:bongo:Net2,cast,GoA2020_StnAL,2020-04-01T11:45:00Z,48.3666666666667,-140.01666666666668,250,250,42.872571775071776,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -140.016666666667   48.3666666666667 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAM:bongo:Net1,cast,GoA2020_StnAM,2020-04-01T20:33:00Z,48.4328333333333,-138.4125,250,250,18.896841514341514,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -138.4125   48.4328333333333 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAM:bongo:Net2,cast,GoA2020_StnAM,2020-04-01T20:33:00Z,48.4328333333333,-138.4125,250,250,44.655193162693166,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -138.4125   48.4328333333333 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnI:bongo:Net1,cast,GoA2020_StnI,2020-04-02T16:30:00Z,46.36,-138.49833333333333,250,250,40.47288913788914,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -138.498333333333   46.36 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnI:bongo:Net2,cast,GoA2020_StnI,2020-04-02T16:30:00Z,46.36,-138.49833333333333,250,250,50.298402880902884,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -138.498333333333   46.36 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAV:bongo:Net1,cast,GoA2020_StnAV,2020-04-03T13:44:00Z,47.405,-135.40666666666667,250,250,33.279115254115254,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -135.406666666667   47.405 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAV:bongo:Net2,cast,GoA2020_StnAV,2020-04-03T13:44:00Z,47.405,-135.40666666666667,250,250,47.603374688374693,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -135.406666666667   47.405 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAW:bongo:Net1,cast,GoA2020_StnAW,2020-04-03T21:57:00Z,47.4216666666667,-133.98666666666668,250,250,28.717081229581229,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -133.986666666667   47.4216666666667 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAW:bongo:Net2,cast,GoA2020_StnAW,2020-04-03T21:57:00Z,47.4216666666667,-133.98666666666668,250,250,46.996861494361497,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -133.986666666667   47.4216666666667 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAX:bongo:Net1,cast,GoA2020_StnAX,2020-04-04T06:28:00Z,47.4116666666667,-132.50666666666666,250,250,41.907424692424691,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -132.506666666667   47.4116666666667 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAX:bongo:Net2,cast,GoA2020_StnAX,2020-04-04T06:28:00Z,47.4116666666667,-132.50666666666666,250,250,51.653828018828023,m^3,vertical Bongo Net deployment,Volume sea water filtered,POINT  ( -132.506666666667   47.4116666666667 ),0,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn1:bongo:Net1:Z1,sample,GoA2020_Stn1:bongo:Net1,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn1:bongo:Net2:F1,sample,GoA2020_Stn1:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn1:bongo:Net2:F2,sample,GoA2020_Stn1:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn1:bongo:Net2:F3,sample,GoA2020_Stn1:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn1:bongo:Net2:F4,sample,GoA2020_Stn1:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn1:bongo:Net2:G1,sample,GoA2020_Stn1:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn1:bongo:Net2:G2,sample,GoA2020_Stn1:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn1:bongo:Net2:G3,sample,GoA2020_Stn1:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn1:bongo:Net2:G4,sample,GoA2020_Stn1:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn1:bongo:Net2:G5,sample,GoA2020_Stn1:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn2:bongo:Net1:Z2,sample,GoA2020_Stn2:bongo:Net1,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn2:bongo:Net2:G6,sample,GoA2020_Stn2:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn2:bongo:Net2:G7,sample,GoA2020_Stn2:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn2:bongo:Net2:G8,sample,GoA2020_Stn2:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn2:bongo:Net2:G9,sample,GoA2020_Stn2:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn2:bongo:Net2:G10,sample,GoA2020_Stn2:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn2:bongo:Net2:G11,sample,GoA2020_Stn2:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn2:bongo:Net2:G12,sample,GoA2020_Stn2:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn3:bongo:Net1:Z3,sample,GoA2020_Stn3:bongo:Net1,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn3:bongo:Net2:F5,sample,GoA2020_Stn3:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn3:bongo:Net2:F6,sample,GoA2020_Stn3:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn3:bongo:Net2:F7,sample,GoA2020_Stn3:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn3:bongo:Net2:F8,sample,GoA2020_Stn3:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn3:bongo:Net2:G13,sample,GoA2020_Stn3:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn3:bongo:Net2:G14,sample,GoA2020_Stn3:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn4:bongo:Net1:Z4,sample,GoA2020_Stn4:bongo:Net1,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn4:bongo:Net2:F9,sample,GoA2020_Stn4:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn4:bongo:Net2:F10,sample,GoA2020_Stn4:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn4:bongo:Net2:F11,sample,GoA2020_Stn4:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn4:bongo:Net2:F12,sample,GoA2020_Stn4:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn4:bongo:Net2:G15,sample,GoA2020_Stn4:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn4:bongo:Net2:G16,sample,GoA2020_Stn4:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn5:bongo:Net1:Z5,sample,GoA2020_Stn5:bongo:Net1,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn5:bongo:Net2:F13,sample,GoA2020_Stn5:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn5:bongo:Net2:F14,sample,GoA2020_Stn5:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn5:bongo:Net2:F15,sample,GoA2020_Stn5:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn5:bongo:Net2:F16,sample,GoA2020_Stn5:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn5:bongo:Net2:G17,sample,GoA2020_Stn5:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn5:bongo:Net2:G18,sample,GoA2020_Stn5:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn5:bongo:Net2:G19,sample,GoA2020_Stn5:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn6:bongo:Net1:Z6,sample,GoA2020_Stn6:bongo:Net1,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn6:bongo:Net2:F17,sample,GoA2020_Stn6:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn6:bongo:Net2:F18,sample,GoA2020_Stn6:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn6:bongo:Net2:F19,sample,GoA2020_Stn6:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn6:bongo:Net2:F20,sample,GoA2020_Stn6:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn6:bongo:Net2:G20,sample,GoA2020_Stn6:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn6:bongo:Net2:G21,sample,GoA2020_Stn6:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn6:bongo:Net2:G22,sample,GoA2020_Stn6:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn6:bongo:Net2:G23,sample,GoA2020_Stn6:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn7:bongo:Net1:Z7,sample,GoA2020_Stn7:bongo:Net1,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn7:bongo:Net2:F21,sample,GoA2020_Stn7:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn7:bongo:Net2:F22,sample,GoA2020_Stn7:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn7:bongo:Net2:F23,sample,GoA2020_Stn7:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn7:bongo:Net2:F24,sample,GoA2020_Stn7:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn7:bongo:Net2:G24,sample,GoA2020_Stn7:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn7:bongo:Net2:G25,sample,GoA2020_Stn7:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn7:bongo:Net2:G26,sample,GoA2020_Stn7:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn7:bongo:Net2:G27,sample,GoA2020_Stn7:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn8:bongo:Net1:Z8,sample,GoA2020_Stn8:bongo:Net1,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn8:bongo:Net2:F25,sample,GoA2020_Stn8:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn8:bongo:Net2:F26,sample,GoA2020_Stn8:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn8:bongo:Net2:F27,sample,GoA2020_Stn8:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn8:bongo:Net2:F28,sample,GoA2020_Stn8:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn8:bongo:Net2:G28,sample,GoA2020_Stn8:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn8:bongo:Net2:G29,sample,GoA2020_Stn8:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn8:bongo:Net2:G30,sample,GoA2020_Stn8:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn9:bongo:Net1:Z9,sample,GoA2020_Stn9:bongo:Net1,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn9:bongo:Net2:F31,sample,GoA2020_Stn9:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn9:bongo:Net2:F30,sample,GoA2020_Stn9:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn9:bongo:Net2:F29,sample,GoA2020_Stn9:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn9:bongo:Net2:F32,sample,GoA2020_Stn9:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn9:bongo:Net2:G31,sample,GoA2020_Stn9:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn9:bongo:Net2:G32,sample,GoA2020_Stn9:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn9:bongo:Net2:G33,sample,GoA2020_Stn9:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn10:bongo:Net1:Z10,sample,GoA2020_Stn10:bongo:Net1,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn10:bongo:Net2:F33,sample,GoA2020_Stn10:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn10:bongo:Net2:F34,sample,GoA2020_Stn10:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn10:bongo:Net2:F35,sample,GoA2020_Stn10:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn10:bongo:Net2:F36,sample,GoA2020_Stn10:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn10:bongo:Net2:G34,sample,GoA2020_Stn10:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn10:bongo:Net2:G35,sample,GoA2020_Stn10:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn11:bongo:Net1:Z11,sample,GoA2020_Stn11:bongo:Net1,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn11:bongo:Net2:F37,sample,GoA2020_Stn11:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn11:bongo:Net2:F38,sample,GoA2020_Stn11:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn11:bongo:Net2:F39,sample,GoA2020_Stn11:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn11:bongo:Net2:F40,sample,GoA2020_Stn11:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn11:bongo:Net2:G36,sample,GoA2020_Stn11:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn11:bongo:Net2:G37,sample,GoA2020_Stn11:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn12:bongo:Net1:Z12,sample,GoA2020_Stn12:bongo:Net1,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn12:bongo:Net1:F41,sample,GoA2020_Stn12:bongo:Net1,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn12:bongo:Net2:F42,sample,GoA2020_Stn12:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn12:bongo:Net2:F43,sample,GoA2020_Stn12:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn12:bongo:Net2:F44,sample,GoA2020_Stn12:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn12:bongo:Net2:G38,sample,GoA2020_Stn12:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn12:bongo:Net2:G39,sample,GoA2020_Stn12:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn12:bongo:Net2:G40,sample,GoA2020_Stn12:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn12:bongo:Net2:G41,sample,GoA2020_Stn12:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn12:bongo:Net2:G42,sample,GoA2020_Stn12:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn12:bongo:Net2:G43,sample,GoA2020_Stn12:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn13:bongo:Net1:Z13,sample,GoA2020_Stn13:bongo:Net1,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn13:bongo:Net2:F45,sample,GoA2020_Stn13:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn13:bongo:Net2:F46,sample,GoA2020_Stn13:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn13:bongo:Net2:F47,sample,GoA2020_Stn13:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn13:bongo:Net2:F48,sample,GoA2020_Stn13:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn13:bongo:Net2:G45,sample,GoA2020_Stn13:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn13:bongo:Net2:G46,sample,GoA2020_Stn13:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn14:bongo:Net1:Z14,sample,GoA2020_Stn14:bongo:Net1,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn14:bongo:Net2:F49,sample,GoA2020_Stn14:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn14:bongo:Net2:F50,sample,GoA2020_Stn14:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn14:bongo:Net2:F51,sample,GoA2020_Stn14:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn14:bongo:Net2:F52,sample,GoA2020_Stn14:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn14:bongo:Net2:G47,sample,GoA2020_Stn14:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn14:bongo:Net2:G48,sample,GoA2020_Stn14:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn14:bongo:Net2:G49,sample,GoA2020_Stn14:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn14:bongo:Net2:G50,sample,GoA2020_Stn14:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn15:bongo:Net1:Z15,sample,GoA2020_Stn15:bongo:Net1,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn15:bongo:Net2:F53,sample,GoA2020_Stn15:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn15:bongo:Net2:F54,sample,GoA2020_Stn15:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn15:bongo:Net2:F55,sample,GoA2020_Stn15:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn15:bongo:Net2:F56,sample,GoA2020_Stn15:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn15:bongo:Net2:G51,sample,GoA2020_Stn15:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn15:bongo:Net2:G52,sample,GoA2020_Stn15:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn15:bongo:Net2:G53,sample,GoA2020_Stn15:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn15:bongo:Net2:G54,sample,GoA2020_Stn15:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn15:bongo:Net2:G55,sample,GoA2020_Stn15:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn15:bongo:Net2:G56,sample,GoA2020_Stn15:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn16:bongo:Net1:Z16,sample,GoA2020_Stn16:bongo:Net1,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn16:bongo:Net2:F57,sample,GoA2020_Stn16:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn16:bongo:Net2:F58,sample,GoA2020_Stn16:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn16:bongo:Net2:F59,sample,GoA2020_Stn16:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn16:bongo:Net2:F60,sample,GoA2020_Stn16:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn16:bongo:Net2:G57,sample,GoA2020_Stn16:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn21:bongo:Net1:Z17,sample,GoA2020_Stn21:bongo:Net1,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn21:bongo:Net2:F61,sample,GoA2020_Stn21:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn21:bongo:Net2:F62,sample,GoA2020_Stn21:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn21:bongo:Net2:F63,sample,GoA2020_Stn21:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn21:bongo:Net2:F64,sample,GoA2020_Stn21:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn21:bongo:Net2:G58,sample,GoA2020_Stn21:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn21:bongo:Net2:G59,sample,GoA2020_Stn21:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn21:bongo:Net2:G60,sample,GoA2020_Stn21:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn21:bongo:Net2:G61,sample,GoA2020_Stn21:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn22:bongo:Net1:Z18,sample,GoA2020_Stn22:bongo:Net1,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn22:bongo:Net2:F65,sample,GoA2020_Stn22:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn22:bongo:Net2:F66,sample,GoA2020_Stn22:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn22:bongo:Net2:F67,sample,GoA2020_Stn22:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn22:bongo:Net2:F68,sample,GoA2020_Stn22:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn22:bongo:Net2:G62,sample,GoA2020_Stn22:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn23:bongo:Net1:Z19,sample,GoA2020_Stn23:bongo:Net1,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn23:bongo:Net2:F69,sample,GoA2020_Stn23:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn23:bongo:Net2:F70,sample,GoA2020_Stn23:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn23:bongo:Net2:F71,sample,GoA2020_Stn23:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn23:bongo:Net2:F72,sample,GoA2020_Stn23:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn23:bongo:Net2:G63,sample,GoA2020_Stn23:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn23:bongo:Net2:G64,sample,GoA2020_Stn23:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn28:bongo:Net1:Z20,sample,GoA2020_Stn28:bongo:Net1,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn28:bongo:Net2:F73,sample,GoA2020_Stn28:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn28:bongo:Net2:F74,sample,GoA2020_Stn28:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn28:bongo:Net2:F75,sample,GoA2020_Stn28:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn28:bongo:Net2:F76,sample,GoA2020_Stn28:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn28:bongo:Net2:G65,sample,GoA2020_Stn28:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn28:bongo:Net2:G66,sample,GoA2020_Stn28:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn28:bongo:Net2:G67,sample,GoA2020_Stn28:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn28:bongo:Net2:G68,sample,GoA2020_Stn28:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn28:bongo:Net2:G69,sample,GoA2020_Stn28:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnP:bongo:Net1:Z21,sample,GoA2020_StnP:bongo:Net1,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnP:bongo:Net2:F77,sample,GoA2020_StnP:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnP:bongo:Net2:F78,sample,GoA2020_StnP:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnP:bongo:Net2:F79,sample,GoA2020_StnP:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnP:bongo:Net2:F80,sample,GoA2020_StnP:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnP:bongo:Net2:G70,sample,GoA2020_StnP:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnP:bongo:Net2:G71,sample,GoA2020_StnP:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnP:bongo:Net2:G72,sample,GoA2020_StnP:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnP:bongo:Net2:G73,sample,GoA2020_StnP:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnQ:bongo:Net1:Z22,sample,GoA2020_StnQ:bongo:Net1,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnQ:bongo:Net2:F81,sample,GoA2020_StnQ:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnQ:bongo:Net2:F82,sample,GoA2020_StnQ:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnQ:bongo:Net2:F83,sample,GoA2020_StnQ:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnQ:bongo:Net2:F84,sample,GoA2020_StnQ:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnQ:bongo:Net2:G74,sample,GoA2020_StnQ:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnQ:bongo:Net2:G75,sample,GoA2020_StnQ:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnQ:bongo:Net2:G76,sample,GoA2020_StnQ:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnP:bongo:Net1:Z23,sample,GoA2020_StnP:bongo:Net1,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnP:bongo:Net2:F85,sample,GoA2020_StnP:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnP:bongo:Net2:F86,sample,GoA2020_StnP:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnP:bongo:Net2:F87,sample,GoA2020_StnP:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnP:bongo:Net2:F88,sample,GoA2020_StnP:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnP PRIME:bongo:Net1:Z24,sample,GoA2020_StnP PRIME:bongo:Net1,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnP PRIME:bongo:Net2:F89,sample,GoA2020_StnP PRIME:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnP PRIME:bongo:Net2:F90,sample,GoA2020_StnP PRIME:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnP PRIME:bongo:Net2:F91,sample,GoA2020_StnP PRIME:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnP PRIME:bongo:Net2:F92,sample,GoA2020_StnP PRIME:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnP PRIME:bongo:Net2:G77,sample,GoA2020_StnP PRIME:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnP PRIME:bongo:Net2:G78,sample,GoA2020_StnP PRIME:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnP PRIME:bongo:Net2:G79,sample,GoA2020_StnP PRIME:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnP PRIME:bongo:Net2:G81,sample,GoA2020_StnP PRIME:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnP PRIME:bongo:Net2:G82,sample,GoA2020_StnP PRIME:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnP PRIME:bongo:Net2:G83,sample,GoA2020_StnP PRIME:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnS28:bongo:Net1:Z25,sample,GoA2020_StnS28:bongo:Net1,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnS28:bongo:Net2:F93,sample,GoA2020_StnS28:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnS28:bongo:Net2:F94,sample,GoA2020_StnS28:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnS28:bongo:Net2:F95,sample,GoA2020_StnS28:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnS28:bongo:Net2:F96,sample,GoA2020_StnS28:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnS28:bongo:Net2:G80,sample,GoA2020_StnS28:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnS27:bongo:Net1:Z26,sample,GoA2020_StnS27:bongo:Net1,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnS27:bongo:Net2:F97,sample,GoA2020_StnS27:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnS27:bongo:Net2:F98,sample,GoA2020_StnS27:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnS27:bongo:Net2:F99,sample,GoA2020_StnS27:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnS27:bongo:Net2:F100,sample,GoA2020_StnS27:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnS27:bongo:Net2:G84,sample,GoA2020_StnS27:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnY27:bongo:Net1:Z27,sample,GoA2020_StnY27:bongo:Net1,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnY27:bongo:Net2:F101,sample,GoA2020_StnY27:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnY27:bongo:Net2:F102,sample,GoA2020_StnY27:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnY27:bongo:Net2:F103,sample,GoA2020_StnY27:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnY27:bongo:Net2:F104,sample,GoA2020_StnY27:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnY27:bongo:Net2:G85,sample,GoA2020_StnY27:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnY27:bongo:Net2:G86,sample,GoA2020_StnY27:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnY27:bongo:Net2:G87,sample,GoA2020_StnY27:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnY27:bongo:Net2:G88,sample,GoA2020_StnY27:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnY27:bongo:Net2:G89,sample,GoA2020_StnY27:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnY27:bongo:Net1:Z28,sample,GoA2020_StnY27:bongo:Net1,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnY27:bongo:Net2:F105,sample,GoA2020_StnY27:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnY27:bongo:Net2:F106,sample,GoA2020_StnY27:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnY27:bongo:Net2:F107,sample,GoA2020_StnY27:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnY27:bongo:Net2:F108,sample,GoA2020_StnY27:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnY27:bongo:Net2:G90,sample,GoA2020_StnY27:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnY27:bongo:Net2:G91,sample,GoA2020_StnY27:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAJ:bongo:Net1:Z29,sample,GoA2020_StnAJ:bongo:Net1,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAJ:bongo:Net2:F109,sample,GoA2020_StnAJ:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAJ:bongo:Net2:F110,sample,GoA2020_StnAJ:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAJ:bongo:Net2:F111,sample,GoA2020_StnAJ:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAJ:bongo:Net2:F112,sample,GoA2020_StnAJ:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAJ:bongo:Net2:G92,sample,GoA2020_StnAJ:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAJ:bongo:Net2:G93,sample,GoA2020_StnAJ:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAJ:bongo:Net2:G94,sample,GoA2020_StnAJ:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAI:bongo:Net1:Z30,sample,GoA2020_StnAI:bongo:Net1,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAI:bongo:Net2:F113,sample,GoA2020_StnAI:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAI:bongo:Net2:F114,sample,GoA2020_StnAI:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAI:bongo:Net2:F115,sample,GoA2020_StnAI:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAI:bongo:Net2:F116,sample,GoA2020_StnAI:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAI:bongo:Net2:G95,sample,GoA2020_StnAI:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAI:bongo:Net2:G96,sample,GoA2020_StnAI:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAI:bongo:Net2:G97,sample,GoA2020_StnAI:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAH:bongo:Net1:Z31,sample,GoA2020_StnAH:bongo:Net1,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAH:bongo:Net2:F117,sample,GoA2020_StnAH:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAH:bongo:Net2:F118,sample,GoA2020_StnAH:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAH:bongo:Net2:F119,sample,GoA2020_StnAH:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAH:bongo:Net2:F120,sample,GoA2020_StnAH:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAH:bongo:Net2:G98,sample,GoA2020_StnAH:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAH:bongo:Net2:G99,sample,GoA2020_StnAH:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAK:bongo:Net1:Z32,sample,GoA2020_StnAK:bongo:Net1,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAK:bongo:Net2:F121,sample,GoA2020_StnAK:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAK:bongo:Net2:F122,sample,GoA2020_StnAK:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAK:bongo:Net2:F123,sample,GoA2020_StnAK:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAK:bongo:Net2:F124,sample,GoA2020_StnAK:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAK:bongo:Net2:G100,sample,GoA2020_StnAK:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAK:bongo:Net2:G101,sample,GoA2020_StnAK:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAK:bongo:Net2:G102,sample,GoA2020_StnAK:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAL:bongo:Net1:Z33,sample,GoA2020_StnAL:bongo:Net1,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAL:bongo:Net2:F125,sample,GoA2020_StnAL:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAL:bongo:Net2:F126,sample,GoA2020_StnAL:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAL:bongo:Net2:F127,sample,GoA2020_StnAL:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAL:bongo:Net2:F128,sample,GoA2020_StnAL:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAL:bongo:Net2:G103,sample,GoA2020_StnAL:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAL:bongo:Net2:G104,sample,GoA2020_StnAL:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAL:bongo:Net2:G105,sample,GoA2020_StnAL:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAM:bongo:Net1:Z34,sample,GoA2020_StnAM:bongo:Net1,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAM:bongo:Net2:F129,sample,GoA2020_StnAM:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAM:bongo:Net2:F130,sample,GoA2020_StnAM:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAM:bongo:Net2:F131,sample,GoA2020_StnAM:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAM:bongo:Net2:F132,sample,GoA2020_StnAM:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAM:bongo:Net2:G106,sample,GoA2020_StnAM:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAM:bongo:Net2:G107,sample,GoA2020_StnAM:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn4:bongo:Net1:Z35,sample,GoA2020_Stn4:bongo:Net1,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn4:bongo:Net2:F133,sample,GoA2020_Stn4:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn4:bongo:Net2:F134,sample,GoA2020_Stn4:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn4:bongo:Net2:F135,sample,GoA2020_Stn4:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn4:bongo:Net2:F136,sample,GoA2020_Stn4:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnI:bongo:Net1:Z36,sample,GoA2020_StnI:bongo:Net1,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnI:bongo:Net2:F137,sample,GoA2020_StnI:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnI:bongo:Net2:F138,sample,GoA2020_StnI:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnI:bongo:Net2:F139,sample,GoA2020_StnI:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnI:bongo:Net2:F140,sample,GoA2020_StnI:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnI:bongo:Net2:G108,sample,GoA2020_StnI:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnI:bongo:Net2:G109,sample,GoA2020_StnI:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnI:bongo:Net2:G110,sample,GoA2020_StnI:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnI:bongo:Net2:G111,sample,GoA2020_StnI:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn3:bongo:Net1:Z37,sample,GoA2020_Stn3:bongo:Net1,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn3:bongo:Net2:F141,sample,GoA2020_Stn3:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn3:bongo:Net2:F142,sample,GoA2020_Stn3:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn3:bongo:Net2:F143,sample,GoA2020_Stn3:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn3:bongo:Net2:F144,sample,GoA2020_Stn3:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn3:bongo:Net2:G112,sample,GoA2020_Stn3:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_Stn3:bongo:Net2:G113,sample,GoA2020_Stn3:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAV:bongo:Net1:Z38,sample,GoA2020_StnAV:bongo:Net1,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAV:bongo:Net2:F145,sample,GoA2020_StnAV:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAV:bongo:Net2:F146,sample,GoA2020_StnAV:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAV:bongo:Net2:F147,sample,GoA2020_StnAV:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAV:bongo:Net2:F148,sample,GoA2020_StnAV:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAV:bongo:Net2:G114,sample,GoA2020_StnAV:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAV:bongo:Net2:G115,sample,GoA2020_StnAV:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAW:bongo:Net1:Z39,sample,GoA2020_StnAW:bongo:Net1,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAW:bongo:Net2:F149,sample,GoA2020_StnAW:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAW:bongo:Net2:F150,sample,GoA2020_StnAW:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAW:bongo:Net2:F151,sample,GoA2020_StnAW:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAW:bongo:Net2:F152,sample,GoA2020_StnAW:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAW:bongo:Net2:G116,sample,GoA2020_StnAW:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAW:bongo:Net2:G117,sample,GoA2020_StnAW:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAW:bongo:Net2:G118,sample,GoA2020_StnAW:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAW:bongo:Net2:G119,sample,GoA2020_StnAW:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAX:bongo:Net1:Z40,sample,GoA2020_StnAX:bongo:Net1,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAX:bongo:Net2:F153,sample,GoA2020_StnAX:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAX:bongo:Net2:F154,sample,GoA2020_StnAX:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAX:bongo:Net2:F155,sample,GoA2020_StnAX:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAX:bongo:Net2:F156,sample,GoA2020_StnAX:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAX:bongo:Net2:G120,sample,GoA2020_StnAX:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84
+GoA2020_StnAX:bongo:Net2:G121,sample,GoA2020_StnAX:bongo:Net2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326 WGS84

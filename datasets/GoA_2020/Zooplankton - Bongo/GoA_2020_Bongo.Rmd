@@ -9,6 +9,8 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
 library(tidyverse)
 library(lubridate)
+library(dplyr)
+library(obistools)
 library(readxl)
 library(parsedate)
 library(googledrive)
@@ -34,7 +36,13 @@ bongo2020_data <- read_excel(here("Zooplankton - Bongo", "raw_data", "Bongo.xlsx
 
 Next we start with creating the Event Core for this Bongo dataset. 
 
-``` {r bongo2020_event}
+``` {r bongo2020}
+bongo2020 <- bongo2020_data %>% filter(Gear == "Bongo") %>%
+  mutate(cruise = "GoA2020",
+         station = paste(cruise, Station, sep = "_Stn"),
+         cast = paste(station, Net, sep = ":bongo:Net"),
+         sample = paste(cast, `Sample ID`, sep = ":"))
+
 bongo2020_event <- bongo2020_metadata %>%
   mutate(Time = format(Time, "%H:%M:%S"),
          eventDate = format_iso_8601(as.POSIXct(paste(Date, Time), 
@@ -44,6 +52,62 @@ bongo2020_event <- bongo2020_metadata %>%
          eventDate = str_replace(eventDate, "\\+00:00", "Z"),
          cruise = "GoA2020",
          station = paste(cruise, Station, sep = "_Stn"),
-         cast = paste()
+         cast = paste(station, `Net number`, sep = ":bongo:Net"))
+```
 
+## Event Core
+
+``` {r bongo2020_event}
+bongo2020_cruise <- bongo2020_event %>%
+  select(eventID = cruise) %>%
+  distinct(eventID) %>%
+  mutate(eventRemarks = "cruise")
+
+bongo2020_station <- bongo2020_event %>%
+  select(eventID = station,
+         parentEventID = cruise) %>%
+  distinct(eventID, .keep_all = TRUE) %>%
+  mutate(eventRemarks = "station")
+
+bongo2020_cast <- bongo2020_event %>%
+  select(eventID = cast,
+         parentEventID = station,
+         eventDate,
+         decimalLatitude = Latitude,
+         decimalLongitude = Longitude,
+         minimumDepthInMetres = `Sample depth_m`,
+         maximumDepthInMetres = `Sample depth_m`,
+         sampleSizeValue = `Flowmeter Volume Filtered_m3`) %>%
+  mutate(sampleSizeUnit = "m^3",
+         samplingProtocol = "vertical Bongo Net deployment",
+         samplingEffort = "Volume sea water filtered") %>%
+  distinct(eventID, .keep_all = TRUE) %>%
+  mutate(eventRemarks = "cast")
+
+bongo2020_cast <- bongo2020_cast %>%
+         mutate(footprintWKT = paste("POINT"," (", bongo2020_cast$decimalLongitude, " ", 
+                                     bongo2020_cast$decimalLatitude, ")"))
+
+coordinates <- obistools::calculate_centroid(bongo2020_cast$footprintWKT) %>% select(coordinateUncertaintyInMeters)
+bongo2020_cast <- cbind(bongo2020_cast, coordinates)
+
+bongo2020_sample <- bongo2020 %>%
+  select(eventID = sample,
+         parentEventID = cast) %>% 
+  distinct(eventID, .keep_all = TRUE) %>% 
+  mutate(eventRemarks = "sample")
+
+bongo2020_event <- bind_rows(bongo2020_cruise,
+                             bongo2020_station,
+                             bongo2020_cast, 
+                             bongo2020_sample) %>% 
+  mutate(type = "HumanObservation",
+         geodeticDatum = "EPSG:4326 WGS84")
+
+# Check to make sure that all parentEventIDs have a corresponding eventID, and then flatten the data:
+obistools::check_eventids(bongo2020_event)
+bongo2020_event <- obistools::flatten_event(bongo2020_event)
+
+# Make sure the folder path exists already (e.g. ./Bongo/tidy_data)
+write_csv(bongo2020_event, here("Zooplankton - Bongo", "tidy_data", "bongo2020_event.csv"))
 ```
