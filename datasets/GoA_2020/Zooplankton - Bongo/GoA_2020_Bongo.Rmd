@@ -23,8 +23,7 @@ The following line only needs to be run once to download the tidied data from Go
 
 ```{r drive_download}
 # Make sure your folder path exists already (e.g. ./POM/raw_data)
-
-drive_download("https://docs.google.com/spreadsheets/d/1Y4FL6zFq7jU4mUD5k1HRaBj-XKhUTs6m/edit?usp=drive_web&ouid=110988987704080303629&rtpof=true", path = here("Zooplankton - Bongo", "raw_data", "Bongo.xlsx"))
+drive_download("https://docs.google.com/spreadsheets/d/1DGyFTMc1jUmrKsAnH_17GiAbstMO0uYc/edit#gid=1513148710", path = here("Zooplankton - Bongo", "raw_data", "Bongo.xlsx"), overwrite = TRUE)
 ```
 
 Now we need to read in the Excel file and the correct sheets we want to work with. In the Excel file there are two sheets that we want to work with, one that includes the metadata, whereas the other sheet includes taxonomic occurrences of zooplankton in the bongo net. 
@@ -39,7 +38,7 @@ Next we start with creating the Event Core for this Bongo dataset.
 ``` {r bongo2020}
 bongo2020 <- bongo2020_data %>% filter(Gear == "Bongo") %>%
   mutate(cruise = "GoA2020",
-         station = paste(cruise, Station, sep = "_Stn"),
+         station = paste(cruise, Station, sep = "_Stn:"),
          cast = paste(station, Net, sep = ":bongo:Net"),
          sample = paste(cast, `Sample ID`, sep = ":"))
 
@@ -51,7 +50,7 @@ bongo2020_event <- bongo2020_metadata %>%
                                                 tz = "Asia/Kamchatka")),
          eventDate = str_replace(eventDate, "\\+00:00", "Z"),
          cruise = "GoA2020",
-         station = paste(cruise, Station, sep = "_Stn"),
+         station = paste(cruise, Station, sep = "_Stn:"),
          cast = paste(station, `Net number`, sep = ":bongo:Net"))
 ```
 
@@ -110,4 +109,42 @@ bongo2020_event <- obistools::flatten_event(bongo2020_event)
 
 # Make sure the folder path exists already (e.g. ./Bongo/tidy_data)
 write_csv(bongo2020_event, here("Zooplankton - Bongo", "tidy_data", "bongo2020_event.csv"))
+drive_upload(here("Zooplankton - Bongo", "tidy_data", "bongo2020_event.csv"),
+             path = " ",
+             name = "bongo2020_eventCore.csv",
+             overwrite = TRUE)
+```
+
+Now that the event core has been created, next we focus on the occurrence core. The main question that we have to answer to finalize this core is:
+
+- [ ] If a data entry cannot have an associated scientificName and scientificNameID (required terms), should they still have an associated occurrenceID? This is the case for Zooplankton: perhaps this should be classified as verbatimScientificName?
+
+Similar to what was done for the 2019 data, we need to ensure that all recorded data have their own row. What I mean by this, is that for some Sample IDs there are numerous length measurements, and a number > 1. These have to get their own data entry row. 
+
+``` {r bongo2020_occ, eval = FALSE}
+unique(bongo2020$Species)
+
+# Identify all entries that would not have an WoRMS URN associated to it:
+
+bongo2020_occ_spp <- bongo2020 %>% filter(!(Species %in% c("Whole net", "Size fraction", "Gelatinous spp.", "Jelly (unknown)")))
+```
+
+Manual inspection of the `bongo2020_occ_spp` dataframe indicates that, although there are some data entries where an alternative species is mentioned in the notes, all of these data entries do have species names associated to them. Therefore we don't have to manually change the species' name for these entries (this was the case for some entries in the 2019 bongo data). Additionally, manual inspection indicated that there are _no_ approximate values in the `Number` column (i.e., ~3, >4). 
+
+Next we confirm that there are currently no duplicate Sample IDs in the dataframe. Once we have that confirmed, we filter for all the data entries where Number > 1 _and_ where no length range is provided. Manual inspection showed that if multiple length_mm measurements are provided, the number of length measurements provided always matched the value in the `Number` column. These entries will either have to separated into their own row with associated lenght/weight measurement. 
+
+If a length range is provided, these data entries will need a minimumLength and maximumLength associated in the eMOF core. 
+
+``` {r, eval = FALSE}
+bongo2020_occ_spp[duplicated(bongo2020_occ_spp$`Sample ID`),] # no rows in this dataframe = no duplicates.
+
+bongo2020_occ1 <- bongo2020 %>% filter(Number > 1)
+bongo2020_occ1 <- bongo2020_occ1[grepl(",", bongo2020_occ1$Length_mm),]
+
+bongo2020_occ1 <- bongo2020_occ1 %>%
+  mutate(Length_mm = strsplit(Length_mm, ", ")) %>%  unnest(Length_mm) %>%
+  group_by(`Sample ID`) %>%
+  mutate(count = seq_len(length(`Sample ID`)),
+         `Sample ID` = paste(`Sample ID`, count, sep = "-"),
+         Number = 1) 
 ```
