@@ -39,8 +39,7 @@ Next we start with creating the Event Core for this Bongo dataset.
 bongo2020 <- bongo2020_data %>% filter(Gear == "Bongo") %>%
   mutate(cruise = "GoA2020",
          station = paste(cruise, Station, sep = "_Stn:"),
-         cast = paste(station, Net, sep = ":bongo:Net"),
-         sample = paste(cast, `Sample ID`, sep = ":"))
+         cast = paste(station, Net, sep = ":bongo:Net"))
 
 bongo2020_event <- bongo2020_metadata %>%
   mutate(Time = format(Time, "%H:%M:%S"),
@@ -90,16 +89,9 @@ bongo2020_cast <- bongo2020_cast %>%
 coordinates <- obistools::calculate_centroid(bongo2020_cast$footprintWKT) %>% select(coordinateUncertaintyInMeters)
 bongo2020_cast <- cbind(bongo2020_cast, coordinates)
 
-bongo2020_sample <- bongo2020 %>%
-  select(eventID = sample,
-         parentEventID = cast) %>% 
-  distinct(eventID, .keep_all = TRUE) %>% 
-  mutate(eventRemarks = "sample")
-
 bongo2020_event <- bind_rows(bongo2020_cruise,
                              bongo2020_station,
-                             bongo2020_cast, 
-                             bongo2020_sample) %>% 
+                             bongo2020_cast) %>% 
   mutate(type = "HumanObservation",
          geodeticDatum = "EPSG:4326 WGS84")
 
@@ -138,13 +130,84 @@ If a length range is provided, these data entries will need a minimumLength and 
 ``` {r, eval = FALSE}
 bongo2020_occ_spp[duplicated(bongo2020_occ_spp$`Sample ID`),] # no rows in this dataframe = no duplicates.
 
-bongo2020_occ1 <- bongo2020 %>% filter(Number > 1)
-bongo2020_occ1 <- bongo2020_occ1[grepl(",", bongo2020_occ1$Length_mm),]
+# Filter out the data entries where Number > 1, and where individual length measurements are provided in the length_mm column. These data entries will be treated separately and then merged back into the larger dataframe. 
 
-bongo2020_occ1 <- bongo2020_occ1 %>%
+bongo2020_pre_occ <- bongo2020_occ_spp %>% filter(Number > 1)
+bongo2020_pre_occ1 <- bongo2020_pre_occ[grepl(",", bongo2020_pre_occ$Length_mm),]
+
+bongo2020_occ1 <- bongo2020_pre_occ1 %>%
   mutate(Length_mm = strsplit(Length_mm, ", ")) %>%  unnest(Length_mm) %>%
   group_by(`Sample ID`) %>%
   mutate(count = seq_len(length(`Sample ID`)),
          `Sample ID` = paste(`Sample ID`, count, sep = "-"),
-         Number = 1) 
+         Number = 1) %>%
+  select(-count)
+
+# These two dataframes will be joined, and then merged back into a dataframe (that was initially subsetted for any data entries where Number > 1). 
+
+bongo2020_occ <- bongo2020_occ_spp[!(bongo2020_occ_spp$`Sample ID` %in% bongo2020_pre_occ1$`Sample ID`),]
+bongo2020_occ <- rbind(bongo2020_occ, bongo2020_occ1)
+bongo2020_occ <- bongo2020_occ[order(bongo2020_occ$Station),]
+
+bongo2020_occ <- bongo2020_occ %>%
+  rename(organismQuantity = Number) %>%
+  mutate(organismQuantityType = "individuals",
+         occurrenceID = paste(cast, `Sample ID`, sep = ":"),
+         occurrenceStatus = "present")
+
+# Next, we start the taxon matching procedure by passing our scientific names to the match_taxon() function:
+
+Species <- unique(bongo2020_occ$Species)
+scientificNames <- obistools::match_taxa(Species)
+scientificNames <- cbind(Species, scientificNames)
+
+# Merge this dataframe with the original occurrence dataframe:
+
+bongo2020_occ <- left_join(bongo2020_occ, scientificNames, by = "Species")
+
+# Use taxizesoap() package to derive the taxonomic data from the WoRMS-corrected scientificNames. Rename lsid to scientificNameID because we'll need that to merge the dataframe back with the original in the next step:
+names_worms <- taxizesoap::worms_records(bongo2020_occ$scientificName) %>%
+  select(inputid, scientificname, authority, rank, valid_name, valid_authority, kingdom, phylum,
+         class, order, family, genus, lsid) %>% rename(scientificNameID = lsid)
+
+# Merge back with original dataframe:
+bongo2020_occ_full <- left_join(bongo2020_occ, names_worms, by = "scientificNameID") %>% distinct()
+
+# As you can see there are still rows where no taxonomic data is provided for the scientificName. This is for data entries such as "Squid" and "Fish eggs". 
+
+Species_manual <- bongo2020_occ_full[is.na(bongo2020_occ_full$scientificName),]
+Species_manual <- Species_manual %>%
+  mutate(kingdom = case_when(
+    Species == "Squid" ~ "Animalia",
+    Species == "Fish egg" ~ "Animalia"),
+    phylum = case_when(
+      Species == "Squid" ~ "Mollusca",
+      Species == "Fish egg" ~ "Chordata"),
+    class = case_when(
+      Species == "Squid" ~ "Cephalopoda"),
+    scientificName = case_when(
+      Species == "Squid" ~ "Cephalopoda",
+      Species == "Fish egg" ~ "Pisces"),
+    scientificNameID = case_when(
+      Species == "Squid" ~ "urn:lsid:marinespecies.org:taxname:11707",
+      Species == "Fish egg" ~ "urn:lsid:marinespecies.org:taxname:11676"))
+
+# Remove the data entries for 'Squid' and 'fish egg' from the original occurrence core, and then add the dataframe `Species_manual` to the `bongo2020_Occ_full`. 
+stripped <- bongo2020_occ_full[!bongo2020_occ_full$Species %in% c("Squid", "Fish egg"),]
+bongo2020_occ_core <- rbind(stripped, Species_manual) %>%
+  select(cast, occurrenceID, occurrenceStatus, scientificName, scientificNameID, authority, kingdom, 
+         phylum, class, order, family, genus, Stage, organismQuantity, organismQuantityType) %>%
+  rename(eventID = cast)
+
+# You'll notice how both scientificName and valid_name are both in there. This is because some names under scientificName are not accepted under WoRMS, in which case the accepted version is mentioned under valid_name. However, the scientificNameID still references the unaccepted version so this will need to be changed! 
+
+# To see if there are any data entries where valid_name differs from the scientificName (QC for the accuracy of the reported species data):
+difference <- bongo2020_occ_full %>% filter(!valid_name == scientificName)
+
+# Make sure the folder path exists already (e.g. ./Bongo/tidy_data)
+write_csv(bongo2020_occ_core, here("Zooplankton - Bongo", "tidy_data", "bongo2020_occurrence.csv"))
+drive_upload(here("Zooplankton - Bongo", "tidy_data", "bongo2020_occurrence.csv"),
+             path = " ",
+             name = "bongo2020_occCore.csv",
+             overwrite = TRUE)
 ```

@@ -1,0 +1,17 @@
+---
+title: "GoA 2020 Bongo Changelog"
+author: "Tim van der Stap"
+date: "12/4/2020"
+output: html_document
+---
+
+In this changelog any changes to the raw data file are recorded, as per communications with the data provider (Natalie Mahara, UBC). 
+
+The following species names were changed in the raw data input file:
+
+Siphonophore spp. --> Siphonophorae
+Clio pyrimata --> Clio pyramidata
+Ptereotrachea sp. --> Carinaria japonica
+Nematocelis difficilis --> Nematoscelis difficilis
+Pseudosagitta scrippsae --> Pseudosagitta lyra (the former is not an accepted version under WoRMS)
+Sergestes simils --> Eusergestes similis (the former is not an accepted version under WoRMS)
