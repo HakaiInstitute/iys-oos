@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.999992 (TeX Live 2020/W32TeX) (preloaded format=xelatex 2020.10.6)  6 OCT 2020 16:37
+This is XeTeX, Version 3.14159265-2.6-0.999992 (TeX Live 2020/W32TeX) (preloaded format=xelatex 2020.10.6)  7 DEC 2020 11:52
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -542,6 +542,57 @@ Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
 \Gm@layoutvoffset=\dimen162
 \Gm@dimlist=\toks22
 )
+(c:/Users/Admin/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/tools/longtable.st
+y
+Package: longtable 2020/01/07 v4.13 Multi-page Table package (DPC)
+\LTleft=\skip53
+\LTright=\skip54
+\LTpre=\skip55
+\LTpost=\skip56
+\LTchunksize=\count289
+\LTcapwidth=\dimen163
+\LT@head=\box51
+\LT@firsthead=\box52
+\LT@foot=\box53
+\LT@lastfoot=\box54
+\LT@cols=\count290
+\LT@rows=\count291
+\c@LT@tables=\count292
+\c@LT@chunks=\count293
+\LT@p@ftn=\toks23
+)
+(c:/Users/Admin/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/booktabs/booktabs.
+sty
+Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
+\heavyrulewidth=\dimen164
+\lightrulewidth=\dimen165
+\cmidrulewidth=\dimen166
+\belowrulesep=\dimen167
+\belowbottomsep=\dimen168
+\aboverulesep=\dimen169
+\abovetopsep=\dimen170
+\cmidrulesep=\dimen171
+\cmidrulekern=\dimen172
+\defaultaddspace=\dimen173
+\@cmidla=\count294
+\@cmidlb=\count295
+\@aboverulesep=\dimen174
+\@belowrulesep=\dimen175
+\@thisruleclass=\count296
+\@lastruleclass=\count297
+\@thisrulewidth=\dimen176
+)
+(c:/Users/Admin/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/etoolbox/etoolbox.
+sty
+Package: etoolbox 2020/10/05 v2.5k e-TeX tools for LaTeX (JAW)
+\etb@tempcnta=\count298
+)
+(c:/Users/Admin/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/mdwtools/footnote.
+sty
+Package: footnote 1997/01/28 1.13 Save footnotes around boxes
+\fn@notes=\box55
+\fn@width=\dimen177
+)
 (c:/Users/Admin/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/graphics/graphicx.
 sty
 Package: graphicx 2020/09/09 v1.2b Enhanced LaTeX Graphics (DPC,SPQR)
@@ -558,8 +609,8 @@ File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
 )
 Package graphics Info: Driver file: xetex.def on input line 105.
 )
-\Gin@req@height=\dimen163
-\Gin@req@width=\dimen164
+\Gin@req@height=\dimen178
+\Gin@req@width=\dimen179
 )
 (c:/Users/Admin/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/grffile/grffile.st
 y
@@ -572,43 +623,22 @@ line 40.
 sty
 Package: fancyhdr 2019/01/31 v3.10 Extensive control of page headers and footer
 s
-\f@nch@headwidth=\skip53
-\f@nch@O@elh=\skip54
-\f@nch@O@erh=\skip55
-\f@nch@O@olh=\skip56
-\f@nch@O@orh=\skip57
-\f@nch@O@elf=\skip58
-\f@nch@O@erf=\skip59
-\f@nch@O@olf=\skip60
-\f@nch@O@orf=\skip61
+\f@nch@headwidth=\skip57
+\f@nch@O@elh=\skip58
+\f@nch@O@erh=\skip59
+\f@nch@O@olh=\skip60
+\f@nch@O@orh=\skip61
+\f@nch@O@elf=\skip62
+\f@nch@O@erf=\skip63
+\f@nch@O@olf=\skip64
+\f@nch@O@orf=\skip65
 ) (c:/Users/Admin/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/float/float.sty
 Package: float 2001/11/08 v1.3d Float enhancements (AL)
-\c@float@type=\count289
-\float@exts=\toks23
-\float@box=\box51
-\@float@everytoks=\toks24
-\@floatcapt=\box52
-)
-(c:/Users/Admin/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/booktabs/booktabs.
-sty
-Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
-\heavyrulewidth=\dimen165
-\lightrulewidth=\dimen166
-\cmidrulewidth=\dimen167
-\belowrulesep=\dimen168
-\belowbottomsep=\dimen169
-\aboverulesep=\dimen170
-\abovetopsep=\dimen171
-\cmidrulesep=\dimen172
-\cmidrulekern=\dimen173
-\defaultaddspace=\dimen174
-\@cmidla=\count290
-\@cmidlb=\count291
-\@aboverulesep=\dimen175
-\@belowrulesep=\dimen176
-\@thisruleclass=\count292
-\@lastruleclass=\count293
-\@thisrulewidth=\dimen177
+\c@float@type=\count299
+\float@exts=\toks24
+\float@box=\box56
+\@float@everytoks=\toks25
+\@floatcapt=\box57
 )
 (c:/Users/Admin/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/sectsty/sectsty.st
 y
@@ -625,36 +655,36 @@ LaTeX Warning: Command \underline  has changed.
 ) (./IYS-OOS-Data-Mobilization-and-Communication-Plan.aux)
 \openout1 = `IYS-OOS-Data-Mobilization-and-Communication-Plan.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 81.
-LaTeX Font Info:    ... okay on input line 81.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 81.
-LaTeX Font Info:    ... okay on input line 81.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 81.
-LaTeX Font Info:    ... okay on input line 81.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 81.
-LaTeX Font Info:    ... okay on input line 81.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 81.
-LaTeX Font Info:    ... okay on input line 81.
-LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 81.
-LaTeX Font Info:    ... okay on input line 81.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 81.
-LaTeX Font Info:    ... okay on input line 81.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 81.
-LaTeX Font Info:    ... okay on input line 81.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 81.
-LaTeX Font Info:    ... okay on input line 81.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 81.
-LaTeX Font Info:    ... okay on input line 81.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 90.
+LaTeX Font Info:    ... okay on input line 90.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 90.
+LaTeX Font Info:    ... okay on input line 90.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 90.
+LaTeX Font Info:    ... okay on input line 90.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 90.
+LaTeX Font Info:    ... okay on input line 90.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 90.
+LaTeX Font Info:    ... okay on input line 90.
+LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 90.
+LaTeX Font Info:    ... okay on input line 90.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 90.
+LaTeX Font Info:    ... okay on input line 90.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 90.
+LaTeX Font Info:    ... okay on input line 90.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 90.
+LaTeX Font Info:    ... okay on input line 90.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 90.
+LaTeX Font Info:    ... okay on input line 90.
 LaTeX Font Info:    Overwriting math alphabet `\mathrm' in version `normal'
-(Font)                  OT1/lmr/m/n --> TU/lmr/m/n on input line 81.
+(Font)                  OT1/lmr/m/n --> TU/lmr/m/n on input line 90.
 LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `normal'
-(Font)                  OT1/lmr/m/it --> TU/lmr/m/it on input line 81.
+(Font)                  OT1/lmr/m/it --> TU/lmr/m/it on input line 90.
 LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `normal'
-(Font)                  OT1/lmr/bx/n --> TU/lmr/bx/n on input line 81.
+(Font)                  OT1/lmr/bx/n --> TU/lmr/bx/n on input line 90.
 LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `normal'
-(Font)                  OT1/lmtt/m/n --> TU/lmtt/m/n on input line 81.
+(Font)                  OT1/lmtt/m/n --> TU/lmtt/m/n on input line 90.
 LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
-(Font)                  OT1/lmtt/m/n --> TU/lmtt/bx/n on input line 81.
+(Font)                  OT1/lmtt/m/n --> TU/lmtt/bx/n on input line 90.
 
 Package fontspec Info: latinmodern-math scale = 0.9999970497384594.
 
@@ -683,7 +713,7 @@ pt=math;language=dflt;"
 (fontspec)             - 'bold small caps'  (b/sc) with NFSS spec.: 
 
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(0)/m/n' will be
-(Font)              scaled to size 12.0pt on input line 81.
+(Font)              scaled to size 12.0pt on input line 90.
 
 Package fontspec Info: latinmodern-math scale = 0.9999970497384594.
 
@@ -722,17 +752,17 @@ pt=math;language=dflt;"
 (fontspec)             - 'bold small caps'  (b/sc) with NFSS spec.: 
 
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
-(Font)              scaled to size 12.0pt on input line 81.
+(Font)              scaled to size 12.0pt on input line 90.
 LaTeX Font Info:    Encoding `OT1' has changed to `TU' for symbol font
-(Font)              `operators' in the math version `normal' on input line 81.
+(Font)              `operators' in the math version `normal' on input line 90.
 LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
 (Font)                  OT1/lmr/m/n --> TU/latinmodern-math.otf(1)/m/n on input
- line 81.
+ line 90.
 LaTeX Font Info:    Encoding `OT1' has changed to `TU' for symbol font
-(Font)              `operators' in the math version `bold' on input line 81.
+(Font)              `operators' in the math version `bold' on input line 90.
 LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
 (Font)                  OT1/lmr/bx/n --> TU/latinmodern-math.otf(1)/b/n on inpu
-t line 81.
+t line 90.
 
 Package fontspec Info: latinmodern-math scale = 0.9999970497384594.
 
@@ -819,15 +849,15 @@ t=math;language=dflt;"
 (fontspec)             \fontdimen 21\font =0pt\relax 
 
 LaTeX Font Info:    Encoding `OMS' has changed to `TU' for symbol font
-(Font)              `symbols' in the math version `normal' on input line 81.
+(Font)              `symbols' in the math version `normal' on input line 90.
 LaTeX Font Info:    Overwriting symbol font `symbols' in version `normal'
 (Font)                  OMS/lmsy/m/n --> TU/latinmodern-math.otf(2)/m/n on inpu
-t line 81.
+t line 90.
 LaTeX Font Info:    Encoding `OMS' has changed to `TU' for symbol font
-(Font)              `symbols' in the math version `bold' on input line 81.
+(Font)              `symbols' in the math version `bold' on input line 90.
 LaTeX Font Info:    Overwriting symbol font `symbols' in version `bold'
 (Font)                  OMS/lmsy/b/n --> TU/latinmodern-math.otf(2)/b/n on inpu
-t line 81.
+t line 90.
 
 Package fontspec Info: latinmodern-math scale = 0.9999970497384594.
 
@@ -896,18 +926,18 @@ pt=math;language=dflt;"
 (fontspec)             =7.2pt\relax \fontdimen 13\font =0pt\relax 
 
 LaTeX Font Info:    Encoding `OMX' has changed to `TU' for symbol font
-(Font)              `largesymbols' in the math version `normal' on input line 8
-1.
+(Font)              `largesymbols' in the math version `normal' on input line 9
+0.
 LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `normal'
 (Font)                  OMX/lmex/m/n --> TU/latinmodern-math.otf(3)/m/n on inpu
-t line 81.
+t line 90.
 LaTeX Font Info:    Encoding `OMX' has changed to `TU' for symbol font
-(Font)              `largesymbols' in the math version `bold' on input line 81.
+(Font)              `largesymbols' in the math version `bold' on input line 90.
 
 LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `bold'
 (Font)                  OMX/lmex/m/n --> TU/latinmodern-math.otf(3)/b/n on inpu
-t line 81.
-Package hyperref Info: Link coloring OFF on input line 81.
+t line 90.
+Package hyperref Info: Link coloring OFF on input line 90.
 
 (c:/Users/Admin/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/hyperref/nameref.s
 ty
@@ -921,11 +951,11 @@ Package: refcount 2019/12/15 v3.6 Data extraction from label references (HO)
 ettitlestring.sty
 Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 )
-\c@section@level=\count294
+\c@section@level=\count300
 )
-LaTeX Info: Redefining \ref on input line 81.
-LaTeX Info: Redefining \pageref on input line 81.
-LaTeX Info: Redefining \nameref on input line 81.
+LaTeX Info: Redefining \ref on input line 90.
+LaTeX Info: Redefining \pageref on input line 90.
+LaTeX Info: Redefining \nameref on input line 90.
 (./IYS-OOS-Data-Mobilization-and-Communication-Plan.out) (./IYS-OOS-Data-Mobili
 zation-and-Communication-Plan.out)
 \@outlinefile=\write3
@@ -988,65 +1018,81 @@ File: Hakai Institute Logo Vector.png Graphic file (type bmp)
 File: Hakai Institute Logo Vector.png Graphic file (type bmp)
 <Hakai Institute Logo Vector.png>
 [5]
+File: IYS Data Mobilization Platforms.png Graphic file (type bmp)
+<IYS Data Mobilization Platforms.png>
+File: Hakai Institute Logo Vector.png Graphic file (type bmp)
+<Hakai Institute Logo Vector.png>
+[6]
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
-(Font)              scaled to size 8.4pt on input line 430.
+(Font)              scaled to size 8.4pt on input line 423.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
-(Font)              scaled to size 6.0pt on input line 430.
+(Font)              scaled to size 6.0pt on input line 423.
 LaTeX Font Info:    Trying to load font information for OML+lmm on input line 4
-30.
+23.
 (c:/Users/Admin/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/omllmm.fd
 File: omllmm.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/m/n' will be
-(Font)              scaled to size 12.0011pt on input line 430.
+(Font)              scaled to size 12.0011pt on input line 423.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/m/n' will be
-(Font)              scaled to size 8.40076pt on input line 430.
+(Font)              scaled to size 8.40076pt on input line 423.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/m/n' will be
-(Font)              scaled to size 6.00055pt on input line 430.
+(Font)              scaled to size 6.00055pt on input line 423.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
-(Font)              scaled to size 11.99872pt on input line 430.
+(Font)              scaled to size 11.99872pt on input line 423.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
-(Font)              scaled to size 8.3991pt on input line 430.
+(Font)              scaled to size 8.3991pt on input line 423.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
-(Font)              scaled to size 5.99936pt on input line 430.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 430
+(Font)              scaled to size 5.99936pt on input line 423.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 423
 .
 (c:/Users/Admin/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 430
+LaTeX Font Info:    Trying to load font information for U+msb on input line 423
 .
 (c:/Users/Admin/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-Underfull \hbox (badness 10000) in paragraph at lines 445--446
-
- []
-
-File: Conceptual_data_platforms.png Graphic file (type bmp)
-<Conceptual_data_platforms.png>
-File: Hakai Institute Logo Vector.png Graphic file (type bmp)
-<Hakai Institute Logo Vector.png>
-[6]
+LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
+(Font)              scaled to size 10.0pt on input line 423.
+LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
+(Font)              scaled to size 7.0pt on input line 423.
+LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
+(Font)              scaled to size 5.0pt on input line 423.
+LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/m/n' will be
+(Font)              scaled to size 10.00092pt on input line 423.
+LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/m/n' will be
+(Font)              scaled to size 7.00064pt on input line 423.
+LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/m/n' will be
+(Font)              scaled to size 5.00046pt on input line 423.
+LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
+(Font)              scaled to size 9.99893pt on input line 423.
+LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
+(Font)              scaled to size 6.99925pt on input line 423.
+LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
+(Font)              scaled to size 4.99947pt on input line 423.
 File: Hakai Institute Logo Vector.png Graphic file (type bmp)
 <Hakai Institute Logo Vector.png>
 [7]
-Underfull \hbox (badness 10000) in paragraph at lines 516--517
-
- []
-
-File: IYS Communication Scheme.png Graphic file (type bmp)
-<IYS Communication Scheme.png>
 File: Hakai Institute Logo Vector.png Graphic file (type bmp)
 <Hakai Institute Logo Vector.png>
 [8]
 File: Hakai Institute Logo Vector.png Graphic file (type bmp)
 <Hakai Institute Logo Vector.png>
 [9]
+File: IYS_Communication.png Graphic file (type bmp)
+<IYS_Communication.png>
 File: Hakai Institute Logo Vector.png Graphic file (type bmp)
 <Hakai Institute Logo Vector.png>
 [10]
-Underfull \hbox (badness 10000) in paragraph at lines 626--629
+File: Hakai Institute Logo Vector.png Graphic file (type bmp)
+<Hakai Institute Logo Vector.png>
+[11]
+File: Hakai Institute Logo Vector.png Graphic file (type bmp)
+<Hakai Institute Logo Vector.png>
+[12]
+Underfull \hbox (badness 10000) in paragraph at lines 691--694
 []\TU/lmr/m/n/12 NERC Vocabulary: []$[][][][][] [] [] [] [][][] [] [][][][] [] 
 [][] [] [][] [] [][][][][][][][][] [] [][][][][][][][] [] [][][] [] [][][][][][
 ][][] []
@@ -1054,19 +1100,19 @@ Underfull \hbox (badness 10000) in paragraph at lines 626--629
 
 File: Hakai Institute Logo Vector.png Graphic file (type bmp)
 <Hakai Institute Logo Vector.png>
-[11] (./IYS-OOS-Data-Mobilization-and-Communication-Plan.aux)
+[13] (./IYS-OOS-Data-Mobilization-and-Communication-Plan.aux)
 Package rerunfilecheck Info: File `IYS-OOS-Data-Mobilization-and-Communication-
 Plan.out' has not changed.
-(rerunfilecheck)             Checksum: 95F7009D675FF5F59905472F8501BFEE;2697.
+(rerunfilecheck)             Checksum: A29CFE57EB5ADB1D3057180B7349BC8F;2783.
  ) 
 Here is how much of TeX's memory you used:
- 16544 strings out of 479444
- 294682 string characters out of 5879673
- 755006 words of memory out of 5000000
- 35668 multiletter control sequences out of 15000+600000
- 538685 words of font info for 70 fonts, out of 8000000 for 9000
+ 17029 strings out of 479444
+ 301485 string characters out of 5879673
+ 757006 words of memory out of 5000000
+ 36121 multiletter control sequences out of 15000+600000
+ 541611 words of font info for 91 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 84i,13n,121p,510b,442s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 84i,12n,121p,775b,460s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on IYS-OOS-Data-Mobilization-and-Communication-Plan.pdf (11 page
+Output written on IYS-OOS-Data-Mobilization-and-Communication-Plan.pdf (13 page
 s).
