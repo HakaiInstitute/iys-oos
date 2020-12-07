@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.999992 (TeX Live 2020/W32TeX) (preloaded format=xelatex 2020.10.6)  7 DEC 2020 11:52
+This is XeTeX, Version 3.14159265-2.6-0.999992 (TeX Live 2020/W32TeX) (preloaded format=xelatex 2020.10.6)  7 DEC 2020 11:56
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1024,54 +1024,54 @@ File: Hakai Institute Logo Vector.png Graphic file (type bmp)
 <Hakai Institute Logo Vector.png>
 [6]
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
-(Font)              scaled to size 8.4pt on input line 423.
+(Font)              scaled to size 8.4pt on input line 425.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
-(Font)              scaled to size 6.0pt on input line 423.
+(Font)              scaled to size 6.0pt on input line 425.
 LaTeX Font Info:    Trying to load font information for OML+lmm on input line 4
-23.
+25.
 (c:/Users/Admin/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/omllmm.fd
 File: omllmm.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/m/n' will be
-(Font)              scaled to size 12.0011pt on input line 423.
+(Font)              scaled to size 12.0011pt on input line 425.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/m/n' will be
-(Font)              scaled to size 8.40076pt on input line 423.
+(Font)              scaled to size 8.40076pt on input line 425.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/m/n' will be
-(Font)              scaled to size 6.00055pt on input line 423.
+(Font)              scaled to size 6.00055pt on input line 425.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
-(Font)              scaled to size 11.99872pt on input line 423.
+(Font)              scaled to size 11.99872pt on input line 425.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
-(Font)              scaled to size 8.3991pt on input line 423.
+(Font)              scaled to size 8.3991pt on input line 425.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
-(Font)              scaled to size 5.99936pt on input line 423.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 423
+(Font)              scaled to size 5.99936pt on input line 425.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 425
 .
 (c:/Users/Admin/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 423
+LaTeX Font Info:    Trying to load font information for U+msb on input line 425
 .
 (c:/Users/Admin/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
-(Font)              scaled to size 10.0pt on input line 423.
+(Font)              scaled to size 10.0pt on input line 425.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
-(Font)              scaled to size 7.0pt on input line 423.
+(Font)              scaled to size 7.0pt on input line 425.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
-(Font)              scaled to size 5.0pt on input line 423.
+(Font)              scaled to size 5.0pt on input line 425.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/m/n' will be
-(Font)              scaled to size 10.00092pt on input line 423.
+(Font)              scaled to size 10.00092pt on input line 425.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/m/n' will be
-(Font)              scaled to size 7.00064pt on input line 423.
+(Font)              scaled to size 7.00064pt on input line 425.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/m/n' will be
-(Font)              scaled to size 5.00046pt on input line 423.
+(Font)              scaled to size 5.00046pt on input line 425.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
-(Font)              scaled to size 9.99893pt on input line 423.
+(Font)              scaled to size 9.99893pt on input line 425.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
-(Font)              scaled to size 6.99925pt on input line 423.
+(Font)              scaled to size 6.99925pt on input line 425.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
-(Font)              scaled to size 4.99947pt on input line 423.
+(Font)              scaled to size 4.99947pt on input line 425.
 File: Hakai Institute Logo Vector.png Graphic file (type bmp)
 <Hakai Institute Logo Vector.png>
 [7]
@@ -1092,7 +1092,7 @@ File: Hakai Institute Logo Vector.png Graphic file (type bmp)
 File: Hakai Institute Logo Vector.png Graphic file (type bmp)
 <Hakai Institute Logo Vector.png>
 [12]
-Underfull \hbox (badness 10000) in paragraph at lines 691--694
+Underfull \hbox (badness 10000) in paragraph at lines 693--696
 []\TU/lmr/m/n/12 NERC Vocabulary: []$[][][][][] [] [] [] [][][] [] [][][][] [] 
 [][] [] [][] [] [][][][][][][][][] [] [][][][][][][][] [] [][][] [] [][][][][][
 ][][] []
@@ -1108,7 +1108,7 @@ Plan.out' has not changed.
 Here is how much of TeX's memory you used:
  17029 strings out of 479444
  301485 string characters out of 5879673
- 757006 words of memory out of 5000000
+ 758006 words of memory out of 5000000
  36121 multiletter control sequences out of 15000+600000
  541611 words of font info for 91 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191

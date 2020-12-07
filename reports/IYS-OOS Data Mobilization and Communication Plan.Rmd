@@ -49,6 +49,7 @@ Below is a list of the acronyms mentioned throughout this Data Mobilization and 
 * CIOOS - Canadian Integrated Ocean Observing System
 * FAIR – Findable, Accessible, Interoperable, Reusable
 * FRDR - Federated Research Data Repository
+* GBIF - Global Biodiversity Information Facility
 * GOOS - Global Ocean Observing System
 * IOC - Intergovernmental Oceanographic Commission
 * IODE - International Oceanographic Data and Information Exchange
