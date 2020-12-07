@@ -14,4 +14,4 @@ Clio pyrimata --> Clio pyramidata
 Ptereotrachea sp. --> Carinaria japonica
 Nematocelis difficilis --> Nematoscelis difficilis
 Pseudosagitta scrippsae --> Pseudosagitta lyra (the former is not an accepted version under WoRMS)
-Sergestes simils --> Eusergestes similis (the former is not an accepted version under WoRMS)
+Sergestes similis --> Eusergestes similis (the former is not an accepted version under WoRMS)
