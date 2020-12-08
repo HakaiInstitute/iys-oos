@@ -1,0 +1,77 @@
+---
+title: "2020 IYS CTD"
+author: "Tim van der Stap"
+date: "12/8/2020"
+output: html_document
+---
+
+``` {r, eval = FALSE}
+
+drive_download("https://docs.google.com/spreadsheets/d/1i_EozoPcW5DUCPLZ4w68UDVzoWC6c07w/edit#gid=339568936",
+               path = here("Oceanography", "CTD", "Metadata.xlsx"))
+
+CTD <- read_excel(here("Oceanography", "CTD", "Metadata.xlsx"), sheet = "CTD metadata") %>% 
+  mutate(Time = format(Time_on, "%H:%M:%S"),
+         eventDate = format_iso_8601(as.POSIXct(paste(Date, Time),
+                                                format = "%Y-%m-%d %H:%M:%S",
+                                                tz = "Asia/Kamchatka")),
+         eventDate = str_replace(eventDate, "\\+00:00", "Z"),
+         cruise = "GoA2020",
+         station = paste(cruise, Station, sep = "_Stn:"),
+         cast = paste(station, "cast1", sep = ":"),
+         ndepth = paste(cast, `Sample depth_m`, sep = ":seabird19:"))
+```
+
+## Event Core
+
+``` {r, eval = FALSE}
+
+CTD2020_cruise <- CTD %>%
+  select(eventID = cruise) %>%
+  distinct(eventID) %>%
+  mutate(eventRemarks = "cruise")
+
+CTD2020_station <- CTD %>%
+  select(eventID = station,
+         parentEventID = cruise) %>%
+  distinct(eventID, .keep_all = TRUE) %>%
+  mutate(eventRemarks = "station")
+
+CTD2020_cast <- CTD %>%
+  select(eventID = cast,
+         parentEventID = station,
+         eventDate,
+         decimalLatitude = Latitude,
+         decimalLongitude = Longitude) %>%
+  mutate(decimalLongitude = as.numeric(decimalLongitude),
+         decimalLatitude = as.numeric(decimalLatitude)) %>%
+  distinct(eventID, .keep_all = TRUE)
+
+CTD2020_cast <- CTD2020_cast %>%
+  mutate(footprintWKT = paste("POINT", " (", CTD2020_cast$decimalLongitude,
+                              " ", CTD2020_cast$decimalLatitude, ")"),
+         eventRemarks = "cast")
+
+coordinates <- obistools::calculate_centroid(CTD2020_cast$footprintWKT) %>% select(coordinateUncertaintyInMeters)
+CTD2020_cast <- cbind(CTD2020_cast, coordinates)
+
+CTD2020_depth <- CTD %>%
+  select(eventID = ndepth,
+         parentEventID = ndepth,
+         minimumDepthInMetres = `Sample depth_m`,
+         maximumDepthInMetres = `Sample depth_m`) %>%
+  distinct(eventID, .keep_all = TRUE) %>%
+  mutate(eventRemarks = "sample")
+
+CTD2020_event <- bind_rows(CTD2020_cruise, CTD2020_station,
+                                 CTD2020_cast, CTD2020_depth) %>%
+  select(eventID, parentEventID:maximumDepthInMetres, coordinateUncertaintyInMeters, eventRemarks) %>%
+  mutate(type = "Event", 
+         geodeticDatum = "EPSG:4326 WGS84")
+
+obistools::check_eventids(CTD2020_event)
+
+write_csv(CTD2020_event, here("Oceanography", "CTD", "tidy_data", "CTD2020_event.csv"))
+```
+
+
