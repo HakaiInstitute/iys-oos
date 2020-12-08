@@ -16,8 +16,6 @@ library(googledrive)
 library(here)
 ```
 
-Out of curiosity, I just want to confirm that the metadata on date/time for HPLC, POM, Nutrients, CTD and phytoplankton all matches. First, we need to download the file, and read in the different sheets that are specific to each discipline: 
-
 ``` {r, eval = FALSE}
 
 drive_download("https://docs.google.com/spreadsheets/d/1w7kXZvU7OpmJjBTKAMPGhJblfcF8cN74/edit#gid=989173203",
