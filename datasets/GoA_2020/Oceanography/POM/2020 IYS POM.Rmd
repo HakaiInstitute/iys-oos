@@ -77,7 +77,8 @@ pom2020_depth <- POM %>%
 
 pom2020_sample <- POM %>%
   select(eventID = sample,
-         parentEventID = ndepth) %>%
+         parentEventID = ndepth,
+         samplingEffort = `Volume filtered_mL`) %>%
   distinct(eventID, .keep_all = TRUE) %>%
   mutate(eventRemarks = "subsample")
 
