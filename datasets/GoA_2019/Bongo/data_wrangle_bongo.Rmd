@@ -9,6 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(obistools)
+library(taxizesoap)
 library(lubridate)
 library(janitor)
 library(readxl)
@@ -151,6 +152,17 @@ unique(bongo$species)
 bongo_occ_spp <- bongo %>% filter(!(species %in% c("Size fraction", "Chaetognath & Ctenophore", "Jelly mass",
                                               "Jellyfish, radiolarian, chaetognath", "Gelatinous",
                                               "Ctenophore / jellyfish")))
+
+Species <- unique(bongo_occ_spp$species)
+scientificNames <- obistools::match_taxa(Species)
+scientificNames <- cbind(Species, scientificNames)
+
+names_worms <- taxizesoap::worms_records(scientificNames$scientificName) %>%
+  select(inputid, scientificname, authority, rank, valid_name, valid_authority, kingdom,
+         phylum, class, order, family, genus, lsid)
+names_worms <- names_worms %>% rename(scientificName = scientificname)
+
+x <- left_join(scientificNames, names_worms, by = "scientificName") %>% select(Species, valid_name)
 ```
 
 Upon inspection of the species filtered out of the bongo dataset, some sample_ids have associated notes in which sometimes species are specified, see e.g. sample_id Z80, Z15, SS102 etc. Where the notes specify the species and individual measurements (e.g. SS81) I have dealt with these samples in a later stage. However, the other sample_ids I have left as is -- notes are eventually added to the eMoF table in a column labeled `measurementRemarks`. 
