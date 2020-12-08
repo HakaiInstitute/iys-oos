@@ -1,0 +1,97 @@
+---
+title: "2020 IYS Nutrients"
+author: "Tim van der Stap"
+date: "12/8/2020"
+output: html_document
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
+library(tidyverse)
+library(lubridate)
+library(obistools)
+library(readxl)
+library(parsedate)
+library(googledrive)
+library(here)
+```
+
+``` {r, eval = FALSE}
+
+drive_download("https://docs.google.com/spreadsheets/d/1w7kXZvU7OpmJjBTKAMPGhJblfcF8cN74/edit#gid=989173203",
+               path = here("Oceanography", "Nutrients", "Metadata.xlsx"))
+
+Nutrients <- read_excel(here("Oceanography", "Nutrients", "Metadata.xlsx"), sheet = "Nutrient metadata") %>% 
+  mutate(Time = format(Time, "%H:%M:%S"),
+         eventDate = format_iso_8601(as.POSIXct(paste(Date, Time),
+                                                format = "%Y-%m-%d %H:%M:%S",
+                                                tz = "Asia/Kamchatka")),
+         eventDate = str_replace(eventDate, "\\+00:00", "Z"),
+         cruise = "GoA2020",
+         station = paste(cruise, Station, sep = "_Stn:"),
+         cast = paste(station, "cast1", sep = ":"),
+         ndepth = paste(cast, `Sample depth_m`, sep = ":niskin:"),
+         sample = paste(ndepth, `Sample ID`, sep = ":"))
+```
+
+## Event Core
+
+``` {r, eval = FALSE}
+
+nutrients2020_cruise <- Nutrients %>%
+  select(eventID = cruise) %>%
+  distinct(eventID) %>%
+  mutate(eventRemarks = "cruise")
+
+nutrients2020_station <- Nutrients %>%
+  select(eventID = station,
+         parentEventID = cruise) %>%
+  distinct(eventID, .keep_all = TRUE) %>%
+  mutate(eventRemarks = "station")
+
+nutrients2020_cast <- Nutrients %>%
+  select(eventID = cast,
+         parentEventID = station,
+         eventDate,
+         decimalLatitude = Latitude,
+         decimalLongitude = Longitude) %>%
+  mutate(decimalLongitude = as.numeric(decimalLongitude),
+         decimalLatitude = as.numeric(decimalLatitude)) %>%
+  distinct(eventID, .keep_all = TRUE)
+
+nutrients2020_cast <- nutrients2020_cast %>%
+  mutate(footprintWKT = paste("POINT", " (", nutrients2020_cast$decimalLongitude,
+                              " ", nutrients2020_cast$decimalLatitude, ")"),
+         eventRemarks = "cast")
+
+coordinates <- obistools::calculate_centroid(nutrients2020_cast$footprintWKT) %>% select(coordinateUncertaintyInMeters)
+nutrients2020_cast <- cbind(nutrients2020_cast, coordinates)
+
+nutrients2020_depth <- Nutrients %>%
+  select(eventID = ndepth,
+         parentEventID = ndepth,
+         minimumDepthInMetres = `Sample depth_m`,
+         maximumDepthInMetres = `Sample depth_m`) %>%
+  distinct(eventID, .keep_all = TRUE) %>%
+  mutate(eventRemarks = "sample")
+
+nutrients2020_sample <- Nutrients %>%
+  select(eventID = sample,
+         parentEventID = ndepth,
+         samplingEffort = `Volume filtered_mL`) %>%
+  distinct(eventID, .keep_all = TRUE) %>%
+  mutate(eventRemarks = "subsample")
+
+nutrients2020_event <- bind_rows(nutrients2020_cruise, nutrients2020_station,
+                                 nutrients2020_cast, nutrients2020_depth, nutrients2020_sample) %>%
+  select(eventID, parentEventID:maximumDepthInMetres, coordinateUncertaintyInMeters, eventRemarks) %>%
+  mutate(type = "Event", 
+         geodeticDatum = "EPSG:4326 WGS84")
+
+obistools::check_eventids(nutrients2020_event)
+
+write_csv(nutrients2020_event, here("Oceanography", "Nutrients", "tidy_data", "nutrients2020_event.csv"))
+```
+
+
