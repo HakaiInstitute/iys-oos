@@ -15,3 +15,5 @@ Ptereotrachea sp. --> Carinaria japonica
 Nematocelis difficilis --> Nematoscelis difficilis
 Pseudosagitta scrippsae --> Pseudosagitta lyra (the former is not an accepted version under WoRMS)
 Sergestes similis --> Eusergestes similis (the former is not an accepted version under WoRMS)
+
+Additionally, for sample ID G89, the value under `Number` was changed from 1 to 8.
