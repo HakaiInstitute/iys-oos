@@ -198,12 +198,18 @@ Species_manual <- Species_manual %>%
 # Remove the data entries for 'Squid' and 'fish egg' from the original occurrence core, and then add the dataframe `Species_manual` to the `bongo2020_Occ_full`. 
 stripped <- bongo2020_occ_full[!bongo2020_occ_full$Species %in% c("Squid", "Fish egg"),]
 bongo2020_occ_fnl <- rbind(stripped, Species_manual) # We need this dataframe for our occurrence core
+
+bongo2020_occ_fnl <- bongo2020_occ_fnl %>%
+  mutate(verbatimTaxonRank = ifelse(grepl("sp.",bongo2020_occ_fnl$Species), "sp.", NA),
+         verbatimTaxonRank = ifelse(grepl("spp.",bongo2020_occ_fnl$Species), "spp.", NA))
 bongo2020_occ_core <- bongo2020_occ_fnl %>%
   select(cast, occurrenceID, occurrenceStatus, scientificName, scientificNameID, authority, kingdom, 
-         phylum, class, order, family, genus, Stage, organismQuantity, organismQuantityType, Notes, Preservation) %>%
+         phylum, class, order, family, genus, Stage, organismQuantity, organismQuantityType, Notes, Preservation,
+         verbatimTaxonRank) %>%
   rename(eventID = cast,
          occurrenceRemarks = Notes,
-         preparations = Preservation)
+         preparations = Preservation,
+         scientificNameAuthorship = authority)
 
 # Add any caveats to species identification:
 bongo2020_occ_core <- bongo2020_occ_core %>%
