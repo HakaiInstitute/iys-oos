@@ -109,16 +109,16 @@ drive_upload(here("Zooplankton - Bongo", "tidy_data", "bongo2020_event.csv"),
 
 Now that the event core has been created, next we focus on the occurrence core. The main question that we have to answer to finalize this core is:
 
-- [ ] If a data entry cannot have an associated scientificName and scientificNameID (required terms), should they still have an associated occurrenceID? This is the case for Zooplankton: perhaps this should be classified as verbatimScientificName? or organismScope? **A** Where possible identify to the lowest common taxonomic rank, and add species under `vernacularName`. If no taxonomic rank can be assigned to species entry (i.e. `gelatinous spp.`), try to contact the data provider to see if they can provide more taxonomic resolution, otherwise _do not_ associate measurements to an `occurrenceID` but rather to the event Core. 
+If a data entry cannot have an associated scientificName and scientificNameID (required terms), should they still have an associated occurrenceID? This is the case for Zooplankton: perhaps this should be classified as verbatimScientificName? or organismScope? **A** Where possible identify to the lowest common taxonomic rank, and add species under `vernacularName`. If no taxonomic rank can be assigned to species entry (i.e. `gelatinous spp.`), try to contact the data provider to see if they can provide more taxonomic resolution, otherwise _do not_ associate measurements to an `occurrenceID` but rather to the event Core. 
 
 Similar to what was done for the 2019 data, we need to ensure that all recorded data have their own row. What I mean by this, is that for some Sample IDs there are numerous length measurements, and a number > 1. These have to get their own data entry row. 
 
 ``` {r bongo2020_occ, eval = FALSE}
 unique(bongo2020$Species)
 
-# Identify all entries that would not have an WoRMS URN associated to it, and for which no common lowest taxonomic rank can be identified, nor taxonomic resolutation be provided by the :
+# Identify all entries that would not have an WoRMS URN associated to it, and for which no common lowest taxonomic rank can be identified, nor taxonomic resolutation be provided by the data provider. For species like "jelly (unknown)" and "Gelatinous spp". I checked with the data provider, and she provided me with a best guess. 
 
-bongo2020_occ_spp <- bongo2020 %>% filter(!(Species %in% c("Whole net", "Size fraction", "Gelatinous spp.", "Jelly (unknown)")))
+bongo2020_occ_spp <- bongo2020 %>% filter(!(Species %in% c("Whole net", "Size fraction")))
 ```
 
 Manual inspection of the `bongo2020_occ_spp` dataframe indicates that, although there are some data entries where an alternative species is mentioned in the notes, all of these data entries do have species names associated to them. Therefore we don't have to manually change the species' name for these entries (this was the case for some entries in the 2019 bongo data). Additionally, manual inspection indicated that there are _no_ approximate values in the `Number` column (i.e., ~3, >4). 
@@ -155,7 +155,9 @@ bongo2020_occ <- bongo2020_occ %>%
          occurrenceID = paste(cast, `Sample ID`, sep = ":"),
          occurrenceStatus = "present")
 
-# Next, we start the taxon matching procedure by passing our scientific names to the match_taxon() function:
+# Next, we start the taxon matching procedure by passing our scientific names to the match_taxon() function. Checking with the data provider, gelatinous spp. and jelly (unknown) are _likely_ Doliolid spp. Remove the ( ) characteres in jelly (unknown) first because otherwise gsub function won't work. 
+bongo2020_occ$Species <- gsub("\\(|)", "", bongo2020_occ$Species) 
+bongo2020_occ$Species <- gsub(c("Gelatinous spp.|Jelly unknown"), "Doliolida spp.", bongo2020_occ$Species)
 
 Species <- unique(bongo2020_occ$Species)
 scientificNames <- obistools::match_taxa(Species)
@@ -173,18 +175,17 @@ names_worms <- taxizesoap::worms_records(bongo2020_occ$scientificName) %>%
 # Merge back with original dataframe:
 bongo2020_occ_full <- left_join(bongo2020_occ, names_worms, by = "scientificNameID") %>% distinct()
 
-# As you can see there are still rows where no taxonomic data is provided for the scientificName. This is for data entries such as "Squid" and "Fish eggs". 
+# As you can see there are still rows where no taxonomic data is provided for the scientificName. This is for data entries such as "Squid" and "Fish eggs". For data entries such as "Gelatinous spp." and "Jelly (unknown)" I confirmed with the data provider that these are likely Doliodid spp. (best guess). I have attempted to reflect this best as possible in the dwc terms. Please note that ( ) are special characters for R and so these need to be replaced first. 
 
 Species_manual <- bongo2020_occ_full[is.na(bongo2020_occ_full$scientificName),]
+
 Species_manual <- Species_manual %>%
   mutate(kingdom = case_when(
     Species == "Squid" ~ "Animalia",
-    Species == "Fish egg" ~ "Animalia",
-    Species == "Jelly (unknown)" ~ "Animalia",
+    Species == "Fish egg" ~ "Animalia"),
     phylum = case_when(
       Species == "Squid" ~ "Mollusca",
-      Species == "Fish egg" ~ "Chordata",
-      Species == "Jelly (unknown)" ~ "Cnidaria"),
+      Species == "Fish egg" ~ "Chordata"),
     class = case_when(
       Species == "Squid" ~ "Cephalopoda"),
     scientificName = case_when(
@@ -192,10 +193,7 @@ Species_manual <- Species_manual %>%
       Species == "Fish egg" ~ "Pisces"),
     scientificNameID = case_when(
       Species == "Squid" ~ "urn:lsid:marinespecies.org:taxname:11707",
-      Species == "Fish egg" ~ "urn:lsid:marinespecies.org:taxname:11676"),
-    vernacularName = case_when(
-      Species = "Jelly (unknown)" ~ "Jelly (unknown)"
-    ))
+      Species == "Fish egg" ~ "urn:lsid:marinespecies.org:taxname:11676"))
 
 # Remove the data entries for 'Squid' and 'fish egg' from the original occurrence core, and then add the dataframe `Species_manual` to the `bongo2020_Occ_full`. 
 stripped <- bongo2020_occ_full[!bongo2020_occ_full$Species %in% c("Squid", "Fish egg"),]
@@ -204,8 +202,16 @@ bongo2020_occ_core <- bongo2020_occ_fnl %>%
   select(cast, occurrenceID, occurrenceStatus, scientificName, scientificNameID, authority, kingdom, 
          phylum, class, order, family, genus, Stage, organismQuantity, organismQuantityType, Notes, Preservation) %>%
   rename(eventID = cast,
-         occurrenceRemarks = Notes
+         occurrenceRemarks = Notes,
          preparations = Preservation)
+
+# Add any caveats to species identification:
+bongo2020_occ_core <- bongo2020_occ_core %>%
+  mutate(vernacularName = case_when(
+      occurrenceID == "GoA2020_Stn:Y27:bongo:Net2:G85" ~ "Jelly (unknown)"),
+    identificationQualifier = case_when(
+      scientificName == "Doliolida" ~ "This species identification is a best guess by Natalie M."
+    ))
 
 # You'll notice how both scientificName and valid_name are both in there. This is because some names under scientificName are not accepted under WoRMS, in which case the accepted version is mentioned under valid_name. However, the scientificNameID still references the unaccepted version so this will need to be changed! 
 
