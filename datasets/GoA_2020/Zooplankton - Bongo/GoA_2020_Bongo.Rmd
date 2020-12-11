@@ -363,6 +363,12 @@ bongo2020_emof_fnl <- rbind(range, temp)
 So now we have a dataframe where:
     * Species have been identified to a species or genus level
     * Length measurement ranges have been split up into columns of minimumLength and maximumLength.
+    
+The following columns of the original raw dataframe are not included, as I'm not sure if these would actually be considered measurements or facts:
+* sample_type
+* Group
+* Size_fraction
+
 
 ``` {r, eval = FALSE}
 bongo2020_emof_fnl <- bongo2020_emof_fnl %>%
