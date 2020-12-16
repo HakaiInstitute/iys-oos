@@ -399,7 +399,7 @@ date <- plyr::rbind.fill(dates, year, months, seasons) %>%
 NPMSDD_occ <- left_join(NPMSDD_occ, date, by = "occurrenceID") %>%
   select(eventID, occurrenceID, eventDate, verbatimEventDate, year, month, decimalLatitude, decimalLongitude, footprintWKT, coordinateUncertaintyInMeters, scientificName, scientificNameID, occurrenceStatus, kingdom, phylum, class, order, family, genus, specificEpithet, gear_type_predator_id1, gear_type_predator_id2, gear_type_predator_id3, gear_type_predator_id4, gear_type_predator_id5) %>%
   mutate(basisOfRecord = "HumanObservation",
-         geodeticDatum = "EPSG:4326")
+         geodeticDatum = "EPSG:4326 WGS84")
 ```
 
 Given that we are dealing with predator-prey data, we add an additional column `associatedTaxa` to indicate which species are predators and which are prey, and how these are linked.  
