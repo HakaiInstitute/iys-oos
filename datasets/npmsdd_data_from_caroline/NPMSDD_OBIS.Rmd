@@ -76,8 +76,6 @@ NPMSDD_occ <- left_join(npmsdd, pred_bio, by = "predator_id") %>%
     scientificName == "Mallotus villosus" ~ "urn:lsid:marinespecies.org:taxname:126735",
     scientificName == "Themisto" ~ "urn:lsid:marinespecies.org:taxname:101800",
     scientificName == "Cephalopoda" ~ "urn:lsid:marinespecies.org:taxname:11707",
-    scientificName == "Coelenterata" ~ "urn:lsid:marinespecies.org:taxname:152230",
-    # Please note: status of URN is 'nomen nudum', it's not a monophyletic group. 
     scientificName == "Hyperia galba" ~ "urn:lsid:marinespecies.org:taxname:103251",
     scientificName == "Pleurogrammus monopterigius" ~ "urn:lsid:marinespecies.org:taxname:282289",
     # Name: pleurogrammus monopterygius
@@ -195,6 +193,21 @@ NPMSDD_occ <- left_join(npmsdd, pred_bio, by = "predator_id") %>%
     scientificName == "Diptera" ~ "urn:lsid:marinespecies.org:taxname:118088",
     scientificName == "Aglantha" ~ "urn:lsid:marinespecies.org:taxname:117212")) %>%
   distinct()
+
+# Check to see if there are any scientificNames that have not received an associated scientificNameID. If there are any for which there is no scientificNameID, these will have to be created manually along with the taxonomic information in their respective columns, and "vernacularName". 
+missing_scientificNameID <- NPMSDD_occ[is.na(NPMSDD_occ$scientificNameID),]
+Coelenterata <- missing_scientificNameID %>%
+  mutate(vernacularName = case_when(
+    scientificName == "Coelenterata" ~ "Coelenterata spp."),
+         prey_kingdom = case_when(
+    scientificName == "Coelenterata" ~ "Animalia"),
+         scientificNameID = case_when(
+    scientificName == "Coelenterata" ~ "urn:lsid:marinespecies.org:taxname:2"
+         )
+  )
+
+# Add this dataframe to the original NPMSDD_occ dataframe. 
+NPMSDD_occ <- plyr::rbind.fill(NPMSDD_occ, Coelenterata)
 
 # Create occurrence core for the predators. Please note that no columns are provided for kingdom, phylum, class, order, family, genus or species. Therefore these have to be added manually:
 
@@ -386,7 +399,7 @@ date <- plyr::rbind.fill(dates, year, months, seasons) %>%
 NPMSDD_occ <- left_join(NPMSDD_occ, date, by = "occurrenceID") %>%
   select(eventID, occurrenceID, eventDate, verbatimEventDate, year, month, decimalLatitude, decimalLongitude, footprintWKT, coordinateUncertaintyInMeters, scientificName, scientificNameID, occurrenceStatus, kingdom, phylum, class, order, family, genus, specificEpithet, gear_type_predator_id1, gear_type_predator_id2, gear_type_predator_id3, gear_type_predator_id4, gear_type_predator_id5) %>%
   mutate(basisOfRecord = "HumanObservation",
-         geodeticDatum = "EPSG:4326 WGS84")
+         geodeticDatum = "EPSG:4326")
 ```
 
 Given that we are dealing with predator-prey data, we add an additional column `associatedTaxa` to indicate which species are predators and which are prey, and how these are linked.  
