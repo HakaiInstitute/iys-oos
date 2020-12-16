@@ -215,7 +215,7 @@ predator_occ <- NPMSDD_occ %>%
   dplyr::select(eventID, predator_lowest_taxonomic_level, predator_id, lat_min, lat_max, lon_min, lon_max, 
                 year_min, year_max, warm_cool_years, odd_even_years, season_min, season_max, 
                 month_min, month_max, date_min, time_min, time_max, gear_type_predator_id1, gear_type_predator_id2,
-                gear_type_predator_id3, gear_type_predator_id4, gear_type_predator_id5) %>%
+                gear_type_predator_id3, gear_type_predator_id4, gear_type_predator_id5, vernacularName) %>%
   dplyr::rename(scientificName = predator_lowest_taxonomic_level) %>%
   mutate(occurrenceStatus = "present",
          occurrenceID = paste(eventID, "p", sep = "-")) %>% 
@@ -245,7 +245,7 @@ prey_occ <- NPMSDD_occ %>%
                             month_min, month_max, date_min, time_min, time_max, scientificName, scientificNameID,
                             prey_kingdom, prey_phylum, prey_class, prey_order, prey_family, prey_genus, prey_species,
                             gear_type_predator_id1, gear_type_predator_id2, gear_type_predator_id3,
-                            gear_type_predator_id4, gear_type_predator_id5) %>%
+                            gear_type_predator_id4, gear_type_predator_id5, vernacularName) %>%
     dplyr::rename(kingdom = prey_kingdom,
                 phylum = prey_phylum,
                 class = prey_class,
@@ -397,7 +397,7 @@ date <- plyr::rbind.fill(dates, year, months, seasons) %>%
   select(occurrenceID, eventDate, verbatimEventDate, year, month)
 
 NPMSDD_occ <- left_join(NPMSDD_occ, date, by = "occurrenceID") %>%
-  select(eventID, occurrenceID, eventDate, verbatimEventDate, year, month, decimalLatitude, decimalLongitude, footprintWKT, coordinateUncertaintyInMeters, scientificName, scientificNameID, occurrenceStatus, kingdom, phylum, class, order, family, genus, specificEpithet, gear_type_predator_id1, gear_type_predator_id2, gear_type_predator_id3, gear_type_predator_id4, gear_type_predator_id5) %>%
+  select(eventID, occurrenceID, eventDate, verbatimEventDate, year, month, decimalLatitude, decimalLongitude, footprintWKT, coordinateUncertaintyInMeters, scientificName, scientificNameID, vernacularName, occurrenceStatus, kingdom, phylum, class, order, family, genus, specificEpithet, gear_type_predator_id1, gear_type_predator_id2, gear_type_predator_id3, gear_type_predator_id4, gear_type_predator_id5) %>%
   mutate(basisOfRecord = "HumanObservation",
          geodeticDatum = "EPSG:4326 WGS84")
 ```
