@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.999992 (TeX Live 2020/W32TeX) (preloaded format=xelatex 2020.10.6)  8 DEC 2020 16:28
+This is XeTeX, Version 3.14159265-2.6-0.999992 (TeX Live 2020/W32TeX) (preloaded format=xelatex 2020.10.6)  17 DEC 2020 11:22
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1103,16 +1103,16 @@ File: Hakai Institute Logo Vector.png Graphic file (type bmp)
 [13] (./IYS-OOS-Data-Mobilization-and-Communication-Plan.aux)
 Package rerunfilecheck Info: File `IYS-OOS-Data-Mobilization-and-Communication-
 Plan.out' has not changed.
-(rerunfilecheck)             Checksum: A29CFE57EB5ADB1D3057180B7349BC8F;2783.
+(rerunfilecheck)             Checksum: 40D618A4DD0408F61B45A50A435E161B;2793.
  ) 
 Here is how much of TeX's memory you used:
  17029 strings out of 479444
- 301485 string characters out of 5879673
+ 301487 string characters out of 5879673
  758006 words of memory out of 5000000
  36121 multiletter control sequences out of 15000+600000
  541611 words of font info for 91 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 84i,12n,121p,775b,460s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 84i,12n,121p,831b,460s stack positions out of 5000i,500n,10000p,200000b,80000s
 
 Output written on IYS-OOS-Data-Mobilization-and-Communication-Plan.pdf (13 page
 s).
