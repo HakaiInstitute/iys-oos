@@ -27,7 +27,7 @@ The following line only needs to be run once to download the tidied data from Go
 drive_download("https://docs.google.com/spreadsheets/d/1DGyFTMc1jUmrKsAnH_17GiAbstMO0uYc/edit#gid=1513148710", path = here("Zooplankton - Bongo", "raw_data", "Bongo.xlsx"), overwrite = TRUE)
 ```
 
-Now we need to read in the Excel file and the correct sheets we want to work with. In the Excel file there are two sheets that we want to work with, one that includes the metadata, whereas the other sheet includes taxonomic occurrences of zooplankton in the bongo net. 
+Now we need to read in the Excel file and the correct sheets we want to work with. In the Excel file there are two sheets that we want to work with, one that includes additional metadata information, such as data on tow distance and volume of water filtered, whereas the other sheet includes taxonomic occurrences of Zooplankton in the bongo net. 
 
 ``` {r read_file}
 bongo2020_metadata <- read_excel(here("Zooplankton - Bongo", "raw_data", "Bongo.xlsx"), sheet = "Bongo metadata")

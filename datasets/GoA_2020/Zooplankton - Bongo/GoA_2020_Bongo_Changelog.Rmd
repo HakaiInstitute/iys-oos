@@ -5,9 +5,9 @@ date: "12/4/2020"
 output: html_document
 ---
 
-In this changelog any changes to the raw data file are recorded, as per communications with the data provider (Natalie Mahara, UBC). 
+In this changelog any changes to the raw data file are recorded, as per communications with the data provider (Natalie Mahara, UBC). Following the changes made to the input file, the input file was renamed from `IYS 2020 Cruise Logbook - NM - 20201202.xlsx` to `IYS 2020 Cruise Logbook.xlsx`. A copy of the original data file is still available on Google Drive. 
 
-The following species names were changed in the raw data input file:
+Compared to the original data file, the following species names were changed in the data input file used for standardization:
 
 Siphonophore spp. --> Siphonophorae
 Clio pyrimata --> Clio pyramidata
@@ -16,6 +16,6 @@ Nematocelis difficilis --> Nematoscelis difficilis
 Pseudosagitta scrippsae --> Pseudosagitta lyra (the former is not an accepted version under WoRMS)
 Sergestes similis --> Eusergestes similis (the former is not an accepted version under WoRMS)
 
-For jelly (unknown) and Gelatinous spp., Natalie M. (data provider / scientist) indicated that her best guess was that these were Doliolid spp. I have therefore changed the taxonomic information for these records to reflect this, and in the standardized data indicated that this identification is a best guess (`occurrenceRemarks`). 
+For jelly (unknown) and Gelatinous spp., Natalie M. (data provider / expedition scientist) indicated that her best guess was that these were Doliolid spp. I have therefore changed the taxonomic information for these records to reflect this, and in the standardized data indicated that this identification is a best guess (`identificationQualifier`). 
 
 Additionally, for sample ID G89, the value under `Number` was changed from 1 to 8, to reflect the number of length measurements provided in the length_mm column for that record. 
