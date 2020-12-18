@@ -37,13 +37,17 @@ bongo2020_data <- read_excel(here("Zooplankton - Bongo", "raw_data", "Bongo.xlsx
 Next we start with creating the Event Core for this Bongo dataset. 
 
 ``` {r bongo2020}
-bongo2020 <- bongo2020_data %>% filter(Gear == "Bongo") %>%
+bongo2020 <- bongo2020_data %>% filter(Gear == "Bongo")
+bongo2020$Station <- gsub(".0", "", bongo2020$Station)
+bongo2020 <- bongo2020 %>%
   mutate(project = "IYS",
          cruise = paste(project, "GoA2020", sep = ":"),
          station = paste(cruise, Station, sep = "_Stn:"),
          cast = paste(station, Net, sep = ":bongo:Net"))
 
-bongo2020_meta <- bongo2020_metadata %>%
+bongo2020_meta <- bongo2020_metadata
+bongo2020_meta$Station <- gsub(".0", "", bongo2020_meta$Station)
+bongo2020_meta <- bongo2020_meta %>%
   mutate(Time = format(Time, "%H:%M:%S"),
          eventDate = format_iso_8601(as.POSIXct(paste(Date, Time), 
                                                 format = "%Y-%m-%d %H:%M:%S",
