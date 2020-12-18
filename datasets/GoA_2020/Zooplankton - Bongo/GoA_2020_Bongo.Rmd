@@ -38,7 +38,8 @@ Next we start with creating the Event Core for this Bongo dataset.
 
 ``` {r bongo2020}
 bongo2020 <- bongo2020_data %>% filter(Gear == "Bongo") %>%
-  mutate(cruise = "GoA2020",
+  mutate(project = "IYS",
+         cruise = paste(project, "GoA2020", sep = ":"),
          station = paste(cruise, Station, sep = "_Stn:"),
          cast = paste(station, Net, sep = ":bongo:Net"))
 
@@ -49,17 +50,25 @@ bongo2020_meta <- bongo2020_metadata %>%
                                                 # Time is recorded in PDT, must ensure that timezone is correct
                                                 tz = "Asia/Kamchatka")),
          eventDate = str_replace(eventDate, "\\+00:00", "Z"),
-         cruise = "GoA2020",
+         project = "IYS",
+         cruise = paste(project, "GoA2020", sep = ":"),
          station = paste(cruise, Station, sep = "_Stn:"),
          cast = paste(station, `Net number`, sep = ":bongo:Net"))
 ```
 
 ## Event Core
 
+The event Core consists of a hierarchical structure with four layers: `project`, `cruise`, `station` and `cast`. Each layer has different information associated to it:
+
 ``` {r bongo2020_event}
+bongo2020_project <- bongo2020 %>%
+  select(eventID = project) %>%
+  distinct(eventID)
+
 bongo2020_cruise <- bongo2020 %>%
-  select(eventID = cruise) %>%
-  distinct(eventID) 
+  select(eventID = cruise,
+         parentEventID = project) %>%
+  distinct(eventID, .keep_all = TRUE) 
 
 bongo2020_station <- bongo2020 %>%
   select(eventID = station,
@@ -89,7 +98,8 @@ bongo2020_cast <- bongo2020_cast %>%
 coordinates <- obistools::calculate_centroid(bongo2020_cast$footprintWKT) %>% select(coordinateUncertaintyInMeters)
 bongo2020_cast <- cbind(bongo2020_cast, coordinates)
 
-bongo2020_event <- bind_rows(bongo2020_cruise,
+bongo2020_event <- bind_rows(bongo2020_project,
+                             bongo2020_cruise,
                              bongo2020_station,
                              bongo2020_cast) %>% 
   mutate(type = "PreservedSpecimen",
