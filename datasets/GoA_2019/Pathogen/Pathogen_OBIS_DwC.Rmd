@@ -241,34 +241,22 @@ Next we need to associate the values reported (relative Ct-values) to the variou
 pathogen_spp_measurement <- pathogen %>%
   select(sample, 
          ae_sal:ye_ruc_glnA) %>%
-  rename(measurementID = sample) %>%
   pivot_longer(cols = ae_sal:ye_ruc_glnA,
-               names_to = "measurementType",
                values_to = "measurementValue") %>%
   filter(measurementValue > 0) %>%
   mutate_all(as.character) %>%
-  mutate(measurementID = paste(measurementID, "p", sep = ":"),
-         measurementID = paste(measurementID, measurementType, sep = ":"),
-         measurementID = paste(measurementID, "Rel.Ct-value", sep = ":"))
+  mutate(measurementID = paste(sample, "p", sep = ":"),
+         measurementID = paste(measurementID, name, sep = ":"),
+         measurementID = paste(measurementID, "Ct", sep = ":")) %>%
+  mutate(measurementType = "Relative Ct-value",
     measurementTypeID = case_when(
-    measurementType == "fl" ~ " ",
-    # But standard length: 	http://vocab.nerc.ac.uk/collection/P01/current/SL01XX01/
-    measurementType == "mass" ~ "http://vocab.nerc.ac.uk/collection/P24/current/NMASS/",
-    measurementType == "sex" ~ " "),
-         measurementUnit = case_when(
-    measurementType == "fl" ~ "cm",
-    measurementType == "mass" ~ "g",
-    measurementType == "sex" ~ " "),
-         measurementUnitID = case_when(
-    measurementUnit == "cm" ~ "http://vocab.nerc.ac.uk/collection/P06/current/ULCM/",
-    measurementUnit == "g" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UGRM/",
-    measurementUnit == " " ~ "http://vocab.nerc.ac.uk/collection/P06/current/UUUU/"),
-         measurementValueID = case_when(
-    measurementValue == "F" ~ "http://vocab.nerc.ac.uk/collection/S10/current/S102/",
-    measurementValue == "M" ~ "http://vocab.nerc.ac.uk/collection/S10/current/S103/"
-         )) %>%
-  select(measurementID, measurementType, measurementTypeID,
-         measurementValue, measurementValueID, measurementUnit, measurementUnitID)
+    measurementType == "Relative Ct-value" ~ " "),
+        measurementUnit = case_when(
+          measurementType == "Relative Ct-value" ~ " "),
+        measurementUnitID = case_when(
+          measurementType == "Relative Ct-value" ~ " ")) %>%  # dimensionless
+  select(measurementID, measurementType, measurementTypeID, measurementValue,
+         measurementUnit, measurementUnitID)   
   
 # Write up csv file and upload to Google Drive folder
 write_csv(pathogen_spp_measurement, here("Pathogen", "tidy_data", "pathogen_spp_measurement.csv"))
