@@ -137,20 +137,22 @@ pathogen_salmon_spp <- pathogen %>% mutate(Species = case_when(
     Species == "Chum" ~ "Oncorhynchus keta",
     Species == "Chinook" ~ "Oncorhynchus tshawytscha",
     Species == "Sockeye" ~ "Oncorhynchus nerka"
-  )) %>%
-  rename(scientificName = Species) %>% 
-  mutate(occurrenceStatus = "present",
-         occurrenceID = paste(trawl, Sample, sep = ":"),
-         scientificNameID = case_when(
-scientificName == "Oncorhynchus gorbuscha" ~ "urn:lsid:marinespecies.org:taxname:127182",
-scientificName == "Oncorhynchus kisutch" ~ "urn:lsid:marinespecies.org:taxname:127184",
-scientificName == "Oncorhynchus keta" ~ "urn:lsid:marinespecies.org:taxname:127183",
-scientificName == "Oncorhynchus nerka" ~ "urn:lsid:marinespecies.org:taxname:254569",
-scientificName == "Oncorhynchus tshawytscha" ~ "urn:lsid:marinespecies.org:taxname:158075")) %>%
-  rename(eventID = trawl)
+  ))
 
-pathogen_salmon_spp <- pathogen_salmon_spp %>%
-  select(eventID, occurrenceID, scientificName, scientificNameID, occurrenceStatus)
+unique_salmon <- unique(pathogen_salmon_spp$Species)
+
+pathogen_salmon_worms <- taxizesoap::worms_records(unique_salmon) %>% filter(inputid == scientificname) %>%
+  rename(Species = inputid)
+
+pathogen_salmon_spp <- left_join(pathogen_salmon_spp, pathogen_salmon_worms, by = "Species") %>%
+  rename(scientificName = Species,
+         scientificNameID = lsid,
+         eventID = trawl,
+         taxonRank = rank) %>% 
+  mutate(occurrenceStatus = "present",
+         occurrenceID = paste(eventID, Sample, sep = ":")) %>%
+  select(eventID, Sample, occurrenceID, scientificName, scientificNameID, occurrenceStatus,
+         kingdom, phylum, class, order, family, genus, taxonRank)
 ```
 
 Now that we've created the first occurrence table, we create the second one, where the pathogens get assigned a unique identifier (i.e. a WoRMS URN) in the scientificNameID and a unique occurrenceID. Using the column `associatedTaxa`, the pathogens will eventually be linked to the correct salmon individual. For the pathogen data, the first step is to select the correct columns from the Pathogen data file, and expand on the abbreviations. 
@@ -163,63 +165,91 @@ pathogen_occ <- pathogen %>%
   pivot_longer(cols = ae_sal:ye_ruc_glnA,
                names_to = "Assay name")
 
-pathogen_occ <- left_join(pathogen_occ, pathogen_names, by = "Assay name") 
+pathogen_occ <- left_join(pathogen_occ, pathogen_names, by = "Assay name") %>% filter(value > 0)
+
+# A quick check teaches us that with Paranucleospora theridion / Desmozoon lepeophtherii observation, the latter is the accepted name under WoRMS, so substitute this observation in the dataframe: 
+
+pathogen_occ <- pathogen_occ %>%
+  mutate(Name = gsub("Paranucleospora theridion / Desmozoon lepeophtherii", "Desmozoon lepeophtherii", Name))
 
 # A list of the unique pathogens (viruses, bacteria, parasites) can be found using:
 unique_pathogens <- unique(pathogen_occ$Name)
 
-# I've requested new WoRMS entries for some bacteria, viruses and parasites that were not currently found in WoRMS. It is likely that the scientificNameIDs will have to be populated manually once these new taxa have been created in the registry.  
-  rename(scientificName = Name,
-         eventID = trawl) %>%
+# I've requested new WoRMS entries for some bacteria, viruses and parasites that were not currently in the database. It is likely that the scientificNameIDs will have to be populated manually once these new taxa have been created in the registry.  
+
+pathogen_taxa <- obistools::match_taxa(unique_pathogens) 
+pathogen_taxa_worms <- cbind(unique_pathogens, pathogen_taxa) %>% filter(!is.na(scientificName))
+pathogen_taxa_valid <- taxizesoap::worms_records(pathogen_taxa_worms$scientificName) %>% 
+  filter(inputid == scientificname) %>%
+  select(valid_name)
+pathogen_taxa_full <- taxizesoap::worms_records(pathogen_taxa_valid$valid_name) %>% filter(inputid == scientificname) %>%
+  rename(scientificName = scientificname,
+         taxonRank = rank,
+         scientificNameID = lsid) %>%
+  select(scientificName, scientificNameID, taxonRank, kingdom, phylum, class, order, family, genus)
+
+# Any species that need to be entered manually? 
+pathogen_manual <- cbind(unique_pathogens, pathogen_taxa) %>% filter(is.na(scientificName))
+
+# We notice that for two entries the valid or accepted name in WoRMS is slightly different from that recorded in the data, and found in the pathogen_occ dataframe. In order to match the taxonomic information in pathogen_taxa_full, the scientific names in this dataframe need to be substituted with the correct or accepted name:
+
+pathogen_occ <- pathogen_occ %>%
+  mutate(Name = gsub("Vibrio anguillarum", "Listonella anguillara", Name),
+         Name = gsub("Vibrio salmonicida", "Aliivibrio salmonicida", Name),
+         Name = gsub(" sp.", "", Name)) %>%
+  rename(scientificName = Name)
+
+pathogen_occ_fnl <- left_join(pathogen_occ, pathogen_taxa_full, by = "scientificName") %>%
+  rename(eventID = trawl) %>%
   mutate(occurrenceID = paste(eventID, Sample, sep = ":"),
-         occurrenceStatus = "present")
+         occurrenceID = paste(occurrenceID, "p", sep = ":"), # to indicate it concerns a pathogen
+         occurrenceID = paste(occurrenceID, `Assay name`, sep = ":"),
+         occurrenceStatus = "present") %>%
+  select(eventID, Sample, occurrenceID, occurrenceStatus, scientificName, scientificNameID, taxonRank,
+         kingdom, phylum, class, order, family, genus)
 ```
+
+What we still have to wait for is new additions being made in the WoRMS registry to include the parasites, viruses or bacteria. Once this is done, we need to combine the occurrence tables of salmonids and pathogens, and create a column `associatedTaxa` to indicate that the pathogens were found on or in the salmonid individual (i.e. linking it to the occurrenceID associated to the salmon individual): 
+
+``` {r pathogen_occ_final, eval = FALSE}
+pathogen_final_occ <- rbind(pathogen_salmon_spp, pathogen_occ_fnl)
+
+order <- stringr::str_sort(pathogen_final_occ$occurrenceID)
+pathogen_final_occ <- pathogen_final_occ[match(order, pathogen_final_occ$occurrenceID),]
+
+pathogen_final_occ <- pathogen_final_occ %>%
+  mutate(associatedTaxa = ifelse(grepl(":p:", pathogen_final_occ$occurrenceID),
+                                 paste("pathogen found on: ", pathogen_final_occ$eventID, Sample, sep = ""), ""))
+```
+
+Finally, save the Occurrence Core locally and on Google Drive: 
 
 ``` {r save_occ, eval = FALSE}
 # Make sure the folder path exists already (e.g. ./Salmon Diet/tidy_data)
-write_csv(pathogen_spp_occ, here("Pathogen", "tidy_data", "pathogen_spp_occ.csv"))
+write_csv(pathogen_final_occ, here("Pathogen", "tidy_data", "pathogen_occ.csv"))
 drive_upload(here("Pathogen", "tidy_data", "pathogen_spp_occ.csv"),
              path = " ",
              name = "pathogen_spp_occ.csv",
              overwrite = TRUE)
 ```
 
-The second Occurrence Core reflects the presence or absence of certain pathogens on each salmon individual. In the current state of the file, pathogen presence or absence is reflected by either a + (present) or - (absent). Please note that any additional columns, such as `sea lice`, `stock` and `sticky_gut` are not included in the Occurrence and eMOF Cores because they are not the focus of this study. 
-
-``` {r, eval = FALSE}
-pathogen_occ <- pathogen %>%
-  select(sample,
-         aeromonas_salmonicida:piscine_orthoreovirus) %>%
-  pivot_longer(cols = aeromonas_salmonicida:piscine_orthoreovirus,
-               names_to = "scientificName",
-               values_to = "measurementValue") %>%
-  mutate(occurrenceID = paste(sample, "pocc", sep = ":"),
-         occurrenceStatus = ifelse(measurementValue == "+", "present", "absent")) %>%
-  rename(id = sample) %>%
-  select(id, scientificName, measurementValue, occurrenceID, occurrenceStatus)
-
-# Make sure the folder path exists already (e.g. ./Pathogen/tidy_data)
-write_csv(pathogen_occ, here("Pathogen", "tidy_data" "pathogen_occ.csv"))
-drive_upload(here("Pathogen", "tidy_data", "pathogen_occ.csv"),
-             path = " ",
-             name = "pathogen_occ.csv",
-             overwrite = TRUE)
-```
-
 ## Measurement Or Fact Core
 
-Next we need to associate the measurements of `fork length`, `mass` and `sex` to these salmon. Although it is not the focus of this study, perhaps we also have to include measurements regarding `adc`, `cwt`, `black_spots` etc here?
+Next we need to associate the values reported (relative Ct-values) to the various pathogens.  
 
 ``` {r eMOF, eval = FALSE}
 pathogen_spp_measurement <- pathogen %>%
-  select(measurementID = sample,
-         fl:sex) %>%
-  select(-k) %>%
-  mutate_all(as.character) %>%
-  pivot_longer(cols = fl:sex, 
+  select(sample, 
+         ae_sal:ye_ruc_glnA) %>%
+  rename(measurementID = sample) %>%
+  pivot_longer(cols = ae_sal:ye_ruc_glnA,
                names_to = "measurementType",
                values_to = "measurementValue") %>%
-  mutate(measurementID = paste(measurementID, measurementType, sep = ":"),
+  filter(measurementValue > 0) %>%
+  mutate_all(as.character) %>%
+  mutate(measurementID = paste(measurementID, "p", sep = ":"),
+         measurementID = paste(measurementID, measurementType, sep = ":"),
+         measurementID = paste(measurementID, "Rel.Ct-value", sep = ":"))
     measurementTypeID = case_when(
     measurementType == "fl" ~ " ",
     # But standard length: 	http://vocab.nerc.ac.uk/collection/P01/current/SL01XX01/
