@@ -53,6 +53,7 @@ NPMSDD_occ <- left_join(npmsdd, pred_bio, by = "predator_id") %>%
     scientificName == "Actinopterygii" ~ "urn:lsid:marinespecies.org:taxname:10194",
     scientificName == "Brachyura" ~ "urn:lsid:marinespecies.org:taxname:106673",
     scientificName == "Copepoda" ~ "urn:lsid:marinespecies.org:taxname:1080",
+    scientificName == "Coelenterata" ~ "urn:lsid:marinespecies.org:taxname:2",
     scientificName == "Euphausiacea" ~ "urn:lsid:marinespecies.org:taxname:1128",
     scientificName == "Hyperiidae" ~ "urn:lsid:marinespecies.org:taxname:101417",
     scientificName == "Limacina" ~ "urn:lsid:marinespecies.org:taxname:138122",
@@ -194,17 +195,19 @@ NPMSDD_occ <- left_join(npmsdd, pred_bio, by = "predator_id") %>%
     scientificName == "Aglantha" ~ "urn:lsid:marinespecies.org:taxname:117212")) %>%
   distinct()
 
-# Check to see if there are any scientificNames that have not received an associated scientificNameID. If there are any for which there is no scientificNameID, these will have to be created manually along with the taxonomic information in their respective columns, and "vernacularName". 
-missing_scientificNameID <- NPMSDD_occ[is.na(NPMSDD_occ$scientificNameID),]
-Coelenterata <- missing_scientificNameID %>%
-  mutate(vernacularName = case_when(
-    scientificName == "Coelenterata" ~ "Coelenterata spp."),
-         prey_kingdom = case_when(
-    scientificName == "Coelenterata" ~ "Animalia"),
-         scientificNameID = case_when(
-    scientificName == "Coelenterata" ~ "urn:lsid:marinespecies.org:taxname:2"
-         )
-  )
+## Try to get a similar output using the obistools and taxizesoap packages:
+Species <- unique(NPMSDD_occ$scientificName)
+scientificnames <- obistools::match_taxa(Species)
+scientificnames <- cbind(Species, scientificnames)
+
+# Manually examine those observations where match_type is not exact, or perhaps even where no match_type is given:
+manual_examination <- scientificnames %>% filter(match_type != "exact" | is.na(match_type))
+
+# Manual examination indicates that only the observation of Coelenterata needs to be populated manually:
+scientificnames$scientificNameID[scientificnames$Species == "Coelenterata"] <- "urn:lsid:marinespecies.org:taxname:2"
+scientificnames$scientificName[scientificnames$Species == "Coelenterata"] <- "Coelenterata"
+
+x <- taxizesoap::worms_records(scientificnames$scientificName)
 
 # Add this dataframe to the original NPMSDD_occ dataframe. 
 NPMSDD_occ <- plyr::rbind.fill(NPMSDD_occ, Coelenterata)
