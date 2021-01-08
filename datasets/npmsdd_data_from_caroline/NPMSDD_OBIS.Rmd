@@ -207,7 +207,20 @@ manual_examination <- scientificnames %>% filter(match_type != "exact" | is.na(m
 scientificnames$scientificNameID[scientificnames$Species == "Coelenterata"] <- "urn:lsid:marinespecies.org:taxname:2"
 scientificnames$scientificName[scientificnames$Species == "Coelenterata"] <- "Coelenterata"
 
-x <- taxizesoap::worms_records(scientificnames$scientificName)
+ScientificNames <- worrms::wm_records_names(scientificnames$scientificName)
+ScientificNames <- dplyr::bind_rows(ScientificNames) %>% filter(status == "accepted")
+
+# Upon inspection it appears there are two entries for Ctenophora. After manually inspecting them, we remove the incorrect version: 
+
+ScientificNames <- ScientificNames[!ScientificNames$AphiaID == "163921",]
+ScientificNames <- ScientificNames %>% 
+  dplyr::rename(scientificName = scientificname,
+                taxonRank = rank,
+                scientificNameID = lsid,
+                taxonomicStatus = status,
+                scientificNameAuthorship = authority) %>%
+  select(scientificName, scientificNameID, scientificNameID, taxonRank, taxonomicStatus, scientificNameAuthorship,
+         parentNameUsageID, kingdom, phylum, class, order, family, genus)
 
 # Add this dataframe to the original NPMSDD_occ dataframe. 
 NPMSDD_occ <- plyr::rbind.fill(NPMSDD_occ, Coelenterata)
