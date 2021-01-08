@@ -9,6 +9,8 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(lubridate)
+library(taxizesoap)
+library(obistools)
 library(readxl)
 library(here)
 library(parsedate)
