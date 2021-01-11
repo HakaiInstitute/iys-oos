@@ -56,12 +56,26 @@ scientificnames <- cbind(Species, scientificnames)
 # Manually examine those observations where match_type is not exact, or perhaps even where no match_type is given:
 manual_examination <- scientificnames %>% filter(match_type != "exact" | is.na(match_type))
 
-# Manual examination indicates that only the observation of Coelenterata needs to be populated manually:
-scientificnames$scientificNameID[scientificnames$Species == "Coelenterata"] <- "urn:lsid:marinespecies.org:taxname:2"
-scientificnames$scientificName[scientificnames$Species == "Coelenterata"] <- "Coelenterata"
-
 ScientificNames <- worrms::wm_records_names(scientificnames$scientificName)
 ScientificNames <- dplyr::bind_rows(ScientificNames) %>% filter(status == "accepted")
+
+# Coelenterata is not added, probably because it's not listed as a marine species in WoRMS (and therefore not found through the worrms package). Manually add this species:
+Coelenterata <- data.frame(
+  scientificname = "Coelenterata",
+  authority = NA,
+  status = "nomen nudum",
+  rank = "Phylum",
+  parentNameUsageID = "2",
+  kingdom = "Animalia",
+  phylum = "Coelenterata",
+  class = NA,
+  order = NA,
+  family = NA,
+  genus = NA,
+  lsid = "urn:lsid:marinespecies.org:taxname:152230"
+)
+
+ScientificNames <- plyr::rbind.fill(ScientificNames, Coelenterata)
 
 # Upon inspection it appears there are two entries for Ctenophora. After manually inspecting them, we remove the incorrect version: 
 
