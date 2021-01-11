@@ -126,6 +126,7 @@ predator_occ <- left_join(predator_occ, ScientificNames_predator, by = "scientif
                             scientificNameAuthorship, taxonomicStatus, taxonRank,gear_type_predator_id1,
                             gear_type_predator_id2, gear_type_predator_id3, gear_type_predator_id4,
                             gear_type_predator_id5) %>% distinct()
+predator_occ$parentNameUsageID <- as.character(predator_occ$parentNameUsageID)
 
 prey_occ <- NPMSDD_occ %>%
     dplyr::select(eventID, occurrenceID, occurrenceStatus, lat_min, lat_max, lon_min, lon_max, year_min, year_max, 
@@ -274,7 +275,7 @@ date <- plyr::rbind.fill(dates, year, months, seasons) %>%
   select(occurrenceID, eventDate, verbatimEventDate, year, month)
 
 NPMSDD_occ <- left_join(NPMSDD_occ, date, by = "occurrenceID") %>%
-  select(eventID, occurrenceID, eventDate, verbatimEventDate, year, month, decimalLatitude, decimalLongitude, footprintWKT, coordinateUncertaintyInMeters, scientificName, scientificNameID, occurrenceStatus, kingdom, phylum, class, order, family, genus, gear_type_predator_id1, gear_type_predator_id2, gear_type_predator_id3, gear_type_predator_id4, gear_type_predator_id5) %>%
+  select(eventID, occurrenceID, eventDate, verbatimEventDate, year, month, decimalLatitude, decimalLongitude, footprintWKT, coordinateUncertaintyInMeters, scientificName, scientificNameID, scientificNameAuthorship, parentNameUsageID, occurrenceStatus, kingdom, phylum, class, order, family, genus, taxonomicStatus, taxonRank, gear_type_predator_id1, gear_type_predator_id2, gear_type_predator_id3, gear_type_predator_id4, gear_type_predator_id5) %>%
   mutate(basisOfRecord = "HumanObservation",
          geodeticDatum = "EPSG:4326 WGS84")
 ```
