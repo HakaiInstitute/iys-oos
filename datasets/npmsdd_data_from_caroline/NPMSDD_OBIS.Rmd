@@ -26,10 +26,8 @@ npmsdd <- read_csv(here::here("datasets", "npmsdd_data_from_caroline", "diet_fin
 npmsdd <- npmsdd %>% select(source_id, lat_min, lat_max, lon_min, lon_max, year_min, year_max, 
                             warm_cool_years, odd_even_years, season_min, season_max,
                             month_min, month_max, date_min, time_min, time_max, predator_id,
-                            prey_lowest_taxonomic_level, prey_kingdom, prey_phylum, prey_class, 
-                            prey_order, prey_family, prey_genus, prey_species,
-                            gear_type_predator_id1, gear_type_predator_id2, gear_type_predator_id3,
-                            gear_type_predator_id4, gear_type_predator_id5)
+                            prey_lowest_taxonomic_level, gear_type_predator_id1, gear_type_predator_id2,
+                            gear_type_predator_id3, gear_type_predator_id4, gear_type_predator_id5)
 
 #importing predator (salmon) and prey biological data
 pred_bio <- read_csv("predator_biological_data.csv", col_types = "iiiiccccccccttnnnncccciiiiiicccnnnnnnicciciiiiiccnnnnnc") %>% 
@@ -42,158 +40,13 @@ prey_bio <- prey_bio <- read_csv("prey_biological_data.csv", col_types = "iiiiic
 # Join dataframes and select only for those data entries where prey has been identified (i.e. there is at least a value recorded in prey_kingdom), and where this prey can be linked to predator. 
 NPMSDD_occ <- left_join(npmsdd, pred_bio, by = "predator_id") %>%
   filter(!is.na(predator_lowest_taxonomic_level)) %>%
-  filter(!is.na(prey_kingdom)) %>% dplyr::rename(eventID = source_id) %>%
+  dplyr::rename(eventID = source_id) %>%
   mutate(eventID = paste("NPMSDD_sourceID", eventID, sep = ":"),
          eventID = paste(eventID, predator_id, sep = ":predID"),
          occurrenceStatus = "present",
          occurrenceID = paste(eventID, prey_lowest_taxonomic_level, sep = ":"),
          occurrenceID = paste(occurrenceID, "pr", sep = "-")) %>%
-  dplyr::rename(scientificName = prey_lowest_taxonomic_level) %>% 
-  mutate(scientificNameID = case_when(
-    scientificName == "Actinopterygii" ~ "urn:lsid:marinespecies.org:taxname:10194",
-    scientificName == "Brachyura" ~ "urn:lsid:marinespecies.org:taxname:106673",
-    scientificName == "Copepoda" ~ "urn:lsid:marinespecies.org:taxname:1080",
-    scientificName == "Coelenterata" ~ "urn:lsid:marinespecies.org:taxname:2",
-    scientificName == "Euphausiacea" ~ "urn:lsid:marinespecies.org:taxname:1128",
-    scientificName == "Hyperiidae" ~ "urn:lsid:marinespecies.org:taxname:101417",
-    scientificName == "Limacina" ~ "urn:lsid:marinespecies.org:taxname:138122",
-    scientificName == "Sagitta" ~ "urn:lsid:marinespecies.org:taxname:105410",
-    scientificName == "Oikopleura" ~ "urn:lsid:marinespecies.org:taxname:103367",
-    scientificName == "Coleoidea" ~ "urn:lsid:marinespecies.org:taxname:11709",
-    scientificName == "Berryteuthis magister" ~ "urn:lsid:marinespecies.org:taxname:342286",
-    scientificName == "Engraulis japonicus" ~ "urn:lsid:marinespecies.org:taxname:219984",
-    scientificName == "Euphausia pacifica" ~ "urn:lsid:marinespecies.org:taxname:237851",
-    scientificName == "Gonatopsis borealis" ~ "urn:lsid:marinespecies.org:taxname:342326",
-    scientificName == "Gonatus kamtschaticus" ~ "urn:lsid:marinespecies.org:taxname:341857",
-    scientificName == "Hemilepidotus" ~ "urn:lsid:marinespecies.org:taxname:248338",
-    scientificName == "Sardinops sagax" ~ "urn:lsid:marinespecies.org:taxname:217452",
-    scientificName == "Thysanoessa longipes" ~ "urn:lsid:marinespecies.org:taxname:237873",
-    scientificName == "Thysanoessa raschii" ~ "urn:lsid:marinespecies.org:taxname:110711",
-    scientificName == "Ammodytes hexapterus" ~ "urn:lsid:marinespecies.org:taxname:254510",
-    scientificName == "Clione limacina" ~ "urn:lsid:marinespecies.org:taxname:139178",
-    scientificName == "Gadus chalcogrammus" ~ "urn:lsid:marinespecies.org:taxname:300735",
-    scientificName == "Leuroglossus schmidti" ~ "urn:lsid:marinespecies.org:taxname:254551",
-    scientificName == "Clupea pallasii" ~ "urn:lsid:marinespecies.org:taxname:151159",
-    scientificName == "Mallotus villosus" ~ "urn:lsid:marinespecies.org:taxname:126735",
-    scientificName == "Themisto" ~ "urn:lsid:marinespecies.org:taxname:101800",
-    scientificName == "Cephalopoda" ~ "urn:lsid:marinespecies.org:taxname:11707",
-    scientificName == "Hyperia galba" ~ "urn:lsid:marinespecies.org:taxname:103251",
-    scientificName == "Pleurogrammus monopterigius" ~ "urn:lsid:marinespecies.org:taxname:282289",
-    # Name: pleurogrammus monopterygius
-    scientificName == "Themisto japonica" ~ "urn:lsid:marinespecies.org:taxname:744579",
-    scientificName == "Neocalanus cristatus" ~ "urn:lsid:marinespecies.org:taxname:104470",
-    scientificName == "Limacina helicina" ~ "urn:lsid:marinespecies.org:taxname:140223",
-    scientificName == "Cololabis saira" ~ "urn:lsid:marinespecies.org:taxname:280366",
-    scientificName == "Stenobrachius leucopsarus" ~ "urn:lsid:marinespecies.org:taxname:254363",
-    scientificName == "Chionoecetes opilio" ~ "urn:lsid:marinespecies.org:taxname:107315",
-    scientificName == "Eucalanus bungii" ~ "urn:lsid:marinespecies.org:taxname:196775",
-    scientificName == "Oikopleura (Vexillaria) labradoriensis" ~ "urn:lsid:marinespecies.org:taxname:103413",
-    scientificName == "Parasagitta elegans" ~ "urn:lsid:marinespecies.org:taxname:105440",
-    scientificName == "Scopelosaurus harryi" ~ "urn:lsid:marinespecies.org:taxname:272082",
-    scientificName == "Themisto pacifica" ~ "urn:lsid:marinespecies.org:taxname:254453",
-    scientificName == "Thysanoessa inermis" ~ "urn:lsid:marinespecies.org:taxname:110708",
-    scientificName == "Thysanoessa inspinata" ~ "urn:lsid:marinespecies.org:taxname:237872",
-    scientificName == "Decapoda" ~ "urn:lsid:marinespecis.org:taxname:1130",
-    scientificName == "Diaphus theta" ~ "urn:lsid:marinespecies.org:taxname:272694",
-    scientificName == "Pagurus" ~ "urn:lsid:marinespecies.org:taxname:106854",
-    scientificName == "Primno abyssalis" ~ "urn:lsid:marinespecies.org:taxname:421603",
-    scientificName == "Stenobrachius nannochir" ~ "urn:lsid:marinespecies.org:taxname:254364",
-    scientificName == "Neocalanus plumchrus" ~ "urn:lsid:marinespecies.org:taxname:196772",
-    scientificName == "Polychaeta" ~ "urn:lsid:marinespecies.org:taxname:883",
-    scientificName == "Aglantha digitale" ~ "urn:lsid:marinespecies.org:taxname:117849",
-    scientificName == "Amphipoda" ~ "urn:lsid:marinespecies.org:taxname:1135",
-    scientificName == "Anomura" ~ "urn:lsid:marinespecies.org:taxname:106671",
-    scientificName == "Pandalus goniurus" ~ "urn:lsid:marinespecies.org:taxname:254483",
-    scientificName == "Beroe cucumis" ~ "urn:lsid:marinespecies.org:taxname:106358", 
-    scientificName == "Calanus glacialis" ~ "urn:lsid:marinespecies.org:taxname:104465",
-    scientificName == "Primno macropa" ~ "urn:lsid:marinespecies.org:taxname:180759",
-    scientificName == "Gonatopsis okutanii" ~ "urn:lsid:marinespecies.org:taxname:342330",
-    scientificName == "Pleurogrammus" ~ "urn:lsid:marinespecies.org:taxname:270458",
-    scientificName == "Myctophidae" ~ "urn:lsid:marinespecies.org:taxname:125498",
-    scientificName == "Lumpenus" ~ "urn:lsid:marinespecies.org:taxname:126088",
-    scientificName == "Pleuronectes" ~ "urn:lsid:marinespecies.org:taxname:126120",
-    scientificName == "Ctenophora" ~ "urn:lsid:marinespecies.org:taxname:1248",
-    scientificName == "Gonatus" ~ "urn:lsid:marinespecies.org:taxname:138036",
-    scientificName == "Euphausiidae" ~ "urn:lsid:marinespecies.org:taxname:110671",
-    scientificName == "Euphausia" ~ "urn:lsid:marinespecies.org:taxname:110673",
-    scientificName == "Eumicrotremus" ~ "urn:lsid:marinespecies.org:taxname:126159",
-    scientificName == "Gymnocanthus" ~ "urn:lsid:marinespecies.org:taxname:126149",
-    scientificName == "Gonatopsis" ~ "urn:lsid:marinespecies.org:taxname:341428",
-    scientificName == "Pleuronectidae" ~ "urn:lsid:marinespecies.org:taxname:125579",
-    scientificName == "Themisto libellula" ~ "urn:lsid:marinespecies.org:taxname:156452",
-    scientificName == "Todarodes pacificus" ~ "urn:lsid:marinespecies.org:taxname:342067",
-    scientificName == "Thysanoessa" ~ "urn:lsid:marinespecies.org:taxname:110679",
-    scientificName == "Watasenia scintillans" ~ "urn:lsid:marinespecies.org:taxname:342419",
-    scientificName == "Siphonophorae" ~ "urn:lsid:marinespecies.org:taxname:1371",
-    scientificName == "Pteropoda" ~ "urn:lsid:marinespecies.org:taxname:325345",
-    scientificName == "Hexagrammidae" ~ "urn:lsid:marinespecies.org:taxname:154415",
-    scientificName == "Hyperia medusarum" ~ "urn:lsid:marinespecies.org:taxname:103253",
-    scientificName == "Rhynchonereella angelini" ~ "urn:lsid:marinespecies.org:taxname:416504",
-    scientificName == "Arthropoda (terrestrial)" ~ "urn:lsid:marinespecies.org:taxname:1065",
-    # WoRMS URN: Arthropoda
-    scientificName == "Chaetognatha" ~ "urn:lsid:marinespecies.org:taxname:2081",
-    scientificName == "Crustacea" ~ "urn:lsid:marinespecies.org:taxname:1066",
-    scientificName == "Ammodytes" ~ "urn:lsid:marinespecies.org:taxname:125909",
-    scientificName == "Insecta" ~ "urn:lsid:marinespecies.org:taxname:1307",
-    scientificName == "Ostracoda" ~ "urn:lsid:marinespecies.org:taxname:1078",
-    scientificName == "Calanoida" ~ "urn:lsid:marinespecies.org:taxname:1100",
-    scientificName == "Gastropoda" ~ "urn:lsid:marinespecies.org:taxname:101",
-    scientificName == "Calanus sinicus" ~ "urn:lsid:marinespecies.org:taxname:346214",
-    scientificName == "Centropages abdominalis" ~ "urn:lsid:marinespecies.org:taxname:196774",
-    scientificName == "Evadne normanni" ~ "urn:lsid:marinespecies.org:taxname:106273",
-    # WoRMNS URN: Evadne nordmanni
-    scientificName == "Gammaridae" ~ "urn:lsid:marinespecies.org:taxname:101383",
-    scientificName == "Oikopleuridae" ~ "urn:lsid:marinepecies.org:taxname:103356",
-    scientificName == "Oithona" ~ "urn:lsid:marinespecies.org:taxname:106485",
-    scientificName == "Paracalanus" ~ "urn:lsid:marinespecies.org:taxname:104196",
-    scientificName == "Podon" ~ "urn:lsid:marinespecies.org:taxname:106269", 
-    scientificName == "Paraeuchaeta elongata" ~ "urn:lsid:marinespecies.org:taxname:196779",
-    scientificName == "Cnidaria" ~ "urn:lsid:marinespecies.org:taxname:1267",
-    scientificName == "Gammaroidea" ~ "urn:lsid:marinespecies.org:taxname:720708",
-    scientificName == "Tunicata" ~ "urn:lsid:marinespecies.org:taxname:146420",
-    scientificName == "Metridia pacifica" ~ "urn:lsid:marinespecies.org:taxname:196784",
-    scientificName == "Neocalanus flemingeri" ~ "urn:lsid:marinespecies.org:taxname:353708",
-    scientificName == "Callianassa" ~ "urn:lsid:marinespecies.org:taxname:107072",
-    scientificName == "Calanus" ~ "urn:lsid:marinespecies.org:taxname:104152",
-    scientificName == "Fritillaria" ~ "urn:lsid:marinespecies.org:taxname:103358",
-    scientificName == "Oncaea" ~ "urn:lsid:marinespecies.org:taxname:128690",
-    scientificName == "Pseudocalanus" ~ "urn:lsid:marinespecies.org:taxname:104165",
-    scientificName == "Pseudocalanus newmani" ~ "urn:lsid:marinespecies.org:taxname:157679",
-    scientificName == "Neocalanus" ~ "urn:lsid:marinespecies.org:taxname:104155",
-    scientificName == "Harpacticoida" ~ "urn:lsid:marinespecies.org:taxname:1102",
-    scientificName == "Mesocalanus tenuicornis" ~ "urn:lsid:marinespecies.org:taxname:104468",
-    scientificName == "Gaetanus brevispinus" ~ "urn:lsid:marinespecies.org:taxname:254602",
-    scientificName == "Conchoecia" ~ "urn:lsid:marinespecies.org:taxname:127533",
-    scientificName == "Metridia okhotensis" ~ "urn:lsid:marinespecies.org:taxname:196783",
-    scientificName == "Nudibranchia" ~ "urn:lsid:marinespecies.org:taxname:1762",
-    scientificName == "Isopoda" ~ "urn:lsid:marinespecies.org:taxname:1131",
-    scientificName == "Mysida" ~ "urn:lsid:marinespecies.org:taxname:149668",
-    scientificName == "Salpidae" ~ "urn:lsid:marinespecies.org:taxname:137217",
-    scientificName == "Pterotracheoidea" ~ "urn:lsid:marinespecies.org:taxname:387338",
-    scientificName == "Clione" ~ "urn:lsid:marinespecies.org:taxname:137793",
-    scientificName == "Hyperioides" ~ "urn:lsid:marinespecies.org:taxname:101797",
-    scientificName == "Hyperoche medusarum" ~ "urn:lsid:marinespecies.org:taxname:103256",
-    scientificName == "Hyperia spinigera" ~ "urn:lsid:marinespecies.org:taxname:103254",
-    scientificName == "Ammodytidae" ~ "urn:lsid:marinespecies.org:taxname:125516",
-    scientificName == "Sebastes" ~ "urn:lsid:marinespecies.org:taxname:126175",
-    scientificName == "Podothecus" ~ "urn:lsid:marinespecies.org:taxname:254386",
-    scientificName == "Hemilepidotus hemilepidotus" ~ "urn:lsid:marinespecies.org:taxname:254521",
-    scientificName == "Maurolicus japonicus" ~ "urn:lsid:marinespecies.org:taxname:274972",
-    scientificName == "Hydrozoa" ~ "urn:lsid:marinespecies.org:taxname:1337",
-    scientificName == "Pseudocalanus elongatus" ~ "urn:lsid:marinespecies.org:taxname:104515",
-    scientificName == "Microcalanus" ~ "urn:lsid:marinespecies.org:taxname:104164",
-    scientificName == "Oithona similis" ~ "urn:lsid:marinespecies.org:taxname:106656",
-    scientificName == "Microsetella norvegica" ~ "urn:lsid:marinespecies.org:taxname:116115",
-    scientificName == "Gammarus" ~ "urn:lsid:marinespecies.org:taxname:101537",
-    scientificName == "Phronima sedentaria" ~ "urn:lsid:marinespecies.org:taxname:103272",
-    scientificName == "Paralithodes camtschaticus" ~ "urn:lsid:marinespecies.org:taxname:233889",
-    scientificName == "Gymnocanthus detrisus" ~ "urn:lsid:marinespecies.org:taxname:274372",
-    scientificName == "Trichodontidae" ~ "urn:lsid:marinespecies.org:taxname:151408",
-    scientificName == "Oligochaeta" ~ "urn:lsid:marinespecies.org:taxname:2036",
-    scientificName == "Neomysis" ~ "urn:lsid:marinespecies.org:taxname:119888", 
-    scientificName == "Diptera" ~ "urn:lsid:marinespecies.org:taxname:118088",
-    scientificName == "Aglantha" ~ "urn:lsid:marinespecies.org:taxname:117212")) %>%
-  distinct()
+  dplyr::rename(scientificName = prey_lowest_taxonomic_level)
 
 ## Try to get a similar output using the obistools and taxizesoap packages:
 Species <- unique(NPMSDD_occ$scientificName)
@@ -223,7 +76,7 @@ ScientificNames <- ScientificNames %>%
          parentNameUsageID, kingdom, phylum, class, order, family, genus)
 
 # Add this dataframe to the original NPMSDD_occ dataframe. 
-NPMSDD_occ <- plyr::rbind.fill(NPMSDD_occ, Coelenterata)
+NPMSDD_occ <- left_join(NPMSDD_occ, ScientificNames, by = "scientificName")
 
 # Create occurrence core for the predators. Please note that no columns are provided for kingdom, phylum, class, order, family, genus or species. Therefore these have to be added manually:
 
@@ -231,48 +84,42 @@ predator_occ <- NPMSDD_occ %>%
   dplyr::select(eventID, predator_lowest_taxonomic_level, predator_id, lat_min, lat_max, lon_min, lon_max, 
                 year_min, year_max, warm_cool_years, odd_even_years, season_min, season_max, 
                 month_min, month_max, date_min, time_min, time_max, gear_type_predator_id1, gear_type_predator_id2,
-                gear_type_predator_id3, gear_type_predator_id4, gear_type_predator_id5, vernacularName) %>%
+                gear_type_predator_id3, gear_type_predator_id4, gear_type_predator_id5) %>%
   dplyr::rename(scientificName = predator_lowest_taxonomic_level) %>%
   mutate(occurrenceStatus = "present",
-         occurrenceID = paste(eventID, "p", sep = "-")) %>% 
-  # I like to add this line to indicate that its the predator. 
-  mutate(scientificNameID = case_when(
-    scientificName == "Oncorhynchus keta" ~ "urn:lsid:marinespecies.org:taxname:127183",
-    scientificName == "Oncorhynchus nerka" ~ "urn:lsid:marinespecies.org:taxname:254569",
-    scientificName == "Oncorhynchus gorbuscha" ~ "urn:lsid:marinespecies.org:taxname:127182",
-    scientificName == "Oncorhynchus kisutch" ~ "urn:lsid:marinespecies.org:taxname:127184",
-    scientificName == "Oncorhynchus mykiss" ~ "urn:lsid:marinespecies.org:taxname:127185",
-    scientificName == "Oncorhynchus tshawytscha" ~ "urn:lsid:marinespecies.org:taxname:158075")
-  ) %>% 
-  mutate(kingdom = "Animalia",
-         phylum = "Chordata",
-         class = "Actinopterygii",
-         order = "Salmoniformes",
-         family = "Salmonidae",
-         genus = "Oncorhynchus") %>%
-  mutate(specificEpithet = scientificName,
-         specificEpithet = gsub("Oncorhynchus ", "", specificEpithet)) %>%
-    select(-predator_id) %>%
-  distinct()
+         occurrenceID = paste(eventID, "p", sep = "-"))
+
+NPMSDD_predator <- unique(predator_occ$scientificName)
+scientificnames_predator <- obistools::match_taxa(NPMSDD_predator)
+scientificnames_predator <- cbind(NPMSDD_predator, scientificnames_predator)
+
+ScientificNames_predator <- worrms::wm_records_names(scientificnames_predator$scientificName)
+ScientificNames_predator <- dplyr::bind_rows(ScientificNames_predator) %>% filter(status == "accepted")
+
+ScientificNames_predator <- ScientificNames_predator %>% 
+  dplyr::rename(scientificName = scientificname,
+                taxonRank = rank,
+                scientificNameID = lsid,
+                taxonomicStatus = status,
+                scientificNameAuthorship = authority) %>%
+  select(scientificName, scientificNameID, scientificNameID, taxonRank, taxonomicStatus, scientificNameAuthorship,
+         parentNameUsageID, kingdom, phylum, class, order, family, genus)
+
+predator_occ <- left_join(predator_occ, ScientificNames_predator, by = "scientificName") %>% 
+  dplyr::select(eventID, occurrenceID, occurrenceStatus, lat_min, lat_max, lon_min, lon_max, year_min, year_max, 
+                            season_min, season_max,month_min, month_max, date_min, time_min, time_max, scientificName,
+                            scientificNameID, kingdom, phylum, class, order,family, genus, parentNameUsageID,
+                            scientificNameAuthorship, taxonomicStatus, taxonRank,gear_type_predator_id1,
+                            gear_type_predator_id2, gear_type_predator_id3, gear_type_predator_id4,
+                            gear_type_predator_id5) %>% distinct()
 
 prey_occ <- NPMSDD_occ %>%
     dplyr::select(eventID, occurrenceID, occurrenceStatus, lat_min, lat_max, lon_min, lon_max, year_min, year_max, 
-                            warm_cool_years, odd_even_years, season_min, season_max,
-                            month_min, month_max, date_min, time_min, time_max, scientificName, scientificNameID,
-                            prey_kingdom, prey_phylum, prey_class, prey_order, prey_family, prey_genus, prey_species,
-                            gear_type_predator_id1, gear_type_predator_id2, gear_type_predator_id3,
-                            gear_type_predator_id4, gear_type_predator_id5, vernacularName) %>%
-    dplyr::rename(kingdom = prey_kingdom,
-                phylum = prey_phylum,
-                class = prey_class,
-                order = prey_order,
-                family = prey_family,
-                genus = prey_genus,
-                specificEpithet = prey_species)
+                            season_min, season_max,month_min, month_max, date_min, time_min, time_max, scientificName,
+                            scientificNameID, kingdom, phylum, class, order,family, genus, parentNameUsageID, scientificNameAuthorship, taxonomicStatus, taxonRank,gear_type_predator_id1, gear_type_predator_id2, gear_type_predator_id3, gear_type_predator_id4, gear_type_predator_id5)
 
 # Bind rows
 NPMSDD_occ <- bind_rows(prey_occ, predator_occ)
-
 
 # To re-order the eventID, use following code:
 order <- stringr::str_sort(NPMSDD_occ$occurrenceID, numeric=TRUE)
@@ -331,7 +178,7 @@ And the associated dates and times:
 
 ``` {r NPMSDD_eventDate, eval = FALSE}
 occdate <- NPMSDD_occ %>%
-  select(eventID, occurrenceID, year_min, year_max, warm_cool_years, odd_even_years, season_min, season_max,
+  select(eventID, occurrenceID, year_min, year_max, season_min, season_max,
          month_min, month_max, date_min, time_min, time_max) %>%
   mutate(month_min = case_when(
     month_min == "January" ~ "01",
@@ -413,7 +260,7 @@ date <- plyr::rbind.fill(dates, year, months, seasons) %>%
   select(occurrenceID, eventDate, verbatimEventDate, year, month)
 
 NPMSDD_occ <- left_join(NPMSDD_occ, date, by = "occurrenceID") %>%
-  select(eventID, occurrenceID, eventDate, verbatimEventDate, year, month, decimalLatitude, decimalLongitude, footprintWKT, coordinateUncertaintyInMeters, scientificName, scientificNameID, vernacularName, occurrenceStatus, kingdom, phylum, class, order, family, genus, specificEpithet, gear_type_predator_id1, gear_type_predator_id2, gear_type_predator_id3, gear_type_predator_id4, gear_type_predator_id5) %>%
+  select(eventID, occurrenceID, eventDate, verbatimEventDate, year, month, decimalLatitude, decimalLongitude, footprintWKT, coordinateUncertaintyInMeters, scientificName, scientificNameID, occurrenceStatus, kingdom, phylum, class, order, family, genus, gear_type_predator_id1, gear_type_predator_id2, gear_type_predator_id3, gear_type_predator_id4, gear_type_predator_id5) %>%
   mutate(basisOfRecord = "HumanObservation",
          geodeticDatum = "EPSG:4326 WGS84")
 ```
@@ -423,7 +270,7 @@ Given that we are dealing with predator-prey data, we add an additional column `
 ``` {r associatedTaxa, eval = FALSE}
 NPMSDD_occ$associatedTaxa <-   " "
 NPMSDD_occ$associatedTaxa <- ifelse(grepl("-pr", NPMSDD_occ$occurrenceID), 
-paste("prey of: ", NPMSDD_occ$eventID, "-p", sep = ""), "")
+paste('"prey of"', " : ", '"', NPMSDD_occ$eventID, "-p", '"', sep = ""), "")
 ```
 
 Although it is not a required term in the DwC standards, minimumDepthInMeters and maximumDepthInMeters are recorded as 'missing' if not provided. The information regarding sampling depth is recorded in the `gear_type_predator` file, and - depending on what gear was used - is listed under one of the following columns: gear_depth_value, gear_depth_min, fishing_depth_value and fishing_depth_min. Therefore, to obtain the minimumDepthInMeters, first the data from the gear_type_predator dataframe is joined with our initial NPMSDD_Occ dataframe. 
