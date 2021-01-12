@@ -219,6 +219,8 @@ drive_upload(here("Pathogen", "tidy_data", "pathogen_spp_occ.csv"),
              overwrite = TRUE)
 ```
 
+Eventually, the Event Core and Occurrence Core can be combined, so that dates, times, and spatial coordinates can be linked to the species occurrences. However, currently the final version of the dates, times and spatial coordinates is not available (will be in the Fish Trawl Abundance data). Once we have that data, along with the additions made to the WoRMS registry, we can finalize the 2019 IYS Pathogen Data. 
+
 ## Measurement Or Fact Core
 
 Is there a need for a measurement Or Fact (eMOF) Core? If so, we need to associate the values reported (relative Ct-values) to the various pathogens.  
