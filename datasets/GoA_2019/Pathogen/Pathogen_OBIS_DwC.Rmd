@@ -51,11 +51,11 @@ trawl <- read_excel(here("Pathogen", "raw_data", "2019_GoA_Fish_data_Hakai.xlsx"
 Read in the dataset from your local drive, and combine the data into one dataframe. The data file `Pathogen_info.xlsx` expands on the abbreviations used in the pathogen data file, and will be joined in at a later stage.  
 
 ``` {r data wrangle, eval = FALSE}
-pathogen_names <- read_excel(here("Pathogen", "raw_data", 
+pathogen_names <- read_excel(here("datasets", "GoA_2019", "Pathogen", "raw_data", 
                        "Pathogen_info.xlsx"))
-pathogen_floytag <- read_excel(here("Pathogen", "raw_data",
+pathogen_floytag <- read_excel(here("datasets", "GoA_2019", "Pathogen", "raw_data",
                                     "Sample_info_IYS_GoA_2019_Fish_Health.xlsx"))
-pathogen_data <- read_excel(here("Pathogen", "raw_data",
+pathogen_data <- read_excel(here("datasets", "GoA_2019", "Pathogen", "raw_data",
                                  "Pathogens_IYS_GoA_2019.xlsx"))
 
 pathogen <- left_join(pathogen_floytag, pathogen_data, by = "Sample") %>%
@@ -106,17 +106,10 @@ pathogen_trawl <- salmon %>%
 
 # The Pathogen data does not include information as to at what depths the trawls were conducted. This information will have to come from the general Trawl data. Should this information become available it should be connected to the general trawl information, along with info such as: speed at which the vessel was traveling during trawl, starting & finish lat/longs of trawl.
 
-pathogen_sample <- pathogen %>% 
-  select(eventID = sample,
-         parentEventID = trawl) %>% 
-  distinct(eventID, .keep_all = TRUE) %>% 
-  mutate(eventRemarks = "sample")
-
 # To connect them all together: 
 pathogen_event <- bind_rows(pathogen_cruise,
                             pathogen_station,
-                            pathogen_trawl, 
-                            pathogen_sample) %>%
+                            pathogen_trawl) %>%
   select(eventID, parentEventID:decimalLongitude, eventRemarks) %>%
   mutate(type = "PreservedSpecimen")
 
@@ -133,7 +126,7 @@ drive_upload(here("Pathogen", "tidy_data", "pathogen_event.csv"),
 We will combine two occurrence tables into a single Occurrence Core. In this Occurrence Core, there will be a column `associatedTaxa` that will link the pathogens data (relative Ct-values) to the respective salmon species (individual). The first occurrence table will identify which species of salmon is associated to Sample. This information is taken from the dataframe `pathogen_floytag`. The second occurrence table will list all the pathogens identified and measured. 
 
 ``` {r occ, eval = FALSE}
-pathogen_salmon_spp <- pathogen %>% mutate(Species = case_when(
+pathogen_salmon_spp <- pathogen %>% mutate(scientificName = case_when(
     Species == "Coho" ~ "Oncorhynchus kisutch",
     Species == "Pink" ~ "Oncorhynchus gorbuscha",
     Species == "Chum" ~ "Oncorhynchus keta",
@@ -141,20 +134,22 @@ pathogen_salmon_spp <- pathogen %>% mutate(Species = case_when(
     Species == "Sockeye" ~ "Oncorhynchus nerka"
   ))
 
-unique_salmon <- unique(pathogen_salmon_spp$Species)
+unique_salmon <- unique(pathogen_salmon_spp$scientificName)
 
-pathogen_salmon_worms <- taxizesoap::worms_records(unique_salmon) %>% filter(inputid == scientificname) %>%
-  rename(Species = inputid)
+pathogen_salmon_scientificnames <- worrms::wm_records_names(unique_salmon) 
+pathogen_salmon_scientificnames <- dplyr::bind_rows(pathogen_salmon_scientificnames) %>%
+  rename(scientificName = scientificname)
 
-pathogen_salmon_spp <- left_join(pathogen_salmon_spp, pathogen_salmon_worms, by = "Species") %>%
-  rename(scientificName = Species,
-         scientificNameID = lsid,
+pathogen_salmon_spp <- left_join(pathogen_salmon_spp, pathogen_salmon_scientificnames, by = "scientificName") %>%
+  dplyr::rename(scientificNameID = lsid,
          eventID = trawl,
-         taxonRank = rank) %>% 
+         taxonRank = rank,
+         taxonomicStatus = status,
+         scientificNameAuthorship = authority) %>% 
   mutate(occurrenceStatus = "present",
          occurrenceID = paste(eventID, Sample, sep = ":")) %>%
-  select(eventID, Sample, occurrenceID, scientificName, scientificNameID, occurrenceStatus,
-         kingdom, phylum, class, order, family, genus, taxonRank)
+  select(eventID, Sample, occurrenceID, scientificName, scientificNameID, occurrenceStatus, parentNameUsageID,
+         taxonomicStatus, scientificNameAuthorship, kingdom, phylum, class, order, family, genus, taxonRank)
 ```
 
 Now that we've created the first occurrence table, we create the second one, where the pathogens get assigned a unique identifier (i.e. a WoRMS URN) in the scientificNameID and a unique occurrenceID. Using the column `associatedTaxa`, the pathogens will eventually be linked to the correct salmon individual. For the pathogen data, the first step is to select the correct columns from the Pathogen data file, and expand on the abbreviations. 
@@ -172,63 +167,52 @@ pathogen_occ <- left_join(pathogen_occ, pathogen_names, by = "Assay name") %>% f
 # A quick check teaches us that with Paranucleospora theridion / Desmozoon lepeophtherii observation, the latter is the accepted name under WoRMS, so substitute this observation in the dataframe: 
 
 pathogen_occ <- pathogen_occ %>%
-  mutate(Name = gsub("Paranucleospora theridion / Desmozoon lepeophtherii", "Desmozoon lepeophtherii", Name))
+  mutate(Name = gsub("Paranucleospora theridion / Desmozoon lepeophtherii", "Desmozoon lepeophtherii", Name)) %>%
+  dplyr::rename(scientificName = Name)
 
 # A list of the unique pathogens (viruses, bacteria, parasites) can be found using:
-unique_pathogens <- unique(pathogen_occ$Name)
+unique_pathogens <- unique(pathogen_occ$scientificName)
 
 # I've requested new WoRMS entries for some bacteria, viruses and parasites that were not currently in the database. It is likely that the scientificNameIDs will have to be populated manually once these new taxa have been created in the registry.  
 
-pathogen_taxa <- obistools::match_taxa(unique_pathogens) 
-pathogen_taxa_worms <- cbind(unique_pathogens, pathogen_taxa) %>% filter(!is.na(scientificName))
-pathogen_taxa_valid <- taxizesoap::worms_records(pathogen_taxa_worms$scientificName) %>% 
-  filter(inputid == scientificname) %>%
-  select(valid_name)
-pathogen_taxa_full <- taxizesoap::worms_records(pathogen_taxa_valid$valid_name) %>% filter(inputid == scientificname) %>%
-  rename(scientificName = scientificname,
+pathogen_taxa_scientificnames <- worrms::wm_records_names(unique_pathogens) 
+pathogen_taxa_scientificnames <- dplyr::bind_rows(pathogen_taxa_scientificnames) %>%
+  rename(scientificName = scientificname)
+
+pathogen_taxa <- left_join(pathogen_occ, pathogen_taxa_scientificnames, by = "scientificName") %>%
+  dplyr::rename(scientificNameID = lsid,
+         eventID = trawl,
          taxonRank = rank,
-         scientificNameID = lsid) %>%
-  select(scientificName, scientificNameID, taxonRank, kingdom, phylum, class, order, family, genus)
-
-# Any species that need to be entered manually? 
-pathogen_manual <- cbind(unique_pathogens, pathogen_taxa) %>% filter(is.na(scientificName))
-
-# We notice that for two entries the valid or accepted name in WoRMS is slightly different from that recorded in the data, and found in the pathogen_occ dataframe. In order to match the taxonomic information in pathogen_taxa_full, the scientific names in this dataframe need to be substituted with the correct or accepted name:
-
-pathogen_occ <- pathogen_occ %>%
-  mutate(Name = gsub("Vibrio anguillarum", "Listonella anguillara", Name),
-         Name = gsub("Vibrio salmonicida", "Aliivibrio salmonicida", Name),
-         Name = gsub(" sp.", "", Name)) %>%
-  rename(scientificName = Name)
-
-pathogen_occ_fnl <- left_join(pathogen_occ, pathogen_taxa_full, by = "scientificName") %>%
-  rename(eventID = trawl) %>%
-  mutate(occurrenceID = paste(eventID, Sample, sep = ":"),
-         occurrenceID = paste(occurrenceID, "p", sep = ":"), # to indicate it concerns a pathogen
-         occurrenceID = paste(occurrenceID, `Assay name`, sep = ":"),
-         occurrenceStatus = "present") %>%
-  select(eventID, Sample, occurrenceID, occurrenceStatus, scientificName, scientificNameID, taxonRank,
-         kingdom, phylum, class, order, family, genus)
+         taxonomicStatus = status,
+         scientificNameAuthorship = authority) %>% 
+  mutate(occurrenceStatus = "present",
+         occurrenceID = paste(eventID, Sample, sep = ":"),
+         occurrenceID = paste(occurrenceID, "p", sep = ":"),
+         occurrenceID = paste(occurrenceID, `Assay name`, sep = ":")) %>%
+  select(eventID, Sample, occurrenceID, scientificName, scientificNameID, occurrenceStatus, parentNameUsageID,
+         taxonomicStatus, scientificNameAuthorship, kingdom, phylum, class, order, family, genus, taxonRank)
 ```
 
 What we still have to wait for is new additions being made in the WoRMS registry to include the parasites, viruses or bacteria. Once this is done, we need to combine the occurrence tables of salmonids and pathogens, and create a column `associatedTaxa` to indicate that the pathogens were found on or in the salmonid individual (i.e. linking it to the occurrenceID associated to the salmon individual): 
 
 ``` {r pathogen_occ_final, eval = FALSE}
-pathogen_final_occ <- rbind(pathogen_salmon_spp, pathogen_occ_fnl)
+pathogen_occ <- rbind(pathogen_salmon_spp, pathogen_taxa)
 
-order <- stringr::str_sort(pathogen_final_occ$occurrenceID)
-pathogen_final_occ <- pathogen_final_occ[match(order, pathogen_final_occ$occurrenceID),]
+order <- stringr::str_sort(pathogen_occ$occurrenceID)
+pathogen_occ <- pathogen_occ[match(order, pathogen_occ$occurrenceID),]
 
-pathogen_final_occ <- pathogen_final_occ %>%
-  mutate(associatedTaxa = ifelse(grepl(":p:", pathogen_final_occ$occurrenceID),
-                                 paste("pathogen found on: ", pathogen_final_occ$eventID, Sample, sep = ""), ""))
+pathogen_occ <- pathogen_occ %>%
+  mutate(temp_Sample = paste(pathogen_occ$eventID, Sample, sep = ":")) %>%
+  mutate(associatedTaxa = ifelse(grepl(":p:", pathogen_occ$occurrenceID),
+                                 paste('"pathogen found on"', " : ", '"', temp_Sample, '"', sep = ""), "")) %>%
+  select(-c(Sample, temp_Sample))
 ```
 
 Finally, save the Occurrence Core locally and on Google Drive: 
 
 ``` {r save_occ, eval = FALSE}
 # Make sure the folder path exists already (e.g. ./Salmon Diet/tidy_data)
-write_csv(pathogen_final_occ, here("Pathogen", "tidy_data", "pathogen_occ.csv"))
+write_csv(pathogen_occ, here("datasets", "GoA_2019", "Pathogen", "tidy_data", "pathogen_occ.csv"))
 drive_upload(here("Pathogen", "tidy_data", "pathogen_spp_occ.csv"),
              path = " ",
              name = "pathogen_spp_occ.csv",
@@ -237,7 +221,7 @@ drive_upload(here("Pathogen", "tidy_data", "pathogen_spp_occ.csv"),
 
 ## Measurement Or Fact Core
 
-Next we need to associate the values reported (relative Ct-values) to the various pathogens.  
+Is there a need for a measurement Or Fact (eMOF) Core? If so, we need to associate the values reported (relative Ct-values) to the various pathogens.  
 
 ``` {r eMOF, eval = FALSE}
 pathogen_spp_measurement <- pathogen %>%
