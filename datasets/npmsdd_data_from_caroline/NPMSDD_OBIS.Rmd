@@ -15,11 +15,11 @@ ipak <- function(pkg){
     sapply(pkg, require, character.only = TRUE)
 }
 
-packages <- c("tidyverse", "lubridate", "devtools", "obistools", "readxl", "parsedate", "googledrive", "here")
+packages <- c("tidyverse", "lubridate", "worrms", "devtools", "obistools", "readxl", "parsedate", "googledrive", "here")
 ipak(packages) 
 ```
 
-For the NPMSDD it was opted to create an Occurrence Core, rather than an Event Core with an associated Occurrence Core. The reason for this is that most data sources in the database consisted of aggregated data, with a lot of heterogeneity within geo-spatial scale. Therefore, if only a single time and spatial frame was associated with each source, the granularity would be very low and potentially important information would be lost. Therefore, it was opted to create an Occurrence Core, and associate date, time and spatial coordinates to each occurrenceID (i.e., the capture of a salmon or identification of prey from stomach content). This way, all the geo-spatio information for each capture and identification can be recorded and no information is lost due from aggregation. 
+For the NPMSDD it was opted to create an Occurrence Core, rather than an Event Core with an associated Occurrence Core. The reason for this is that most data sources in the database consisted of aggregated data, with a lot of heterogeneity within geo-spatial scale. Therefore, if only a single time and spatial frame was associated with each source, the granularity would be very low and potentially important information would be lost. Therefore, it was opted to create an Occurrence Core, and associate date, time and spatial coordinates to each `occurrenceID` (i.e., the capture of a salmon or identification of prey from stomach content). This way, all the geo-spatio information for each capture and identification can be recorded and no information is lost from aggregation. 
 
 ``` {r NPMSDD_Occ, eval = FALSE}
 npmsdd <- read_csv(here::here("datasets", "npmsdd_data_from_caroline", "diet_final.csv"))
@@ -56,8 +56,8 @@ scientificnames <- cbind(Species, scientificnames)
 # Manually examine those observations where match_type is not exact, or perhaps even where no match_type is given:
 manual_examination <- scientificnames %>% filter(match_type != "exact" | is.na(match_type))
 
-ScientificNames <- worrms::wm_records_names(scientificnames$scientificName)
-ScientificNames <- dplyr::bind_rows(ScientificNames) %>% filter(status == "accepted")
+ScientificNames_prey <- worrms::wm_records_names(scientificnames$scientificName)
+ScientificNames_prey <- dplyr::bind_rows(ScientificNames_prey) %>% filter(status == "accepted")
 
 # Coelenterata is not added, probably because it's not listed as a marine species in WoRMS (and therefore not found through the worrms package). Manually add this species:
 Coelenterata <- data.frame(
@@ -75,12 +75,12 @@ Coelenterata <- data.frame(
   lsid = "urn:lsid:marinespecies.org:taxname:152230"
 )
 
-ScientificNames <- plyr::rbind.fill(ScientificNames, Coelenterata)
+ScientificNames_prey <- plyr::rbind.fill(ScientificNames_prey, Coelenterata)
 
 # Upon inspection it appears there are two entries for Ctenophora. After manually inspecting them, we remove the incorrect version: 
 
-ScientificNames <- ScientificNames[!ScientificNames$AphiaID == "163921",]
-ScientificNames <- ScientificNames %>% 
+ScientificNames_prey <- ScientificNames_prey[!ScientificNames_prey$AphiaID == "163921",]
+ScientificNames_prey <- ScientificNames_prey %>% 
   dplyr::rename(scientificName = scientificname,
                 taxonRank = rank,
                 scientificNameID = lsid,
@@ -90,7 +90,12 @@ ScientificNames <- ScientificNames %>%
          parentNameUsageID, kingdom, phylum, class, order, family, genus)
 
 # Add this dataframe to the original NPMSDD_occ dataframe. 
-NPMSDD_occ <- left_join(NPMSDD_occ, ScientificNames, by = "scientificName")
+prey_occ <- left_join(NPMSDD_occ, ScientificNames_prey, by = "scientificName")
+
+prey_occ <- prey_occ %>%
+    dplyr::select(eventID, occurrenceID, occurrenceStatus, lat_min, lat_max, lon_min, lon_max, year_min, year_max, 
+                            season_min, season_max,month_min, month_max, date_min, time_min, time_max, scientificName,
+                            scientificNameID, kingdom, phylum, class, order,family, genus, parentNameUsageID, scientificNameAuthorship, taxonomicStatus, taxonRank,gear_type_predator_id1, gear_type_predator_id2, gear_type_predator_id3, gear_type_predator_id4, gear_type_predator_id5)
 
 # Create occurrence core for the predators. Please note that no columns are provided for kingdom, phylum, class, order, family, genus or species. Therefore these have to be added manually:
 
@@ -128,12 +133,7 @@ predator_occ <- left_join(predator_occ, ScientificNames_predator, by = "scientif
                             gear_type_predator_id5) %>% distinct()
 predator_occ$parentNameUsageID <- as.character(predator_occ$parentNameUsageID)
 
-prey_occ <- NPMSDD_occ %>%
-    dplyr::select(eventID, occurrenceID, occurrenceStatus, lat_min, lat_max, lon_min, lon_max, year_min, year_max, 
-                            season_min, season_max,month_min, month_max, date_min, time_min, time_max, scientificName,
-                            scientificNameID, kingdom, phylum, class, order,family, genus, parentNameUsageID, scientificNameAuthorship, taxonomicStatus, taxonRank,gear_type_predator_id1, gear_type_predator_id2, gear_type_predator_id3, gear_type_predator_id4, gear_type_predator_id5)
-
-# Bind rows
+# Bind rows of both prey_occ and predator_occ to form Occurrence Core. 
 NPMSDD_occ <- bind_rows(prey_occ, predator_occ)
 
 # To re-order the eventID, use following code:
@@ -276,7 +276,7 @@ date <- plyr::rbind.fill(dates, year, months, seasons) %>%
 
 NPMSDD_occ <- left_join(NPMSDD_occ, date, by = "occurrenceID") %>%
   select(eventID, occurrenceID, eventDate, verbatimEventDate, year, month, decimalLatitude, decimalLongitude, footprintWKT, coordinateUncertaintyInMeters, scientificName, scientificNameID, scientificNameAuthorship, parentNameUsageID, occurrenceStatus, kingdom, phylum, class, order, family, genus, taxonomicStatus, taxonRank, gear_type_predator_id1, gear_type_predator_id2, gear_type_predator_id3, gear_type_predator_id4, gear_type_predator_id5) %>%
-  mutate(basisOfRecord = "HumanObservation",
+  mutate(basisOfRecord = "PreservedSpecimen",
          geodeticDatum = "EPSG:4326 WGS84")
 ```
 
