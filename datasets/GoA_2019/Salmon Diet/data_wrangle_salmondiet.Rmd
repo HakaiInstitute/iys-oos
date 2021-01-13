@@ -11,6 +11,7 @@ library(tidyverse)
 library(lubridate)
 library(janitor)
 library(readxl)
+library(worrms)
 library(here)
 library(parsedate)
 library(googledrive)
@@ -29,46 +30,7 @@ drive_download("https://docs.google.com/spreadsheets/d/1E88ZXuiYIqjq4ABl2GDB7Kp0
 
 *** 
 
-First step, is we wanted to see if the data in the salmon diet dataset matches data recorded in the pathogen dataset. The reason for this is that in the pathogen dataset, Floytags and MGL# are attached to the samples, but this appears to be missing in the salmon diet dataset. By cross-referencing, we can gain insight as to which diet data belongs to which Floytag or MGL#. Therefore, we also download the pathogen data.
-
-``` {r file_download2, eval = FALSE}
-# Make sure your folder path exists already (e.g. /Salmon Diet/raw_data)
-drive_download("https://docs.google.com/spreadsheets/d/14YOHGGrU0zi--QHurgC6YVqlJ2GMPdoa/edit#gid=1919082779",
-               path = here::here("Salmon Diet", "raw_data",
-                                 "IYS_GoA_2019_fish_health_pathogen_detections.xlsx"),
-               overwrite = TRUE)
-```
-
-Now read both files from the local folder, and make the minor adjustments in the data (column headers) needed to cross-reference columns `Trawl`, `Species` and `Mass`. 
-
-``` {r, eval = FALSE}
-salmon <- read_excel(here("Salmon Diet", "raw_data", 
-                          "GoA_fish diets_cleaned.xlsx"),
-                     sheet = "Diets_clean") %>%
-  rename(Mass = `Mass, g`) %>%
-  select(Trawl, Species, Mass)
-
-pathogen <- read_excel(here("Salmon Diet", "raw_data",
-                            "IYS_GoA_2019_fish_health_pathogen_detections.xlsx")) %>%
-  mutate(Species = case_when(
-    Species == "Coho" ~ "Oncorhynchus kisutch",
-    Species == "Pink" ~ "Oncorhynchus gorbuscha",
-    Species == "Chum" ~ "Oncorhynchus keta",
-    Species == "Chinook" ~ "Oncorhynchus tschawytschka",
-    Species == "Sockeye" ~ "Oncorhynchus nerka"
-  )) %>%
-  rename(Trawl = Set) %>%
-  select(Trawl, Species, Mass)
-
-# The rows where the is a match can be found using: 
-match <- inner_join(salmon, pathogen) %>% mutate(check = "match")
-# The rows where there is no match can be found using:
-nomatch <- anti_join(salmon, pathogen) %>% mutate(check = "nomatch")
-full <- rbind(match, nomatch)
-full <- full[order(full$Trawl),]
-```
-
-Using the nrow() function we find that there are 52 rows where `Species`, `Trawl` and `Mass` data matches between the salmon diet data and the pathogen data, but 96 rows where there is no match. Unfortunately this means that, in the current state, we cannot cross-reference the pathogen and salmon data for the majority of the fish, and consequently we are not able to use Floytag or MGL# as a common parentEvent. 
+In a first step, we wanted to see if the data in the salmon diet dataset matches data recorded in the pathogen dataset. The reason for this is that in the pathogen dataset, Floytags and MGL# are attached to the samples, but this appears to be missing in the salmon diet dataset. By cross-referencing, we can gain insight as to which diet data belongs to which Floytag or MGL#. Therefore, we also downloaded the pathogen data. We found that there were some data entries (n=52 rows) where `Species`, `Trawl` and `Mass` data matches between the salmon diet data and the pathogen data, but most (n=96 rows) jad no match. Unfortunately this means that, in the current state, we cannot cross-reference the pathogen and salmon data for the majority of the fish, and consequently we are not able to use Floytag or MGL# as a common `parentEventID`. Therefore, we will use the dwc::associatedTaxa to link the stomach content (diet) a salmon individual (unique `occurrenceID`). 
 
 ***
 
@@ -85,21 +47,19 @@ Current problem: Multiple individuals of the same species were caught in a singl
 
 </div>
 
-**Food for thought**: Currently I have the "Salmon caught" be an `event` layer, rather than an `Occurrence`. The measurements associated to the fish, such as `fork length`, `mass` etc are directly linked to the salmon individual. The reason why I currently included the salmon individual in the `Event` Core is because I believe the focus of the dataset is _prey occurrence and prey mass_ in the stomach content of salmon, and to examine whether viewing the salmon as a _sampling instrument_ is a viable option. 
-
 ``` {r data wrangle, eval = FALSE}
-salmon <- read_excel(here("Salmon Diet", "raw_data", 
+salmon <- read_excel(here("datasets", "GoA_2019", "Salmon Diet", "raw_data", 
                        "GoA_fish diets_cleaned.xlsx"), 
                   sheet = "Diets_clean") %>%
   janitor::clean_names() %>%
-  mutate(cruise = "GoA2019",
+  mutate(project = "IYS",
+         cruise = paste(project, "GoA2019", sep = "_"),
          station = paste(cruise, trawl, sep="_Stn"),
-         trawl = paste(station, "trawl1", sep=":"),
-         sample = paste(trawl, species, sep=":")
+         trawl = paste(station, "trawl1", sep=":")
   )
 ```
 
-No metadata is mentioned in the Salmon Diet data as to when and where the trawls took place. To connect the coordinates and time to the eventIDs, this information is taken from the trawl datasheet. Right now I am saving both these files in the Salmon Diet folder, but once all folders and scripts have been QC'd the location/time can be read straight from the Trawl-specific folder. For now, I'm afraid it would cause confusion when committing/pushing to GitHub. 
+No metadata is mentioned in the Salmon Diet data as to when and where the trawls took place. To connect coordinates, date and time to the `eventIDs` this information is taken from the Fish Trawl Abundance or Bridgelog datasheet. Right now I am saving both these files in the Salmon Diet folder, but once all folders and scripts have been QC'd the location/time can be read straight from the Trawl-specific folder. For now, I'm afraid it would cause confusion when committing/pushing to GitHub, as I do not have a finalized version of these datasheets yet. 
 
 ``` {r salmon_datetime, eval = FALSE}
 drive_download(file = "https://docs.google.com/spreadsheets/d/1rtT6L5WSi_UiiXfoS95wnDqA8loc959T/edit#gid=668595086", 
@@ -107,7 +67,8 @@ drive_download(file = "https://docs.google.com/spreadsheets/d/1rtT6L5WSi_UiiXfoS
                                  "2019_GoA_Fish_data_Hakai.xlsx"),
                overwrite = TRUE)
 
-trawl <- read_excel(here("Salmon Diet", "raw_data", "2019_GoA_Fish_data_Hakai.xlsx")) %>%
+trawl <- read_excel(here("datasets", "GoA_2019", "Salmon Diet", "raw_data", 
+                         "2019_GoA_Fish_data_Hakai.xlsx")) %>%
   mutate(eventDate = format_iso_8601(as.POSIXct(UTC_start)),
          eventDate = str_replace(eventDate, "\\+00:00", "Z")) %>%
   mutate(station = paste("GoA2019", NUMBER, sep = "_Stn"))
@@ -116,16 +77,19 @@ trawl <- read_excel(here("Salmon Diet", "raw_data", "2019_GoA_Fish_data_Hakai.xl
 **Please note that the date and coordinates could change as the trawl data is not finalized.** From an NPAFC document () we gather that the trawling was conducted at surface level, to a depth of 30 meters (confirm!). 
 
 ``` {r salmondiet_event, eval = FALSE}
+salmon_project <- salmon %>%
+  select(eventID = project) %>%
+  distinct(eventID)
+
 salmon_cruise <- salmon %>% 
-  select(eventID = cruise) %>%
-  distinct(eventID) %>%
-  mutate(eventRemarks = "cruise")
+  select(eventID = cruise,
+         parentEventID = project) %>%
+  distinct(eventID, .keep_all = TRUE) 
 
 salmon_station <- salmon %>%
   select(eventID = station,
          parentEventID = cruise) %>% 
-  distinct(eventID, .keep_all = TRUE) %>% 
-  mutate(eventRemarks = "station")
+  distinct(eventID, .keep_all = TRUE) 
 
 # Join date and coordinates to trawl. Remember that the date and coordinates are not from the Salmon Diet data sheet, but from the trawl data sheet. Minimum and maximum depth of the trawl be included here as well if the information becomes available. 
 salmon_trawl <- salmon %>%
@@ -149,6 +113,8 @@ salmon_trawl <- salmon_trawl %>%
   mutate(footprintWKT = " ")
 salmon_trawl$footprintWKT <- paste0("POINT (", salmon_trawl$decimalLongitude, " ",
                                      salmon_trawl$decimalLatitude, ")")
+
+# The following bit of code is only necessary if we include salmon individuals in the Event Core, as a layer. 
 
 predator <- salmon_trawl %>%
   mutate(eventID = paste(eventID, species, sep = ":")) %>%
@@ -183,8 +149,7 @@ salmon_sample <- spp_occ %>%
                 eventDate,
                 decimalLatitude,
                 decimalLongitude
-                ) %>%
-  mutate(eventRemarks = "sample")
+                ) 
 
 #salmon_sample <- salmon_sample %>% dplyr::select(-decimalLatitude, -decimalLongitude)
 
@@ -200,11 +165,9 @@ salmon_sample <- spp_occ %>%
 div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 10px;}
 </style>
 <div class = "blue">
-The current dilemma I have is that there is no unique `sampleID` associated with each data entry in the salmon diet data. This makes it difficult to properly structure the dataset. There are two options we can take:
+The current dilemma I have is that there is no unique `sampleID` associated with each data entry in the salmon diet data. This makes it difficult to properly structure the dataset. The option we can have chosen is the following:
 
-Option A: If we want to treat a salmon as a `sampling instrument`, each salmon species should be in the Event Core, rather than in the Occurrence Core. This is a novel technique, I believe salmon haven't really been seen as an instrument to collect data. The measurement or facts (eMOF) associated to the salmon can be linked directly to the event layer. See the layout of option A [here](https://app.diagrams.net/#G1qMPIuqd90pT11CXULX6k48YjKS_5WDUx)
-
-Option B: Alternatively, we create a unique sampleID for each data entry in the salmon diet data, but in that we do not regard the salmon as the sampling instrument (and, additionally, it would be difficult to associate any data to the sampleID). However, this way each salmon in the salmon diet data set would be an `occurrence`, with associated measurements or facts. See the layout of option B [here](https://app.diagrams.net/#G18hDRALexgAs5hQ8k89lsgg7SDI5Ho83H)
+We connect the stomach content (prey) to the `occurrenceID` of the salmon individual through the `associatedTaxa` column. In doing so, we combine two occurrence tables within a single Occurrence Core.
 </div>
 
 Currently the data is reformatted data is structured as shown in **option A**. However, the data standardization is an evolving process so the structure might change. 
@@ -216,7 +179,7 @@ Currently the data is reformatted data is structured as shown in **option A**. H
 # If we treat every salmon entry for which the stomach has been removed and examined as a sampling event, we essentially treat the salmon like a sampling instrument of their direct surroundings! 
 
 # To connect them all together: 
-salmon_event <- bind_rows(salmon_cruise,salmon_station,salmon_trawl, salmon_sample) %>%
+salmon_event <- bind_rows(salmon_cruise,salmon_station,salmon_trawl) %>%
   dplyr::select(eventID, parentEventID, eventDate, decimalLatitude, decimalLongitude, footprintWKT,
                 minimumDepthInMeters, maximumDepthInMeters, eventRemarks) %>%
   mutate(type = "HumanObservation",
@@ -232,10 +195,6 @@ drive_upload(here("Salmon Diet", "tidy_data", "salmon_event.csv"),
 ```
 
 # Occurrence Core
-
-Currently we have opted for Option A, where the salmon caught and examined are in the Event Core, with a single Occurrence Core for the prey occurrences in the stomach content. This option was chosen as the focus of this particular study is on the stomach content, and to understand whether considering salmon as the `sampling instrument` is a viable option. 
-
-The problem in the salmon diet data is that there are sometimes numerous individuals of the same species caught at a station/within a trawl, but these individuals have no defining tag. Additionally, some data entries cover multiple stomachs examined (`N stomachs` > 1), and the associated fork length and mass appear to be averaged across multiple individuals. However, in the current set up it's sometimes not possible to identify which individuals this covers (i.e., no mentioning of Floytags or #MGL).
 
 <style>
 div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 10px;}
@@ -255,6 +214,28 @@ prey_occ <- prey %>%
   dplyr::rename(scientificName = prey) %>%
   mutate(occurrenceStatus = "present",
          occurrenceID = paste(eventID, prey$prey_id, sep = ":"))
+
+prey_species <- unique(prey_occ$scientificName)
+prey_species_scientificnames <- worrms::wm_records_names(prey_species)
+prey_species_scientificnames <- dplyr::bind_rows(prey_species_scientificnames)
+
+# Some species are not properly recorded in the dataset (i.e. th_longipes) and therefore are not recognized by the package. Of these species, we create a vector, with the proper names, and run this through the package as well. 
+
+prey_species_scientificnames_manual <- data.frame(scientificName = as.character(c("Euphausia pacifica",
+                                                                     "Sergestes pacificus",
+                                                                     "Hyperia",
+                                                                     "Thysanoessa spinifera",
+                                                                     "Thysanoessa inspinata",
+                                                                     "Thysanoessa longipes",
+                                                                     "Vanadis",
+                                                                     "Hormiphora cucumis",
+                                                                     "Sebastes",
+                                                                     "Microstomus pacificus")))
+
+prey_species_scientificnames_manual <- worrms::wm_records_names(prey_species_scientificnames_manual$scientificName)
+prey_species_scientificnames_manual <- dplyr::bind_rows(prey_species_scientificnames_manual)
+
+# Two species still have to be added, as they are not found in WoRMS because they are not registered as marine_only species: Coelenterata and Sergestes pacificus. Look these up on WoRMS and add the relevant columns manually. 
 
 prey_occ <- prey_occ %>%
   mutate(scientificNameID = case_when(
