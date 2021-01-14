@@ -215,81 +215,77 @@ prey_occ <- prey %>%
   mutate(occurrenceStatus = "present",
          occurrenceID = paste(eventID, prey$prey_id, sep = ":"))
 
+# Perhaps as first step, create new column with correct scientific names. match_taxa from obistools unfortunately cannot be used as some taxa have been abbreviated and contain underscores, making it impossible for the package to accurately search for their records within WoRMS. 
+
 prey_species <- unique(prey_occ$scientificName)
-prey_species_scientificnames <- worrms::wm_records_names(prey_species)
+prey_species_scientificnames <- worrms::wm_records_names(prey_species, marine_only = FALSE)
 prey_species_scientificnames <- dplyr::bind_rows(prey_species_scientificnames)
 
 # Some species are not properly recorded in the dataset (i.e. th_longipes) and therefore are not recognized by the package. Of these species, we create a vector, with the proper names, and run this through the package as well. 
 
-prey_species_scientificnames_manual <- data.frame(scientificName = as.character(c("Euphausia pacifica",
-                                                                     "Sergestes pacificus",
+prey_species_scientificnames_manual <- data.frame(scientificName = c("Euphausia pacifica",
                                                                      "Hyperia",
                                                                      "Thysanoessa spinifera",
                                                                      "Thysanoessa inspinata",
                                                                      "Thysanoessa longipes",
                                                                      "Vanadis",
                                                                      "Hormiphora cucumis",
-                                                                     "Sebastes",
-                                                                     "Microstomus pacificus")))
+                                                                     "Microstomus pacificus"))
 
 prey_species_scientificnames_manual <- worrms::wm_records_names(prey_species_scientificnames_manual$scientificName)
-prey_species_scientificnames_manual <- dplyr::bind_rows(prey_species_scientificnames_manual)
+prey_species_scientificnames_manual <- dplyr::bind_rows(prey_species_scientificnames_manual) %>% 
+  filter(status == "accepted")
 
-# Two species still have to be added, as they are not found in WoRMS because they are not registered as marine_only species: Coelenterata and Sergestes pacificus. Look these up on WoRMS and add the relevant columns manually. 
+prey_taxa <- rbind(prey_species_scientificnames, prey_species_scientificnames_manual)
 
-prey_occ <- prey_occ %>%
-  mutate(scientificNameID = case_when(
-scientificName == "boreoteuthis_borealis" ~ "urn:lsid:marinespecies.org:taxname:342326",
-# Boreoteuthis is not an accepted genus, Gonatopsis is the accepted version?
-scientificName == "neocalanus_cristatus" ~ "urn:lsid:marinespecies.org:taxname:104470",
-scientificName == "pisces" ~ "urn:lsid:marinespecies.org:taxname:1167",
-scientificName == "tomopteris" ~ "urn:lsid:marinespecies.org:taxname:11676",
-scientificName == "chuneola_major" ~ "urn:lsid:marinespecies.org:taxname:431286" ,
-scientificName == "sergestes_pacificus" ~ " ",
-# Is only the atlantic version accepted?
-scientificName == "e_pacifica" ~ "urn:lsid:marinespecies.org:taxname:237851",
-scientificName == "tarletonbeania_crenularis" ~ "urn:lsid:marinespecies.org:taxname:282927",
-scientificName == "hyperia_sp" ~ "urn:lsid:marinespecies.org:taxname:101796",
-scientificName == "clione_limacina" ~ "urn:lsid:marinespecies.org:taxname:139178",
-scientificName == "th_spinifera" ~ "urn:lsid:marinespecies.org:taxname:237874",
-# Assumption here is made that this concerns Thysanoessa spinifera
-scientificName == "themisto_pacifica" ~ "urn:lsid:marinespecies.org:taxname:254453",
-scientificName == "limacina_helicina" ~ "urn:lsid:marinespecies.org:taxname:140223",
-scientificName == "primno_macropa" ~ "urn:lsid:marinespecies.org:taxname:180759",
-scientificName == "th_inspinata" ~ "urn:lsid:marinespecies.org:taxname:237872",
-# Assumption here is made that 'th' stands for Thysanoessa (genus)
-scientificName == "coelenterata" ~ "urn:lsid:marinespecies.org:taxname:2",
-# Coelenterata is a term encompassing the animal phyla Cnidaria and Ctenophora? 
-# Therefore the lowest common rank is the kingdom Animalia
-scientificName == "vanadis_sp" ~ "urn:lsid:marinespecies.org:taxname:129150",
-scientificName == "sagitta_elegans" ~ "urn:lsid:marinespecies.org:taxname:105440",
-# The accepted name is Parasagitta elegans
-scientificName == "salpa_aspera" ~ "urn:lsid:marinespecies.org:taxname:137270",
-scientificName == "cyclosalpa" ~ "urn:lsid:marinespecies.org:taxname:137227", 
-scientificName == "th_longipes" ~ "urn:lsid:marinespecies.org:taxname:237873",
-# Assumption is made that it is Thysanoessa longipes, Thysanoessa was the only genus in common between longipes, inspinata and spinifera. 
-scientificName == "cephalopoda" ~ "urn:lsid:marinespecies.org:taxname:11707",
-scientificName == "phronima_sedentaria" ~ "urn:lsid:marinespecies.org:taxname:103272",
-scientificName == "oikopleura" ~ "urn:lsid:marinespecies.org:taxname:103367",
-scientificName == "isopoda" ~ "urn:lsid:marinespecies.org:taxname:1131",
-scientificName == "clio_pyramidata" ~ "urn:lsid:marinespecies.org:taxname:139033",
-scientificName == "chormiphora_cucumis" ~ "urn:lsid:marinespecies.org:taxname:106382",
-# Accepted name is Hormiphora cucumis?
-scientificName == "symbolophorus_californiensis" ~ "urn:lsid:marinespecies.org:taxname:272733",
-scientificName == "okutania_anonycha" ~ "urn:lsid:marinespecies.org:taxname:342285",
-# Is the accepted name Berryteuthis anonychus?
-scientificName == "sebastes" ~ "urn:lsid:marinespecies.org:taxname:126175",
-scientificName == "mictostomus_pacificus" ~ "urn:lsid:marinespecies.org:taxname:274294")
-# Spelling error? Accepted name is Microstomus pacificus?
-) 
+# prey_taxa dataframe contains all the taxonomic information on the prey species consumed. However, given that the scientific names differs in spelling often to what has been recorded in the original data (prey_species), the two dataframes cannot be linked. Therefore, cumbersome, I create a new column within prey_species with the correct spelling. This can also be done in the dataframe directly. 
 
-salmon_prey_occ <- prey_occ %>%
-  select(eventID, occurrenceID, scientificName, scientificNameID, occurrenceStatus) %>%
-  mutate(basisOfRecord = "HumanObservation") %>%
-  filter(occurrenceStatus == "present")
+prey_data <- prey_occ %>%
+  mutate(scientificname = case_when(
+    scientificName == "pisces" ~ "Pisces",
+    scientificName == "tomopteris" ~ "Tomopteris",
+    scientificName == "chuneola_major" ~ "Chuneola major",
+    scientificName == "sergestes_pacificus" ~ "Sergestes pacificus",
+    scientificName == "e_pacifica" ~ "Euphausia pacifica",
+    scientificName == "tarletonbeania_crenularis" ~ "Tarletonbeania crenularis",
+    scientificName == "hyperia_sp" ~ "Hyperia",
+    scientificName == "clione_limacina" ~ "Clione limacina",
+    scientificName == "th_spinifera" ~ "Thysanoessa spinifera",
+    scientificName == "themisto_pacifica" ~ "Themisto pacifica",
+    scientificName == "coelenterata" ~ "Coelenterata",
+    scientificName == "boreoteuthis_borealis" ~ "Boreoteuthis borealis",
+    scientificName == "clio_pyramidata" ~ "Clio pyramidata", 
+    scientificName == "neocalanus_cristatus" ~ "Neocalanus cristatus",
+    scientificName == "limacina_helicina" ~ "Limacina helicina",
+    scientificName == "vanadis_sp" ~ "Vanadis",
+    scientificName == "sagitta_elegans" ~ "Sagitta elegans",
+    scientificName == "salpa_aspera" ~ "Salpa aspera",
+    scientificName == "cyclosalpa" ~ "Cyclosalpa", 
+    scientificName == "th_longipes" ~ "Thysanoessa longipes",
+    scientificName == "primno_macropa" ~ "Primno macropa",
+    scientificName == "chormiphora_cucumis" ~ "Hormiphora cucumis",
+    scientificName == "symbolophorus_californiensis" ~ "Symbolophorus californiensis",
+    scientificName == "okutania_anonycha" ~ "Okutania anonycha",
+    scientificName == "cephalopoda" ~ "Cephalopoda",
+    scientificName == "phronima_sedentaria" ~ "Phronima sedentaria",
+    scientificName == "oikopleura" ~ "Oikopleura",
+    scientificName == "isopoda" ~ "Isopoda",
+    scientificName == "th_inspinata" ~ "Thysanoessa inspinata",
+    scientificName == "mictostomus_pacificus" ~ "Microstomus pacificus"
+  ))
+
+all_prey_data <- left_join(prey_data, prey_taxa, by = "scientificname") %>%
+  select(eventID, occurrenceID, occurrenceStatus, scientificname, lsid, authority, status, rank, parentNameUsageID,
+         kingdom, phylum, class, order, family, genus) %>%
+  rename(scientificName = scientificname,
+         scientificNameAuthorship = authority,
+         taxonomicStatus = status,
+         taxonomicRank = rank,
+         scientificNameID = lsid) %>%
+  mutate(basisOfRecord = "HumanObservation")
 
 # Make sure the folder path exists already (e.g. ./Salmon Diet/tidy_data)
-write_csv(salmon_prey_occ, here("Salmon Diet", "tidy_data", "salmon_prey_occ.csv"))
+write_csv(all_prey_data, here("Salmon Diet", "tidy_data", "salmon_prey_occ.csv"))
 drive_upload(here("Salmon Diet", "tidy_data", "salmon_prey_occ.csv"),
              path = "https://drive.google.com/drive/u/0/folders/1pGd2cuvdb25QX7CGm2wC81Emh5O-LdbR",
              name = "salmon_prey_occ.csv",
@@ -306,29 +302,32 @@ predator_occ <- predator %>%
                 n_stomachs) %>%
   dplyr::mutate(occurrenceStatus = "present",
                 organismQuantityType = "stomachs") %>%
-  dplyr::rename(scientificName = species,
-                organismQuantity = n_stomachs) %>%
-  mutate(scientificNameID = case_when(
-scientificName == "Oncorhynchus gorbuscha" ~ "urn:lsid:marinespecies.org:taxname:127182",
-scientificName == "Oncorhynchus kisutch" ~ "urn:lsid:marinespecies.org:taxname:127184",
-scientificName == "Oncorhynchus keta" ~ "urn:lsid:marinespecies.org:taxname:127183",
-scientificName == "Oncorhynchus nerka" ~ "urn:lsid:marinespecies.org:taxname:254569",
-scientificName == "Oncorhynchus tschawytscha" ~ "urn:lsid:marinespecies.org:taxname:158075")) %>%
-  # Accepted name has slightly different species name: O. tshawytscha
-  select(eventID, occurrenceID, scientificName, scientificNameID, occurrenceStatus,
-         organismQuantity, organismQuantityType) %>%
-  distinct()
+  dplyr::rename(scientificname = species,
+                organismQuantity = n_stomachs)
 
-# Join the two occurrence cores:
-diet_data_occ <- full_join(salmon_prey_occ, predator_occ)
+predator_taxa <- unique(predator_occ$scientificname)
+
+# Oncorhynchus tshawytscha was misspelled
+predator_taxa <- gsub("tschawytscha", "tshawytscha", predator_taxa)
+predator_taxa <- worrms::wm_records_names(predator_taxa)
+predator_taxa <- dplyr::bind_rows(predator_taxa)
+
+predator_occ <- left_join(predator_occ, predator_taxa, by = "scientificname") %>%
+  select(eventID, occurrenceID, valid_name, lsid, organismQuantity, organismQuantityType,
+         authority, status, rank, parentNameUsageID, kingdom, phylum, class, order, family, genus) %>%
+  rename(scientificName = valid_name,
+         scientificNameID = lsid,
+         scientificNameAuthorship = authority,
+         taxonomicStatus = status,
+         taxonomicRank = rank) %>%
+  mutate(basisOfRecord = "HumanObservation")
+
+# Join the two occurrence tables:
+diet_data_occ <- full_join(all_prey_data, predator_occ)
 
 # To reorder the eventID, use the following code:
 order <- stringr::str_sort(diet_data_occ$occurrenceID, numeric=TRUE)
 diet_data_occ <- diet_data_occ[match(order, diet_data_occ$occurrenceID),]
-diet_data_occ <- diet_data_occ %>% select(eventID, occurrenceID, occurrenceStatus,
-                                          scientificName, scientificNameID, 
-                                          organismQuantity, organismQuantityType) %>%
-  distinct()
 
 write_csv(diet_data_occ, here("Salmon Diet", "tidy_data", "diet_data_occ.csv"))
 
@@ -354,9 +353,11 @@ drive_upload(here("Salmon Diet", "tidy_data", "salmon_spp_occ.csv"),
              overwrite = TRUE)
 ```
 
-# measurementOrFact Cores
+# measurementOrFact Core
 
-So even though we (currently) have one Occurrence Core for Salmon Diet data, there are two measurement Or Fact tables, one linking directly to the salmon (Event) and the other linking to the stomach content (prey occurrence). Let's start with the first extended measurement Or Fact Core, where we associate measurements of `fork length`, `mass`, `food mass`, `gut fullness index (GFI)`, `N stomachs`, `CFI` and possibly `digested food (unidentified)` to the salmon examined.  
+So even though we (currently) have one Occurrence Core for Salmon Diet data, there are two measurement Or Fact tables, one linking directly to the salmon (Event) and the other linking to the stomach content (prey occurrence). Let's start with the first extended measurement Or Fact Core, where we associate measurements of `fork length`, `mass`, `food mass`, `gut fullness index (GFI)`, `N stomachs`, `CFI` and possibly `digested food (unidentified)` to the salmon examined. 
+
+To do: make sure that the measurementID contains also the number associated to the salmon individual (i.e. Oncorhynchus nerka:1), because as sometimes multiple species within a specific trawl have had their stomach content examined, it should be clear from the measurementID which individual e.g. forklegtn or mass is assigned to. 
 
 ``` {r, eval = FALSE}
 salmon_spp_measurement <- salmon %>%
@@ -376,8 +377,7 @@ salmon_spp_measurement <- salmon %>%
            measurementType == "digested_food" ~ "digested_food"),
     measurementID = paste(measurementID, measurementType, sep = ":"),
     measurementTypeID = case_when(
-    measurementType == "FL" ~ " ",
-    # But standard length: 	http://vocab.nerc.ac.uk/collection/P01/current/SL01XX01/
+    measurementType == "FL" ~ "http://vocab.nerc.ac.uk/collection/P01/current/FL01XX01/",
     measurementType == "mass" ~ "http://vocab.nerc.ac.uk/collection/P24/current/NMASS/",
     measurementType == "food_mass" ~ "http://vocab.nerc.ac.uk/collection/P24/current/NMASS/",
     measurementType == "GFI" ~ " ",
@@ -417,46 +417,48 @@ salmon_prey_measurement <- salmon %>%
          boreoteuthis_borealis:mictostomus_pacificus) %>%
   select(-digested_food) %>%
   pivot_longer(cols = boreoteuthis_borealis:mictostomus_pacificus,
-               names_to = "measurementType",
+               names_to = "digested_prey",
                values_to = "measurementValue") %>%
+  mutate(measurementType = "mass digested prey species") %>%
   filter(!is.na(measurementValue)) %>%
   mutate(measurementID = case_when(
-    measurementType == "boreoteuthis_borealis" ~ paste(measurementID, "b.borealis", sep = ":"),
-    measurementType == "neocalanus_cristatus" ~ paste(measurementID, "n.cristatus", sep = ":"),
-    measurementType == "pisces" ~ paste(measurementID, "pisces", sep = ":"),
-    measurementType == "tomopteris" ~ paste(measurementID, "tomopteris", sep = ":"),
-    measurementType == "chuneola_major" ~ paste(measurementID, "c.major", sep = ":"),
-    measurementType == "sergestes_pacificus" ~ paste(measurementID, "s.pacificus", sep = ":"),
-    measurementType == "e_pacifica" ~ paste(measurementID, "e.pacifica", sep = ":"),
-    measurementType == "tarletonbeania_crenularis" ~ paste(measurementID, "t.crenularis", sep = ":"),
-    measurementType == "hyperia_sp" ~ paste(measurementID, "hyperia_sp", sep = ":"),
-    measurementType == "clione_limacina" ~ paste(measurementID, "c.limacina", sep = ":"),
-    measurementType == "th_spinifera" ~ paste(measurementID, "t.spinifera", sep = ":"),
-    measurementType == "themisto_pacifica" ~ paste(measurementID, "t.pacifica", sep = ":"),
-    measurementType == "limacina_helicina" ~ paste(measurementID, "l.helicina", sep = ":"),
-    measurementType == "primno_macropa" ~ paste(measurementID, "p.macropa", sep = ":"),
-    measurementType == "th_inspinata" ~ paste(measurementID, "t.inspinata", sep = ":"),
-    measurementType == "coelenterata" ~ paste(measurementID, "coelenterata", sep = ":"),
-    measurementType == "vanadis_sp" ~ paste(measurementID, "vanadis_sp", sep = ":"),
-    measurementType == "sagitta_elegans" ~ paste(measurementID, "s.elegans", sep = ":"),
-    measurementType == "salpa_aspera" ~ paste(measurementID, "s.aspera", sep = ":"),
-    measurementType == "cyclosalpa" ~ paste(measurementID, "cyclosalpa", sep = ":"),
-    measurementType == "th_longipes" ~ paste(measurementID, "t.longipes", sep = ":"),
-    measurementType == "cephalopoda" ~ paste(measurementID, "cephalopoda", sep = ":"),
-    measurementType == "phronima_sedentaria" ~ paste(measurementID, "p.sedentaria", sep = ":"),
-    measurementType == "oikopleura" ~ paste(measurementID, "oikopleura", sep = ":"),
-    measurementType == "isopoda" ~ paste(measurementID, "isopoda", sep = ":"),
-    measurementType == "clio_pyramidata" ~ paste(measurementID, "c.pyramidata", sep = ":"),
-    measurementType == "chormiphora_cucumis" ~ paste(measurementID, "c.cucumis", sep = ":"),
-    measurementType == "symbolophorus_californiensis" ~ paste(measurementID, "s.californiensis", sep = ":"),
-    measurementType == "okutania_anonycha" ~ paste(measurementID, "o.anonycha", sep = ":"),
-    measurementType == "sebastes" ~ paste(measurementID, "sebastes", sep = ":"),
-    measurementType == "mictostomus_pacificus" ~ paste(measurementID, "m.pacificus", sep = ":")),
+    digested_prey == "boreoteuthis_borealis" ~ paste(measurementID, "b.borealis", sep = ":"),
+    digested_prey == "neocalanus_cristatus" ~ paste(measurementID, "n.cristatus", sep = ":"),
+    digested_prey == "pisces" ~ paste(measurementID, "pisces", sep = ":"),
+    digested_prey == "tomopteris" ~ paste(measurementID, "tomopteris", sep = ":"),
+    digested_prey == "chuneola_major" ~ paste(measurementID, "c.major", sep = ":"),
+    digested_prey == "sergestes_pacificus" ~ paste(measurementID, "s.pacificus", sep = ":"),
+    digested_prey == "e_pacifica" ~ paste(measurementID, "e.pacifica", sep = ":"),
+    digested_prey == "tarletonbeania_crenularis" ~ paste(measurementID, "t.crenularis", sep = ":"),
+    digested_prey == "hyperia_sp" ~ paste(measurementID, "hyperia_sp", sep = ":"),
+    digested_prey == "clione_limacina" ~ paste(measurementID, "c.limacina", sep = ":"),
+    digested_prey == "th_spinifera" ~ paste(measurementID, "t.spinifera", sep = ":"),
+    digested_prey == "themisto_pacifica" ~ paste(measurementID, "t.pacifica", sep = ":"),
+    digested_prey == "limacina_helicina" ~ paste(measurementID, "l.helicina", sep = ":"),
+    digested_prey == "primno_macropa" ~ paste(measurementID, "p.macropa", sep = ":"),
+    digested_prey == "th_inspinata" ~ paste(measurementID, "t.inspinata", sep = ":"),
+    digested_prey == "coelenterata" ~ paste(measurementID, "coelenterata", sep = ":"),
+    digested_prey == "vanadis_sp" ~ paste(measurementID, "vanadis_sp", sep = ":"),
+    digested_prey == "sagitta_elegans" ~ paste(measurementID, "s.elegans", sep = ":"),
+    digested_prey == "salpa_aspera" ~ paste(measurementID, "s.aspera", sep = ":"),
+    digested_prey == "cyclosalpa" ~ paste(measurementID, "cyclosalpa", sep = ":"),
+    digested_prey == "th_longipes" ~ paste(measurementID, "t.longipes", sep = ":"),
+    digested_prey == "cephalopoda" ~ paste(measurementID, "cephalopoda", sep = ":"),
+    digested_prey == "phronima_sedentaria" ~ paste(measurementID, "p.sedentaria", sep = ":"),
+    digested_prey == "oikopleura" ~ paste(measurementID, "oikopleura", sep = ":"),
+    digested_prey == "isopoda" ~ paste(measurementID, "isopoda", sep = ":"),
+    digested_prey == "clio_pyramidata" ~ paste(measurementID, "c.pyramidata", sep = ":"),
+    digested_prey == "chormiphora_cucumis" ~ paste(measurementID, "c.cucumis", sep = ":"),
+    digested_prey == "symbolophorus_californiensis" ~ paste(measurementID, "s.californiensis", sep = ":"),
+    digested_prey == "okutania_anonycha" ~ paste(measurementID, "o.anonycha", sep = ":"),
+    digested_prey == "sebastes" ~ paste(measurementID, "sebastes", sep = ":"),
+    digested_prey == "mictostomus_pacificus" ~ paste(measurementID, "m.pacificus", sep = ":")),
   measurementUnit = "g",
   measurementUnitID = case_when(
     measurementUnit == "g" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UGRM/"
   )
-  )
+  ) %>%
+  select(measurementID, measurementType, measurementValue, measurementUnit, measurementUnitID)
 
 # Write up csv file and upload to Google Drive folder
 write_csv(salmon_prey_measurement, here("Salmon Diet", "tidy_data", "salmon_prey_measurement.csv"))
