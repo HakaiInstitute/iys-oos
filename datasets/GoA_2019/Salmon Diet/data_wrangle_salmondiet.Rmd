@@ -335,7 +335,7 @@ write_csv(diet_data_occ, here("Salmon Diet", "tidy_data", "diet_data_occ.csv"))
 salmondiet_event_occ <- left_join(salmon_event, diet_data_occ)
 salmondiet_event_occ$associatedTaxa <- " "
 salmondiet_event_occ$associatedTaxa <- ifelse(grepl("pr", salmondiet_event_occ$occurrenceID), 
-paste("prey of: ", salmondiet_event_occ$eventID, sep = ""), "")
+paste('"prey of"', " : ", '"', salmondiet_event_occ$eventID, '"', sep = ""), "")
 salmondiet_event_occ <- salmondiet_event_occ %>%
   mutate(institutionCode = " ",
          collectionCode = " ",
@@ -343,7 +343,6 @@ salmondiet_event_occ <- salmondiet_event_occ %>%
          preparations = " ")
 
 write_csv(salmondiet_event_occ, here("Salmon Diet", "tidy_data", "salmondiet_event_occ.csv"))
-
 
 # Make sure the folder path exists already (e.g. ./Salmon Diet/tidy_data)
 write_csv(salmon_spp_occ, here("Salmon Diet", "tidy_data", "salmon_spp_occ.csv"))
