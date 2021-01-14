@@ -213,7 +213,7 @@ prey_occ <- prey %>%
   dplyr::select(eventID, prey, presence) %>%
   dplyr::rename(scientificName = prey) %>%
   mutate(occurrenceStatus = "present",
-         occurrenceID = paste(eventID, prey$prey_id, sep = ":"))
+         occurrenceID = paste(eventID, prey$prey_id, sep = "-"))
 
 # Perhaps as first step, create new column with correct scientific names. match_taxa from obistools unfortunately cannot be used as some taxa have been abbreviated and contain underscores, making it impossible for the package to accurately search for their records within WoRMS. 
 
@@ -295,7 +295,7 @@ drive_upload(here("Salmon Diet", "tidy_data", "salmon_prey_occ.csv"),
 If we choose option B then the following chunk of code is also needed to create the Occurrence Core specifically for the salmon caught and whose stomach contents have been examined. Somehow through binding rows it duplicates some - I am unsure why. As a result, I've occassionally used distinct() to make sure only unique rows are provided.  
 
 ``` {r salmon_occ, eval = FALSE}
-predator$occurrenceID <- paste(predator$eventID, "p", sep = ":")
+predator$occurrenceID <- paste(predator$eventID, "p", sep = "-")
 
 predator_occ <- predator %>%
   dplyr::select(eventID, occurrenceID, species,
@@ -313,7 +313,7 @@ predator_taxa <- worrms::wm_records_names(predator_taxa)
 predator_taxa <- dplyr::bind_rows(predator_taxa)
 
 predator_occ <- left_join(predator_occ, predator_taxa, by = "scientificname") %>%
-  select(eventID, occurrenceID, valid_name, lsid, organismQuantity, organismQuantityType,
+  select(eventID, occurrenceID, occurrenceStatus, valid_name, lsid, organismQuantity, organismQuantityType,
          authority, status, rank, parentNameUsageID, kingdom, phylum, class, order, family, genus) %>%
   rename(scientificName = valid_name,
          scientificNameID = lsid,
@@ -359,39 +359,40 @@ So even though we (currently) have one Occurrence Core for Salmon Diet data, the
 To do: make sure that the measurementID contains also the number associated to the salmon individual (i.e. Oncorhynchus nerka:1), because as sometimes multiple species within a specific trawl have had their stomach content examined, it should be clear from the measurementID which individual e.g. forklegtn or mass is assigned to. 
 
 ``` {r, eval = FALSE}
-salmon_spp_measurement <- salmon %>%
-  select(measurementID = sample,
+salmon_spp_measurement <- predator %>%
+  select(eventID,
          fl_cm:cfi_percent_adj,
          digested_food) %>%
   pivot_longer(cols = fl_cm:digested_food, 
                names_to = "measurementType",
                values_to = "measurementValue") %>%
+  mutate(measurementID = paste(eventID, "p", sep = "-")) %>%
   mutate(measurementType = case_when(
-           measurementType == "fl_cm" ~ "FL",
-           measurementType == "mass_g" ~ "mass",
-           measurementType == "food_mass_g" ~ "food_mass",
-           measurementType == "gfi_percent" ~ "GFI",
-           measurementType == "n_stomachs" ~ "count",
-           measurementType == "cfi_percent_adj" ~ "CFI",
-           measurementType == "digested_food" ~ "digested_food"),
+           measurementType == "fl_cm" ~ "Forklength",
+           measurementType == "mass_g" ~ "Mass",
+           measurementType == "food_mass_g" ~ "Mass stomach content",
+           measurementType == "gfi_percent" ~ "Gut Fullness Index (GFI)",
+           measurementType == "n_stomachs" ~ "Stomachs examined",
+           measurementType == "cfi_percent_adj" ~ "Comparative Feeding Index (CFI)",
+           measurementType == "digested_food" ~ "Mass digested food (unidentified)"),
     measurementID = paste(measurementID, measurementType, sep = ":"),
     measurementTypeID = case_when(
-    measurementType == "FL" ~ "http://vocab.nerc.ac.uk/collection/P01/current/FL01XX01/",
-    measurementType == "mass" ~ "http://vocab.nerc.ac.uk/collection/P24/current/NMASS/",
-    measurementType == "food_mass" ~ "http://vocab.nerc.ac.uk/collection/P24/current/NMASS/",
-    measurementType == "GFI" ~ " ",
-    measurementType == "count" ~ " ",
-    measurementType == "CFI" ~ " ",
-    measurementType == "digested_food" ~ "http://vocab.nerc.ac.uk/collection/P24/current/NMASS/"),
+    measurementType == "Forklength" ~ "http://vocab.nerc.ac.uk/collection/P01/current/FL01XX01/",
+    measurementType == "Mass" ~ "http://vocab.nerc.ac.uk/collection/P24/current/NMASS/",
+    measurementType == "Mass stomach content" ~ "http://vocab.nerc.ac.uk/collection/P24/current/NMASS/",
+    measurementType == "Gut Fullness Index (GFI)" ~ " ",
+    measurementType == "Stomachs examined" ~ " ",
+    measurementType == "Comparative Feeding Index (CFI)" ~ " ",
+    measurementType == "Mass digested food (unidentified)" ~ "http://vocab.nerc.ac.uk/collection/P24/current/NMASS/"),
          measurementUnit = case_when(
-    measurementType == "FL" ~ "cm",
-    measurementType == "mass" ~ "g",
-    measurementType == "food_mass" ~ "g",
-    measurementType == "GFI" ~ "percent",
-    measurementType == "count" ~ "stomachs",
+    measurementType == "Forklength" ~ "cm",
+    measurementType == "Mass" ~ "g",
+    measurementType == "Mass stomach content" ~ "g",
+    measurementType == "Gut Fullness Index (GFI)" ~ "percent",
+    measurementType == "Stomachs examined" ~ "stomachs",
     # This seems off to me - want to find a better alternative.
-    measurementType == "CFI" ~ "percent",
-    measurementType == "digested_food" ~ "g"),
+    measurementType == "Comparative Feeding Index (CFI)" ~ "percent",
+    measurementType == "Mass digested food (unidentified)" ~ "g"),
          measurementUnitID = case_when(
     measurementUnit == "cm" ~ "http://vocab.nerc.ac.uk/collection/P06/current/ULCM/",
     measurementUnit == "g" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UGRM/",
@@ -411,52 +412,19 @@ drive_upload(here("Salmon Diet", "tidy_data", "salmon_spp_measurement.csv"),
 The second measurement Or Fact table will be created for the stomach content of the salmon species examined. The measurements associated to this Occurrence Core is `mass digested prey species`. First we filter out all the entries of species that were not recorded within a stomach (i.e., where measurementValue = NA)
 
 ``` {r, eval = FALSE}
-salmon_prey_measurement <- salmon %>%
-  select(measurementID = sample,
-         boreoteuthis_borealis:mictostomus_pacificus) %>%
-  select(-digested_food) %>%
-  pivot_longer(cols = boreoteuthis_borealis:mictostomus_pacificus,
-               names_to = "digested_prey",
-               values_to = "measurementValue") %>%
-  mutate(measurementType = "mass digested prey species") %>%
-  filter(!is.na(measurementValue)) %>%
-  mutate(measurementID = case_when(
-    digested_prey == "boreoteuthis_borealis" ~ paste(measurementID, "b.borealis", sep = ":"),
-    digested_prey == "neocalanus_cristatus" ~ paste(measurementID, "n.cristatus", sep = ":"),
-    digested_prey == "pisces" ~ paste(measurementID, "pisces", sep = ":"),
-    digested_prey == "tomopteris" ~ paste(measurementID, "tomopteris", sep = ":"),
-    digested_prey == "chuneola_major" ~ paste(measurementID, "c.major", sep = ":"),
-    digested_prey == "sergestes_pacificus" ~ paste(measurementID, "s.pacificus", sep = ":"),
-    digested_prey == "e_pacifica" ~ paste(measurementID, "e.pacifica", sep = ":"),
-    digested_prey == "tarletonbeania_crenularis" ~ paste(measurementID, "t.crenularis", sep = ":"),
-    digested_prey == "hyperia_sp" ~ paste(measurementID, "hyperia_sp", sep = ":"),
-    digested_prey == "clione_limacina" ~ paste(measurementID, "c.limacina", sep = ":"),
-    digested_prey == "th_spinifera" ~ paste(measurementID, "t.spinifera", sep = ":"),
-    digested_prey == "themisto_pacifica" ~ paste(measurementID, "t.pacifica", sep = ":"),
-    digested_prey == "limacina_helicina" ~ paste(measurementID, "l.helicina", sep = ":"),
-    digested_prey == "primno_macropa" ~ paste(measurementID, "p.macropa", sep = ":"),
-    digested_prey == "th_inspinata" ~ paste(measurementID, "t.inspinata", sep = ":"),
-    digested_prey == "coelenterata" ~ paste(measurementID, "coelenterata", sep = ":"),
-    digested_prey == "vanadis_sp" ~ paste(measurementID, "vanadis_sp", sep = ":"),
-    digested_prey == "sagitta_elegans" ~ paste(measurementID, "s.elegans", sep = ":"),
-    digested_prey == "salpa_aspera" ~ paste(measurementID, "s.aspera", sep = ":"),
-    digested_prey == "cyclosalpa" ~ paste(measurementID, "cyclosalpa", sep = ":"),
-    digested_prey == "th_longipes" ~ paste(measurementID, "t.longipes", sep = ":"),
-    digested_prey == "cephalopoda" ~ paste(measurementID, "cephalopoda", sep = ":"),
-    digested_prey == "phronima_sedentaria" ~ paste(measurementID, "p.sedentaria", sep = ":"),
-    digested_prey == "oikopleura" ~ paste(measurementID, "oikopleura", sep = ":"),
-    digested_prey == "isopoda" ~ paste(measurementID, "isopoda", sep = ":"),
-    digested_prey == "clio_pyramidata" ~ paste(measurementID, "c.pyramidata", sep = ":"),
-    digested_prey == "chormiphora_cucumis" ~ paste(measurementID, "c.cucumis", sep = ":"),
-    digested_prey == "symbolophorus_californiensis" ~ paste(measurementID, "s.californiensis", sep = ":"),
-    digested_prey == "okutania_anonycha" ~ paste(measurementID, "o.anonycha", sep = ":"),
-    digested_prey == "sebastes" ~ paste(measurementID, "sebastes", sep = ":"),
-    digested_prey == "mictostomus_pacificus" ~ paste(measurementID, "m.pacificus", sep = ":")),
-  measurementUnit = "g",
-  measurementUnitID = case_when(
-    measurementUnit == "g" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UGRM/"
-  )
-  ) %>%
+salmon_prey_measurement <- prey_occ %>%
+  select(occurrenceID, 
+         scientificName,
+         presence) %>%
+  dplyr::rename(measurementValue = presence) %>%
+  mutate(measurementType = "Mass",
+         measurementID = paste(occurrenceID, measurementType, sep =":"),
+         measurementTypeID = case_when(
+          measurementType == "Mass" ~ "http://vocab.nerc.ac.uk/collection/P24/current/NMASS/"), 
+         measurementUnit = "g",
+         measurementUnitID = case_when(
+         measurementUnit == "g" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UGRM/"
+  )) %>%
   select(measurementID, measurementType, measurementValue, measurementUnit, measurementUnitID)
 
 # Write up csv file and upload to Google Drive folder
@@ -467,12 +435,19 @@ drive_upload(here("Salmon Diet", "tidy_data", "salmon_prey_measurement.csv"),
              overwrite = TRUE)
 ```
 
-<style>
-div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 10px;}
-</style>
-<div class = "blue">
+Finally, we combine the two eMOF cores 
 
-Should these measurementOrFact cores be combined into a single MeasuremtOrFact Core? 
+``` {r emof_all, eval = FALSE}
+IYS2019_salmondiet_emof <- plyr::rbind.fill(salmon_spp_measurement, salmon_prey_measurement)
 
-</div>
+# To reorder the eventID, use the following code:
+order <- stringr::str_sort(IYS2019_salmondiet_emof$measurementID, numeric=TRUE)
+IYS2019_salmondiet_emof <- IYS2019_salmondiet_emof[match(order, IYS2019_salmondiet_emof$measurementID),]
 
+# Write up csv file and upload to Google Drive folder
+write_csv(IYS2019_salmondiet_emof, here("Salmon Diet", "tidy_data", "salmondiet_emof.csv"))
+drive_upload(here("Salmon Diet", "tidy_data", "salmondiet_emof.csv"),
+             path = "https://drive.google.com/drive/u/0/folders/1pGd2cuvdb25QX7CGm2wC81Emh5O-LdbR",
+             name = "salmondiet_eMOF.csv",
+             overwrite = TRUE)
+```
