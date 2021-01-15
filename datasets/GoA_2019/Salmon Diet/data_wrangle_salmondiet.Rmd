@@ -307,7 +307,8 @@ predator_occ <- predator %>%
 
 predator_taxa <- unique(predator_occ$scientificname)
 
-# Oncorhynchus tshawytscha was misspelled
+# Oncorhynchus tshawytscha was misspelled, so this has to be fixed in both the predator_taxa and predator_occ dataframes:
+predator_occ$scientificname <- gsub("tschawytscha", "tshawytscha", predator_occ$scientificname)
 predator_taxa <- gsub("tschawytscha", "tshawytscha", predator_taxa)
 predator_taxa <- worrms::wm_records_names(predator_taxa)
 predator_taxa <- dplyr::bind_rows(predator_taxa)
@@ -325,6 +326,9 @@ predator_occ <- left_join(predator_occ, predator_taxa, by = "scientificname") %>
 # Join the two occurrence tables:
 diet_data_occ <- full_join(all_prey_data, predator_occ)
 
+# See if there are any duplicates in occurrenceID:
+duplicates <- diet_data_occ %>% janitor::get_dupes(occurrenceID) # No duplicate combinations found of: occurrenceID
+
 # To reorder the eventID, use the following code:
 order <- stringr::str_sort(diet_data_occ$occurrenceID, numeric=TRUE)
 diet_data_occ <- diet_data_occ[match(order, diet_data_occ$occurrenceID),]
@@ -335,12 +339,13 @@ write_csv(diet_data_occ, here("Salmon Diet", "tidy_data", "diet_data_occ.csv"))
 salmondiet_event_occ <- left_join(salmon_event, diet_data_occ)
 salmondiet_event_occ$associatedTaxa <- " "
 salmondiet_event_occ$associatedTaxa <- ifelse(grepl("pr", salmondiet_event_occ$occurrenceID), 
-paste('"prey of"', " : ", '"', salmondiet_event_occ$eventID, '"', sep = ""), "")
+paste('"prey of"', " : ", '"', salmondiet_event_occ$eventID, "-p", '"', sep = ""), "")
 salmondiet_event_occ <- salmondiet_event_occ %>%
   mutate(institutionCode = " ",
          collectionCode = " ",
          catalogNumber = " ",
-         preparations = " ")
+         preparations = " ") %>%
+  distinct() # Had to apply distinct() because somehow the occurrenceID got duplicates for the samples. 
 
 write_csv(salmondiet_event_occ, here("Salmon Diet", "tidy_data", "salmondiet_event_occ.csv"))
 
