@@ -1,0 +1,17 @@
+---
+title: "IYS2019_Juday_Changelog"
+author: "Tim van der Stap"
+date: "1/16/2021"
+output: html_document
+---
+
+This file contains all the steps taken during the data processing from the raw or summarized data to the working file, for the Juday data collected during the 2019 IYS High Seas Expedition. 
+
+***
+
+Juday Summarized Data 2019:
+- In column U (Date), the dates were initially as day,month,year (in that format). I have separated this column and created three new columns `day`, `month`, `year`, as these can be columns under the Darwin Core format also. I've removed the column `Date` as I will recreate this new using those three columns. The format of dates in Excel sometimes is read wrong within R and this simplified it. 
+
+- row 2 [currently blank] is removed from the working file. 
+
+- in column D (Day/Night), I've replaced the Russian symbols with either day or night, where д = d (day), and н = n (night).

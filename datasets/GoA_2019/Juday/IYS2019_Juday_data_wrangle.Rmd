@@ -1,0 +1,98 @@
+---
+title: "Juday Zooplankton Data Wrangle"
+author: "Tim van der Stap"
+date: "1/16/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(lubridate)
+library(worrms)
+library(obistools)
+library(readxl)
+library(here)
+library(parsedate)
+library(googledrive)
+```
+
+## Getting started
+
+The following line only needs to be run once to download the required data sheets from Google Drive to your computer's hard drive.
+
+```{r drive_download}
+# Make sure your folder path exists already (e.g. ./Pathogen/raw_data)
+drive_download("https://docs.google.com/spreadsheets/d/10uFwuEdAWdg9V0pCYFbPGJd3J_MunYnb/edit#gid=983563948",                path = here("Juday", "raw_data", "Juday Net Zoopl Data 2019.xlsx"), overwrite = TRUE)
+
+drive_download("https://docs.google.com/spreadsheets/d/1EsvzXqBuFQo4_ne4i0NejXEkp9BkX4uG/edit#gid=515378096",
+               path = here("Juday", "raw_data", "Juday Summary Data 2019.xlsx"), overwrite = TRUE)
+```
+
+These files contain [and this needs to be confirmed!] the finalized data for the zooplankton collected during the 2019 IYS Expedition. The `Juday Net Zoopl Data 2019.xlsx` file contains the raw data in different sheets, though the information is presented in Russian. The other file, `Summary of corrected zooplankton biomass.xlsx` contains the summarized biomass for different size classes. This file is in English. Initially what I will attempt is create a working (provisional) file of the summarized data (`Juday Summary Data 2019_WF.xlsx`), as this will also include information relevant to the Event Core (date, time, coordinates, sampling depth etc). All changes from the original summarized file to the working file with be recorded in the `Juday_Changelog.Rmd` file. 
+
+``` {r zoopl_juday, eval = FALSE}
+juday <- read_excel(here("Juday", "raw_data", "Juday Summary Data 2019_WF.xlsx")) %>%
+  mutate(Date = paste(Year, Month, Day, sep = "-")) %>%
+  mutate(Time = format(Time, "%H:%M:%S"),
+         eventDate = format_iso_8601(as.POSIXct(paste(Date, Time),
+                                                format = "%Y-%m-%d %H:%M:%S",
+                                                tz = "Asia/Kamchatka")),
+         eventDate = str_replace(eventDate, "\\+00:00", "Z")) %>%
+  mutate(project = "IYS",
+         cruise = paste(project, "GoA2019", sep = ":"),
+         station = paste(cruise, `GoA survey Station Number`, sep = "_Stn"))
+```
+
+## Create the Event core
+
+In the Event Core we include the different metadata information pertaining to the various levels. We need to ensure that the longitude falls within the range of -180 to 180 (inclusive). 
+
+``` {r pathogen_event, eval = FALSE}
+juday_project <- juday %>%
+  select(eventID = project) %>%
+  distinct(eventID)
+
+pathogen_cruise <- pathogen %>% 
+  select(eventID = cruise,
+         parentEventID = project) %>%
+  distinct(eventID, .keep_all = TRUE)
+
+pathogen_station <- pathogen %>%
+  select(eventID = station,
+         parentEventID = cruise) %>% 
+  distinct(eventID, .keep_all = TRUE) 
+
+# Join date and coordinates to trawl. Remember that the date and coordinates are not from the Pathogen data sheet, but from the trawl data sheet. Minimum and maximum depth of the trawl be included here as well if the information becomes available. 
+pathogen_trawl <- salmon %>%
+  left_join(select(
+    trawl,
+    station,
+    UTC_start,
+    X,
+    Y
+  )) %>%
+  select(eventID = trawl,
+         parentEventID = station,
+         eventDate = UTC_start,
+         decimalLatitude = Y,
+         decimalLongitude = X) %>%
+  distinct(eventID, .keep_all = TRUE) %>%
+  mutate(eventRemarks = "trawl")
+
+# The Pathogen data does not include information as to at what depths the trawls were conducted. This information will have to come from the general Trawl data. Should this information become available it should be connected to the general trawl information, along with info such as: speed at which the vessel was traveling during trawl, starting & finish lat/longs of trawl.
+
+# To connect them all together: 
+pathogen_event <- bind_rows(pathogen_cruise,
+                            pathogen_station,
+                            pathogen_trawl) %>%
+  select(eventID, parentEventID:decimalLongitude, eventRemarks) %>%
+  mutate(type = "PreservedSpecimen")
+
+# Make sure the folder path exists already (e.g. ./Salmon Diet/tidy_data)
+write_csv(salmon_event, here("Pathogen", "tidy_data", "pathogen_event.csv"))
+drive_upload(here("Pathogen", "tidy_data", "pathogen_event.csv"),
+             path = " ",
+             name = "pathogen_event.csv",
+             overwrite = TRUE)
+```
