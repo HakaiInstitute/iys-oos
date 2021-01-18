@@ -19,7 +19,7 @@ library(googledrive)
 
 ## Getting started
 
-The following line only needs to be run once to download the required data sheets from Google Drive to your computer's hard drive.
+The following line only needs to be run once to download the required data sheets from Google Drive to your computer's hard drive.  
 
 ```{r drive_download}
 # Make sure your folder path exists already (e.g. ./Pathogen/raw_data)
@@ -31,6 +31,8 @@ drive_download("https://docs.google.com/spreadsheets/d/1EsvzXqBuFQo4_ne4i0NejXEk
 
 These files contain [and this needs to be confirmed!] the finalized data for the zooplankton collected during the 2019 IYS Expedition. The `Juday Net Zoopl Data 2019.xlsx` file contains the raw data in different sheets, though the information is presented in Russian. The other file, `Summary of corrected zooplankton biomass.xlsx` contains the summarized biomass for different size classes. This file is in English. Initially what I will attempt is create a working (provisional) file of the summarized data (`Juday Summary Data 2019_WF.xlsx`), as this will also include information relevant to the Event Core (date, time, coordinates, sampling depth etc). All changes from the original summarized file to the working file with be recorded in the `Juday_Changelog.Rmd` file. 
 
+This .Rmd file will include, at minimum, 6 chunks of code, as I'll be creating an Event, Occurrence and eMOF core for both the summarized and the raw data (once it's translated).
+
 ``` {r zoopl_juday, eval = FALSE}
 juday <- read_excel(here("Juday", "raw_data", "Juday Summary Data 2019_WF.xlsx")) %>%
   mutate(Date = paste(Year, Month, Day, sep = "-")) %>%
@@ -41,58 +43,112 @@ juday <- read_excel(here("Juday", "raw_data", "Juday Summary Data 2019_WF.xlsx")
          eventDate = str_replace(eventDate, "\\+00:00", "Z")) %>%
   mutate(project = "IYS",
          cruise = paste(project, "GoA2019", sep = ":"),
-         station = paste(cruise, `GoA survey Station Number`, sep = "_Stn"))
+         station = paste(cruise, `GoA survey Station Number`, sep = "_Stn"),
+         cast = paste(station, "juday", sep = ":"))
 ```
 
-## Create the Event core
+## Create the Event core - Summarized Juday data
 
-In the Event Core we include the different metadata information pertaining to the various levels. We need to ensure that the longitude falls within the range of -180 to 180 (inclusive). 
+In the Event Core we include the different metadata information pertaining to the various levels. We need to ensure that the longitude falls within the range of -180 to 180 (inclusive). The `Sampling layer` column reflects the depth at which the samples were taken. 
 
 ``` {r pathogen_event, eval = FALSE}
 juday_project <- juday %>%
   select(eventID = project) %>%
   distinct(eventID)
 
-pathogen_cruise <- pathogen %>% 
+juday_cruise <- juday %>% 
   select(eventID = cruise,
          parentEventID = project) %>%
   distinct(eventID, .keep_all = TRUE)
 
-pathogen_station <- pathogen %>%
+juday_station <- juday %>%
   select(eventID = station,
          parentEventID = cruise) %>% 
   distinct(eventID, .keep_all = TRUE) 
 
-# Join date and coordinates to trawl. Remember that the date and coordinates are not from the Pathogen data sheet, but from the trawl data sheet. Minimum and maximum depth of the trawl be included here as well if the information becomes available. 
-pathogen_trawl <- salmon %>%
-  left_join(select(
-    trawl,
-    station,
-    UTC_start,
-    X,
-    Y
-  )) %>%
-  select(eventID = trawl,
+juday_cast <- juday %>%
+  select(eventID = cast,
          parentEventID = station,
-         eventDate = UTC_start,
-         decimalLatitude = Y,
-         decimalLongitude = X) %>%
-  distinct(eventID, .keep_all = TRUE) %>%
-  mutate(eventRemarks = "trawl")
-
-# The Pathogen data does not include information as to at what depths the trawls were conducted. This information will have to come from the general Trawl data. Should this information become available it should be connected to the general trawl information, along with info such as: speed at which the vessel was traveling during trawl, starting & finish lat/longs of trawl.
+         eventDate,
+         decimalLatitude = Latitude,
+         decimalLongitude = Longitude,
+         minimumDepthInMeters = `Sampling layer`,
+         maximumDepthInMeters = `Sampling layer`) %>%
+  mutate(decimalLongitude = decimalLongitude - 360) %>%
+  distinct(eventID, .keep_all = TRUE) 
 
 # To connect them all together: 
-pathogen_event <- bind_rows(pathogen_cruise,
-                            pathogen_station,
-                            pathogen_trawl) %>%
-  select(eventID, parentEventID:decimalLongitude, eventRemarks) %>%
+juday_event_summary <- bind_rows(juday_project,
+                                 juday_cruise,
+                                 juday_station,
+                                 juday_cast) %>%
   mutate(type = "PreservedSpecimen")
 
 # Make sure the folder path exists already (e.g. ./Salmon Diet/tidy_data)
-write_csv(salmon_event, here("Pathogen", "tidy_data", "pathogen_event.csv"))
-drive_upload(here("Pathogen", "tidy_data", "pathogen_event.csv"),
-             path = " ",
-             name = "pathogen_event.csv",
-             overwrite = TRUE)
+write_csv(juday_event_summary, here("Juday", "tidy_data", "juday_event_summary.csv"))
 ```
+
+## Occurrence Core Summarized Juday Data
+
+The Occurrence Core for the summarized Juday Zooplankton data collected during the 2019 IYS High Seas Expedition will include the taxonomic hierarchic information pertaining to the 6 zooplankton groups identified. For this to happen the table will first have to be pivoted to a long format, and filtered for those occurrences where the species or genus was identified in the Juday net.   
+
+``` {r summary_juday_occ, eval = FALSE}
+juday_summary_occ <- juday %>%
+  select(cast,
+         Copepoda:Others) %>%
+  pivot_longer(Copepoda:Others,
+               names_to = "scientificname",
+               values_to = "biomass")
+
+unique_taxa <- unique(juday_summary_occ$scientificname)
+
+worms_check <- obistools::match_taxa(unique_taxa)
+
+# An initial check through the WoRMS database indicates that there is no record of 'Hydromedusa' in that registry. Hydromedusa(e) are the medusa lifestage of the species Hydrozoa. Therefore, in the unique_taxa dataframe the records of Hydromedusa are replaced with Hydrozoa, and at a later stage medusa are added as a lifeStage in the Occurrence Core. Make sure the record is also replaced in the juday_summary_occ dataframe as we'll be joining the two dataframes together by scientificname. The species listed as 'other' will not have a scientificname associated with it. 
+
+# Confirm with data providers that Hydromedusae are Hydrozoa. 
+
+juday_summary_occ$scientificname <- gsub("Hydromedusa", "Hydrozoa", juday_summary_occ$scientificname)
+
+unique_taxa <- unique(juday_summary_occ$scientificname)
+juday_scientificnames <- worrms::wm_records_names(unique_taxa) 
+juday_scientificnames <- dplyr::bind_rows(juday_scientificnames)
+
+IYS2019_juday_occ <- left_join(juday_summary_occ, juday_scientificnames, by = "scientificname") %>%
+  filter(biomass > 0) %>%
+  rename(eventID = cast,
+         scientificName = scientificname,
+         scientificNameID = lsid,
+         taxonomicStatus = status,
+         taxonRank = rank,
+         scientificNameAuthorship = authority) %>%
+  select(eventID, scientificName, scientificNameID, scientificNameAuthorship,
+         taxonomicStatus, taxonRank, parentNameUsageID, kingdom, phylum, class, order, family, genus) %>%
+  mutate(occurrenceStatus = "present",
+         occurrenceID = paste(eventID, "jocc", row_number(), sep = ":"))
+
+# Make sure the folder path exists already (e.g. ./Salmon Diet/tidy_data)
+write_csv(IYS2019_juday_occ, here("Juday", "tidy_data", "juday_occ_summary.csv"))
+```
+
+## extended Measurement or Fact Core Summarized Juday Data
+
+In the follow chunk of code we add the measurements (biomass wet weight) associated to the different zooplankton groups (occurrenceID) and seperated between different size classes. Additionally, measurements or facts related to the sampling (water volume sampled, bottom depth etc) are added also, but linked to the relevant eventID rather than occurrenceID. The values are the biomass of zooplankton (wet weight) per cubic metre (m-3).  
+
+``` {r summary_juday_emof, eval = FALSE}
+juday_summary_emof <- juday %>%
+  select(cast,
+         `Biomass_0.1-0.5 mm`:Others) %>%
+  pivot_longer(cols = `Biomass_0.1-0.5 mm`:Others,
+               values_to = "measurementValue") %>%
+  filter(measurementValue > 0) %>%
+  mutate(measurementUnit = "mg",
+         measurementUnitID = "http://vocab.nerc.ac.uk/collection/P06/current/MGRM/",
+         measurementTypeID = "http://vocab.nerc.ac.uk/collection/S06/current/S0600088/",
+         measurementID = )
+  
+```
+
+
+
+

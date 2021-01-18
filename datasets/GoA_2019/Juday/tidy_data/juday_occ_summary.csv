@@ -1,0 +1,346 @@
+eventID,scientificName,scientificNameID,scientificNameAuthorship,taxonomicStatus,taxonRank,parentNameUsageID,kingdom,phylum,class,order,family,genus,occurrenceStatus,occurrenceID
+IYS:GoA2019_Stn1:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn1:juday:jocc:1
+IYS:GoA2019_Stn1:juday,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,"Cuvier, 1804",accepted,Order,1057250,Animalia,Mollusca,Gastropoda,Pteropoda,NA,NA,present,IYS:GoA2019_Stn1:juday:jocc:2
+IYS:GoA2019_Stn1:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn1:juday:jocc:3
+IYS:GoA2019_Stn1:juday,Hydrozoa,urn:lsid:marinespecies.org:taxname:1337,"Owen, 1843",accepted,Class,1267,Animalia,Cnidaria,Hydrozoa,NA,NA,NA,present,IYS:GoA2019_Stn1:juday:jocc:4
+IYS:GoA2019_Stn1:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn1:juday:jocc:5
+IYS:GoA2019_Stn2:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn2:juday:jocc:6
+IYS:GoA2019_Stn2:juday,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,"Dana, 1852",accepted,Order,1089,Animalia,Arthropoda,Malacostraca,Euphausiacea,NA,NA,present,IYS:GoA2019_Stn2:juday:jocc:7
+IYS:GoA2019_Stn2:juday,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,"Cuvier, 1804",accepted,Order,1057250,Animalia,Mollusca,Gastropoda,Pteropoda,NA,NA,present,IYS:GoA2019_Stn2:juday:jocc:8
+IYS:GoA2019_Stn2:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn2:juday:jocc:9
+IYS:GoA2019_Stn2:juday,Hydrozoa,urn:lsid:marinespecies.org:taxname:1337,"Owen, 1843",accepted,Class,1267,Animalia,Cnidaria,Hydrozoa,NA,NA,NA,present,IYS:GoA2019_Stn2:juday:jocc:10
+IYS:GoA2019_Stn2:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn2:juday:jocc:11
+IYS:GoA2019_Stn3:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn3:juday:jocc:12
+IYS:GoA2019_Stn3:juday,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,"Dana, 1852",accepted,Order,1089,Animalia,Arthropoda,Malacostraca,Euphausiacea,NA,NA,present,IYS:GoA2019_Stn3:juday:jocc:13
+IYS:GoA2019_Stn3:juday,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,"Cuvier, 1804",accepted,Order,1057250,Animalia,Mollusca,Gastropoda,Pteropoda,NA,NA,present,IYS:GoA2019_Stn3:juday:jocc:14
+IYS:GoA2019_Stn3:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn3:juday:jocc:15
+IYS:GoA2019_Stn3:juday,Hydrozoa,urn:lsid:marinespecies.org:taxname:1337,"Owen, 1843",accepted,Class,1267,Animalia,Cnidaria,Hydrozoa,NA,NA,NA,present,IYS:GoA2019_Stn3:juday:jocc:16
+IYS:GoA2019_Stn3:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn3:juday:jocc:17
+IYS:GoA2019_Stn4:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn4:juday:jocc:18
+IYS:GoA2019_Stn4:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn4:juday:jocc:19
+IYS:GoA2019_Stn4:juday,Hydrozoa,urn:lsid:marinespecies.org:taxname:1337,"Owen, 1843",accepted,Class,1267,Animalia,Cnidaria,Hydrozoa,NA,NA,NA,present,IYS:GoA2019_Stn4:juday:jocc:20
+IYS:GoA2019_Stn4:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn4:juday:jocc:21
+IYS:GoA2019_Stn5:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn5:juday:jocc:22
+IYS:GoA2019_Stn5:juday,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,"Dana, 1852",accepted,Order,1089,Animalia,Arthropoda,Malacostraca,Euphausiacea,NA,NA,present,IYS:GoA2019_Stn5:juday:jocc:23
+IYS:GoA2019_Stn5:juday,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,"Cuvier, 1804",accepted,Order,1057250,Animalia,Mollusca,Gastropoda,Pteropoda,NA,NA,present,IYS:GoA2019_Stn5:juday:jocc:24
+IYS:GoA2019_Stn5:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn5:juday:jocc:25
+IYS:GoA2019_Stn5:juday,Hydrozoa,urn:lsid:marinespecies.org:taxname:1337,"Owen, 1843",accepted,Class,1267,Animalia,Cnidaria,Hydrozoa,NA,NA,NA,present,IYS:GoA2019_Stn5:juday:jocc:26
+IYS:GoA2019_Stn5:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn5:juday:jocc:27
+IYS:GoA2019_Stn6:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn6:juday:jocc:28
+IYS:GoA2019_Stn6:juday,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,"Dana, 1852",accepted,Order,1089,Animalia,Arthropoda,Malacostraca,Euphausiacea,NA,NA,present,IYS:GoA2019_Stn6:juday:jocc:29
+IYS:GoA2019_Stn6:juday,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,"Latreille, 1816",accepted,Order,1090,Animalia,Arthropoda,Malacostraca,Amphipoda,NA,NA,present,IYS:GoA2019_Stn6:juday:jocc:30
+IYS:GoA2019_Stn6:juday,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,"Cuvier, 1804",accepted,Order,1057250,Animalia,Mollusca,Gastropoda,Pteropoda,NA,NA,present,IYS:GoA2019_Stn6:juday:jocc:31
+IYS:GoA2019_Stn6:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn6:juday:jocc:32
+IYS:GoA2019_Stn6:juday,Hydrozoa,urn:lsid:marinespecies.org:taxname:1337,"Owen, 1843",accepted,Class,1267,Animalia,Cnidaria,Hydrozoa,NA,NA,NA,present,IYS:GoA2019_Stn6:juday:jocc:33
+IYS:GoA2019_Stn6:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn6:juday:jocc:34
+IYS:GoA2019_Stn7:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn7:juday:jocc:35
+IYS:GoA2019_Stn7:juday,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,"Dana, 1852",accepted,Order,1089,Animalia,Arthropoda,Malacostraca,Euphausiacea,NA,NA,present,IYS:GoA2019_Stn7:juday:jocc:36
+IYS:GoA2019_Stn7:juday,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,"Latreille, 1816",accepted,Order,1090,Animalia,Arthropoda,Malacostraca,Amphipoda,NA,NA,present,IYS:GoA2019_Stn7:juday:jocc:37
+IYS:GoA2019_Stn7:juday,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,"Cuvier, 1804",accepted,Order,1057250,Animalia,Mollusca,Gastropoda,Pteropoda,NA,NA,present,IYS:GoA2019_Stn7:juday:jocc:38
+IYS:GoA2019_Stn7:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn7:juday:jocc:39
+IYS:GoA2019_Stn7:juday,Hydrozoa,urn:lsid:marinespecies.org:taxname:1337,"Owen, 1843",accepted,Class,1267,Animalia,Cnidaria,Hydrozoa,NA,NA,NA,present,IYS:GoA2019_Stn7:juday:jocc:40
+IYS:GoA2019_Stn7:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn7:juday:jocc:41
+IYS:GoA2019_Stn8:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn8:juday:jocc:42
+IYS:GoA2019_Stn8:juday,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,"Dana, 1852",accepted,Order,1089,Animalia,Arthropoda,Malacostraca,Euphausiacea,NA,NA,present,IYS:GoA2019_Stn8:juday:jocc:43
+IYS:GoA2019_Stn8:juday,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,"Latreille, 1816",accepted,Order,1090,Animalia,Arthropoda,Malacostraca,Amphipoda,NA,NA,present,IYS:GoA2019_Stn8:juday:jocc:44
+IYS:GoA2019_Stn8:juday,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,"Cuvier, 1804",accepted,Order,1057250,Animalia,Mollusca,Gastropoda,Pteropoda,NA,NA,present,IYS:GoA2019_Stn8:juday:jocc:45
+IYS:GoA2019_Stn8:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn8:juday:jocc:46
+IYS:GoA2019_Stn8:juday,Hydrozoa,urn:lsid:marinespecies.org:taxname:1337,"Owen, 1843",accepted,Class,1267,Animalia,Cnidaria,Hydrozoa,NA,NA,NA,present,IYS:GoA2019_Stn8:juday:jocc:47
+IYS:GoA2019_Stn8:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn8:juday:jocc:48
+IYS:GoA2019_Stn9:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn9:juday:jocc:49
+IYS:GoA2019_Stn9:juday,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,"Dana, 1852",accepted,Order,1089,Animalia,Arthropoda,Malacostraca,Euphausiacea,NA,NA,present,IYS:GoA2019_Stn9:juday:jocc:50
+IYS:GoA2019_Stn9:juday,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,"Latreille, 1816",accepted,Order,1090,Animalia,Arthropoda,Malacostraca,Amphipoda,NA,NA,present,IYS:GoA2019_Stn9:juday:jocc:51
+IYS:GoA2019_Stn9:juday,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,"Cuvier, 1804",accepted,Order,1057250,Animalia,Mollusca,Gastropoda,Pteropoda,NA,NA,present,IYS:GoA2019_Stn9:juday:jocc:52
+IYS:GoA2019_Stn9:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn9:juday:jocc:53
+IYS:GoA2019_Stn9:juday,Hydrozoa,urn:lsid:marinespecies.org:taxname:1337,"Owen, 1843",accepted,Class,1267,Animalia,Cnidaria,Hydrozoa,NA,NA,NA,present,IYS:GoA2019_Stn9:juday:jocc:54
+IYS:GoA2019_Stn9:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn9:juday:jocc:55
+IYS:GoA2019_Stn10:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn10:juday:jocc:56
+IYS:GoA2019_Stn10:juday,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,"Dana, 1852",accepted,Order,1089,Animalia,Arthropoda,Malacostraca,Euphausiacea,NA,NA,present,IYS:GoA2019_Stn10:juday:jocc:57
+IYS:GoA2019_Stn10:juday,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,"Latreille, 1816",accepted,Order,1090,Animalia,Arthropoda,Malacostraca,Amphipoda,NA,NA,present,IYS:GoA2019_Stn10:juday:jocc:58
+IYS:GoA2019_Stn10:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn10:juday:jocc:59
+IYS:GoA2019_Stn10:juday,Hydrozoa,urn:lsid:marinespecies.org:taxname:1337,"Owen, 1843",accepted,Class,1267,Animalia,Cnidaria,Hydrozoa,NA,NA,NA,present,IYS:GoA2019_Stn10:juday:jocc:60
+IYS:GoA2019_Stn10:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn10:juday:jocc:61
+IYS:GoA2019_Stn11:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn11:juday:jocc:62
+IYS:GoA2019_Stn11:juday,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,"Dana, 1852",accepted,Order,1089,Animalia,Arthropoda,Malacostraca,Euphausiacea,NA,NA,present,IYS:GoA2019_Stn11:juday:jocc:63
+IYS:GoA2019_Stn11:juday,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,"Latreille, 1816",accepted,Order,1090,Animalia,Arthropoda,Malacostraca,Amphipoda,NA,NA,present,IYS:GoA2019_Stn11:juday:jocc:64
+IYS:GoA2019_Stn11:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn11:juday:jocc:65
+IYS:GoA2019_Stn11:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn11:juday:jocc:66
+IYS:GoA2019_Stn12:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn12:juday:jocc:67
+IYS:GoA2019_Stn12:juday,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,"Cuvier, 1804",accepted,Order,1057250,Animalia,Mollusca,Gastropoda,Pteropoda,NA,NA,present,IYS:GoA2019_Stn12:juday:jocc:68
+IYS:GoA2019_Stn12:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn12:juday:jocc:69
+IYS:GoA2019_Stn12:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn12:juday:jocc:70
+IYS:GoA2019_Stn13:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn13:juday:jocc:71
+IYS:GoA2019_Stn13:juday,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,"Dana, 1852",accepted,Order,1089,Animalia,Arthropoda,Malacostraca,Euphausiacea,NA,NA,present,IYS:GoA2019_Stn13:juday:jocc:72
+IYS:GoA2019_Stn13:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn13:juday:jocc:73
+IYS:GoA2019_Stn13:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn13:juday:jocc:74
+IYS:GoA2019_Stn14:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn14:juday:jocc:75
+IYS:GoA2019_Stn14:juday,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,"Dana, 1852",accepted,Order,1089,Animalia,Arthropoda,Malacostraca,Euphausiacea,NA,NA,present,IYS:GoA2019_Stn14:juday:jocc:76
+IYS:GoA2019_Stn14:juday,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,"Latreille, 1816",accepted,Order,1090,Animalia,Arthropoda,Malacostraca,Amphipoda,NA,NA,present,IYS:GoA2019_Stn14:juday:jocc:77
+IYS:GoA2019_Stn14:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn14:juday:jocc:78
+IYS:GoA2019_Stn14:juday,Hydrozoa,urn:lsid:marinespecies.org:taxname:1337,"Owen, 1843",accepted,Class,1267,Animalia,Cnidaria,Hydrozoa,NA,NA,NA,present,IYS:GoA2019_Stn14:juday:jocc:79
+IYS:GoA2019_Stn14:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn14:juday:jocc:80
+IYS:GoA2019_Stn15:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn15:juday:jocc:81
+IYS:GoA2019_Stn15:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn15:juday:jocc:82
+IYS:GoA2019_Stn15:juday,Hydrozoa,urn:lsid:marinespecies.org:taxname:1337,"Owen, 1843",accepted,Class,1267,Animalia,Cnidaria,Hydrozoa,NA,NA,NA,present,IYS:GoA2019_Stn15:juday:jocc:83
+IYS:GoA2019_Stn15:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn15:juday:jocc:84
+IYS:GoA2019_Stn16:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn16:juday:jocc:85
+IYS:GoA2019_Stn16:juday,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,"Dana, 1852",accepted,Order,1089,Animalia,Arthropoda,Malacostraca,Euphausiacea,NA,NA,present,IYS:GoA2019_Stn16:juday:jocc:86
+IYS:GoA2019_Stn16:juday,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,"Latreille, 1816",accepted,Order,1090,Animalia,Arthropoda,Malacostraca,Amphipoda,NA,NA,present,IYS:GoA2019_Stn16:juday:jocc:87
+IYS:GoA2019_Stn16:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn16:juday:jocc:88
+IYS:GoA2019_Stn16:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn16:juday:jocc:89
+IYS:GoA2019_Stn17:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn17:juday:jocc:90
+IYS:GoA2019_Stn17:juday,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,"Dana, 1852",accepted,Order,1089,Animalia,Arthropoda,Malacostraca,Euphausiacea,NA,NA,present,IYS:GoA2019_Stn17:juday:jocc:91
+IYS:GoA2019_Stn17:juday,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,"Latreille, 1816",accepted,Order,1090,Animalia,Arthropoda,Malacostraca,Amphipoda,NA,NA,present,IYS:GoA2019_Stn17:juday:jocc:92
+IYS:GoA2019_Stn17:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn17:juday:jocc:93
+IYS:GoA2019_Stn17:juday,Hydrozoa,urn:lsid:marinespecies.org:taxname:1337,"Owen, 1843",accepted,Class,1267,Animalia,Cnidaria,Hydrozoa,NA,NA,NA,present,IYS:GoA2019_Stn17:juday:jocc:94
+IYS:GoA2019_Stn17:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn17:juday:jocc:95
+IYS:GoA2019_Stn18:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn18:juday:jocc:96
+IYS:GoA2019_Stn18:juday,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,"Dana, 1852",accepted,Order,1089,Animalia,Arthropoda,Malacostraca,Euphausiacea,NA,NA,present,IYS:GoA2019_Stn18:juday:jocc:97
+IYS:GoA2019_Stn18:juday,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,"Latreille, 1816",accepted,Order,1090,Animalia,Arthropoda,Malacostraca,Amphipoda,NA,NA,present,IYS:GoA2019_Stn18:juday:jocc:98
+IYS:GoA2019_Stn18:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn18:juday:jocc:99
+IYS:GoA2019_Stn18:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn18:juday:jocc:100
+IYS:GoA2019_Stn19:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn19:juday:jocc:101
+IYS:GoA2019_Stn19:juday,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,"Dana, 1852",accepted,Order,1089,Animalia,Arthropoda,Malacostraca,Euphausiacea,NA,NA,present,IYS:GoA2019_Stn19:juday:jocc:102
+IYS:GoA2019_Stn19:juday,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,"Latreille, 1816",accepted,Order,1090,Animalia,Arthropoda,Malacostraca,Amphipoda,NA,NA,present,IYS:GoA2019_Stn19:juday:jocc:103
+IYS:GoA2019_Stn19:juday,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,"Cuvier, 1804",accepted,Order,1057250,Animalia,Mollusca,Gastropoda,Pteropoda,NA,NA,present,IYS:GoA2019_Stn19:juday:jocc:104
+IYS:GoA2019_Stn19:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn19:juday:jocc:105
+IYS:GoA2019_Stn19:juday,Hydrozoa,urn:lsid:marinespecies.org:taxname:1337,"Owen, 1843",accepted,Class,1267,Animalia,Cnidaria,Hydrozoa,NA,NA,NA,present,IYS:GoA2019_Stn19:juday:jocc:106
+IYS:GoA2019_Stn19:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn19:juday:jocc:107
+IYS:GoA2019_Stn20:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn20:juday:jocc:108
+IYS:GoA2019_Stn20:juday,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,"Dana, 1852",accepted,Order,1089,Animalia,Arthropoda,Malacostraca,Euphausiacea,NA,NA,present,IYS:GoA2019_Stn20:juday:jocc:109
+IYS:GoA2019_Stn20:juday,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,"Latreille, 1816",accepted,Order,1090,Animalia,Arthropoda,Malacostraca,Amphipoda,NA,NA,present,IYS:GoA2019_Stn20:juday:jocc:110
+IYS:GoA2019_Stn20:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn20:juday:jocc:111
+IYS:GoA2019_Stn20:juday,Hydrozoa,urn:lsid:marinespecies.org:taxname:1337,"Owen, 1843",accepted,Class,1267,Animalia,Cnidaria,Hydrozoa,NA,NA,NA,present,IYS:GoA2019_Stn20:juday:jocc:112
+IYS:GoA2019_Stn20:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn20:juday:jocc:113
+IYS:GoA2019_Stn21:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn21:juday:jocc:114
+IYS:GoA2019_Stn21:juday,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,"Latreille, 1816",accepted,Order,1090,Animalia,Arthropoda,Malacostraca,Amphipoda,NA,NA,present,IYS:GoA2019_Stn21:juday:jocc:115
+IYS:GoA2019_Stn21:juday,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,"Cuvier, 1804",accepted,Order,1057250,Animalia,Mollusca,Gastropoda,Pteropoda,NA,NA,present,IYS:GoA2019_Stn21:juday:jocc:116
+IYS:GoA2019_Stn21:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn21:juday:jocc:117
+IYS:GoA2019_Stn21:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn21:juday:jocc:118
+IYS:GoA2019_Stn22:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn22:juday:jocc:119
+IYS:GoA2019_Stn22:juday,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,"Dana, 1852",accepted,Order,1089,Animalia,Arthropoda,Malacostraca,Euphausiacea,NA,NA,present,IYS:GoA2019_Stn22:juday:jocc:120
+IYS:GoA2019_Stn22:juday,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,"Latreille, 1816",accepted,Order,1090,Animalia,Arthropoda,Malacostraca,Amphipoda,NA,NA,present,IYS:GoA2019_Stn22:juday:jocc:121
+IYS:GoA2019_Stn22:juday,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,"Cuvier, 1804",accepted,Order,1057250,Animalia,Mollusca,Gastropoda,Pteropoda,NA,NA,present,IYS:GoA2019_Stn22:juday:jocc:122
+IYS:GoA2019_Stn22:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn22:juday:jocc:123
+IYS:GoA2019_Stn22:juday,Hydrozoa,urn:lsid:marinespecies.org:taxname:1337,"Owen, 1843",accepted,Class,1267,Animalia,Cnidaria,Hydrozoa,NA,NA,NA,present,IYS:GoA2019_Stn22:juday:jocc:124
+IYS:GoA2019_Stn22:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn22:juday:jocc:125
+IYS:GoA2019_Stn23:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn23:juday:jocc:126
+IYS:GoA2019_Stn23:juday,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,"Dana, 1852",accepted,Order,1089,Animalia,Arthropoda,Malacostraca,Euphausiacea,NA,NA,present,IYS:GoA2019_Stn23:juday:jocc:127
+IYS:GoA2019_Stn23:juday,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,"Latreille, 1816",accepted,Order,1090,Animalia,Arthropoda,Malacostraca,Amphipoda,NA,NA,present,IYS:GoA2019_Stn23:juday:jocc:128
+IYS:GoA2019_Stn23:juday,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,"Cuvier, 1804",accepted,Order,1057250,Animalia,Mollusca,Gastropoda,Pteropoda,NA,NA,present,IYS:GoA2019_Stn23:juday:jocc:129
+IYS:GoA2019_Stn23:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn23:juday:jocc:130
+IYS:GoA2019_Stn24:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn24:juday:jocc:131
+IYS:GoA2019_Stn24:juday,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,"Cuvier, 1804",accepted,Order,1057250,Animalia,Mollusca,Gastropoda,Pteropoda,NA,NA,present,IYS:GoA2019_Stn24:juday:jocc:132
+IYS:GoA2019_Stn24:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn24:juday:jocc:133
+IYS:GoA2019_Stn24:juday,Hydrozoa,urn:lsid:marinespecies.org:taxname:1337,"Owen, 1843",accepted,Class,1267,Animalia,Cnidaria,Hydrozoa,NA,NA,NA,present,IYS:GoA2019_Stn24:juday:jocc:134
+IYS:GoA2019_Stn24:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn24:juday:jocc:135
+IYS:GoA2019_Stn25:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn25:juday:jocc:136
+IYS:GoA2019_Stn25:juday,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,"Dana, 1852",accepted,Order,1089,Animalia,Arthropoda,Malacostraca,Euphausiacea,NA,NA,present,IYS:GoA2019_Stn25:juday:jocc:137
+IYS:GoA2019_Stn25:juday,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,"Latreille, 1816",accepted,Order,1090,Animalia,Arthropoda,Malacostraca,Amphipoda,NA,NA,present,IYS:GoA2019_Stn25:juday:jocc:138
+IYS:GoA2019_Stn25:juday,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,"Cuvier, 1804",accepted,Order,1057250,Animalia,Mollusca,Gastropoda,Pteropoda,NA,NA,present,IYS:GoA2019_Stn25:juday:jocc:139
+IYS:GoA2019_Stn25:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn25:juday:jocc:140
+IYS:GoA2019_Stn25:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn25:juday:jocc:141
+IYS:GoA2019_Stn26:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn26:juday:jocc:142
+IYS:GoA2019_Stn26:juday,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,"Dana, 1852",accepted,Order,1089,Animalia,Arthropoda,Malacostraca,Euphausiacea,NA,NA,present,IYS:GoA2019_Stn26:juday:jocc:143
+IYS:GoA2019_Stn26:juday,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,"Latreille, 1816",accepted,Order,1090,Animalia,Arthropoda,Malacostraca,Amphipoda,NA,NA,present,IYS:GoA2019_Stn26:juday:jocc:144
+IYS:GoA2019_Stn26:juday,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,"Cuvier, 1804",accepted,Order,1057250,Animalia,Mollusca,Gastropoda,Pteropoda,NA,NA,present,IYS:GoA2019_Stn26:juday:jocc:145
+IYS:GoA2019_Stn26:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn26:juday:jocc:146
+IYS:GoA2019_Stn26:juday,Hydrozoa,urn:lsid:marinespecies.org:taxname:1337,"Owen, 1843",accepted,Class,1267,Animalia,Cnidaria,Hydrozoa,NA,NA,NA,present,IYS:GoA2019_Stn26:juday:jocc:147
+IYS:GoA2019_Stn26:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn26:juday:jocc:148
+IYS:GoA2019_Stn27:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn27:juday:jocc:149
+IYS:GoA2019_Stn27:juday,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,"Dana, 1852",accepted,Order,1089,Animalia,Arthropoda,Malacostraca,Euphausiacea,NA,NA,present,IYS:GoA2019_Stn27:juday:jocc:150
+IYS:GoA2019_Stn27:juday,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,"Latreille, 1816",accepted,Order,1090,Animalia,Arthropoda,Malacostraca,Amphipoda,NA,NA,present,IYS:GoA2019_Stn27:juday:jocc:151
+IYS:GoA2019_Stn27:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn27:juday:jocc:152
+IYS:GoA2019_Stn27:juday,Hydrozoa,urn:lsid:marinespecies.org:taxname:1337,"Owen, 1843",accepted,Class,1267,Animalia,Cnidaria,Hydrozoa,NA,NA,NA,present,IYS:GoA2019_Stn27:juday:jocc:153
+IYS:GoA2019_Stn27:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn27:juday:jocc:154
+IYS:GoA2019_Stn28:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn28:juday:jocc:155
+IYS:GoA2019_Stn28:juday,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,"Dana, 1852",accepted,Order,1089,Animalia,Arthropoda,Malacostraca,Euphausiacea,NA,NA,present,IYS:GoA2019_Stn28:juday:jocc:156
+IYS:GoA2019_Stn28:juday,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,"Cuvier, 1804",accepted,Order,1057250,Animalia,Mollusca,Gastropoda,Pteropoda,NA,NA,present,IYS:GoA2019_Stn28:juday:jocc:157
+IYS:GoA2019_Stn28:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn28:juday:jocc:158
+IYS:GoA2019_Stn28:juday,Hydrozoa,urn:lsid:marinespecies.org:taxname:1337,"Owen, 1843",accepted,Class,1267,Animalia,Cnidaria,Hydrozoa,NA,NA,NA,present,IYS:GoA2019_Stn28:juday:jocc:159
+IYS:GoA2019_Stn28:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn28:juday:jocc:160
+IYS:GoA2019_Stn29:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn29:juday:jocc:161
+IYS:GoA2019_Stn29:juday,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,"Dana, 1852",accepted,Order,1089,Animalia,Arthropoda,Malacostraca,Euphausiacea,NA,NA,present,IYS:GoA2019_Stn29:juday:jocc:162
+IYS:GoA2019_Stn29:juday,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,"Cuvier, 1804",accepted,Order,1057250,Animalia,Mollusca,Gastropoda,Pteropoda,NA,NA,present,IYS:GoA2019_Stn29:juday:jocc:163
+IYS:GoA2019_Stn29:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn29:juday:jocc:164
+IYS:GoA2019_Stn29:juday,Hydrozoa,urn:lsid:marinespecies.org:taxname:1337,"Owen, 1843",accepted,Class,1267,Animalia,Cnidaria,Hydrozoa,NA,NA,NA,present,IYS:GoA2019_Stn29:juday:jocc:165
+IYS:GoA2019_Stn29:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn29:juday:jocc:166
+IYS:GoA2019_Stn30:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn30:juday:jocc:167
+IYS:GoA2019_Stn30:juday,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,"Cuvier, 1804",accepted,Order,1057250,Animalia,Mollusca,Gastropoda,Pteropoda,NA,NA,present,IYS:GoA2019_Stn30:juday:jocc:168
+IYS:GoA2019_Stn30:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn30:juday:jocc:169
+IYS:GoA2019_Stn30:juday,Hydrozoa,urn:lsid:marinespecies.org:taxname:1337,"Owen, 1843",accepted,Class,1267,Animalia,Cnidaria,Hydrozoa,NA,NA,NA,present,IYS:GoA2019_Stn30:juday:jocc:170
+IYS:GoA2019_Stn30:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn30:juday:jocc:171
+IYS:GoA2019_Stn31:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn31:juday:jocc:172
+IYS:GoA2019_Stn31:juday,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,"Dana, 1852",accepted,Order,1089,Animalia,Arthropoda,Malacostraca,Euphausiacea,NA,NA,present,IYS:GoA2019_Stn31:juday:jocc:173
+IYS:GoA2019_Stn31:juday,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,"Latreille, 1816",accepted,Order,1090,Animalia,Arthropoda,Malacostraca,Amphipoda,NA,NA,present,IYS:GoA2019_Stn31:juday:jocc:174
+IYS:GoA2019_Stn31:juday,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,"Cuvier, 1804",accepted,Order,1057250,Animalia,Mollusca,Gastropoda,Pteropoda,NA,NA,present,IYS:GoA2019_Stn31:juday:jocc:175
+IYS:GoA2019_Stn31:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn31:juday:jocc:176
+IYS:GoA2019_Stn31:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn31:juday:jocc:177
+IYS:GoA2019_Stn32:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn32:juday:jocc:178
+IYS:GoA2019_Stn32:juday,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,"Dana, 1852",accepted,Order,1089,Animalia,Arthropoda,Malacostraca,Euphausiacea,NA,NA,present,IYS:GoA2019_Stn32:juday:jocc:179
+IYS:GoA2019_Stn32:juday,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,"Latreille, 1816",accepted,Order,1090,Animalia,Arthropoda,Malacostraca,Amphipoda,NA,NA,present,IYS:GoA2019_Stn32:juday:jocc:180
+IYS:GoA2019_Stn32:juday,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,"Cuvier, 1804",accepted,Order,1057250,Animalia,Mollusca,Gastropoda,Pteropoda,NA,NA,present,IYS:GoA2019_Stn32:juday:jocc:181
+IYS:GoA2019_Stn32:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn32:juday:jocc:182
+IYS:GoA2019_Stn32:juday,Hydrozoa,urn:lsid:marinespecies.org:taxname:1337,"Owen, 1843",accepted,Class,1267,Animalia,Cnidaria,Hydrozoa,NA,NA,NA,present,IYS:GoA2019_Stn32:juday:jocc:183
+IYS:GoA2019_Stn32:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn32:juday:jocc:184
+IYS:GoA2019_Stn33:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn33:juday:jocc:185
+IYS:GoA2019_Stn33:juday,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,"Latreille, 1816",accepted,Order,1090,Animalia,Arthropoda,Malacostraca,Amphipoda,NA,NA,present,IYS:GoA2019_Stn33:juday:jocc:186
+IYS:GoA2019_Stn33:juday,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,"Cuvier, 1804",accepted,Order,1057250,Animalia,Mollusca,Gastropoda,Pteropoda,NA,NA,present,IYS:GoA2019_Stn33:juday:jocc:187
+IYS:GoA2019_Stn33:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn33:juday:jocc:188
+IYS:GoA2019_Stn33:juday,Hydrozoa,urn:lsid:marinespecies.org:taxname:1337,"Owen, 1843",accepted,Class,1267,Animalia,Cnidaria,Hydrozoa,NA,NA,NA,present,IYS:GoA2019_Stn33:juday:jocc:189
+IYS:GoA2019_Stn33:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn33:juday:jocc:190
+IYS:GoA2019_Stn34:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn34:juday:jocc:191
+IYS:GoA2019_Stn34:juday,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,"Dana, 1852",accepted,Order,1089,Animalia,Arthropoda,Malacostraca,Euphausiacea,NA,NA,present,IYS:GoA2019_Stn34:juday:jocc:192
+IYS:GoA2019_Stn34:juday,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,"Latreille, 1816",accepted,Order,1090,Animalia,Arthropoda,Malacostraca,Amphipoda,NA,NA,present,IYS:GoA2019_Stn34:juday:jocc:193
+IYS:GoA2019_Stn34:juday,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,"Cuvier, 1804",accepted,Order,1057250,Animalia,Mollusca,Gastropoda,Pteropoda,NA,NA,present,IYS:GoA2019_Stn34:juday:jocc:194
+IYS:GoA2019_Stn34:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn34:juday:jocc:195
+IYS:GoA2019_Stn34:juday,Hydrozoa,urn:lsid:marinespecies.org:taxname:1337,"Owen, 1843",accepted,Class,1267,Animalia,Cnidaria,Hydrozoa,NA,NA,NA,present,IYS:GoA2019_Stn34:juday:jocc:196
+IYS:GoA2019_Stn34:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn34:juday:jocc:197
+IYS:GoA2019_Stn35:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn35:juday:jocc:198
+IYS:GoA2019_Stn35:juday,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,"Latreille, 1816",accepted,Order,1090,Animalia,Arthropoda,Malacostraca,Amphipoda,NA,NA,present,IYS:GoA2019_Stn35:juday:jocc:199
+IYS:GoA2019_Stn35:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn35:juday:jocc:200
+IYS:GoA2019_Stn35:juday,Hydrozoa,urn:lsid:marinespecies.org:taxname:1337,"Owen, 1843",accepted,Class,1267,Animalia,Cnidaria,Hydrozoa,NA,NA,NA,present,IYS:GoA2019_Stn35:juday:jocc:201
+IYS:GoA2019_Stn35:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn35:juday:jocc:202
+IYS:GoA2019_Stn36:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn36:juday:jocc:203
+IYS:GoA2019_Stn36:juday,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,"Latreille, 1816",accepted,Order,1090,Animalia,Arthropoda,Malacostraca,Amphipoda,NA,NA,present,IYS:GoA2019_Stn36:juday:jocc:204
+IYS:GoA2019_Stn36:juday,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,"Cuvier, 1804",accepted,Order,1057250,Animalia,Mollusca,Gastropoda,Pteropoda,NA,NA,present,IYS:GoA2019_Stn36:juday:jocc:205
+IYS:GoA2019_Stn36:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn36:juday:jocc:206
+IYS:GoA2019_Stn36:juday,Hydrozoa,urn:lsid:marinespecies.org:taxname:1337,"Owen, 1843",accepted,Class,1267,Animalia,Cnidaria,Hydrozoa,NA,NA,NA,present,IYS:GoA2019_Stn36:juday:jocc:207
+IYS:GoA2019_Stn36:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn36:juday:jocc:208
+IYS:GoA2019_Stn37:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn37:juday:jocc:209
+IYS:GoA2019_Stn37:juday,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,"Dana, 1852",accepted,Order,1089,Animalia,Arthropoda,Malacostraca,Euphausiacea,NA,NA,present,IYS:GoA2019_Stn37:juday:jocc:210
+IYS:GoA2019_Stn37:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn37:juday:jocc:211
+IYS:GoA2019_Stn37:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn37:juday:jocc:212
+IYS:GoA2019_Stn38:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn38:juday:jocc:213
+IYS:GoA2019_Stn38:juday,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,"Cuvier, 1804",accepted,Order,1057250,Animalia,Mollusca,Gastropoda,Pteropoda,NA,NA,present,IYS:GoA2019_Stn38:juday:jocc:214
+IYS:GoA2019_Stn38:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn38:juday:jocc:215
+IYS:GoA2019_Stn38:juday,Hydrozoa,urn:lsid:marinespecies.org:taxname:1337,"Owen, 1843",accepted,Class,1267,Animalia,Cnidaria,Hydrozoa,NA,NA,NA,present,IYS:GoA2019_Stn38:juday:jocc:216
+IYS:GoA2019_Stn38:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn38:juday:jocc:217
+IYS:GoA2019_Stn39:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn39:juday:jocc:218
+IYS:GoA2019_Stn39:juday,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,"Latreille, 1816",accepted,Order,1090,Animalia,Arthropoda,Malacostraca,Amphipoda,NA,NA,present,IYS:GoA2019_Stn39:juday:jocc:219
+IYS:GoA2019_Stn39:juday,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,"Cuvier, 1804",accepted,Order,1057250,Animalia,Mollusca,Gastropoda,Pteropoda,NA,NA,present,IYS:GoA2019_Stn39:juday:jocc:220
+IYS:GoA2019_Stn39:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn39:juday:jocc:221
+IYS:GoA2019_Stn39:juday,Hydrozoa,urn:lsid:marinespecies.org:taxname:1337,"Owen, 1843",accepted,Class,1267,Animalia,Cnidaria,Hydrozoa,NA,NA,NA,present,IYS:GoA2019_Stn39:juday:jocc:222
+IYS:GoA2019_Stn39:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn39:juday:jocc:223
+IYS:GoA2019_Stn40:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn40:juday:jocc:224
+IYS:GoA2019_Stn40:juday,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,"Dana, 1852",accepted,Order,1089,Animalia,Arthropoda,Malacostraca,Euphausiacea,NA,NA,present,IYS:GoA2019_Stn40:juday:jocc:225
+IYS:GoA2019_Stn40:juday,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,"Latreille, 1816",accepted,Order,1090,Animalia,Arthropoda,Malacostraca,Amphipoda,NA,NA,present,IYS:GoA2019_Stn40:juday:jocc:226
+IYS:GoA2019_Stn40:juday,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,"Cuvier, 1804",accepted,Order,1057250,Animalia,Mollusca,Gastropoda,Pteropoda,NA,NA,present,IYS:GoA2019_Stn40:juday:jocc:227
+IYS:GoA2019_Stn40:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn40:juday:jocc:228
+IYS:GoA2019_Stn40:juday,Hydrozoa,urn:lsid:marinespecies.org:taxname:1337,"Owen, 1843",accepted,Class,1267,Animalia,Cnidaria,Hydrozoa,NA,NA,NA,present,IYS:GoA2019_Stn40:juday:jocc:229
+IYS:GoA2019_Stn40:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn40:juday:jocc:230
+IYS:GoA2019_Stn41:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn41:juday:jocc:231
+IYS:GoA2019_Stn41:juday,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,"Cuvier, 1804",accepted,Order,1057250,Animalia,Mollusca,Gastropoda,Pteropoda,NA,NA,present,IYS:GoA2019_Stn41:juday:jocc:232
+IYS:GoA2019_Stn41:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn41:juday:jocc:233
+IYS:GoA2019_Stn41:juday,Hydrozoa,urn:lsid:marinespecies.org:taxname:1337,"Owen, 1843",accepted,Class,1267,Animalia,Cnidaria,Hydrozoa,NA,NA,NA,present,IYS:GoA2019_Stn41:juday:jocc:234
+IYS:GoA2019_Stn41:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn41:juday:jocc:235
+IYS:GoA2019_Stn42:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn42:juday:jocc:236
+IYS:GoA2019_Stn42:juday,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,"Latreille, 1816",accepted,Order,1090,Animalia,Arthropoda,Malacostraca,Amphipoda,NA,NA,present,IYS:GoA2019_Stn42:juday:jocc:237
+IYS:GoA2019_Stn42:juday,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,"Cuvier, 1804",accepted,Order,1057250,Animalia,Mollusca,Gastropoda,Pteropoda,NA,NA,present,IYS:GoA2019_Stn42:juday:jocc:238
+IYS:GoA2019_Stn42:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn42:juday:jocc:239
+IYS:GoA2019_Stn42:juday,Hydrozoa,urn:lsid:marinespecies.org:taxname:1337,"Owen, 1843",accepted,Class,1267,Animalia,Cnidaria,Hydrozoa,NA,NA,NA,present,IYS:GoA2019_Stn42:juday:jocc:240
+IYS:GoA2019_Stn42:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn42:juday:jocc:241
+IYS:GoA2019_Stn43:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn43:juday:jocc:242
+IYS:GoA2019_Stn43:juday,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,"Dana, 1852",accepted,Order,1089,Animalia,Arthropoda,Malacostraca,Euphausiacea,NA,NA,present,IYS:GoA2019_Stn43:juday:jocc:243
+IYS:GoA2019_Stn43:juday,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,"Latreille, 1816",accepted,Order,1090,Animalia,Arthropoda,Malacostraca,Amphipoda,NA,NA,present,IYS:GoA2019_Stn43:juday:jocc:244
+IYS:GoA2019_Stn43:juday,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,"Cuvier, 1804",accepted,Order,1057250,Animalia,Mollusca,Gastropoda,Pteropoda,NA,NA,present,IYS:GoA2019_Stn43:juday:jocc:245
+IYS:GoA2019_Stn43:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn43:juday:jocc:246
+IYS:GoA2019_Stn43:juday,Hydrozoa,urn:lsid:marinespecies.org:taxname:1337,"Owen, 1843",accepted,Class,1267,Animalia,Cnidaria,Hydrozoa,NA,NA,NA,present,IYS:GoA2019_Stn43:juday:jocc:247
+IYS:GoA2019_Stn43:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn43:juday:jocc:248
+IYS:GoA2019_Stn44:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn44:juday:jocc:249
+IYS:GoA2019_Stn44:juday,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,"Latreille, 1816",accepted,Order,1090,Animalia,Arthropoda,Malacostraca,Amphipoda,NA,NA,present,IYS:GoA2019_Stn44:juday:jocc:250
+IYS:GoA2019_Stn44:juday,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,"Cuvier, 1804",accepted,Order,1057250,Animalia,Mollusca,Gastropoda,Pteropoda,NA,NA,present,IYS:GoA2019_Stn44:juday:jocc:251
+IYS:GoA2019_Stn44:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn44:juday:jocc:252
+IYS:GoA2019_Stn44:juday,Hydrozoa,urn:lsid:marinespecies.org:taxname:1337,"Owen, 1843",accepted,Class,1267,Animalia,Cnidaria,Hydrozoa,NA,NA,NA,present,IYS:GoA2019_Stn44:juday:jocc:253
+IYS:GoA2019_Stn44:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn44:juday:jocc:254
+IYS:GoA2019_Stn45:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn45:juday:jocc:255
+IYS:GoA2019_Stn45:juday,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,"Latreille, 1816",accepted,Order,1090,Animalia,Arthropoda,Malacostraca,Amphipoda,NA,NA,present,IYS:GoA2019_Stn45:juday:jocc:256
+IYS:GoA2019_Stn45:juday,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,"Cuvier, 1804",accepted,Order,1057250,Animalia,Mollusca,Gastropoda,Pteropoda,NA,NA,present,IYS:GoA2019_Stn45:juday:jocc:257
+IYS:GoA2019_Stn45:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn45:juday:jocc:258
+IYS:GoA2019_Stn45:juday,Hydrozoa,urn:lsid:marinespecies.org:taxname:1337,"Owen, 1843",accepted,Class,1267,Animalia,Cnidaria,Hydrozoa,NA,NA,NA,present,IYS:GoA2019_Stn45:juday:jocc:259
+IYS:GoA2019_Stn45:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn45:juday:jocc:260
+IYS:GoA2019_Stn46:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn46:juday:jocc:261
+IYS:GoA2019_Stn46:juday,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,"Dana, 1852",accepted,Order,1089,Animalia,Arthropoda,Malacostraca,Euphausiacea,NA,NA,present,IYS:GoA2019_Stn46:juday:jocc:262
+IYS:GoA2019_Stn46:juday,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,"Latreille, 1816",accepted,Order,1090,Animalia,Arthropoda,Malacostraca,Amphipoda,NA,NA,present,IYS:GoA2019_Stn46:juday:jocc:263
+IYS:GoA2019_Stn46:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn46:juday:jocc:264
+IYS:GoA2019_Stn46:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn46:juday:jocc:265
+IYS:GoA2019_Stn47:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn47:juday:jocc:266
+IYS:GoA2019_Stn47:juday,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,"Cuvier, 1804",accepted,Order,1057250,Animalia,Mollusca,Gastropoda,Pteropoda,NA,NA,present,IYS:GoA2019_Stn47:juday:jocc:267
+IYS:GoA2019_Stn47:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn47:juday:jocc:268
+IYS:GoA2019_Stn47:juday,Hydrozoa,urn:lsid:marinespecies.org:taxname:1337,"Owen, 1843",accepted,Class,1267,Animalia,Cnidaria,Hydrozoa,NA,NA,NA,present,IYS:GoA2019_Stn47:juday:jocc:269
+IYS:GoA2019_Stn47:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn47:juday:jocc:270
+IYS:GoA2019_Stn48:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn48:juday:jocc:271
+IYS:GoA2019_Stn48:juday,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,"Dana, 1852",accepted,Order,1089,Animalia,Arthropoda,Malacostraca,Euphausiacea,NA,NA,present,IYS:GoA2019_Stn48:juday:jocc:272
+IYS:GoA2019_Stn48:juday,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,"Cuvier, 1804",accepted,Order,1057250,Animalia,Mollusca,Gastropoda,Pteropoda,NA,NA,present,IYS:GoA2019_Stn48:juday:jocc:273
+IYS:GoA2019_Stn48:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn48:juday:jocc:274
+IYS:GoA2019_Stn48:juday,Hydrozoa,urn:lsid:marinespecies.org:taxname:1337,"Owen, 1843",accepted,Class,1267,Animalia,Cnidaria,Hydrozoa,NA,NA,NA,present,IYS:GoA2019_Stn48:juday:jocc:275
+IYS:GoA2019_Stn48:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn48:juday:jocc:276
+IYS:GoA2019_Stn49:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn49:juday:jocc:277
+IYS:GoA2019_Stn49:juday,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,"Dana, 1852",accepted,Order,1089,Animalia,Arthropoda,Malacostraca,Euphausiacea,NA,NA,present,IYS:GoA2019_Stn49:juday:jocc:278
+IYS:GoA2019_Stn49:juday,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,"Latreille, 1816",accepted,Order,1090,Animalia,Arthropoda,Malacostraca,Amphipoda,NA,NA,present,IYS:GoA2019_Stn49:juday:jocc:279
+IYS:GoA2019_Stn49:juday,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,"Cuvier, 1804",accepted,Order,1057250,Animalia,Mollusca,Gastropoda,Pteropoda,NA,NA,present,IYS:GoA2019_Stn49:juday:jocc:280
+IYS:GoA2019_Stn49:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn49:juday:jocc:281
+IYS:GoA2019_Stn49:juday,Hydrozoa,urn:lsid:marinespecies.org:taxname:1337,"Owen, 1843",accepted,Class,1267,Animalia,Cnidaria,Hydrozoa,NA,NA,NA,present,IYS:GoA2019_Stn49:juday:jocc:282
+IYS:GoA2019_Stn49:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn49:juday:jocc:283
+IYS:GoA2019_Stn50:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn50:juday:jocc:284
+IYS:GoA2019_Stn50:juday,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,"Dana, 1852",accepted,Order,1089,Animalia,Arthropoda,Malacostraca,Euphausiacea,NA,NA,present,IYS:GoA2019_Stn50:juday:jocc:285
+IYS:GoA2019_Stn50:juday,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,"Cuvier, 1804",accepted,Order,1057250,Animalia,Mollusca,Gastropoda,Pteropoda,NA,NA,present,IYS:GoA2019_Stn50:juday:jocc:286
+IYS:GoA2019_Stn50:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn50:juday:jocc:287
+IYS:GoA2019_Stn50:juday,Hydrozoa,urn:lsid:marinespecies.org:taxname:1337,"Owen, 1843",accepted,Class,1267,Animalia,Cnidaria,Hydrozoa,NA,NA,NA,present,IYS:GoA2019_Stn50:juday:jocc:288
+IYS:GoA2019_Stn50:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn50:juday:jocc:289
+IYS:GoA2019_Stn51:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn51:juday:jocc:290
+IYS:GoA2019_Stn51:juday,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,"Cuvier, 1804",accepted,Order,1057250,Animalia,Mollusca,Gastropoda,Pteropoda,NA,NA,present,IYS:GoA2019_Stn51:juday:jocc:291
+IYS:GoA2019_Stn51:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn51:juday:jocc:292
+IYS:GoA2019_Stn51:juday,Hydrozoa,urn:lsid:marinespecies.org:taxname:1337,"Owen, 1843",accepted,Class,1267,Animalia,Cnidaria,Hydrozoa,NA,NA,NA,present,IYS:GoA2019_Stn51:juday:jocc:293
+IYS:GoA2019_Stn51:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn51:juday:jocc:294
+IYS:GoA2019_Stn52:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn52:juday:jocc:295
+IYS:GoA2019_Stn52:juday,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,"Dana, 1852",accepted,Order,1089,Animalia,Arthropoda,Malacostraca,Euphausiacea,NA,NA,present,IYS:GoA2019_Stn52:juday:jocc:296
+IYS:GoA2019_Stn52:juday,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,"Cuvier, 1804",accepted,Order,1057250,Animalia,Mollusca,Gastropoda,Pteropoda,NA,NA,present,IYS:GoA2019_Stn52:juday:jocc:297
+IYS:GoA2019_Stn52:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn52:juday:jocc:298
+IYS:GoA2019_Stn52:juday,Hydrozoa,urn:lsid:marinespecies.org:taxname:1337,"Owen, 1843",accepted,Class,1267,Animalia,Cnidaria,Hydrozoa,NA,NA,NA,present,IYS:GoA2019_Stn52:juday:jocc:299
+IYS:GoA2019_Stn52:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn52:juday:jocc:300
+IYS:GoA2019_Stn53:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn53:juday:jocc:301
+IYS:GoA2019_Stn53:juday,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,"Cuvier, 1804",accepted,Order,1057250,Animalia,Mollusca,Gastropoda,Pteropoda,NA,NA,present,IYS:GoA2019_Stn53:juday:jocc:302
+IYS:GoA2019_Stn53:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn53:juday:jocc:303
+IYS:GoA2019_Stn53:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn53:juday:jocc:304
+IYS:GoA2019_Stn54:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn54:juday:jocc:305
+IYS:GoA2019_Stn54:juday,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,"Dana, 1852",accepted,Order,1089,Animalia,Arthropoda,Malacostraca,Euphausiacea,NA,NA,present,IYS:GoA2019_Stn54:juday:jocc:306
+IYS:GoA2019_Stn54:juday,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,"Latreille, 1816",accepted,Order,1090,Animalia,Arthropoda,Malacostraca,Amphipoda,NA,NA,present,IYS:GoA2019_Stn54:juday:jocc:307
+IYS:GoA2019_Stn54:juday,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,"Cuvier, 1804",accepted,Order,1057250,Animalia,Mollusca,Gastropoda,Pteropoda,NA,NA,present,IYS:GoA2019_Stn54:juday:jocc:308
+IYS:GoA2019_Stn54:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn54:juday:jocc:309
+IYS:GoA2019_Stn54:juday,Hydrozoa,urn:lsid:marinespecies.org:taxname:1337,"Owen, 1843",accepted,Class,1267,Animalia,Cnidaria,Hydrozoa,NA,NA,NA,present,IYS:GoA2019_Stn54:juday:jocc:310
+IYS:GoA2019_Stn54:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn54:juday:jocc:311
+IYS:GoA2019_Stn55:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn55:juday:jocc:312
+IYS:GoA2019_Stn55:juday,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,"Latreille, 1816",accepted,Order,1090,Animalia,Arthropoda,Malacostraca,Amphipoda,NA,NA,present,IYS:GoA2019_Stn55:juday:jocc:313
+IYS:GoA2019_Stn55:juday,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,"Cuvier, 1804",accepted,Order,1057250,Animalia,Mollusca,Gastropoda,Pteropoda,NA,NA,present,IYS:GoA2019_Stn55:juday:jocc:314
+IYS:GoA2019_Stn55:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn55:juday:jocc:315
+IYS:GoA2019_Stn55:juday,Hydrozoa,urn:lsid:marinespecies.org:taxname:1337,"Owen, 1843",accepted,Class,1267,Animalia,Cnidaria,Hydrozoa,NA,NA,NA,present,IYS:GoA2019_Stn55:juday:jocc:316
+IYS:GoA2019_Stn55:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn55:juday:jocc:317
+IYS:GoA2019_Stn56:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn56:juday:jocc:318
+IYS:GoA2019_Stn56:juday,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,"Latreille, 1816",accepted,Order,1090,Animalia,Arthropoda,Malacostraca,Amphipoda,NA,NA,present,IYS:GoA2019_Stn56:juday:jocc:319
+IYS:GoA2019_Stn56:juday,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,"Cuvier, 1804",accepted,Order,1057250,Animalia,Mollusca,Gastropoda,Pteropoda,NA,NA,present,IYS:GoA2019_Stn56:juday:jocc:320
+IYS:GoA2019_Stn56:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn56:juday:jocc:321
+IYS:GoA2019_Stn56:juday,Hydrozoa,urn:lsid:marinespecies.org:taxname:1337,"Owen, 1843",accepted,Class,1267,Animalia,Cnidaria,Hydrozoa,NA,NA,NA,present,IYS:GoA2019_Stn56:juday:jocc:322
+IYS:GoA2019_Stn56:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn56:juday:jocc:323
+IYS:GoA2019_Stn57:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn57:juday:jocc:324
+IYS:GoA2019_Stn57:juday,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,"Cuvier, 1804",accepted,Order,1057250,Animalia,Mollusca,Gastropoda,Pteropoda,NA,NA,present,IYS:GoA2019_Stn57:juday:jocc:325
+IYS:GoA2019_Stn57:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn57:juday:jocc:326
+IYS:GoA2019_Stn57:juday,Hydrozoa,urn:lsid:marinespecies.org:taxname:1337,"Owen, 1843",accepted,Class,1267,Animalia,Cnidaria,Hydrozoa,NA,NA,NA,present,IYS:GoA2019_Stn57:juday:jocc:327
+IYS:GoA2019_Stn57:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn57:juday:jocc:328
+IYS:GoA2019_Stn58:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn58:juday:jocc:329
+IYS:GoA2019_Stn58:juday,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,"Dana, 1852",accepted,Order,1089,Animalia,Arthropoda,Malacostraca,Euphausiacea,NA,NA,present,IYS:GoA2019_Stn58:juday:jocc:330
+IYS:GoA2019_Stn58:juday,Amphipoda,urn:lsid:marinespecies.org:taxname:1135,"Latreille, 1816",accepted,Order,1090,Animalia,Arthropoda,Malacostraca,Amphipoda,NA,NA,present,IYS:GoA2019_Stn58:juday:jocc:331
+IYS:GoA2019_Stn58:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn58:juday:jocc:332
+IYS:GoA2019_Stn58:juday,Hydrozoa,urn:lsid:marinespecies.org:taxname:1337,"Owen, 1843",accepted,Class,1267,Animalia,Cnidaria,Hydrozoa,NA,NA,NA,present,IYS:GoA2019_Stn58:juday:jocc:333
+IYS:GoA2019_Stn58:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn58:juday:jocc:334
+IYS:GoA2019_Stn59:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn59:juday:jocc:335
+IYS:GoA2019_Stn59:juday,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,"Dana, 1852",accepted,Order,1089,Animalia,Arthropoda,Malacostraca,Euphausiacea,NA,NA,present,IYS:GoA2019_Stn59:juday:jocc:336
+IYS:GoA2019_Stn59:juday,Pteropoda,urn:lsid:marinespecies.org:taxname:325345,"Cuvier, 1804",accepted,Order,1057250,Animalia,Mollusca,Gastropoda,Pteropoda,NA,NA,present,IYS:GoA2019_Stn59:juday:jocc:337
+IYS:GoA2019_Stn59:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn59:juday:jocc:338
+IYS:GoA2019_Stn59:juday,Hydrozoa,urn:lsid:marinespecies.org:taxname:1337,"Owen, 1843",accepted,Class,1267,Animalia,Cnidaria,Hydrozoa,NA,NA,NA,present,IYS:GoA2019_Stn59:juday:jocc:339
+IYS:GoA2019_Stn59:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn59:juday:jocc:340
+IYS:GoA2019_Stn60:juday,Copepoda,urn:lsid:marinespecies.org:taxname:1080,"Milne Edwards, 1840",accepted,Subclass,889925,Animalia,Arthropoda,Hexanauplia,NA,NA,NA,present,IYS:GoA2019_Stn60:juday:jocc:341
+IYS:GoA2019_Stn60:juday,Euphausiacea,urn:lsid:marinespecies.org:taxname:1128,"Dana, 1852",accepted,Order,1089,Animalia,Arthropoda,Malacostraca,Euphausiacea,NA,NA,present,IYS:GoA2019_Stn60:juday:jocc:342
+IYS:GoA2019_Stn60:juday,Chaetognatha,urn:lsid:marinespecies.org:taxname:2081,NA,accepted,Phylum,2,Animalia,Chaetognatha,NA,NA,NA,NA,present,IYS:GoA2019_Stn60:juday:jocc:343
+IYS:GoA2019_Stn60:juday,Hydrozoa,urn:lsid:marinespecies.org:taxname:1337,"Owen, 1843",accepted,Class,1267,Animalia,Cnidaria,Hydrozoa,NA,NA,NA,present,IYS:GoA2019_Stn60:juday:jocc:344
+IYS:GoA2019_Stn60:juday,Others,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,present,IYS:GoA2019_Stn60:juday:jocc:345
