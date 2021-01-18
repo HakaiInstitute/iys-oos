@@ -169,9 +169,9 @@ juday_summary_emof <- juday %>%
   pivot_longer(cols = `Biomass_0.1-0.5 mm`:Others,
                values_to = "measurementValue") %>%
   filter(measurementValue > 0) %>%
-  mutate(measurementUnit = "mg",
-         measurementUnitID = "http://vocab.nerc.ac.uk/collection/P06/current/MGRM/",
-         measurementTypeID = "http://vocab.nerc.ac.uk/collection/S06/current/S0600088/",
+  mutate(measurementUnit = "mg/m^3",
+         measurementUnitID = "http://vocab.nerc.ac.uk/collection/P06/current/UMMC/",
+         measurementTypeID = "http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/",
          measurementID = case_when(
            name == "Total zooplankton" ~ paste(cast, "biomass:total", sep = "-"),
            name == "Others" ~ paste(cast, "biomass:others", sep = "-"),
@@ -195,10 +195,10 @@ juday_emof_spp <- IYS2019_juday_occ %>%
          biomass) %>%
   rename(measurementValue = biomass) %>%
   mutate(measurementType = "biomass",
-         measurementTypeID = "http://vocab.nerc.ac.uk/collection/S06/current/S0600088/",
+         measurementTypeID = "http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/",
          measurementID = paste(occurrenceID, measurementType, sep = "-"),
-         measurementUnit = "mg",
-         measurementUnitID = "http://vocab.nerc.ac.uk/collection/P06/current/MGRM/") %>%
+         measurementUnit = "mg/m^3",
+         measurementUnitID = "http://vocab.nerc.ac.uk/collection/P06/current/UMMC/") %>%
   select(measurementID, measurementType, measurementTypeID,
          measurementValue, measurementUnit, measurementUnitID)
 
