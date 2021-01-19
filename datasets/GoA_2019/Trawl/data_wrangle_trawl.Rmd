@@ -11,6 +11,8 @@ library(tidyverse)
 library(lubridate)
 library(readxl)
 library(here)
+library(worrms)
+library(obistools)
 library(parsedate)
 library(googledrive)
 library(uuid)
@@ -19,62 +21,56 @@ library(uuid)
 The first step is to download the file from GoogleDrive and save it in a local folder: 
 
 ``` {r file_download}
-drive_download(file = "https://docs.google.com/spreadsheets/d/1rtT6L5WSi_UiiXfoS95wnDqA8loc959T/edit#gid=668595086", 
+drive_download(file = "https://docs.google.com/spreadsheets/d/1xm_MIx_y8nsvA8I-7G33RcQ_j7w-Qmm-/edit#gid=168338968", 
                path = here::here("Trawl", "raw_data", 
-                                 "2019_GoA_Fish_data_Hakai.xlsx"),
+                                 "2020_GoA_Fish_Trawl_data.xlsx"),
                overwrite = TRUE)
 ```
 
-The trawl data is read from the local folder, and the date/time is formatted to the iso 8601 standards. Additionally, three extra columns are created for each `eventID`: "cruise", "station" and "trawl". Currently, the column `NUMBER` refers to the trawl set number, but it is unclear whether this is synonymous to Station. Station is not specifically recorded, and a total of 63 unique NUMBERs are recorded. We will need confirmation that NUMBER refers to a unique trawl done at a station. Regardless, we add an additional layer of `Trawl` under `Station` should multiple trawls be undertaken at a single station (in the future).
+The trawl data is read from the local folder, and the date/time is formatted to the iso 8601 standards. Additionally, four extra columns are created for each `eventID`: "project", "cruise", "station" and "trawl". The fish trawl abundance data file also includes the bridgelog file sheet, where metadata is recorded. When reading the data in from the local folder make sure that a clear distinction is made between the bridgelog (metadata) and the catch data. 
 
 ``` {r trawl_data_prep}
-trawl <- read_excel(here("Trawl", "raw_data", "2019_GoA_Fish_data_Hakai.xlsx")) %>%
-  mutate(eventDate = format_iso_8601(as.POSIXct(UTC_start)),
+trawl2020 <- read_excel(here("Trawl", "raw_data", "2020_GoA_Fish_Trawl_data.xlsx"), sheet = "BRIDGE_LOG_FINAL") %>%
+  mutate(Time = format(TIME_FISHING_START, "%H:%M:%S"),
+         eventDate = format_iso_8601(as.POSIXct(paste(EVENT_DATE, Time),
+                                                format = "%Y-%m-%d %H:%M:%S",
+                                                tz = "Asia/Kamchatka")), # Confirm this timezone. 
          eventDate = str_replace(eventDate, "\\+00:00", "Z"),
-         cruise = "GoA2019", 
-         station = paste(cruise, NUMBER, sep="_Stn"),
-         trawl = paste(station, "trawl1", sep=":"))
-```
-
-Create a separate dataframe with the location of the stations. We check for the unique NUMBERs (we assume that these are synonymous with "Station") with associated Lat/Long. We need to confirm that this is the case, as there are a reported 63 unique trawl numbers, whereas there are only 60 stations?
-
-``` {r location, eval = FALSE}
-unique_trawl <- unique(trawl[c("NUMBER","X","Y")])
-
-## Location ---
-trawl_loc <- unique_trawl %>%
-  dplyr::rename(Station = NUMBER,
-                Longitude = X,
-                Latitude = Y)
-write_csv(trawl_loc, here("Trawl", "tidy_data", "trawl_loc.csv"))
+         project = "IYS",
+         cruise = paste(project, "GoA2020", sep = ":"), 
+         station = paste(cruise, SET_NUMBER, sep="_Stn"),
+         trawl = paste(station, "trawl", sep=":"))
 ```
 
 ## Event Core 
 
-Next, dataframes are created for each unique `eventID` layer, with unique associated columns. Eventually, the data frames get joined, and the event table gets saved locally and in Google Drive. The column `eventRemarks` is not a required column, and currently only contains descriptive information. In the DwC-A standard this column has controlled vocabulary, but we need to discuss whether to include it.
+Next, dataframes are created for each unique `eventID` layer, with unique associated columns. Eventually, the data frames get joined, and the event table gets saved locally and in Google Drive. The column `eventRemarks` is not a required column, but includes descriptive information pertaining to any issues that arose during the setting of the trawl net. 
 
 ``` {r trawl_event, eval = FALSE}
-trawl_cruise <- trawl %>% 
-  select(eventID = cruise) %>% 
-  distinct(eventID) %>% 
-  mutate(eventRemarks = "cruise")
+trawl2020_project <- trawl2020 %>%
+  select(eventID = project) %>%
+  distinct(eventID)
 
-trawl_station <- trawl %>% 
+trawl2020_cruise <- trawl2020 %>% 
+  select(eventID = cruise,
+         parentEventID = project) %>% 
+  distinct(eventID, .keep_all = TRUE) 
+
+trawl2020_station <- trawl2020 %>% 
   select(eventID = station,
          parentEventID = cruise) %>% 
-  distinct(eventID, .keep_all = TRUE) %>% 
-  mutate(eventRemarks = "station")
+  distinct(eventID, .keep_all = TRUE) 
 
-trawl_trawl <- trawl %>% 
+trawl2020_trawl <- trawl2020 %>% 
   select(eventID = trawl,
          parentEventID = station,
          eventDate,
-         decimalLatitude = Y,
-         decimalLongitude = X) %>% 
-  distinct(eventID, .keep_all = TRUE) %>% 
-  mutate(eventRemarks = "trawl")
+         decimalLatitude = START_LAT_DECDEGREE,
+         decimalLongitude = START_LONG_DECDEGREE,
+         eventRemarks = PROBLEM_DESCRIPTION) %>% 
+  distinct(eventID, .keep_all = TRUE)
 
-trawl_event <- bind_rows(trawl_cruise, trawl_station, trawl_trawl) %>% 
+trawl2020_event <- bind_rows(trawl2020_project, trawl2020_cruise, trawl2020_station, trawl2020_trawl) %>% 
   select(eventID, parentEventID:decimalLongitude, eventRemarks) %>%
   mutate(type = "Event")
 
