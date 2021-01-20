@@ -61,17 +61,44 @@ trawl2020_station <- trawl2020 %>%
          parentEventID = cruise) %>% 
   distinct(eventID, .keep_all = TRUE) 
 
+# The coordinates associated to the trawl need to be presented in a LINESTRING:
+trawl2020_coordinates <- trawl2020 %>%
+  select(eventID = trawl,
+         START_LAT_DECDEGREE,
+         START_LONG_DECDEGREE,
+         END_LAT_DECDEGREE,
+         END_LONG_DECDEGREE) %>%
+  mutate(footprintWKT = paste("LINESTRING (", START_LONG_DECDEGREE, START_LAT_DECDEGREE, ",", 
+                              END_LONG_DECDEGREE, END_LAT_DECDEGREE, ")")) %>%
+  filter(!is.na(END_LAT_DECDEGREE)) # Station 20 needs end lat and long included - this issue needs to be resolved. 
+
+trawl2020_linestring <- obistools::calculate_centroid(trawl2020_coordinates$footprintWKT)
+trawl2020_linestring <- cbind(trawl2020_coordinates, trawl2020_linestring) %>%
+  select(eventID, footprintWKT, decimalLatitude, decimalLongitude, coordinateUncertaintyInMeters)
+
 trawl2020_trawl <- trawl2020 %>% 
   select(eventID = trawl,
          parentEventID = station,
          eventDate,
-         decimalLatitude = START_LAT_DECDEGREE,
-         decimalLongitude = START_LONG_DECDEGREE,
-         eventRemarks = PROBLEM_DESCRIPTION) %>% 
+         fieldNotes = PROBLEM_DESCRIPTION
+         ) %>%
+  mutate(minimumDepthInMeters = 0, # trawl was at the surface
+         maximumDepthInMeters = pmax(trawl2020$`NET OPENING DEPTH (metres) - 15 min`,
+                                     trawl2020$`NET OPENING DEPTH (metres) - 30 min`,
+                                     trawl2020$`NET OPENING DEPTH (metres) - 45 min`,
+                                     trawl2020$`NET OPENING DEPTH (metres) - END`, na.rm = TRUE),
+         samplingProtocol = "surface trawl", # if possible add DOI to paper here
+         sampleSizeValue = trawl2020$`DURATION OF TOW (min)`,
+         sampleSizeUnit = "min",
+         waterBody = case_when(
+           trawl2020$LOCATION == "GoA" ~ "Gulf of Alaska"),
+         locationRemarks = case_when(
+           trawl2020$LOCATION == "Canadian EEZ" ~ "Canadian EEZ")
+         ) %>%
+  left_join(trawl2020_linestring, by = "eventID") %>% 
   distinct(eventID, .keep_all = TRUE)
 
 trawl2020_event <- bind_rows(trawl2020_project, trawl2020_cruise, trawl2020_station, trawl2020_trawl) %>% 
-  select(eventID, parentEventID:decimalLongitude, eventRemarks) %>%
   mutate(type = "Event")
 
 # Re-order the Event Core if required:
