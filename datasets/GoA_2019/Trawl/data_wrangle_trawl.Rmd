@@ -46,6 +46,11 @@ trawl2020 <- read_excel(here("Trawl", "raw_data", "2020_GoA_Fish_Trawl_data.xlsx
          station = paste(cruise, SET_NUMBER, sep="_Stn"),
          trawl = paste(station, "trawl", sep=":"))
 
+# For OBIS it is useful to parse the eventDate and extract year, month and day from it, for visualizations purposes.
+trawl2020$year <- as.numeric(format(as.Date(trawl2020$eventDate), "%Y"))
+trawl2020$month <- as.numeric(format(as.Date(trawl2020$eventDate), "%m"))
+trawl2020$day <- as.numeric(format(as.Date(trawl2020$eventDate), "%d"))
+
 trawl2020_specimen <- read_excel(here("Trawl", "raw_data", "2020_GoA_Fish_Specimen_data.xlsx"), 
                                  sheet = "SPECIMEN_FINAL") %>%
   mutate(project = "IYS",
@@ -92,6 +97,9 @@ trawl2020_trawl <- trawl2020 %>%
   select(eventID = trawl,
          parentEventID = station,
          eventDate,
+         year,
+         month,
+         day,
          fieldNotes = PROBLEM_DESCRIPTION
          ) %>%
   mutate(minimumDepthInMeters = 0, # trawl was at the surface
@@ -113,7 +121,7 @@ trawl2020_trawl <- trawl2020 %>%
 trawl2020_event <- bind_rows(trawl2020_project, trawl2020_cruise, trawl2020_station, trawl2020_trawl) %>% 
   mutate(type = "Event")
 
-col_order <- c("eventID", "parentEventID", "eventDate", "decimalLatitude", "decimalLongitude", "footprintWKT", "coordinateUncertaintyInMeters", "minimumDepthInMeters", "maximumDepthInMeters", "samplingProtocol", "sampleSizeValue", "sampleSizeUnit", "waterBody", "locationRemarks", "type", "fieldNotes")
+col_order <- c("eventID", "parentEventID", "eventDate", "year", "month", "day", "decimalLatitude", "decimalLongitude", "footprintWKT", "coordinateUncertaintyInMeters", "minimumDepthInMeters", "maximumDepthInMeters", "samplingProtocol", "sampleSizeValue", "sampleSizeUnit", "waterBody", "locationRemarks", "type", "fieldNotes")
 trawl2020_event <- trawl2020_event[, col_order]
 
 write_csv(trawl2020_event, here("Trawl", "tidy_data", "trawl2020_event.csv"))
@@ -185,77 +193,68 @@ trawl2020_occ <- left_join(trawl2020_allCatch, trawl2020_allCatch_worms, by = "s
          scientificNameID = lsid,
          organismQuantity = CATCH_NUMBER) %>%
   mutate(occurrenceID = paste(eventID, "occ", row_number(), sep = ":"),
-         occurrenceStatus = "present") %>%
+         occurrenceStatus = "present",
+         organismQuantity = round(organismQuantity)) 
+
+trawl2020_occ_fnl <- trawl2020_occ %>%
   select(eventID, occurrenceID, occurrenceStatus, organismQuantity,scientificName, scientificNameID,
          scientificNameAuthorship, taxonomicStatus, taxonRank, parentNameUsageID, kingdom, phylum, 
          class, order, family, genus, lifeStage)
 
 # Save the file locally
-write_csv(trawl2020_occ, here("Trawl", "tidy_data", "trawl2020_occ.csv"))
+write_csv(trawl2020_occ_fnl, here("Trawl", "tidy_data", "trawl2020_occ.csv"))
 ```
 
-So now we have created the first Occurrence table, which includes the overall catch data. In the trawl2020_allCatch dataframe, column `Length (N)` indicates how many individuals at each trawl were measured for their lengths. In the next section, we create a second occurrence table, with `occurrenceID`s created for each unique individual whose length has been measured. Where the `occurrenceID` in the previous chunk of code has the format of `IYS:GoA2020_Stn1:trawl:occ:1`, the `occurrenceID`s in the next section will have the format `IYS:GoA2020_Stn1:trawl:occ:1-001`. A column will have to be added to indicate that the individual measurements are a subset of the overall catch at that station. 
+So now we have created the first Occurrence table, which includes the overall catch data. In the trawl2020_allCatch dataframe, column `Length (N)` indicates how many individuals at each trawl were measured for their lengths. In the next section, we create a second occurrence table, with `occurrenceID`s created for each unique individual whose length has been measured. Where the `occurrenceID` in the previous chunk of code has the format of `IYS:GoA2020_Stn1:trawl:occ:1`, the `occurrenceID`s in the next section will have the format `IYS:GoA2020_Stn1:trawl:occ:1-001`. A column will have to be added to indicate that the individual measurements are a subset of the overall catch at that station (`occurrenceRemarks`?). As this table pertains to the individual measurements of length and weight, we have to make sure that we change `organismQuantity` accordingly. 
 
 ``` {r occ_species, eval = FALSE}
 # Add occurrenceID to fish specimen data file:
-trawl2020_specimen <- trawl2020_specimen %>%
-  select(eventID = trawl,
-         scientificname = SPECIES,
-         SPECIES_DESCRIPTION) %>%
-  mutate(occurrenceStatus = "present",
-         occurrenceID = paste(eventID, "fish_occ", row_number(), sep = ":"))
+trawl2020_occ_species <- trawl2020_occ %>% filter(`LENGTH (N)` > 0)
 
-unique_trawl2020_species <- unique(trawl2020_specimen$scientificname) 
+# Have duplications of the rows based on value in LENGTH (N) column: 
+trawl2020_occ_species <- data.frame(trawl2020_occ_species[rep(seq_len(dim(trawl2020_occ_species)[1]), trawl2020_occ_species$`LENGTH (N)`), , drop = FALSE])
 
-trawl2020_scientificnames <- worrms::wm_records_names(unique_trawl2020_species)
-trawl2020_scientificnames <- dplyr::bind_rows(trawl2020_scientificnames)
+# Create new column 'count' where the grouped variable (occurrenceID) 
+trawl2020_occ_species <- trawl2020_occ_species %>%
+  group_by(occurrenceID) %>%
+  mutate(count = seq_len(length(occurrenceID)),
+         count = sprintf("%03d", count),
+         occurrenceRemarks = paste("Species is a subset of", occurrenceID, sep = " "),
+         occurrenceID = paste(occurrenceID, count, sep = "-"),
+         organismQuantity = 1) %>% 
+  select(-count)
 
-trawl2020_taxa <- left_join(trawl2020_specimen, trawl2020_scientificnames, by = "scientificname")
+trawl2020_occ_species_fnl <- trawl2020_occ_species %>%
+  select(eventID, occurrenceID, occurrenceStatus, organismQuantity, scientificName, scientificNameID,
+         scientificNameAuthorship, taxonomicStatus, taxonRank, parentNameUsageID, kingdom, phylum, 
+         class, order, family, genus, lifeStage, occurrenceRemarks)
+```
 
-# To see which species have not been matched with a record in the WoRMS registry, filter for AphiaID = NA. 
-unidentified_species <- trawl2020_taxa %>% filter(is.na(AphiaID)) %>% distinct(scientificname)
+To finalize the Occurrence Core, combine the two occurrence tables. I prefer to re-order it so that it visually makes sense to me. Then, save the Occurrence Core locally and in Google Drive. 
 
-# There are 12 unique species that have been recorded for which the worrms package cannot find a match in the WoRMS database. A manual check confirms that these species have not been matched because of minor spelling mistakes etc. In the trawl2020_specimen these species are replaced using gsub(), and worrms is re-run to get the taxonomic information. For those species whose names have been changed, we need to confirm this is done correctly with the data provider!
+``` {r trawl occurrence final, eval = FALSE}
+trawl2020_Occurrence_Core <- dplyr::bind_rows(trawl2020_occ_fnl, trawl2020_occ_species_fnl)
 
-trawl2020_specimen$scientificname <- mgsub::mgsub(trawl2020_specimen$scientificname,
-                                           c("Abraliopsis Felis", "Oncorhynchus gorbusha", "Pterotrachea sp.", 
-                                             "Aurelia sp.", "Phacellophoroa camtschatica", "Aequorea sp.", 
-                                             "Chiroteuthis calix", "Dosidicus gigas?", "Glycptocephalus zacharius",
-                                             "Unknown jelly", "Sebastes sp.", "Flatfish larvae"),
-                                           c("Abraliopsis felis", "Oncorhynchus gorbuscha", "Pterotrachea",
-                                             "Aurelia", "Phacellophora camtschatica", "Aequorea",
-                                             "Chiroteuthis calyx", "Dosidicus gigas", "Glyptocephalus zachirus",
-                                             "Cnidaria", "Sebastes", "Pleuronectiformes"))
-unique_trawl_species <- unique(trawl2020_specimen$scientificname)
+# To re-order the occurrenceID, use following code:
+order <- stringr::str_sort(trawl2020_Occurrence_Core$occurrenceID, numeric=TRUE)
+trawl2020_Occurrence_Core <- trawl2020_Occurrence_Core[match(order, trawl2020_Occurrence_Core$occurrenceID),]
 
-trawl2020_scientificnames_fnl <- worrms::wm_records_names(unique_trawl_species)
-trawl2020_scientificnames_fnl <- dplyr::bind_rows(trawl2020_scientificnames_fnl)
-trawl2020_occ <- left_join(trawl2020_specimen, trawl2020_scientificnames_fnl, by = "scientificname") %>%
-  rename(scientificName = scientificname,
-         scientificNameID = lsid,
-         scientificNameAuthorship = authority,
-         taxonomicStatus = status,
-         taxonRank = rank) %>%
-  select(eventID, occurrenceID, occurrenceStatus, scientificName, scientificNameID, scientificNameAuthorship,
-         taxonomicStatus, taxonRank, parentNameUsageID, kingdom, phylum, class, order, family, genus)
+# Save the occurrence Core locally and in Google Drive:
+write_csv(trawl2020_Occurrence_Core, here("Trawl", "tidy_data", "trawl2020_occ_final.csv"))
+
+# Combine and save the Event with Occurrence Core:
+trawl2020_event_occ <- left_join(trawl2020_event, trawl2020_Occurrence_Core, by = "eventID")
+write_csv(trawl2020_event_occ, here("Trawl", "tidy_data", "trawl2020_event_occ.")
 ```
 
 To quality control whether each species in the original specimen file has been accounted for in the final Occurrence Core, use the following chunk of code. We also have to check whether the unique species listed in the specimen file match the unique species listed in the overall catch file, where numbers have been aggregated. 
 
 ``` {r trawl2020_occ_check}
+trawl2020_event_occ <- trawl2020_event_occ %>% filter(!is.na(eventDate))
+
+obistools::plot_map_leaflet(trawl2020_event_occ) # Issue: Station 20 does not have lats and longs associated
 all(unique_trawl_species == unique(trawl2020_occ$scientificName)) # Answer should be TRUE
 ```
-
-To save the Occurrence Core, follow:
-
-``` {r save_data, eval = FALSE}
-write_csv(trawl2020_occ, here("Trawl", "tidy_data", "trawl2020_occ.csv"))
-drive_upload(here("Trawl", "tidy_data", "trawl2020_occ.csv"),
-             path = " ",
-             name = "trawl_occ.csv",
-             overwrite = TRUE)
-```
-
 
 ## Extended MeasurementOrFact Extension
 
