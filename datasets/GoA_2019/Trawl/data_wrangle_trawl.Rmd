@@ -18,12 +18,17 @@ library(googledrive)
 library(uuid)
 ```
 
-The first step is to download the file from GoogleDrive and save it in a local folder: 
+The first step is to download the files from GoogleDrive and save it in a local folder. One file contains the bridgelog data and aggregated data, whereas the other contains specimen-specific catch measurements. 
 
 ``` {r file_download}
 drive_download(file = "https://docs.google.com/spreadsheets/d/1xm_MIx_y8nsvA8I-7G33RcQ_j7w-Qmm-/edit#gid=168338968", 
                path = here::here("Trawl", "raw_data", 
                                  "2020_GoA_Fish_Trawl_data.xlsx"),
+               overwrite = TRUE)
+
+drive_download(file = "https://docs.google.com/spreadsheets/d/1m_o8Ux3s-0CS4rE3CP7cT3kFOY4-e97B/edit#gid=1644980763",
+               path = here::here("Trawl", "raw_data", 
+                                 "2020_GoA_Fish_Specimen_data.xlsx"),
                overwrite = TRUE)
 ```
 
@@ -40,6 +45,13 @@ trawl2020 <- read_excel(here("Trawl", "raw_data", "2020_GoA_Fish_Trawl_data.xlsx
          cruise = paste(project, "GoA2020", sep = ":"), 
          station = paste(cruise, SET_NUMBER, sep="_Stn"),
          trawl = paste(station, "trawl", sep=":"))
+
+trawl2020_specimen <- read_excel(here("Trawl", "raw_data", "2020_GoA_Fish_Specimen_data.xlsx"), 
+                                 sheet = "SPECIMEN_FINAL") %>%
+  mutate(project = "IYS",
+         cruise = paste(project, "GoA2020", sep = ":"),
+         station = paste(cruise, SET_NUMBER, sep = "_Stn"),
+         trawl = paste(station, "trawl", sep = ":"))
 ```
 
 ## Event Core 
@@ -101,129 +113,145 @@ trawl2020_trawl <- trawl2020 %>%
 trawl2020_event <- bind_rows(trawl2020_project, trawl2020_cruise, trawl2020_station, trawl2020_trawl) %>% 
   mutate(type = "Event")
 
-# Re-order the Event Core if required:
-# order <- stringr::str_sort(trawl_event$eventID, numeric=TRUE)
-# trawl_event <- trawl_event[match(order, trawl_event$eventID),] 
+col_order <- c("eventID", "parentEventID", "eventDate", "decimalLatitude", "decimalLongitude", "footprintWKT", "coordinateUncertaintyInMeters", "minimumDepthInMeters", "maximumDepthInMeters", "samplingProtocol", "sampleSizeValue", "sampleSizeUnit", "waterBody", "locationRemarks", "type", "fieldNotes")
+trawl2020_event <- trawl2020_event[, col_order]
 
-write_csv(trawl_event, here("Trawl", "tidy_data", "trawl_event.csv"))
+write_csv(trawl2020_event, here("Trawl", "tidy_data", "trawl2020_event.csv"))
 drive_upload(here("Trawl", "tidy_data", "trawl_event.csv"),
-             path = "https://drive.google.com/drive/folders/1MQ6XJQqnWk2puDaBTfHn7wXITjDSeLR7",
+             path = "",
              name = "trawl_event.csv",
              overwrite = TRUE)
 ```
 
 ## Occurrence
 
-As the trawl data consists of biotic data, an occurrence table has to be created as well, whereby unique species `occurrenceIDs` get linked to the `eventID`. As genus and species level were recorded in separate columns, these first get joined. A required column for the Occurrence table is the term, `occurrenceStatus`, which is used for presence/absence data. We initially considered creating a cruise-wide list of all unique species observed, and create "absent" records for each species not observed in a particular trawl (i.e., `PIECES` = 0). We decided not to do this for all species, and create absent records only for the five Pacific salmon species, because we did not want to interpolate the data to assume "truely" absentee status for species for which the trawls were not designed to catch (i.e., creating false negatives for species occurrence at a station). 
+As the trawl data consists of biotic data, an occurrence table has to be created as well, whereby unique individual `occurrenceIDs` get linked to the `eventID`. The `occurrenceID` is created from the `eventID`, and any measurements pertaining to the specific individual will be associated to that `occurrenceID` in the extended MeasurementOrFact Core.
 
-Next, `occurrenceID` - unique to each species _and each group (i.e. adult or juvenile)_ at each station - and `scientificNameID` are populated. For the `scientificNameID`, we look up the species on the WoRMS website (http://www.marinespecies.org/). It is important to take into account whether or not a species name has been "accepted" by WoRMS or not, and, should this not be the case, what is the correct name and species identifier.
+The Occurrence Core will consist of two tables merged, one from the aggregated (summary) catch data (`catch_final`). In this dataframe is also listed how many species-specific individuals within each trawl were used to measure individual lenghts and weights. The occurrenceID for the aggregated catch data will have the format `IYS:GoA2020_Stn1:trawl:occ-1`, whereas those individual measurements that fall under this occurrence will have the format `IYS:GoA2020_Stn1:trawl:occ-1-001` etc. Additionally, a column `occurrenceRemarks` will be included to indicate that that specific `occurrenceID` is a subset of the aggregated catch data. 
 
-``` {r trawl_occ}
-trawl_sp_wrangle <- trawl %>%
-  mutate(Species = paste(FISH1, FISH2, sep = " ")) %>% 
-  # For each trawl, note for each of these species whether it was present or absent:
-  complete(NUMBER, Species, fill = list(MASSCATCH = 0)) %>%
-  group_by(NUMBER) %>% 
-  fill(trawl, .direction = "downup") %>% 
-  ungroup(NUMBER) %>% 
-  # Add present or absent depending on whether "MASSCATCH > 0"
-  # We decided to determine occurrenceStatus on MASSCATCH rather than PIECES because some species were caught (had a MASSCATCH rec.) but were not recorded under PIECES. This was mostly the case for jellyfish spp., and perhaps it was difficult to enumerate number of individuals.
-  mutate(occurrenceStatus = ifelse(MASSCATCH > 0, "present", "absent")) %>% 
+A required column for the Occurrence table is the term, `occurrenceStatus`, which is used for presence/absence data. The package `worrms` is used to generate hierarchial taxonomic information on the species observed. For the `scientificNameID`, we look up the species on the WoRMS website (http://www.marinespecies.org/). 
+
+Finally, we can do a quick check to make sure that all the unique species are included in the trawl_occ dataframe. We need to make sure that the output is TRUE. If confirmed, the Occurrence table can be saved locally and in the correct Google Drive folder. We also need to make sure that if columns 'SPECIES' or 'SPECIES (Description if needed)' make mention of a lifestage, we need to include this in the occurrence Core. 
+
+``` {r trawl2020_occ, eval = FALSE}
+# First, let's create an occurrence table from the overall catch data
+trawl2020_allCatch <- read_excel(here("Trawl", "raw_data", "2020_GoA_Fish_Trawl_data.xlsx"), 
+                                 sheet = "CATCH_FINAL") %>%
+  mutate(project = "IYS",
+         cruise = paste(project, "GoA2020", sep = ":"),
+         station = paste(cruise, SET_NUMBER, sep = "_Stn"),
+         trawl = paste(station, "trawl", sep = ":")) %>%
+  rename(scientificname = SPECIES) %>% 
+  mutate(lifeStage = case_when(grepl("larvae", trawl2020_allCatch$scientificname) ~ "larvae",
+                               grepl("larvae", trawl2020_allCatch$`SPECIES (Description if needed)`) ~ "larvae",
+                               grepl("eggs", trawl2020_allCatch$scientificname) ~ "eggs",
+                               grepl("eggs", trawl2020_allCatch$`SPECIES (Description if needed)`) ~ "eggs",
+                               grepl("juv", trawl2020_allCatch$scientificname) ~ "juvenile",
+                               grepl("juv", trawl2020_allCatch$`SPECIES (Description if needed)`) ~ "juvenile",
+                               grepl("egg", trawl2020_allCatch$scientificname) ~ "egg",
+                               grepl("egg", trawl2020_allCatch$`SPECIES (Description if needed)`) ~ "egg"))
+
+
+trawl2020_allCatch_scientificnames <- worrms::wm_records_names(unique(trawl2020_allCatch$scientificname)) %>% bind_rows()
+trawl2020_allCatch_taxa <- left_join(trawl2020_allCatch, trawl2020_allCatch_scientificnames, by = "scientificname")
+
+# You'll notice that not all unique_taxa have associated taxonomic hierarchial information. Let's inspect these observations as they might be either misspelled, or a non-Latin name is provided. 
+unidentified_species <- trawl2020_allCatch_taxa %>% filter(is.na(AphiaID)) %>% distinct(scientificname)
+
+# A total of 23 species could not be matched to a record within the WoRMS database. Most often this is due to spelling errors, the inclusion of '.sp', or the lack of supplying a Latin name. I manually check these species in the WoRMS database and confirm with the data provider that the suggested species are the ones meant. These species will then be corrected in the trawl2020_allCatch_taxa data frame. 
+
+# First step, remove any  mentions of 'sp.' or 'sp'. Some species also have 'sp' included in their Latin name so make sure you "anchor" the string you want replaced using \\b. 
+trawl2020_allCatch$scientificname <- gsub("\\b sp.\\b|\\b sp\\b", "", trawl2020_allCatch$scientificname)
+
+# For the remaining species, use gsub to replace them with appropriate record in WoRMS. Again, confirm this with the data provider. 
+trawl2020_allCatch$scientificname <- mgsub::mgsub(trawl2020_allCatch$scientificname,
+                         c("Paralichthydidae", "Paralepidadae", "Sergestes similus", "Salps", "Abraliopsis Felis",
+                           "Euphausiid", "Gooseneck barnacle", "Chiroteuthis calix", "Glycptocephalus zacharius",
+                           "squid", "Fish eggs", "jellyfish", "myctophiids", "goose neck barnacle", "gonatidae",
+                           "Flatfish larvae", "Ptereotrachea"),
+                         c("Paralichthyidae", "Paralepidapedon", "Sergestes similis", "Salpa", "Abraliopsis felis",
+                           "Euphausiidae", "Pollicipes pollicipes", "Chiroteuthis calyx", "Glyptocephalus zachirus",
+                           "Teuthida", "Pisces", "Cnidaria", "Myctophidae", "Pollicipes pollicipes", "Gonatidae",
+                           "Pleuronectiformes", "Pterotrachea"))
+
+# So now we can run worrms::wm_records_names again, and there should be no NA in the AphiaID column.
+trawl2020_allCatch_worms <- worrms::wm_records_names(unique(trawl2020_allCatch$scientificname)) %>% bind_rows()
+trawl2020_occ <- left_join(trawl2020_allCatch, trawl2020_allCatch_worms, by = "scientificname") %>%
   rename(eventID = trawl,
-         scientificName = Species) %>%
-  select(eventID, scientificName, occurrenceStatus, Group) %>%
-  # Filter only for present species, with the exception of the 5 Pacific salmon species
-  filter(scientificName %in% c("Oncorhynchus gorbuscha",
-                               "Oncorhynchus keta",
-                               "Oncorhynchus kisutch",
-                               "Oncorhynchus nerka",
-                               "Oncorhynchus tschawytscha") |
-           occurrenceStatus == "present") %>% 
-  mutate(
-    occurrenceID = paste("IYS_GoA2019_occ", row_number(),sep = ""),
-    scientificNameID = case_when(
-      scientificName == "Abraliopsis felis" ~ "urn:lsid:marinespecies.org:taxname:341849",
-      scientificName == "Aequorea sp." ~ "urn:lsid:marinespecies.org:taxname:116998",
-      scientificName == "Anotopterus nikparini" ~ "urn:lsid:marinespecies.org:taxname:272040",
-      scientificName == "Aptocyclus ventricosus" ~ "urn:lsid:marinespecies.org:taxname:254299",
-      scientificName == "Aurelia labiata" ~ "urn:lsid:marinespecies.org:taxname:287213",
-      scientificName == "Aurelia limbata" ~ "urn:lsid:marinespecies.org:taxname:158199",
-      scientificName == "Belonella borealis" ~ "urn:lsid:marinespecies.org:taxname:410406",
-      scientificName == "Boreoteuthis borealis" ~ "urn:lsid:marinespecies.org:taxname:342326",
-      # Different genus name to what was provided: Gonatopsis vs. Boreoteuthis
-      scientificName == "Calycopsis sp." ~ "urn:lsid:marinespecies.org:taxname:117028",
-      scientificName == "Chiroteuthis calyx" ~ "urn:lsid:marinespecies.org:taxname:341796",
-      scientificName == "Chrysaora melonaster" ~ "urn:lsid:marinespecies.org:taxname:287209",
-      # Slightly different spelling of species name
-      scientificName == "Corolla calceola" ~ "urn:lsid:marinespecies.org:taxname:532663",
-      scientificName == "Diaphus theta" ~ "urn:lsid:marinespecies.org:taxname:272694",
-      scientificName == "Gasterosteus aculeatus" ~ "urn:lsid:marinespecies.org:taxname:126505",
-      scientificName == "Gonatidae sp." ~ "urn:lsid:marinespecies.org:taxname:11743",
-      scientificName == "Gonatus madokai" ~ "urn:lsid:marinespecies.org:taxname:341858",
-      scientificName == "Gonatus onyx" ~ "urn:lsid:marinespecies.org:taxname:341859",
-      scientificName == "Gonatus sp." ~ "urn:lsid:marinespecies.org:taxname:138036",
-      scientificName == "Hormiphora cucumis" ~ "urn:lsid:marinespecies.org:taxname:106382",
-      scientificName == "Icichthys lockingtoni" ~ "urn:lsid:marinespecies.org:taxname:279354",
-      scientificName == "Japetella diaphana" ~ "urn:lsid:marinespecies.org:taxname:138849",
-      scientificName == "Lestidium ringens" ~ "urn:lsid:marinespecies.org:taxname:272096",
-      # slightly different accepted name than what was recorded
-      scientificName == "Lipolagus ochotensis" ~ "urn:lsid:marinespecies.org:taxname:281374",
-      scientificName == "Microstomus pacificus" ~ "urn:lsid:marinespecies.org:taxname:274294",
-      scientificName == "Moroteuthis robusta" ~ "urn:lsid:marinespecies.org:taxname:410385",
-      # different genus name than what was recorded
-      scientificName == "Oncorhynchus gorbuscha" ~ "urn:lsid:marinespecies.org:taxname:127182",
-      scientificName == "Oncorhynchus keta" ~ "urn:lsid:marinespecies.org:taxname:127183",
-      scientificName == "Oncorhynchus kisutch" ~ "urn:lsid:marinespecies.org:taxname:127184",
-      scientificName == "Oncorhynchus nerka" ~ "urn:lsid:marinespecies.org:taxname:254569",
-      scientificName == "Oncorhynchus tschawytscha" ~ "urn:lsid:marinespecies.org:taxname:158075",
-      scientificName == "Onychoteuthis borealijaponica" ~ "urn:lsid:marinespecies.org:taxname:342069",
-      scientificName == "Paralepididae gen. sp." ~ "urn:lsid:marinespecies.org:taxname:125447",
-      scientificName == "Periphylla periphylla" ~ "urn:lsid:marinespecies.org:taxname:135294",
-      scientificName == "Phacellophora camtshchatica" ~ "urn:lsid:marinespecies.org:taxname:135309",
-      # Slightly different spelling
-      scientificName == "Salpa sp." ~ "urn:lsid:marinespecies.org:taxname:137233",
-      scientificName == "Sebastes melanops" ~ "urn:lsid:marinespecies.org:taxname:274817",
-      scientificName == "Sergestes similis" ~ "urn:lsid:marinespecies.org:taxname:514127",
-      # Different accepted genus name
-      scientificName == "Siphonophora sp." ~ "urn:lsid:marinespecies.org:taxname:1371",
-      scientificName == "Squalus acanthias" ~ "urn:lsid:marinespecies.org:taxname:105923",
-      scientificName == "Stenobrachius leucopsarus" ~ "urn:lsid:marinespecies.org:taxname:254363",
-      scientificName == "Symbolophorus californiense" ~ "urn:lsid:marinespecies.org:taxname:272733",
-      # Slightly different species name spelling
-      scientificName == "Tarletonbeania crenularis" ~ "urn:lsid:marinespecies.org:taxname:282927",
-      scientificName == "Thalassenchelys coheni" ~ "urn:lsid:marinespecies.org:taxname:282952",
-      scientificName == "Thetys vagina" ~ "urn:lsid:marinespecies.org:taxname:137281",
-      scientificName == "Thysanoessa spinifera" ~ "urn:lsid:marinespecies.org:taxname:237874",
-      scientificName == "Zaprora silenus" ~ "urn:lsid:marinespecies.org:taxname:254353"
-      )
-    )
+         scientificNameAuthorship = authority,
+         taxonomicStatus = status,
+         taxonRank = rank,
+         scientificName = scientificname,
+         scientificNameID = lsid,
+         organismQuantity = CATCH_NUMBER) %>%
+  mutate(occurrenceID = paste(eventID, "occ", row_number(), sep = ":"),
+         occurrenceStatus = "present") %>%
+  select(eventID, occurrenceID, occurrenceStatus, organismQuantity,scientificName, scientificNameID,
+         scientificNameAuthorship, taxonomicStatus, taxonRank, parentNameUsageID, kingdom, phylum, 
+         class, order, family, genus, lifeStage)
 
-# We will create a separate data frame for the proper occurrence table. The `trawl_sp_wrangle` data frame will be used in the next chunk to create the extended MeasurementOrFact extension.
-trawl_occ <- trawl_sp_wrangle %>% 
-  select(eventID, occurrenceID, scientificName, scientificNameID, occurrenceStatus) %>% 
-  mutate(basisOfRecord = "HumanObservation")
+# Save the file locally
+write_csv(trawl2020_occ, here("Trawl", "tidy_data", "trawl2020_occ.csv"))
 ```
 
-_The chunk of code below is only required if we work with a complete table of present/absent species at each station!_ We can do a quick check to make sure that all the unique species are included in the trawl_occ dataframe, at each station (`eventID`)! We need to make sure that the output is TRUE. If confirmed, the Occurrence table can be saved locally and in the correct Google Drive folder. 
+So now we have created the first Occurrence table, which includes the overall catch data. In the trawl2020_allCatch dataframe, column `Length (N)` indicates how many individuals at each trawl were measured for their lengths. In the next section, we create a second occurrence table, with `occurrenceID`s created for each unique individual whose length has been measured. Where the `occurrenceID` in the previous chunk of code has the format of `IYS:GoA2020_Stn1:trawl:occ:1`, the `occurrenceID`s in the next section will have the format `IYS:GoA2020_Stn1:trawl:occ:1-001`. A column will have to be added to indicate that the individual measurements are a subset of the overall catch at that station. 
 
-``` {r trawl_occ_check}
-check_spp <- trawl_occ %>% group_by(eventID) %>%
-  summarise(count = n_distinct(scientificNameID)) 
+``` {r occ_species, eval = FALSE}
+# Add occurrenceID to fish specimen data file:
+trawl2020_specimen <- trawl2020_specimen %>%
+  select(eventID = trawl,
+         scientificname = SPECIES,
+         SPECIES_DESCRIPTION) %>%
+  mutate(occurrenceStatus = "present",
+         occurrenceID = paste(eventID, "fish_occ", row_number(), sep = ":"))
 
-unique_spp <- unique(trawl_sp_wrangle$scientificName)
-length(unique_spp)
+unique_trawl2020_species <- unique(trawl2020_specimen$scientificname) 
 
-if(check_spp$count[]i == length(unique_spp)) {
-    print("TRUE")
-  } else {
-    print("FALSE")
-  }
+trawl2020_scientificnames <- worrms::wm_records_names(unique_trawl2020_species)
+trawl2020_scientificnames <- dplyr::bind_rows(trawl2020_scientificnames)
+
+trawl2020_taxa <- left_join(trawl2020_specimen, trawl2020_scientificnames, by = "scientificname")
+
+# To see which species have not been matched with a record in the WoRMS registry, filter for AphiaID = NA. 
+unidentified_species <- trawl2020_taxa %>% filter(is.na(AphiaID)) %>% distinct(scientificname)
+
+# There are 12 unique species that have been recorded for which the worrms package cannot find a match in the WoRMS database. A manual check confirms that these species have not been matched because of minor spelling mistakes etc. In the trawl2020_specimen these species are replaced using gsub(), and worrms is re-run to get the taxonomic information. For those species whose names have been changed, we need to confirm this is done correctly with the data provider!
+
+trawl2020_specimen$scientificname <- mgsub::mgsub(trawl2020_specimen$scientificname,
+                                           c("Abraliopsis Felis", "Oncorhynchus gorbusha", "Pterotrachea sp.", 
+                                             "Aurelia sp.", "Phacellophoroa camtschatica", "Aequorea sp.", 
+                                             "Chiroteuthis calix", "Dosidicus gigas?", "Glycptocephalus zacharius",
+                                             "Unknown jelly", "Sebastes sp.", "Flatfish larvae"),
+                                           c("Abraliopsis felis", "Oncorhynchus gorbuscha", "Pterotrachea",
+                                             "Aurelia", "Phacellophora camtschatica", "Aequorea",
+                                             "Chiroteuthis calyx", "Dosidicus gigas", "Glyptocephalus zachirus",
+                                             "Cnidaria", "Sebastes", "Pleuronectiformes"))
+unique_trawl_species <- unique(trawl2020_specimen$scientificname)
+
+trawl2020_scientificnames_fnl <- worrms::wm_records_names(unique_trawl_species)
+trawl2020_scientificnames_fnl <- dplyr::bind_rows(trawl2020_scientificnames_fnl)
+trawl2020_occ <- left_join(trawl2020_specimen, trawl2020_scientificnames_fnl, by = "scientificname") %>%
+  rename(scientificName = scientificname,
+         scientificNameID = lsid,
+         scientificNameAuthorship = authority,
+         taxonomicStatus = status,
+         taxonRank = rank) %>%
+  select(eventID, occurrenceID, occurrenceStatus, scientificName, scientificNameID, scientificNameAuthorship,
+         taxonomicStatus, taxonRank, parentNameUsageID, kingdom, phylum, class, order, family, genus)
 ```
+
+To quality control whether each species in the original specimen file has been accounted for in the final Occurrence Core, use the following chunk of code. We also have to check whether the unique species listed in the specimen file match the unique species listed in the overall catch file, where numbers have been aggregated. 
+
+``` {r trawl2020_occ_check}
+all(unique_trawl_species == unique(trawl2020_occ$scientificName)) # Answer should be TRUE
+```
+
+To save the Occurrence Core, follow:
 
 ``` {r save_data, eval = FALSE}
-write_csv(trawl_occ, here("Trawl", "tidy_data", "trawl_occ.csv"))
-drive_upload(here("Trawl", "tidy_data", "trawl_occ.csv"),
-             path = "https://drive.google.com/drive/folders/1MQ6XJQqnWk2puDaBTfHn7wXITjDSeLR7",
+write_csv(trawl2020_occ, here("Trawl", "tidy_data", "trawl2020_occ.csv"))
+drive_upload(here("Trawl", "tidy_data", "trawl2020_occ.csv"),
+             path = " ",
              name = "trawl_occ.csv",
              overwrite = TRUE)
 ```
