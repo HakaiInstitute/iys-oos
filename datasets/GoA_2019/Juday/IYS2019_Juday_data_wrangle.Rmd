@@ -44,7 +44,11 @@ juday <- read_excel(here("Juday", "raw_data", "Juday Summary Data 2019_WF.xlsx")
   mutate(project = "IYS",
          cruise = paste(project, "GoA2019", sep = ":"),
          station = paste(cruise, `GoA survey Station Number`, sep = "_Stn"),
-         cast = paste(station, "juday", sep = ":"))
+         cast = paste(station, "juday", sep = ":")) 
+
+juday$year <- as.numeric(format(as.Date(juday$eventDate), "%Y"))
+juday$month <- as.numeric(format(as.Date(juday$eventDate), "%m"))
+juday$day <- as.numeric(format(as.Date(juday$eventDate), "%d"))
 ```
 
 ## Create the Event core - Summarized Juday data
@@ -70,6 +74,9 @@ juday_cast <- juday %>%
   select(eventID = cast,
          parentEventID = station,
          eventDate,
+         year,
+         month,
+         day,
          decimalLatitude = Latitude,
          decimalLongitude = Longitude,
          minimumDepthInMeters = `Sampling layer`,
@@ -105,16 +112,17 @@ juday_summary_occ <- juday %>%
 unique_taxa <- unique(juday_summary_occ$scientificname)
 worms_check <- obistools::match_taxa(unique_taxa)
 
-# An initial check through the WoRMS database indicates that there is no record of 'Hydromedusa' in that registry. Hydromedusa(e) are the medusa lifestage of the species Hydrozoa. Therefore, in the unique_taxa dataframe the records of Hydromedusa are replaced with Hydrozoa, and at a later stage medusa are added as a lifeStage in the Occurrence Core. Make sure the record is also replaced in the juday_summary_occ dataframe as we'll be joining the two dataframes together by scientificname. The species listed as 'other' will not have a scientificname associated with it, and are therefore removed for the Occurrence Core. 
+# An initial check through the WoRMS database indicates that there is no record of 'Hydromedusa' in that registry. Hydromedusa(e) are the medusa lifestage of the species Hydrozoa. Therefore, in the unique_taxa dataframe the records of Hydromedusa are replaced with Hydrozoa, and at a later stage medusa are added as a lifeStage in the Occurrence Core. Make sure the record is also replaced in the juday_summary_occ dataframe as we'll be joining the two dataframes together by scientificname. The species listed as 'other' will not have a scientificname associated with it, and are therefore removed for the Occurrence Core. Biomass measurements will be linked to the Event Core. 
 
-# Confirm with data providers that Hydromedusae are Hydrozoa. 
+# To do: Confirm with data providers that Hydromedusae are Hydrozoa. 
 
+juday_summary_occ<-  juday_summary_occ %>%
+  mutate(lifeStage = case_when(
+    scientificname == "Hydromedusa" ~ "Hydromedusae"))
 juday_summary_occ$scientificname <- gsub("Hydromedusa", "Hydrozoa", juday_summary_occ$scientificname)
 juday_summary_occ <- juday_summary_occ[!grepl("Others", juday_summary_occ$scientificname),]
 
-unique_taxa <- unique(juday_summary_occ$scientificname)
-juday_scientificnames <- worrms::wm_records_names(unique_taxa) 
-juday_scientificnames <- dplyr::bind_rows(juday_scientificnames)
+juday_scientificnames <- worrms::wm_records_names(unique(juday_summary_occ$scientificname)) %>% dplyr::bind_rows() 
 
 IYS2019_juday_occ <- left_join(juday_summary_occ, juday_scientificnames, by = "scientificname") %>%
   filter(biomass > 0) %>%
@@ -129,7 +137,7 @@ Juday_occ <- IYS2019_juday_occ %>%
          taxonRank = rank,
          scientificNameAuthorship = authority) %>%
   select(eventID, scientificName, scientificNameID, scientificNameAuthorship,
-         taxonomicStatus, taxonRank, parentNameUsageID, kingdom, phylum, class, order, family, genus)
+         taxonomicStatus, taxonRank, parentNameUsageID, kingdom, phylum, class, order, family, genus, lifeStage)
 
 # Make sure the folder path exists already (e.g. ./Salmon Diet/tidy_data)
 write_csv(Juday_occ, here("Juday", "tidy_data", "juday_occ_summary.csv"))
@@ -137,7 +145,7 @@ write_csv(Juday_occ, here("Juday", "tidy_data", "juday_occ_summary.csv"))
 
 ## extended Measurement or Fact Core Summarized Juday Data
 
-In the follow chunk of code we add the measurements (biomass wet weight) associated to the different zooplankton groups (occurrenceID) and seperated between different size classes. Additionally, measurements or facts related to the sampling (water volume sampled, bottom depth etc) are added also, but linked to the relevant eventID rather than occurrenceID. The values are the biomass of zooplankton (wet weight) per cubic metre (m-3). 
+In the follow chunk of code we add the measurements (biomass wet weight) associated to the different zooplankton groups (occurrenceID) and separated between different size classes. Additionally, measurements or facts related to the sampling (water volume sampled, bottom depth etc) are added also, but linked to the relevant eventID rather than occurrenceID. The values are the biomass of zooplankton (wet weight) per cubic metre (m-3). 
 
 However, in the data there are multiple columns that contain aggregated data (i.e. not data specific to a listed occurrence), or measurements for observations where no species could be identified. Therefore these measurements need to be linked to the `eventID`. Therefore we'll create two eMOF tables, one with measurements linked to `eventIDs` and the other measurements linked to an `occurrenceID`. These eMOF tables will be joined into a single eMOF Core. 
 
@@ -164,7 +172,6 @@ juday_sampling <- ...
 juday_summary_emof <- juday %>%
   select(cast,
          `Biomass_0.1-0.5 mm`:`Biomass_>1.2 mm`,
-         `Total zooplankton`,
          Others) %>%
   pivot_longer(cols = `Biomass_0.1-0.5 mm`:Others,
                values_to = "measurementValue") %>%
@@ -173,14 +180,12 @@ juday_summary_emof <- juday %>%
          measurementUnitID = "http://vocab.nerc.ac.uk/collection/P06/current/UMMC/",
          measurementTypeID = "http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/",
          measurementID = case_when(
-           name == "Total zooplankton" ~ paste(cast, "biomass:total", sep = "-"),
            name == "Others" ~ paste(cast, "biomass:others", sep = "-"),
            name == "Biomass_0.1-0.5 mm" ~ paste(cast, "biomass:0.1-0.5 mm", sep = "-"),
            name == "Biomass_0.5-1.2 mm" ~ paste(cast, "biomass:0.5-1.2 mm", sep = "-"),
            name == "Biomass_>1.2 mm" ~ paste(cast, "biomass:>1.2 mm", sep = "-")
          ),
          measurementType = case_when(
-           name == "Total zooplankton" ~ "Total cast-specific zooplankton biomass",
            name == "Others" ~ "Zooplankton (unidentified species) biomass",
            name == "Biomass_0.1-0.5 mm" ~ "Zooplankton biomass size class 0.1-0.5 mm",
            name == "Biomass_0.5-1.2 mm" ~ "Zooplankton biomass size class 0.5-1.2 mm",
@@ -203,7 +208,7 @@ juday_emof_spp <- IYS2019_juday_occ %>%
          measurementValue, measurementUnit, measurementUnitID)
 
 # Combine the two extended measurement or fact tables into a single core, re-order if preferred and save locally:
-juday2019_emof <- rbind(juday_bottomdepth, juday_summary_emof, juday_emof_spp)
+juday2019_emof <- rbind(juday_bottomdepth, juday_sampling, juday_summary_emof, juday_emof_spp)
 
 order <- stringr::str_sort(juday2019_emof$measurementID)
 juday2019_emof <- juday2019_emof[match(order, juday2019_emof$measurementID),]
