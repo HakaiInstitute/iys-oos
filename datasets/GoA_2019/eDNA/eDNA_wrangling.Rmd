@@ -125,8 +125,7 @@ eDNA_taxa_2019 <- pivot_longer(eDNA_detections_2019,
 eDNA_2019_taxa <- data.frame(scientificname = unique(eDNA_taxa_2019$OTU))
 eDNA_2019_taxa$scientificname <- as.character(eDNA_2019_taxa$scientificname)
 
-eDNA_taxa <- worrms::wm_records_names(eDNA_2019_taxa$scientificname)
-eDNA_taxa <- dplyr::bind_rows(eDNA_taxa)
+eDNA_taxa <- worrms::wm_records_names(eDNA_2019_taxa$scientificname) %>% dplyr::bind_rows()
 
 # Use left_join to see for which records WoRMS has an entry in their database:
 match <- left_join(eDNA_2019_taxa, eDNA_taxa, by = "scientificname")
