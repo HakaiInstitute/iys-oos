@@ -33,6 +33,11 @@ drive_download("https://docs.google.com/spreadsheets/d/1Yp4tNZmzlAKGXo6b3LRckdnF
                path = here::here("Bongo", "raw_data",
                                  "IYS cruise logbook_2019.xlsx"), 
                overwrite = TRUE)
+
+drive_download("https://docs.google.com/spreadsheets/d/1Y_Ve8yiAu06NIkIlnKfj8KOx4RABjGqp/edit#gid=723141179",
+               path = here::here("Bongo", "raw_data",
+                                 "IYS zooplankton taxonomy sample metadata 20210115.xlsx"),
+               overwrite = TRUE)
 ```
 
 Read in the datasets from your local drive. To connect additional metadata information regarding the bongo set deployments, we join another sheet from a different dataset. The dataframe bongo includes the sample_ids of only the zooplankton, whereas the bongo_metadata dataframe does not include this information. However, bongo_metadata dataframe includes important metadata that we - eventually - need to join to the sample_ids.
@@ -42,12 +47,13 @@ bongo <- read_excel(here("Bongo", "raw_data",
                        "Zoop Bongo Isotopes_IYS_Dry Weight_Mar31.xlsx"), 
                   sheet = "Samples collected") %>%
   janitor::clean_names() %>%
-  mutate(cruise = "GoA2019",
+  mutate(project = "IYS",
+         cruise = paste(project, "GoA2019", sep = ":"),
          station = paste(cruise, station, sep = "_Stn"),
          cast = paste(station, net, sep = ":bongo:Net"),
          sample = paste(cast, sample_id, sep = ":"))
 
-bongo_fnl <- bongo_metadata <- read_excel(here("Bongo", "raw_data",
+bongo_fnl <- read_excel(here("Bongo", "raw_data",
                                   "IYS cruise logbook_2019.xlsx"),
                              sheet = "Bongo metadata") %>%
   janitor::clean_names() %>% 
@@ -58,10 +64,25 @@ bongo_fnl <- bongo_metadata <- read_excel(here("Bongo", "raw_data",
                                                format="%Y-%m-%d %H:%M:%S", 
                                                tz="Asia/Kamchatka")),
          dateTime = str_replace(dateTime, "\\+00:00", "Z")) %>%
-  mutate(cruise = "GoA2019",
+  mutate(project = "IYS",
+         cruise = paste(project, "GoA2019", sep = ":"),
          station = paste(cruise, station, sep = "_Stn"),
          cast = paste(station, net_number, sep = ":bongo:Net")) %>%
   dplyr::rename(net = net_number)
+
+bongo_fnl$year <- as.numeric(format(as.Date(bongo_fnl$dateTime), "%Y"))
+bongo_fnl$month <- as.numeric(format(as.Date(bongo_fnl$dateTime), "%m"))
+bongo_fnl$day <- as.numeric(format(as.Date(bongo_fnl$dateTime), "%d"))
+
+bongo_eventRemarks <- read_excel(here("Bongo", "raw_data",
+                                      "IYS zooplankton taxonomy sample metadata 20210115.xlsx"), sheet = "Metadata") %>%
+  mutate(project = "IYS",
+         cruise = paste(project, "GoA2019", sep = ":"),
+         station = paste(cruise, Station, sep = "_Stn")) %>%
+  rename(eventRemarks = Notes) %>%
+  filter(Cruise == "IYS 2019") %>%
+  select(eventID = station, 
+         eventRemarks) 
 ```
 
 Dataframes are created for each unique `eventID` layer (cruise, station, cast, sample), with unique associated columns. Eventually, the data frames get joined, and the event table gets saved locally and in Google Drive. The column `eventRemarks` is not a required column, and currently only contains descriptive information. However, it is a good method to understand the structure in the dataset. A visual diagram of the structure of the Bongo dataset is provided [here](https://app.diagrams.net/#G1YG5AVLwawocrr18XwbZG-1mDwwcc4ewM). For the Event Core, most of the information for the unique layers can come from the `bongo_fnl` dataframe, whereas information pertaining specifically to the sample_ids will have to come from the `bongo` dataframe. 
@@ -73,25 +94,31 @@ While samplingProtocol is not a required term, it is useful to give a descriptio
 ## Event Core
 
 ``` {r bongo_event, eval = FALSE}
+bongo_project <- bongo_fnl %>%
+  select(eventID = project) %>%
+  distinct(eventID)
+
 bongo_cruise <- bongo_fnl %>% 
-  select(eventID = cruise) %>%
-  distinct(eventID) %>%
-  mutate(eventRemarks = "cruise")
+  select(eventID = cruise,
+         parentEventID = project) %>%
+  distinct(eventID, .keep_all = TRUE)
 
 bongo_station <- bongo_fnl %>%
   select(eventID = station,
-         parentEventID = cruise) %>% 
+         parentEventID = cruise) 
+
+bongo_station <- full_join(bongo_station, bongo_eventRemarks, by = "eventID") %>%
   distinct(eventID, .keep_all = TRUE) %>% 
-  mutate(eventRemarks = "station") %>%
-  mutate(notes = case_when(
-    eventID == "GoA2019_Stn51" ~ "Bongo cancelled because of weather",
-    eventID == "GoA2019_Stn52" ~ "Bongo cancelled because of weather"
-  ))
+  mutate(eventRemarks = ifelse(eventID == "IYS:GoA2019_Stn51", "Bongo cancelled because of weather", eventRemarks),
+         eventRemarks = ifelse(eventID == "IYS:GoA2019_Stn52", "Bongo cancelled because of weather", eventRemarks))
 
 bongo_cast <- bongo_fnl %>%
   select(eventID = cast,
          parentEventID = station,
          eventDate = dateTime,
+         year,
+         month,
+         day,
          decimalLatitude = latitude,
          decimalLongitude = longitude,
          minimumDepthInMeters = sample_depth,
@@ -112,14 +139,16 @@ bongo_cast <- cbind(bongo_cast, coordinates)
 bongo_sample <- bongo %>%
   select(eventID = sample,
          parentEventID = cast) %>% 
-  distinct(eventID, .keep_all = TRUE) %>% 
-  mutate(eventRemarks = "sample")
+  distinct(eventID, .keep_all = TRUE) 
 
-bongo_event <- bind_rows(bongo_cruise,bongo_station,bongo_cast, bongo_sample) %>% 
+bongo_event <- bind_rows(bongo_project, bongo_cruise,bongo_station,bongo_cast, bongo_sample) %>% 
   mutate(type = "HumanObservation",
          geodeticDatum = "EPSG:4326")
 
-# To recursively add event information from parent events to child events:
+col_order <- c("eventID", "parentEventID", "eventDate", "year", "month", "day", "decimalLatitude", "decimalLongitude", "footprintWKT", "coordinateUncertaintyInMeters", "minimumDepthInMeters", "maximumDepthInMeters", "samplingProtocol", "sampleSizeValue", "sampleSizeUnit", "samplingEffort", "geodeticDatum", "type", "eventRemarks")
+bongo_event <- bongo_event[, col_order]
+
+# To do: figure out way to flatten the event core. 
 bongo_event <- obistools::flatten_event(bongo_event)
 
 # Make sure the folder path exists already (e.g. ./Bongo/tidy_data)
@@ -141,7 +170,7 @@ div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
 Q: Where do we draw the line when it comes to associating a taxonomic occurrence record (occurrenceID) to an entry? 
 </div>
 
-**A**: After internal discussion, it was opted to associate an occurrence(ID) to an entry as long as we can find a WoRMS taxon / URN, even if a species can only be identified up to a phylum or kingdom level. For entries where Species = `Size fraction`, will not have an Occurrence Core associated to it, because it is not possible to associate a URN from WoRMS to this class or group (`Zooplankton`). The same goes for entries where no common rank can be associated, such as `Jellyfish, radiolarian, chaetognath` and `Gelatinous`. For data entries where multiple groups are lumped together (i.e. "Jelly fish, radiolarian and chaetognath"), we have opted _not_ to split them into separate occurrenceIDs because it is not possible to associate any measurements to the entry.
+**A**: After internal discussion, it was opted to associate an occurrence(ID) to an entry as long as we can find a WoRMS taxon / URN, even if a species can only be identified up to a phylum or kingdom level. For entries where Species = `Size fraction`, will not have an Occurrence Core associated to it, because it is not possible to associate a URN from WoRMS to this class or group (`Zooplankton`). The same goes for entries where no common rank can be associated, such as `Jellyfish, radiolarian, chaetognath` and `Gelatinous`. For data entries where multiple groups are lumped together (i.e. "Jelly fish, radiolarian and chaetognath"), and a common taxonomic level can not be found, we have opted _not_ to split them into separate occurrenceIDs because it is not possible to associate any measurements to the entry.
 
 **However, a new term might be introduced: `verbatimScientificName` (see [here](https://github.com/tdwg/dwc/issues/181)), in which case these data entries might be included under this column and consequently added to the Occurrence Core.**
 
@@ -149,20 +178,44 @@ Q: Where do we draw the line when it comes to associating a taxonomic occurrence
 unique(bongo$species)
 
 # Identify all entries that have not been identified to species or genus level: 
-bongo_occ_spp <- bongo %>% filter(!(species %in% c("Size fraction", "Chaetognath & Ctenophore", "Jelly mass",
+bongo2019_taxa <- bongo %>% filter(!(species %in% c("Size fraction", "Chaetognath & Ctenophore", "Jelly mass",
                                               "Jellyfish, radiolarian, chaetognath", "Gelatinous",
                                               "Ctenophore / jellyfish")))
+bongo2019_taxa <- bongo2019_taxa %>%
+  mutate(lifeStage = case_when(grepl("Crab zoea", bongo2019_taxa$species) ~ "Crab zoea",
+                               grepl("larva", bongo2019_taxa$species) ~ "Larvae",
+                               grepl("Hydromedusae", bongo2019_taxa$species) ~ "Hydromedusae"))
 
-Species <- unique(bongo_occ_spp$species)
-scientificNames <- obistools::match_taxa(Species)
-scientificNames <- cbind(Species, scientificNames)
+# Additionally, all mentionings of 'sp.' need to be removed as these can't be found through the worrms package:
+bongo2019_taxa$species <- gsub("\\b sp.\\b", "", bongo2019_taxa$species)
+bongo2019_taxa$species <- gsub("[(]", "", bongo2019_taxa$species)
+bongo2019_taxa$species <- gsub("[)]", "", bongo2019_taxa$species)
+unique_bongo2019_taxa <- unique(bongo2019_taxa$species)
 
-names_worms <- taxizesoap::worms_records(scientificNames$scientificName) %>%
-  select(inputid, scientificname, authority, rank, valid_name, valid_authority, kingdom,
-         phylum, class, order, family, genus, lsid)
-names_worms <- names_worms %>% rename(scientificName = scientificname)
+# The other species that haven't been found through the worrms package are slightly misspelled or have been recorded with their common name, such as 'Squat lobster'. Where common names are provided, we record these under 'vernacularName'. Other names are changed - and confirmed with data provider. They are written out below.
 
-x <- left_join(scientificNames, names_worms, by = "scientificName") %>% select(Species, valid_name)
+bongo2019_taxa$species <- gsub("Copepod", "Copepoda", bongo2019_taxa$species)
+bongo2019_taxa$species <- gsub("Squat lobster", "Anomura", bongo2019_taxa$species)
+bongo2019_taxa$species <- gsub("Siphonophore", "Siphonophorae", bongo2019_taxa$species)
+bongo2019_taxa$species <- gsub("siphonophore", "Siphonophorae", bongo2019_taxa$species)
+bongo2019_taxa$species <- gsub("Chaetognath Sagitta", "Sagittoidea", bongo2019_taxa$species)
+bongo2019_taxa$species <- gsub("Euphausiid", "Euphausiidae", bongo2019_taxa$species)
+bongo2019_taxa$species <- gsub("Siphonophorae Lensia type", "Lensia", bongo2019_taxa$species)
+bongo2019_taxa$species <- gsub("Radiolarians", "Radiozoa", bongo2019_taxa$species)
+bongo2019_taxa$species <- gsub("Crab zoea", "Decapoda", bongo2019_taxa$species)
+bongo2019_taxa$species <- gsub("Myctophid larva", "Myctophidae", bongo2019_taxa$species)
+bongo2019_taxa$species <- gsub("Primno pacifica", "Primnoa pacifica", bongo2019_taxa$species)
+bongo2019_taxa$species <- gsub("Japatella diaphana", "Japetella diaphana", bongo2019_taxa$species)
+bongo2019_taxa$species <- gsub("Clio pyrimidata", "Clio pyramidata", bongo2019_taxa$species)
+bongo2019_taxa$species <- gsub("Gastropod veliger", "Gastropoda", bongo2019_taxa$species)
+bongo2019_taxa$species <- gsub("Hydromedusae", "Hydrozoa", bongo2019_taxa$species)
+bongo2019_taxa$species <- gsub("Sergestes similis", "Eusergestes similis", bongo2019_taxa$species)
+
+bongo2019 <- worrms::wm_records_names(unique(bongo2019_taxa$species)) %>% bind_rows() %>% filter(status == "accepted") %>%
+  rename(species = scientificname)
+
+# Next, connect this taxonomy hierarchical information to the original dataset (bongo2019_taxa)
+bongo2019_taxa_occ <- left_join(bongo2019_taxa, bongo2019, by = "species")
 ```
 
 Upon inspection of the species filtered out of the bongo dataset, some sample_ids have associated notes in which sometimes species are specified, see e.g. sample_id Z80, Z15, SS102 etc. Where the notes specify the species and individual measurements (e.g. SS81) I have dealt with these samples in a later stage. However, the other sample_ids I have left as is -- notes are eventually added to the eMoF table in a column labeled `measurementRemarks`. 
