@@ -208,10 +208,11 @@ bongo2019_abun$scientificname <- gsub("Mesocalanus tenucornis", "Mesocalanus ten
 bongo2019_abun$scientificname <- gsub("Oikopleura dioica", "Oikopleura (Vexillaria) dioica",
                                       bongo2019_abun$scientificname)
 bongo2019_abun$scientificname <- gsub("Ophuroidea", "Ophiuroidea", bongo2019_abun$scientificname)
-bongo2019_abun$scientificname <- gsub("Scaphocalanus brevicaudatus", " ", bongo2019_abun$scientificname)
+bongo2019_abun$scientificname <- gsub("Scaphocalanus brevicaudatus", "Scaphocalanus brevicornis",
+                                      bongo2019_abun$scientificname)
 bongo2019_abun$scientificname <- gsub("Siphonophore", "Siphonophorae", bongo2019_abun$scientificname)
 bongo2019_abun$scientificname <- gsub("Polychaete", "Polychaeta", bongo2019_abun$scientificname)
-bongo2019_abun$scientificname <- gsub("Trochophore", "Trochopora", bongo2019_abun$scientificname)
+bongo2019_abun$scientificname <- gsub("Trochophore", "Trochopora", bongo2019_abun$scientificname) # this is a lifestage.
 bongo2019_abun$scientificname <- gsub("Fish |Fish", "Pisces", bongo2019_abun$scientificname)
 bongo2019_abun$scientificname <- gsub("Muggiae atlantica", "Muggiaea atlantica", bongo2019_abun$scientificname)
 bongo2019_abun$scientificname <- gsub("Gastropod", "Gastropoda", bongo2019_abun$scientificname)
