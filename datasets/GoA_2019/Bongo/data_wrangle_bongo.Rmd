@@ -967,6 +967,9 @@ bongo_emof_abun <- bongo2019_abun %>%
       measurementValue == "gas float" ~ " ",
       measurementValue == "<0.5mm|<1mm|1mm" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1152/"
     ))
+
+# Make sure the folder path exists already (e.g. ./Bongo/tidy_data)
+write_csv(bongo_emof_abun, here("Bongo", "tidy_data", "bongo2019_emof_abun.csv"))
 ```
 
 To visualize the sampling stations in a map (first ensure that decimalLongitude and decimalLatitude are numeric):
