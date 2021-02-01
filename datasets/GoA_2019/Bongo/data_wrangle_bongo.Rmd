@@ -89,9 +89,11 @@ bongo_eventRemarks <- read_excel(here("Bongo", "raw_data",
          eventRemarks) 
 ```
 
-Dataframes are created for each unique `eventID` layer (cruise, station, cast, sample), with unique associated columns. Eventually, the data frames get joined, and the event table gets saved locally and in Google Drive. The column `eventRemarks` is not a required column, and currently only contains descriptive information. However, it is a good method to understand the structure in the dataset. A visual diagram of the structure of the Bongo dataset is provided [here](https://app.diagrams.net/#G1YG5AVLwawocrr18XwbZG-1mDwwcc4ewM). For the Event Core, most of the information for the unique layers can come from the `bongo_fnl` dataframe, whereas information pertaining specifically to the sample_ids will have to come from the `bongo` dataframe. 
+Dataframes are created for each unique `eventID` layer (cruise, station, cast), with unique associated columns. Eventually, the data frames get joined, and the event table gets saved locally and in Google Drive. A visual diagram of the structure of the Bongo dataset is provided [here](https://app.diagrams.net/#G1YG5AVLwawocrr18XwbZG-1mDwwcc4ewM). For the Event Core, most of the information for the unique layers can come from the `bongo_fnl` dataframe, whereas information pertaining specifically to the sample_ids will have to come from the `bongo` dataframe. 
 
-No Bongo sets were conducted at station 51 and 52 due to bad weather, so not coordinate information was collected (reflected as 'ND'). Therefore, these need to be removed before calculating the associated coordinateUncertaintyInMeters. However -- in the final event core they need to be added (to station level), along with associated notes/eventRemarks. 
+No Bongo sets were conducted at station 51 and 52 due to bad weather, so no coordinates were collected (reflected as 'ND'). Therefore, these need to be removed before calculating the associated coordinateUncertaintyInMeters. However in the final event core they need to be added (to station level), along with associated fieldNotes/eventRemarks. 
+
+A bongo sampling instrument consists of two nets, and With the 2019 Bongo Zooplankton data, Net 1 was mainly used to analyze community composition and species abundance, whereas samples collected in Net 2 were used for fatty acid or isotope analysis. To this end, a single Event Core is created, but two separate However, some larger individuals from Net 1 were used both in the abundance study as well as fatty acid/isotope study.
 
 While samplingProtocol is not a required term, it is useful to give a description. Once/If a document or paper is published, the samplingProtocol can link to the DOI of the paper (preferred).
 
@@ -165,13 +167,15 @@ drive_upload(here("Bongo", "tidy_data", "bongo_event.csv"),
 
 ## Occurrence Core
 
-Two Occurrence Cores will be created, as we're dealing with two separate datasets created from the same data collection event. One dataset includes dry weight from isotope or fatty acid analysis, whereas the other dataset contains species-specific (estimated) abundance at each sampling station, with sex and lifestage. From my understanding, samples in Net 1 from the bongo sampling instrument were typically fixed as a whole for community and abundance analysis. Zooplankton in Net 2 was used predominantly for isotope or fatty acid analysis. On occasion, some individuals from Net 1 were used in the isotope or fatty acid analysis.   
+Two Occurrence Cores will be created, as we're dealing with two separate datasets created from the same data collection event. One dataset includes dry weight from isotope or fatty acid analysis, whereas the other dataset contains species-specific (estimated) abundance at each sampling station, with sex and lifestage. From my understanding, samples in Net 1 from the bongo sampling instrument were typically fixed as a whole for community and abundance analysis. Zooplankton in Net 2 was used predominantly for isotope or fatty acid analysis. On occasion, some individuals from Net 1 were used in the isotope or fatty acid analysis, though unfortunately which individuals or sample_ids were used in both studies has not been accurately reported.   
 
-An `occurrenceID` and `occurrenceStatus` will only be provided to data entries where species have been identified to a level for which we can find a WoRMS URN. So first we inspect all the unique input for the `species` column, and filter out the species that can _not_ be identified. Measurements of weight, length, life stage and taxonomic group will still be included, however they will linked directly to the `eventID` (the sample_id) rather than the `occurrenceID`. In other words, these data entries will not be included in the Occurrence Core!
+An `occurrenceID` and `occurrenceStatus` will only be provided to data entries where species have been identified to a level for which we can find a WoRMS URN. So first we inspect all the unique input for the `species` column, and filter out the species that can _not_ be identified. Measurements of weight, length, and life stage will still be included, however they will linked directly to the `eventID` (the sample_id) rather than the `occurrenceID`. In other words, these data entries will not be included in the Occurrence Core!
 
 After internal discussion, it was opted to associate an `occurrenceID` to an entry as long as we can find a WoRMS taxon / URN, even if a species can only be identified up to a phylum or kingdom level. For entries where Species = `Size fraction`, will not have an Occurrence Core associated to it, because it is not possible to associate a URN from WoRMS to this class or group (`Zooplankton`). The same goes for entries where no common rank can be associated, such as `Jellyfish, radiolarian, chaetognath` and `Gelatinous`. For data entries where multiple groups are lumped together (i.e. "Jelly fish, radiolarian and chaetognath"), and a common taxonomic level can not be found, we have opted _not_ to split them into separate occurrenceIDs because it is not possible to associate any measurements to the entry.
 
 **However, a new term might be introduced: `verbatimScientificName` (see [here](https://github.com/tdwg/dwc/issues/181)), in which case these data entries might be included under this column and consequently added to the Occurrence Core.**
+
+***
 
 Let's first create an Occurrence Core for the (estimated) abundance data. The abundance data also includes data collected in 2020 so we do need to filter for the samples collected in 2019 first. 
 
@@ -183,9 +187,11 @@ bongo2019_abun$date <- as.Date(bongo2019_abun$date)
 bongo2019_abun <- subset(bongo2019_abun, date >= "2019-02-19" & date <= "2019-03-15") %>%
   mutate(project = "IYS",
          cruise = paste(project, "GoA2019", sep = ":"),
-         station = paste(cruise, station, sep = "_Stn"))
+         station = paste(cruise, station, sep = "_Stn"),
+         # Confirm that abundance / community analysis only done from Net 1. 
+         cast = paste(station, "1", sep = ":bongo:Net"))
 
-# Manual inspection of this dataframe shows that there are still a few species that will need slight changes in their spelling, as the worrms package does not recognize 'sp.' etc. Additionally, some ids contain a lifestage (larvae, egg, etc). These are also mentioned in a column 'lifestage', so they are removed from the species id. These manual changes are listed below and are not made in the raw data file. This way the original species description is still provided. 
+# Manual inspection of this dataframe shows that there are still a few species that will need slight changes in their spelling, as the worrms package does not recognize 'sp.' etc. Additionally, some ids contain a lifestage (larvae, egg, trochophores, etc). These are also mentioned in a column 'lifestage', so they are removed from the species id. These manual changes are listed below and are not made in the raw data file. This way the original species description is still provided. 
 bongo2019_abun$id <- gsub("\\b sp.\\b", "", bongo2019_abun$id)
 bongo2019_abun$id <- gsub("egg|nauplius|larva|juvenile|calyptopsis|furcillia", "", bongo2019_abun$id)
 
@@ -212,11 +218,11 @@ bongo2019_abun$scientificname <- gsub("Scaphocalanus brevicaudatus", "Scaphocala
                                       bongo2019_abun$scientificname)
 bongo2019_abun$scientificname <- gsub("Siphonophore", "Siphonophorae", bongo2019_abun$scientificname)
 bongo2019_abun$scientificname <- gsub("Polychaete", "Polychaeta", bongo2019_abun$scientificname)
-bongo2019_abun$scientificname <- gsub("Trochophore", "Trochopora", bongo2019_abun$scientificname) # this is a lifestage.
+bongo2019_abun$scientificname <- gsub("Trochophore", " ", bongo2019_abun$scientificname) # this is a lifestage.
 bongo2019_abun$scientificname <- gsub("Fish |Fish", "Pisces", bongo2019_abun$scientificname)
 bongo2019_abun$scientificname <- gsub("Muggiae atlantica", "Muggiaea atlantica", bongo2019_abun$scientificname)
 bongo2019_abun$scientificname <- gsub("Gastropod", "Gastropoda", bongo2019_abun$scientificname)
-bongo2019_abun$scientificname <- gsub("Triconia ivlevi", " ", bongo2019_abun$scientificname)
+bongo2019_abun$scientificname <- gsub("Triconia ivlevi", "Triconia borealis", bongo2019_abun$scientificname)
 bongo2019_abun$scientificname <- gsub("Squid", "Teuthida", bongo2019_abun$scientificname)
 bongo2019_abun$scientificname <- gsub("Epicarid isopod", "Epicaridea", bongo2019_abun$scientificname)
 bongo2019_abun$scientificname <- gsub("Tessarabrachion occulatum", "Tessarabrachion oculatum",
@@ -228,7 +234,7 @@ bongo2019_abun$scientificname <- gsub("Symbolophorous californiensis", "Symbolop
                                       bongo2019_abun$scientificname)
 bongo2019_abun$scientificname <- gsub("Euphausia pacficia", "Euphausia pacifica", bongo2019_abun$scientificname)
 bongo2019_abun$scientificname <- gsub("Thysanoessa lonipes", "Thysanoessa longipes", bongo2019_abun$scientificname)
-bongo2019_abun$scientificname <- gsub("Primno pacifica", "Primnoa pacifica", bongo2019_abun$scientificname)
+bongo2019_abun$scientificname <- gsub("Primno pacifica", "Primno abyssalis", bongo2019_abun$scientificname)
 bongo2019_abun$scientificname <- gsub("Aglama elegans", "Agalma elegans", bongo2019_abun$scientificname)
 bongo2019_abun$scientificname <- gsub("Ctenophore", "Ctenophora", bongo2019_abun$scientificname)
 # Because I changed Chaetognath earlier, it changed the code below which I had to alter. (rewrite this). 
@@ -249,8 +255,13 @@ no_worms_id_2 <- left_join(bongo2019_abun, bongo2019_worms_id, by = "scientificn
 
 # Merge this dataset back into original dataframe. First remove the column "genus" from bongo2019_abun, because otherwise this one is copied. 
 bongo2019_abun <- bongo2019_abun %>% select(-genus)
-bongo2019_taxa_abundance <- left_join(bongo2019_abun, bongo2019_worms_id, by = "scientificname") %>%
+bongo2019_abun <- left_join(bongo2019_abun, bongo2019_worms_id, by = "scientificname") %>%
+  mutate(occurrenceID = paste(station, "bongo_occ", row_number(), sep = ":"),
+         occurrenceStatus = "present")
+bongo2019_taxa_abundance <- bongo2019_abun %>%
   select(eventID = station,
+         occurrenceID,
+         occurrenceStatus,
          scientificName = scientificname,
          scientificNameID = lsid,
          organismQuantity = ind_counted,
@@ -264,11 +275,13 @@ bongo2019_taxa_abundance <- left_join(bongo2019_abun, bongo2019_worms_id, by = "
          occurrenceStatus = "present")
 
 # Make sure the folder path exists already (e.g. ./Bongo/tidy_data)
-write_csv(bongo2019_taxa_abundance, here("Bongo", "tidy_data", "bongo_taxa_occ.csv"))
+write_csv(bongo2019_taxa_abundance, here("Bongo", "tidy_data", "bongo2019_taxa_occ.csv"))
 ```
 
 To do: confirm that all unique species in the original dataset are represented in the bongo2019_taxa_abundance dataframe. 
 So now we've created the first Occurrence Core coming from the Zooplankton Bongo data, on community analysis / abundance estimates. This Occurrence Core will need to have an associated eMOF core as well, which should include `sex`, `lifeStage`, and the various ways in which abundance or total number is estimated? i.e. `ind_total` = total number of individuals estimated in the entire sample, `abund_m3_flow_est` = total abundance estimates from the flow meter, and `abund_m3_depth_est` = total abundance of individuals estimated using the depth-estimated estimate. These terms might require new additions to controlled vocabulary. 
+
+*** 
 
 The second Occurrence Core we create is on the data collected for the dry weight isotope and fatty acid analysis. This data is found in a different data set.  
 
@@ -630,7 +643,7 @@ write_csv(bongo_event_occ, here("Bongo", "tidy_data", "bongo_event_occ.csv"))
 
 ## extended measurementOrFact
 
-In our extended measurementOrFact table(s), we associate the measurements to either the `eventID` (if species does not have an associated WoRMS URN), or the `occurrenceID` (if species has WoRMS URN). 
+In our extended measurementOrFact table(s), we associate the measurements to either the `eventID` (if species does not have an associated WoRMS URN), or the `occurrenceID` (if species has WoRMS URN). Measurements or Facts pertaining to the sampling event will be linked to the `event` layer. 
 
 As a first step though, we associate the _seafloor depth_, _sampling depth_, _sampleSizeValue_ and _sampleSizeUnit_ to the cast. There is still debate on whether the sampleSizeValue and sampleSizeUnit need to be included, as we are essentially recording metadata in the data. Do note that that this Core standards for measurements and _facts_, and these Bongo net details are _facts_ linked to the Event. For the time being therefore, this information is recorded in this Core. 
 
@@ -891,6 +904,71 @@ drive_upload(here("Bongo", "tidy_data", "bongo_emof.csv"),
              overwrite = TRUE)
 ```
 
+The second eMOF core we create is for the abundance / community analysis study, which is from the bongo2019_abun dataframe: 
+
+``` {r eMOF Bongo abundance, eval = FALSE}
+bongo_emof_abun <- bongo2019_abun %>%
+  select(occurrenceID, 
+         stage, 
+         sex, 
+         ind_counted:abund_m3_depth_est) %>%
+  mutate_all(as.character) %>%
+  pivot_longer(cols = stage:abund_m3_depth_est,
+               names_to = "measurementType",
+               values_to = "measurementValue") %>%
+  mutate(
+    measurementID = case_when(
+      measurementType == "stage" ~ paste(occurrenceID, "stage", sep = ":"),
+      measurementType == "sex" ~ paste(occurrenceID, "sex", sep = ":"),
+      measurementType == "ind_counted" ~ paste(occurrenceID, "ind_counted", sep = ":"),
+      measurementType == "ind_total" ~ paste(occurrenceID, "ind_total", sep = ":"),
+      measurementType == "abund_m3_flow_est" ~ paste(occurrenceID, "abund_flow", sep = ":"),
+      measurementType == "abund_m3_depth_est" ~ paste(occurrenceID, "abund_depth", sep = ":")),
+    measurementTypeID = case_when(
+      measurementType == "stage" ~ " ",
+      measurementType == "sex" ~ " ",
+      measurementType == "ind_counted" ~ " ",
+      measurementType == "ind_total" ~ " ",
+      measurementType == "abund_m3_flow_est" ~ " ",
+      measurementType == "abund_m3_depth_est" ~ " "), 
+    measurementUnit = case_when(
+      measurementType == "ind_counted" ~ "individuals",
+      measurementType == "ind_total" ~ "individuals",
+      measurementType == "abund_m3_depth_est" ~ "individuals/m^3",
+      measurementType == "abund_m3_flow_est" ~ "individuals/m^3"
+    ), 
+    measurementUnitID = case_when(
+      measurementUnit == "individuals" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UUUU/", 
+      measurementUnit == "individuals/m^3" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UPMM/"),
+    measurementValueID = case_when(
+      measurementValue == "M" ~ "http://vocab.nerc.ac.uk/collection/S10/current/S103/",
+      measurementValue == "F" ~ "http://vocab.nerc.ac.uk/collection/S10/current/S102/",
+      measurementValue == "C6" ~ " ",
+      measurementValue == "C5" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1112/",
+      measurementValue == "C4" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1110/",
+      measurementValue == "C3" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S118/",
+      measurementValue == "C2" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S117/",
+      measurementValue == "C1" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S111/",
+      measurementValue == "juvenile" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1127/",
+      measurementValue == "calyptopsis" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1118/",
+      measurementValue == "egg" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1122/",
+      measurementValue == "larva" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1128/",
+      measurementValue == "nauplius" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1130/",
+      measurementValue == "zoea" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1137/",
+      measurementValue == "furcillia" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1123/",
+      measurementValue == "nurse?" ~ " ",
+      measurementValue == "trochophore" ~ " ",
+      measurementValue == "float" ~ " ",
+      measurementValue == "veliger" ~  " ",
+      measurementValue == "paralarva" ~ " ",
+      measurementValue == "s0" ~ " ",
+      measurementValue == "eudoxid" ~ " ",
+      measurementValue == "gastrozoid" ~ " ",
+      measurementValue == "gas float" ~ " ",
+      measurementValue == "<0.5mm|<1mm|1mm" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1152/"
+    ))
+```
+
 To visualize the sampling stations in a map (first ensure that decimalLongitude and decimalLatitude are numeric):
 
 ``` {r bongo_visualizations, eval = FALSE}
@@ -899,6 +977,4 @@ bongo_event$decimalLongitude <- as.numeric(bongo_event$decimalLongitude)
 bongo_leaflet <- obistools::plot_map_leaflet(bongo_event)
 bongo_map <- obistools::plot_map(bongo_event, zoom = TRUE)
 ggsave(filename = "bongo_map.png", plot = bongo_map, path = here::here("Bongo", "maps"))
-```
-
 ```
