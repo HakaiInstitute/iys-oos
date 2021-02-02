@@ -36,7 +36,9 @@ Now we need to read in the Excel file and the correct sheets we want to work wit
 ``` {r read_file}
 bongo2020_metadata <- read_excel(here("Zooplankton - Bongo", "raw_data", "Bongo.xlsx"), sheet = "Bongo metadata")
 bongo2020_data <- read_excel(here("Zooplankton - Bongo", "raw_data", "Bongo.xlsx"), sheet = "Animal samples")
-bongo2020_taxa <- read_excel(here("Zooplankton - Bongo", "raw_data", "Bongo_taxa.xlsx"), sheet = "All data")
+bongo2020_taxa<- read_excel(here("Zooplankton - Bongo", "raw_data", "Bongo_taxa.xlsx"), sheet = "All data", 
+                col_types = c("text", "date", "date", "numeric", "numeric", "numeric", "text", "numeric", "text", "text",
+                              "text", "text", "text", "numeric", "numeric", "numeric", "numeric", "text"))
 ```
 
 Next we start with creating the Event Core for this Bongo dataset. 
@@ -71,8 +73,16 @@ bongo2020_taxa_meta <- bongo2020_taxa %>%
                                                 tz = "Asia/Kamchatka")),
          eventDate = str_replace(eventDate, "\\+00:00", "Z"),
          project = "IYS",
-         cruise = paste(project, "GoA2020", sep = ":"),
-         station = paste(cruise, station, sep = "_Stn:"))
+         cruise = paste(project, "GoA2020", sep = ":"))
+
+# However, the stations are listed as both numbers and character (e.g. AB). As the column currently has the class 'character', station number are recorded as 1.0 instead of 1. We need to change this:
+bongo2020_taxa_meta[1] <- lapply(bongo2020_taxa_meta[1], function (x) {
+  x1 <- type.convert(as.character(x), as.is = TRUE)
+  ifelse(grepl("^[0-9.]+$", x1), round(as.numeric(x1)), x1)}
+)
+
+bongo2020_taxa_meta <- bongo2020_taxa_meta %>% 
+  mutate(station = paste(cruise, station, sep = "_Stn:"))
 
 bongo2020_taxa_meta$year <- as.numeric(format(as.Date(bongo2020_taxa_meta$eventDate), "%Y"))
 bongo2020_taxa_meta$month <- as.numeric(format(as.Date(bongo2020_taxa_meta$eventDate), "%m"))
@@ -393,7 +403,8 @@ bongo2020_bottomdepth <- bongo2020 %>%
 bongo2020_sampling <- bongo2020_meta %>%
   select(eventID = cast, 
          `Tow Distance_m`,
-         `Flowmeter Volume Filtered_m3`) %>%
+         `Flowmeter Volume Filtered_m3`,
+         `Depth estimated Volume filtered_m3`) %>%
   mutate(speed_tow = 1) %>%
   distinct(eventID, .keep_all = TRUE) %>%
   mutate_all(as.character) %>%
@@ -402,17 +413,19 @@ bongo2020_sampling <- bongo2020_meta %>%
                values_to = "measurementValue") %>%
   mutate(measurementType = recode(measurementType,
                                  `Tow Distance_m` = "tow_distance",
-                                 `Flowmeter Volume Filtered_m3` = "volume_filtered"),
+                                 `Flowmeter Volume Filtered_m3` = "volume_filtered_flowmeter",
+                                 `Depth estimated Volume filtered_m3` = "volume_filtered_depth_estimate"),
          measurementID = paste(eventID, measurementType, sep = ":"),
          measurementTypeID = case_when(
            measurementType == "tow_distance" ~ "http://vocab.nerc.ac.uk/collection/P01/current/LENTRACK/",
-           measurementType == "volume_filtered" ~ " ", 
-           # perhaps: http://vocab.nerc.ac.uk/collection/P01/current/VOLWBSMP/ ?
+           measurementType == "volume_filtered_flowmeter" ~ "http://vocab.nerc.ac.uk/collection/P09/current/VOLF/", 
+           measurementType == "volume_filtered_depth_estimate" ~ " ",
            measurementType == "speed_tow" ~ "http://vocab.nerc.ac.uk/collection/P01/current/TOWSPEED/"
          ),
   measurementUnit = case_when(
     measurementType == "tow_distance" ~ "m",
-    measurementType == "final_volume_filtered" ~ "m^3",
+    measurementType == "volume_filtered_flowmeter" ~ "m^3",
+    measurementType == "volume_filtered_depth_estimate" ~ "m^3",
     measurementType == "speed_tow" ~ "m/s"),
   measurementUnitID = case_when(
     measurementUnit == "m" ~ "http://vocab.nerc.ac.uk/collection/P06/current/ULAA/",
@@ -532,3 +545,67 @@ bongo2020_emof_fnl <- bongo2020_emof_fnl %>%
       measurementUnit == "g" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UGRM/"))
 ```
 
+Create the eMOF core associated with the community composition or abundance analysis:
+
+``` {r eMOF Bongo2020 abundance, eval = FALSE}
+bongo2020_emof_abun <- bongo2020_abun %>%
+  select(occurrenceID, 
+         stage, 
+         sex, 
+         ind_counted:abund_m3_depth_est) %>%
+  mutate_all(as.character) %>%
+  pivot_longer(cols = stage:abund_m3_depth_est,
+               names_to = "measurementType",
+               values_to = "measurementValue") %>%
+  mutate(
+    measurementID = case_when(
+      measurementType == "stage" ~ paste(occurrenceID, "stage", sep = ":"),
+      measurementType == "sex" ~ paste(occurrenceID, "sex", sep = ":"),
+      measurementType == "ind_counted" ~ paste(occurrenceID, "ind_counted", sep = ":"),
+      measurementType == "ind_total" ~ paste(occurrenceID, "ind_total", sep = ":"),
+      measurementType == "abund_m3_flow_est" ~ paste(occurrenceID, "abund_flow", sep = ":"),
+      measurementType == "abund_m3_depth_est" ~ paste(occurrenceID, "abund_depth", sep = ":")),
+    measurementTypeID = case_when(
+      measurementType == "stage" ~ "http://vocab.nerc.ac.uk/collection/P01/current/LSTAGE01/",
+      measurementType == "sex" ~ "http://vocab.nerc.ac.uk/collection/P01/current/ENTSEX01/",
+      measurementType == "ind_counted" ~ " ",
+      measurementType == "ind_total" ~ " ",
+      measurementType == "abund_m3_flow_est" ~ "http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL01/",
+      measurementType == "abund_m3_depth_est" ~ "http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL01/"), 
+    measurementUnit = case_when
+      measurementType == "ind_counted" ~ "individuals",
+      measurementType == "ind_total" ~ "individuals",
+      measurementType == "abund_m3_depth_est" ~ "individuals/m^3",
+      measurementType == "abund_m3_flow_est" ~ "individuals/m^3"
+    ), 
+    measurementUnitID = case_when(
+      measurementUnit == "individuals" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UUUU/", 
+      measurementUnit == "individuals/m^3" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UPMM/"),
+    measurementValueID = case_when(
+      measurementValue == "M" ~ "http://vocab.nerc.ac.uk/collection/S10/current/S103/",
+      measurementValue == "F" ~ "http://vocab.nerc.ac.uk/collection/S10/current/S102/",
+      measurementValue == "adult" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1116/", 
+      measurementValue == "C6" ~ " ",
+      measurementValue == "C5" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1112/",
+      measurementValue == "C4" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1110/",
+      measurementValue == "C3" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S118/",
+      measurementValue == "C2" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S117/",
+      measurementValue == "C1" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S111/",
+      measurementValue == "juvenile" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1127/",
+      measurementValue == "calyptopsis" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1118/",
+      measurementValue == "egg" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1122/",
+      measurementValue == "larva" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1128/",
+      measurementValue == "nauplius" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1130/",
+      measurementValue == "napulius" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1130/",
+      measurementValue == "zoea" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1137/",
+      measurementValue == "furcillia" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1123/",
+      measurementValue == "neochaete" ~ " ",
+      measurementValue == "trochophore" ~ " ",
+      measurementValue == "veliger" ~  " ",
+      measurementValue == "paralarva" ~ " ",
+      measurementValue == "eudoxid" ~ " ",
+      measurementValue == "gas float" ~ " ",
+      measurementValue == "<0.5mm|<1mm" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1152/"
+    ))
+# Make sure the folder path exists already (e.g. ./Bongo/tidy_data)
+write_csv(bongo_emof_abun, here("Bongo", "tidy_data", "bongo2020_emof_abun.csv"))
