@@ -9,6 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
 library(tidyverse)
 library(lubridate)
+library(worrms)
 library(dplyr)
 library(obistools)
 library(taxizesoap)
@@ -25,13 +26,17 @@ The following line only needs to be run once to download the tidied data from Go
 ```{r drive_download}
 # Make sure your folder path exists already (e.g. ./POM/raw_data)
 drive_download("https://docs.google.com/spreadsheets/d/1DGyFTMc1jUmrKsAnH_17GiAbstMO0uYc/edit#gid=1513148710", path = here("Zooplankton - Bongo", "raw_data", "Bongo.xlsx"), overwrite = TRUE)
+
+drive_download("https://docs.google.com/spreadsheets/d/1q0tGPJSORKEUdfad4ijzO-Ks1JRFbGTg/edit#gid=782668911", path = 
+                 here("Zooplankton - Bongo", "raw_data", "Bongo_taxa.xlsx"), overwrite = T)
 ```
 
-Now we need to read in the Excel file and the correct sheets we want to work with. In the Excel file there are two sheets that we want to work with, one that includes additional metadata information, such as data on tow distance and volume of water filtered, whereas the other sheet includes taxonomic occurrences of Zooplankton in the bongo net. 
+Now we need to read in the Excel file and the correct sheets we want to work with. In the Excel file there are two sheets that we want to work with, one that includes additional metadata information, such as data on tow distance and volume of water filtered, whereas the other sheet includes taxonomic occurrences of Zooplankton in the bongo net used in the isotope/fatty acid analysis. The third file includes data on the community composition or abundance study. 
 
 ``` {r read_file}
 bongo2020_metadata <- read_excel(here("Zooplankton - Bongo", "raw_data", "Bongo.xlsx"), sheet = "Bongo metadata")
 bongo2020_data <- read_excel(here("Zooplankton - Bongo", "raw_data", "Bongo.xlsx"), sheet = "Animal samples")
+bongo2020_taxa <- read_excel(here("Zooplankton - Bongo", "raw_data", "Bongo_taxa.xlsx"), sheet = "All data")
 ```
 
 Next we start with creating the Event Core for this Bongo dataset. 
@@ -58,6 +63,20 @@ bongo2020_meta <- bongo2020_meta %>%
          cruise = paste(project, "GoA2020", sep = ":"),
          station = paste(cruise, Station, sep = "_Stn:"),
          cast = paste(station, `Net number`, sep = ":bongo:Net"))
+
+bongo2020_taxa_meta <- bongo2020_taxa %>%
+  mutate(Time = format(time, "%H:%M:%S"),
+         eventDate = format_iso_8601(as.POSIXct(paste(date, Time),
+                                                format = "%Y-%m-%d %H:%M:%S",
+                                                tz = "Asia/Kamchatka")),
+         eventDate = str_replace(eventDate, "\\+00:00", "Z"),
+         project = "IYS",
+         cruise = paste(project, "GoA2020", sep = ":"),
+         station = paste(cruise, station, sep = "_Stn:"))
+
+bongo2020_taxa_meta$year <- as.numeric(format(as.Date(bongo2020_taxa_meta$eventDate), "%Y"))
+bongo2020_taxa_meta$month <- as.numeric(format(as.Date(bongo2020_taxa_meta$eventDate), "%m"))
+bongo2020_taxa_meta$day <- as.numeric(format(as.Date(bongo2020_taxa_meta$eventDate), "%d"))
 ```
 
 ## Event Core
@@ -121,11 +140,104 @@ drive_upload(here("Zooplankton - Bongo", "tidy_data", "bongo2020_event.csv"),
              overwrite = TRUE)
 ```
 
-Now that the event core has been created, next we focus on the occurrence core. The main question that we have to answer to finalize this core is:
-
-If a data entry cannot have an associated scientificName and scientificNameID (required terms), should they still have an associated occurrenceID? This is the case for Zooplankton: perhaps this should be classified as verbatimScientificName? or organismScope? **A** Where possible identify to the lowest common taxonomic rank, and add species under `vernacularName`. If no taxonomic rank can be assigned to species entry (i.e. `gelatinous spp.`), try to contact the data provider to see if they can provide more taxonomic resolution, otherwise _do not_ associate measurements to an `occurrenceID` but rather to the event Core. 
+Now that the event core has been created, next we focus on the occurrence Cores. Where possible we identify to the lowest common taxonomic rank, and if applicable add species under `vernacularName`. If no taxonomic rank can be assigned to species entry (i.e. `gelatinous spp.`), try to contact the data provider to see if they can provide more taxonomic resolution, otherwise _do not_ associate measurements to an `occurrenceID` but rather to the event Core. 
 
 Similar to what was done for the 2019 data, we need to ensure that all recorded data have their own row. What I mean by this, is that for some Sample IDs there are numerous length measurements, and a number > 1. These have to get their own data entry row. 
+
+Lets first create an Occurrence Core for the (estimated) abundance data. The abundance data file also includes data from 2019 so we first need to filter out only the data collected during the 2020 High Seas Expedition. 
+
+``` {r bongo2020_taxa_occ, eval = FALSE}
+bongo2020_abun <- bongo2020_taxa_meta %>%
+  mutate(# Confirm that this study is only done using samples collected in Net1. 
+         cast = paste(station, "1", sep = ":bongo:Net"))
+bongo2020_abun$date <- as.Date(bongo2020_abun$date) # somehow need to include this line because otherwise in the code line below it doesn't see 2020-03-12 as date. 
+bongo2020_abun <- subset(bongo2020_abun, date >= "2020-03-12" & date <= "2020-04-04")
+
+# Manual inspection of this dataframe shows that there are still a few species that will need slight changes in their spelling, as the worrms package does not recognize 'sp.' etc. Additionally, some ids contain a lifestage (larvae, egg etc). These are also mentioned in a column 'lifestage', so they are removed from the species id. These manual changes are listed below and are not made in the raw data file. This way the original species description is still provided. 
+bongo2020_abun$id <- gsub("\\b sp.\\b", "", bongo2020_abun$id)
+bongo2020_abun$id <- gsub("egg|nauplius|larva|naplius|calyptopsis|furcillia", "", bongo2020_abun$id)
+
+bongo2020_abun <- bongo2020_abun %>% rename(scientificname = id)
+worms_id <- worrms::wm_records_names(unique(bongo2020_abun$scientificname), marine_only = FALSE) %>% dplyr::bind_rows()
+
+# Find out which species are not found in the WoRMS database:
+no_worms_id <- left_join(bongo2020_abun, worms_id, by = "scientificname") %>% filter(is.na(AphiaID)) %>% distinct(scientificname)
+
+# These species will need to have their names changed in the original dataframe (bongo2020_abun) which we'll do below. I write this out so it is clear which names or species observations have been altered, so this can be verified. 
+bongo2020_abun$scientificname <- gsub("Chaetognath", "Chaetognatha", bongo2020_abun$scientificname)
+bongo2020_abun$scientificname <- gsub("Cununidae", "Cuninidae", bongo2020_abun$scientificname)
+bongo2020_abun$scientificname <- gsub("Rhynchonereella angellini", "Rhynchonereella angelini",
+                                      bongo2020_abun$scientificname)
+bongo2020_abun$scientificname <- gsub("Disconchoecia elegans", "Discoconchoecia elegans", bongo2020_abun$scientificname)
+bongo2020_abun$scientificname <- gsub("Euphausiid ", "Euphausiidae", bongo2020_abun$scientificname)
+bongo2020_abun$scientificname <- gsub("Doliolid", "Doliolidae", bongo2020_abun$scientificname)
+bongo2020_abun$scientificname <- gsub("Oikopleura labradoriensis", "Oikopleura (Vexillaria) labradoriensis",
+                                      bongo2020_abun$scientificname)
+bongo2020_abun$scientificname <- gsub("Copepod ", "Copepoda", bongo2020_abun$scientificname)
+bongo2020_abun$scientificname <- gsub("Mesocalanus tenucornis", "Mesocalanus tenuicornis", bongo2020_abun$scientificname)
+bongo2020_abun$scientificname <- gsub("Oikopleura dioica", "Oikopleura (Vexillaria) dioica",
+                                      bongo2020_abun$scientificname)
+bongo2020_abun$scientificname <- gsub("Ophuroidea", "Ophiuroidea", bongo2020_abun$scientificname)
+bongo2020_abun$scientificname <- gsub("Scaphocalanus brevicaudatus", "Scaphocalanus brevicornis",
+                                      bongo2020_abun$scientificname)
+bongo2020_abun$scientificname <- gsub("Siphonophore", "Siphonophorae", bongo2020_abun$scientificname)
+bongo2020_abun$scientificname <- gsub("Polychaete", "Polychaeta", bongo2020_abun$scientificname)
+bongo2020_abun$scientificname <- gsub("Trochophore", " ", bongo2020_abun$scientificname) # this is a lifestage.
+bongo2020_abun$scientificname <- gsub("Fish |Fish", "Pisces", bongo2020_abun$scientificname)
+bongo2020_abun$scientificname <- gsub("Muggiae atlantica", "Muggiaea atlantica", bongo2020_abun$scientificname)
+bongo2020_abun$scientificname <- gsub("Gastropod", "Gastropoda", bongo2020_abun$scientificname)
+bongo2020_abun$scientificname <- gsub("Squid", "Teuthida", bongo2020_abun$scientificname)
+bongo2020_abun$scientificname <- gsub("Epicarid isopod", "Epicaridea", bongo2020_abun$scientificname)
+bongo2020_abun$scientificname <- gsub("Tessarabrachion occulatum", "Tessarabrachion oculatum",
+                                      bongo2020_abun$scientificname)
+bongo2020_abun$scientificname <- gsub("Bivalve", "Bivalvia", bongo2020_abun$scientificname)
+bongo2020_abun$scientificname <- gsub("Symbolophorous californiensis", "Symbolophorus californiensis",
+                                      bongo2020_abun$scientificname)
+bongo2020_abun$scientificname <- gsub("Aglama elegans", "Agalma elegans", bongo2020_abun$scientificname)
+bongo2020_abun$scientificname <- gsub("Calanoid A", "Calanoida", bongo2020_abun$scientificname)
+bongo2020_abun$scientificname <- gsub("Stenobrachius leucropsarus", "Stenobrachius leucopsarus",
+                                      bongo2020_abun$scientificname)
+bongo2020_abun$scientificname <- gsub("Nematode", "Nematoda", bongo2020_abun$scientificname)
+bongo2020_abun$scientificname <- gsub("Psuedosagitta scrippsae", "Pseudosagitta scrippsae", bongo2020_abun$scientificname)
+# Because I changed Chaetognath earlier, it changed the code below which I had to alter. (rewrite this). 
+bongo2020_abun$scientificname <- gsub("Chaetognatha sp. (no heads)", "Chaetognatha", bongo2020_abun$scientificname, fixed = TRUE)
+
+# As we have now changed all the names in the original dataframe (bongo2019_abun) to fit the entries in the WoRMS database registry, we can use worrms::wm_records_names() again to find all the taxonomic information. 
+bongo2020_worms_id <- worrms::wm_records_names(unique(bongo2020_abun$scientificname), marine_only = FALSE) %>%
+  dplyr::bind_rows()
+
+# After manual inspection, there are some AphiaIDs that need to be removed
+bongo2020_worms_id <- filter(bongo2020_worms_id, !(AphiaID %in% c("138835", "605966", "534090")))
+
+# Check to see if we missed any:
+unique_taxa <- as.data.frame(unique(bongo2020_abun$scientificname))
+names(unique_taxa)[1] <- "scientificname"
+temp_taxa <- left_join(unique_taxa, bongo2020_worms_id) %>% filter(is.na(AphiaID))
+
+# Merge this dataset back into original dataframe. First remove the column "genus" from bongo2019_abun, because otherwise this one is copied. 
+bongo2020_abun <- bongo2020_abun %>% select(-genus)
+bongo2020_abun <- left_join(bongo2020_abun, bongo2020_worms_id, by = "scientificname") %>%
+  mutate(occurrenceID = paste(station, "bongo_occ", row_number(), sep = ":"),
+         occurrenceStatus = "present")
+bongo2020_taxa_abundance <- bongo2020_abun %>%
+  select(eventID = station,
+         occurrenceID,
+         occurrenceStatus,
+         scientificName = scientificname,
+         scientificNameID = lsid,
+         organismQuantity = ind_counted,
+         scientificAuthorityName = authority,
+         taxonRank = rank,
+         taxonomicStatus = status,
+         lifeStage = stage,
+         sex,
+         parentNameUsageID, kingdom, phylum, class, order, family, genus) 
+
+# Make sure the folder path exists already (e.g. ./Bongo/tidy_data)
+write_csv(bongo2020_taxa_abundance, here("Zooplankton - Bongo", "tidy_data", "bongo2020_taxa_occ.csv"))
+```
+
+The second Occurrence Core we create is on the data collected for the dry weight isotope and fatty acid analysis. This data is found in a different data set.
 
 ``` {r bongo2020_occ, eval = FALSE}
 unique(bongo2020$Species)
