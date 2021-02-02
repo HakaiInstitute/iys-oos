@@ -674,13 +674,14 @@ bongo_bottomdepth <- bongo %>%
          measurementUnit, measurementUnitID)
 ```
 
-Add information on the sampling instrument used, as well as the sampling effort (both the volume of sea water filtered, tow distance and speed of tow). 
+Add information on the sampling instrument used, as well as the sampling effort (both the volume of sea water filtered, tow distance and speed of tow). The volume of sea water filtered is measured or estimated both from the flowmeter as well as from the depth-estimate.  
 
 ``` {r sampling effort, eval = FALSE}
 bongo_sampling <- bongo_fnl %>%
   select(eventID = cast, 
          tow_distance,
-         final_volume_filtered) %>%
+         depth_estimated_volume_filtered,
+         flowmeter_volume_filtered) %>%
   mutate(speed_tow = 1) %>%
   distinct(eventID, .keep_all = TRUE) %>%
   mutate_all(as.character) %>%
@@ -690,17 +691,19 @@ bongo_sampling <- bongo_fnl %>%
   mutate(measurementID = paste(eventID, "bongo", measurementType, sep = ":"),
          measurementTypeID = case_when(
            measurementType == "tow_distance" ~ "http://vocab.nerc.ac.uk/collection/P01/current/LENTRACK/",
-           measurementType == "final_volume_filtered" ~ " ", 
+           measurementType == "depth_estimated_volume_filtered" ~ " ", 
            # perhaps: http://vocab.nerc.ac.uk/collection/P01/current/VOLWBSMP/ ?
+           measurementType == "flowmeter_volume_filtered" ~ "http://vocab.nerc.ac.uk/collection/P09/current/VOLF/",
            measurementType == "speed_tow" ~ "http://vocab.nerc.ac.uk/collection/P01/current/TOWSPEED/"
          ),
   measurementUnit = case_when(
     measurementType == "tow_distance" ~ "m",
-    measurementType == "final_volume_filtered" ~ "L",
+    measurementType == "depth_estimated_volume_filtered" ~ "m^3",
+    measurementType == "flowmeter_volume_filtered" ~ "m^3"
     measurementType == "speed_tow" ~ "m/s"),
   measurementUnitID = case_when(
     measurementUnit == "m" ~ "http://vocab.nerc.ac.uk/collection/P06/current/ULAA/",
-    measurementUnit == "L" ~ "http://vocab.nerc.ac.uk/collection/P06/current/ULIT/",
+    measurementUnit == "m^3" ~ "http://vocab.nerc.ac.uk/collection/P06/current/MCUB/",
     measurementUnit == "m/s" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UVAA/"
   )) %>%
     select(eventID, measurementID, measurementType, measurementTypeID, measurementValue,
@@ -904,7 +907,7 @@ drive_upload(here("Bongo", "tidy_data", "bongo_emof.csv"),
              overwrite = TRUE)
 ```
 
-The second eMOF core we create is for the abundance / community analysis study, which is from the bongo2019_abun dataframe: 
+The second eMOF core we create is for the abundance / community analysis study, which is from the bongo2019_abun dataframe. Need to figure out whether individualCount and the total individualCount. 
 
 ``` {r eMOF Bongo abundance, eval = FALSE}
 bongo_emof_abun <- bongo2019_abun %>%
@@ -925,13 +928,13 @@ bongo_emof_abun <- bongo2019_abun %>%
       measurementType == "abund_m3_flow_est" ~ paste(occurrenceID, "abund_flow", sep = ":"),
       measurementType == "abund_m3_depth_est" ~ paste(occurrenceID, "abund_depth", sep = ":")),
     measurementTypeID = case_when(
-      measurementType == "stage" ~ " ",
-      measurementType == "sex" ~ " ",
+      measurementType == "stage" ~ "http://vocab.nerc.ac.uk/collection/P01/current/LSTAGE01/",
+      measurementType == "sex" ~ "http://vocab.nerc.ac.uk/collection/P01/current/ENTSEX01/",
       measurementType == "ind_counted" ~ " ",
       measurementType == "ind_total" ~ " ",
-      measurementType == "abund_m3_flow_est" ~ " ",
-      measurementType == "abund_m3_depth_est" ~ " "), 
-    measurementUnit = case_when(
+      measurementType == "abund_m3_flow_est" ~ "http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL01/",
+      measurementType == "abund_m3_depth_est" ~ "http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL01/"), 
+    measurementUnit = case_when
       measurementType == "ind_counted" ~ "individuals",
       measurementType == "ind_total" ~ "individuals",
       measurementType == "abund_m3_depth_est" ~ "individuals/m^3",
