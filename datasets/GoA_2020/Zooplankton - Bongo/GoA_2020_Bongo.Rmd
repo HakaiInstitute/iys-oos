@@ -609,3 +609,24 @@ bongo2020_emof_abun <- bongo2020_abun %>%
     ))
 # Make sure the folder path exists already (e.g. ./Bongo/tidy_data)
 write_csv(bongo_emof_abun, here("Bongo", "tidy_data", "bongo2020_emof_abun.csv"))
+```
+
+Finalize the entire extended Measurement or Fact core for the 2020 Bongo Zooplankton Data. 
+
+``` {r bongo_measurementOrFact Core, eval = FALSE}
+bongo2020_measurementOrFact <- bind_rows(bongo2020_bottomdepth, bongo2020_sampling, 
+                                     bongo2020_instrument, bongo2020_emof, bongo2020_emof_abun) %>%
+  left_join(bongo_measurementRemarks) %>%
+  select(
+    eventID,
+    occurrenceID,
+    measurementID,
+    measurementType,
+    measurementTypeID,
+    measurementValue,
+    measurementValueID,
+    measurementUnit,
+    measurementUnitID,
+    measurementRemarks)
+```
+
