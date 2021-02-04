@@ -37,12 +37,11 @@ _bongo2020_metadata_ includes the metadata associated with the 2020 Bongo Zoopla
 _bongo2020_data_ includes the dry weight and length measurements from Net 2.
 _bongo2020_taxa_ includes the data for the abundance or community composition study from Net 1. 
 
-
-
 ``` {r read_file, warning = FALSE}
 bongo2020_metadata <- read_excel(here("Zooplankton - Bongo", "raw_data", "Bongo.xlsx"), sheet = "Bongo metadata")
 bongo2020_data <- read_excel(here("Zooplankton - Bongo", "raw_data", "Bongo.xlsx"), sheet = "Animal samples")
-bongo2020_taxa<- read_excel(here("Zooplankton - Bongo", "raw_data", "Bongo_taxa.xlsx"), sheet = "All data")
+bongo2020_taxa <- read_excel(here("Zooplankton - Bongo", "raw_data", "Bongo_taxa.xlsx"), sheet = "All data", 
+                            col_types = c("text", "date", "date", "numeric", "numeric", "numeric", "text", "numeric", "text", "text", "text", "text", "text", "numeric", "numeric", "numeric", "numeric", "text"))
 ```
 
 Next we start with creating the Event Core for this Bongo dataset. Please note that the time is recorded in _PDT_, so we need to convert that to UTC through the format_iso_8601 function. In the metadata file, the values in the station column have to be changed slightly because they reflect both numbers and characters. When changing them all to characters, numbers are changed to 1.0 instead of 1.   
@@ -247,7 +246,8 @@ bongo2020_taxa_abundance <- bongo2020_abun %>%
          taxonomicStatus = status,
          lifeStage = stage,
          sex,
-         parentNameUsageID, kingdom, phylum, class, order, family, genus) 
+         parentNameUsageID, kingdom, phylum, class, order, family, genus,
+         occurrenceRemarks = notes) 
 
 # Make sure the folder path exists already (e.g. ./Bongo/tidy_data)
 write_csv(bongo2020_taxa_abundance, here("Zooplankton - Bongo", "tidy_data", "bongo2020_taxa_occ.csv"))
