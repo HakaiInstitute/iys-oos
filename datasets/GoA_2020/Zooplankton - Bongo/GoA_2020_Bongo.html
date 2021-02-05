@@ -421,7 +421,7 @@ bongo2020_metadata$day &lt;- as.numeric(format(as.Date(bongo2020_metadata$eventD
 </div>
 <div id="event-core" class="section level2">
 <h2>Event Core</h2>
-<p>The event Core consists of a hierarchical structure with four layers: <code>project</code>, <code>cruise</code>, <code>station</code> and <code>cast</code>. Each layer has different information associated to it. <code>sampleSizeValue</code> and <code>sampleSizeUnit</code> are not included</p>
+<p>The event Core consists of a hierarchical structure with four layers: <code>project</code>, <code>cruise</code>, <code>station</code> and <code>cast</code>. Each layer has different information associated to it. <code>sampleSizeValue</code> and <code>sampleSizeUnit</code> are not included as the volume water filtered is measured both through a flowmeter and through the estimated depth.</p>
 <pre class="r"><code>bongo2020_project &lt;- bongo2020 %&gt;%
   select(eventID = project) %&gt;%
   distinct(eventID)
@@ -444,8 +444,6 @@ bongo2020_cast &lt;- bongo2020_metadata %&gt;%
          decimalLongitude = Longitude,
          minimumDepthInMetres = `Sample depth_m`,
          maximumDepthInMetres = `Sample depth_m`,
-         # Not sure if sampleSizeValue should be included. 
-         sampleSizeValue = `Flowmeter Volume Filtered_m3`,
          Notes) %&gt;%
   mutate(sampleSizeUnit = &quot;m^3&quot;,
          samplingProtocol = &quot;vertical Bongo Net deployment&quot;,
@@ -497,11 +495,10 @@ bongo2020_abun &lt;- subset(bongo2020_taxa, date &gt;= &quot;2020-03-12&quot; &a
                                                 tz = &quot;America/Los_Angeles&quot;)),
          eventDate = str_replace(eventDate, &quot;\\+00:00&quot;, &quot;Z&quot;),
          project = &quot;IYS&quot;,
-         cruise = paste(project, &quot;GoA2020&quot;, sep = &quot;:&quot;))
-
-bongo2020_abun &lt;- bongo2020_abun %&gt;% 
-  mutate(station = paste(cruise, station, sep = &quot;_Stn:&quot;),
-         cast = paste(station, &quot;1&quot;, sep = &quot;:bongo:Net&quot;))</code></pre>
+         cruise = paste(project, &quot;GoA2020&quot;, sep = &quot;:&quot;),
+         station = paste(cruise, station, sep = &quot;_Stn&quot;),
+         cast = paste(station, &quot;1&quot;, sep = &quot;:bongo:Net&quot;))
+         # Confirmed with Natalie that abundance/taxonomy data is always from Net 1, unless specified in the comments. </code></pre>
 <p>Manual inspection of this dataframe shows that there are still a few species that will need slight changes in their spelling, as the <code>worrms</code> package does not recognize ‘sp.’ etc. These spelling changes will need to be verified with the data provider to ensure that the correct species is represented. Additionally, some ids contain a life stage (larvae, egg etc). These are also mentioned in a column ‘lifestage’, so they are removed from the species id. These manual changes are listed below and are not made in the raw data file. This way the original species description is still provided.</p>
 <pre class="r"><code>bongo2020_abun$id &lt;- gsub(&quot;\\b sp.\\b&quot;, &quot;&quot;, bongo2020_abun$id)
 bongo2020_abun$id &lt;- gsub(&quot;egg|nauplius|larva|naplius|calyptopsis|furcillia&quot;, &quot;&quot;, bongo2020_abun$id)
@@ -567,7 +564,7 @@ print(temp_taxa)</code></pre>
 <p>At time of writing (04-Feb-2021) there is 1 row - for “Trochophore” which still is being dealt with by the data provider. Finally, create the Occurrence Core and save locally and in Google Drive. Merge the <code>bongo2020_worms_id</code> dataset back into original dataframe (<code>bongo2020_abun</code>), and create <code>occurrenceIDs</code>, unique for each row (observation). First remove the column “genus” from <code>bongo2020_abun</code>, because otherwise this one is duplicated.</p>
 <pre class="r"><code>bongo2020_abun &lt;- bongo2020_abun %&gt;% select(-genus)
 bongo2020_abun &lt;- left_join(bongo2020_abun, bongo2020_worms_id, by = &quot;scientificname&quot;) %&gt;%
-  mutate(occurrenceID = paste(station, &quot;bongo_occ&quot;, row_number(), sep = &quot;:&quot;),
+  mutate(occurrenceID = paste(cast, &quot;bongo_occ&quot;, row_number(), sep = &quot;:&quot;),
          occurrenceStatus = &quot;present&quot;)
 bongo2020_taxa_abundance &lt;- bongo2020_abun %&gt;%
   select(eventID = station,
@@ -582,12 +579,23 @@ bongo2020_taxa_abundance &lt;- bongo2020_abun %&gt;%
          lifeStage = stage,
          sex,
          parentNameUsageID, kingdom, phylum, class, order, family, genus,
-         occurrenceRemarks = notes) 
+         occurrenceRemarks = notes) %&gt;%
+  mutate(vernacularName = case_when(
+    scientificName == &quot;Teuthida&quot; ~ &quot;Squid&quot;
+  ))
+
+preparations &lt;- bongo2020_metadata %&gt;%
+  select(eventID = cast,
+         preparations = Preservation)
+
+# Join this column to the bongo2020_taxa_abundance dataframe, though first confirm with Natalie that taxonomy or abundance data is always collected from Net 1:
+bongo2020_taxa_abundance &lt;- left_join(bongo2020_taxa_abundance, preparations, by = &quot;eventID&quot;)
 
 # Make sure the folder path exists already (e.g. ./Zooplankton - Bongo/tidy_data)
 write_csv(bongo2020_taxa_abundance, here(&quot;Zooplankton - Bongo&quot;, &quot;tidy_data&quot;, &quot;bongo2020_taxa_occ.csv&quot;))</code></pre>
-<p>The second Occurrence Core we create is on the data collected for the dry weight isotope and fatty acid analysis. This data is found in a different data set (<code>bongo2020</code>). To deal with these data, we first identify all entries that would not have a WoRMS URN associated to it, and for which no common lowest taxonomic rank can be identified, nor taxonomic resolution be provided by the data provider. For species like “jelly (unknown)” and “Gelatinous spp.”, I checked with the data provider and she provided me with a best guess (<code>identificationQualifier</code>).</p>
-<pre class="r"><code>unique(bongo2020$Species)
+<p>The second Occurrence Core we create is on the data collected for the dry weight isotope and fatty acid analysis. This data is found in a different data set (<code>bongo2020</code>). To deal with these data, we first identify all entries that would not have a WoRMS URN associated to it, and for which no common lowest taxonomic rank can be identified, nor taxonomic resolution be provided by the data provider.</p>
+<pre class="r"><code># Manually inspect the taxa for the isotope/fatty acid analysis
+unique(bongo2020$Species)
 
 bongo2020_occ_spp &lt;- bongo2020 %&gt;% filter(!(Species %in% c(&quot;Whole net&quot;, &quot;Size fraction&quot;)))</code></pre>
 <p>Manual inspection of the <code>bongo2020_occ_spp</code> dataframe indicates that, although there are some data entries where an alternative species is mentioned in the notes, all of these data entries do have species names associated to them. Therefore we don’t have to manually change the species’ name for these entries (this was the case for some entries in the 2019 bongo data). Additionally, manual inspection indicated that there are <em>no</em> approximate values in the <code>Number</code> column (i.e., ~3, &gt;4).</p>
@@ -615,7 +623,11 @@ bongo2020_occ &lt;- bongo2020_occ %&gt;%
   mutate(organismQuantityType = &quot;individuals&quot;,
          occurrenceID = paste(cast, `Sample ID`, sep = &quot;:&quot;),
          occurrenceStatus = &quot;present&quot;)</code></pre>
-<p>Next, we start the taxon matching procedure.</p>
+<p>Next, we start the WoRMS taxon matching procedure.</p>
+<ul>
+<li><input type="checkbox" disabled></input>
+TO DO: In this analysis, Squid is renamed to Cephalopoda, whereas in the taxonomy analysis we renamed it to Teuthida. Confirm this is correct.</li>
+</ul>
 <pre class="r"><code>bongo2020_occ$scientificname &lt;- gsub(&quot;\\b sp.\\b&quot;, &quot;&quot;, bongo2020_occ$scientificname) 
 worms_id &lt;- worrms::wm_records_names(unique(bongo2020_occ$scientificname), marine_only = FALSE) %&gt;% dplyr::bind_rows()
 
@@ -811,7 +823,7 @@ bongo2020_emof_fnl &lt;- rbind(range, temp)</code></pre>
     measurementTypeID = case_when(
       measurementType == &quot;stage&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P01/current/LSTAGE01/&quot;,
       measurementType == &quot;sex&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P01/current/ENTSEX01/&quot;,
-      measurementType == &quot;ind_counted&quot; ~ &quot; &quot;,
+      measurementType == &quot;ind_counted&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P01/current/OCOUNT01/&quot;,
       measurementType == &quot;ind_total&quot; ~ &quot; &quot;,
       measurementType == &quot;abund_m3_flow_est&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL01/&quot;,
       measurementType == &quot;abund_m3_depth_est&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL01/&quot;), 
