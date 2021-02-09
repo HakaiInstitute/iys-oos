@@ -102,16 +102,19 @@ While samplingProtocol is not a required term, it is useful to give a descriptio
 ``` {r bongo_event, eval = FALSE}
 bongo_project <- bongo_fnl %>%
   select(eventID = project) %>%
-  distinct(eventID)
+  distinct(eventID) %>%
+  mutate(type = "project")
 
 bongo_cruise <- bongo_fnl %>% 
   select(eventID = cruise,
          parentEventID = project) %>%
-  distinct(eventID, .keep_all = TRUE)
+  distinct(eventID, .keep_all = TRUE) %>%
+  mutate(type = "cruise")
 
 bongo_station <- bongo_fnl %>%
   select(eventID = station,
-         parentEventID = cruise) 
+         parentEventID = cruise) %>%
+  mutate(type = "sampling station")
 
 bongo_station <- full_join(bongo_station, bongo_eventRemarks, by = "eventID") %>%
   distinct(eventID, .keep_all = TRUE) %>% 
@@ -128,12 +131,13 @@ bongo_cast <- bongo_fnl %>%
          decimalLatitude = latitude,
          decimalLongitude = longitude,
          minimumDepthInMeters = sample_depth,
-         maximumDepthInMeters = sample_depth,
-         sampleSizeValue = final_volume_filtered) %>%
-  mutate(sampleSizeUnit = "L",
-         samplingProtocol = "vertical Bongo Net deployment",
-         samplingEffort = "Volume sea water filtered") %>%
-  distinct(eventID, .keep_all = TRUE)
+         maximumDepthInMeters = sample_depth) %>%
+  #       sampleSizeValue = final_volume_filtered) %>%
+  #mutate(sampleSizeUnit = "L",
+  #       samplingProtocol = "vertical Bongo Net deployment",
+  #       samplingEffort = "Volume sea water filtered") %>%
+  distinct(eventID, .keep_all = TRUE) %>%
+  mutate(type = "bongo net cast")
 
 bongo_cast <- subset(bongo_cast, decimalLatitude != "ND")
 bongo_cast <- bongo_cast %>% mutate(eventRemarks = "cast",
@@ -145,13 +149,14 @@ bongo_cast <- cbind(bongo_cast, coordinates)
 bongo_sample <- bongo %>%
   select(eventID = sample,
          parentEventID = cast) %>% 
-  distinct(eventID, .keep_all = TRUE) 
+  distinct(eventID, .keep_all = TRUE) %>%
+  mutate(type = "bongo net sampleID")
 
 bongo_event <- bind_rows(bongo_project, bongo_cruise,bongo_station,bongo_cast, bongo_sample) %>% 
   mutate(type = "HumanObservation",
          geodeticDatum = "EPSG:4326")
 
-col_order <- c("eventID", "parentEventID", "eventDate", "year", "month", "day", "decimalLatitude", "decimalLongitude", "footprintWKT", "coordinateUncertaintyInMeters", "minimumDepthInMeters", "maximumDepthInMeters", "samplingProtocol", "sampleSizeValue", "sampleSizeUnit", "samplingEffort", "geodeticDatum", "type", "eventRemarks")
+col_order <- c("eventID", "parentEventID", "eventDate", "year", "month", "day", "decimalLatitude", "decimalLongitude", "footprintWKT", "coordinateUncertaintyInMeters", "minimumDepthInMeters", "maximumDepthInMeters", "geodeticDatum", "type", "eventRemarks")
 bongo_event <- bongo_event[, col_order]
 
 # To do: figure out way to flatten the event core. 
@@ -264,12 +269,9 @@ bongo2019_taxa_abundance <- bongo2019_abun %>%
          occurrenceStatus,
          scientificName = scientificname,
          scientificNameID = lsid,
-         organismQuantity = ind_counted,
          scientificAuthorityName = authority,
          taxonRank = rank,
          taxonomicStatus = status,
-         lifeStage = stage,
-         sex,
          parentNameUsageID, kingdom, phylum, class, order, family, genus) %>%
   mutate(occurrenceID = paste(eventID, "bongo_occ", row_number(), sep = ":"),
          occurrenceStatus = "present")
@@ -301,7 +303,8 @@ unidentified_spp <- bongo %>% filter(species %in% c("Size fraction", "Chaetognat
 bongo2019_taxa <- bongo2019_taxa %>%
   mutate(stage = ifelse(grepl("Crab zoea", bongo2019_taxa$species), "Crab zoea", stage),
          stage = ifelse(grepl("larva", bongo2019_taxa$species), "Larvae", stage),
-         stage = ifelse(grepl("Hydromedusae", bongo2019_taxa$species), "Hydromedusae", stage))
+         stage = ifelse(grepl("Hydromedusae", bongo2019_taxa$species), "Hydromedusae", stage),
+         stage = ifelse(grepl("veliger", bongo2019_taxa$species), "Veliger", stage))
 
 # Additionally, all mentionings of 'sp.' need to be removed as these can't be found through the worrms package:
 bongo2019_taxa$species <- gsub("\\b sp.\\b", "", bongo2019_taxa$species)
@@ -570,9 +573,7 @@ The bongo_occ_fnl dataframe is saved, and columns are manually added for `kingdo
 bongo2019_occ_fnl <- rbind(bongo2019_occ1, bongo2019_occ2, bongo2019_occ3, bongo2019_occ4, bongo2019_occ5) 
 bongo2019_occ_fnl <- bongo2019_occ_fnl[mixedorder(as.character(bongo2019_occ_fnl$eventID)),]
 bongo2019_occ_fnl <- bongo2019_occ_fnl %>%
-  rename(organismQuantity = number) %>%
-  mutate(organismQuantityType = "individuals",
-         occurrenceID = paste("IYS_GoA2019_zocc", row_number(), sep = ""),
+  mutate(occurrenceID = paste("IYS_GoA2019_zocc", row_number(), sep = ""),
   scientificName = ifelse(grepl("Sagitta", bongo2019_occ_fnl$scientificName), "Sagittoidea", scientificName),
   scientificName = ifelse(grepl("E pacifica", bongo2019_occ_fnl$scientificName), "Euphausia pacifica", scientificName),
   scientificName = ifelse(grepl("T spinifera", bongo2019_occ_fnl$scientificName), "Thysanoessa spinifera",
@@ -593,6 +594,7 @@ temp <- worrms::wm_records_names(bongo2019_no_worms_id$scientificName) %>% dplyr
 bongo2019_no_worms_id <- left_join(bongo2019_no_worms_id, temp, by = "scientificName") %>% distinct()
 
 # Join this back to the dataframe with all the worms ids: bongo2019_worms_id
+bongo2019_occ_fnl <- bongo2019_worms_id
 bongo2019_occ_fnl <- plyr::rbind.fill(bongo2019_worms_id, bongo2019_no_worms_id)
 ```
 
@@ -622,8 +624,7 @@ bongo2019_occ_core <- bongo2019_occ_fnl %>%
   select(eventID, occurrenceID, scientificName, 
          scientificNameID = lsid, 
          parentNameUsageID,
-         kingdom, phylum, class, order, family, genus, occurrenceStatus, Preparations, organismQuantity,
-         organismQuantityType, lifeStage, sex, reproductiveCondition, occurrenceRemarks)
+         kingdom, phylum, class, order, family, genus, occurrenceStatus, Preparations, occurrenceRemarks)
 # I change bongo_occ_fnl into a new dataframe (bongo2019_occ_core) because we're going to use the bongo_occ_fnl dataset in the eMoF table, but not all columns.
 
 # Make sure the folder path exists already (e.g. ./Bongo/tidy_data)
@@ -788,12 +789,15 @@ bongo_emof <- bongo_emof %>%
 When the species or genus has been identified, the measurements are associated to the occurrenceID.  
 
 ``` {r, eval = FALSE}
-bongo_emof2 <- bongo_occ_fnl %>%
+bongo_emof2 <- bongo2019_occ_fnl %>%
   select(eventID, occurrenceID,
-         size_fraction,
+         individualCount = number,
          length = length_mm,
          weight = weight_mg,
-         length_type) %>%
+         length_type, 
+         lifeStage,
+         sex,
+         reproductiveCondition) %>%
   mutate_all(as.character)
 ```
 
