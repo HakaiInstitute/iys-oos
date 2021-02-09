@@ -247,12 +247,9 @@ bongo2020_taxa_abundance <- bongo2020_abun %>%
          occurrenceStatus,
          scientificName = scientificname,
          scientificNameID = lsid,
-         organismQuantity = ind_counted,
          scientificAuthorityName = authority,
          taxonRank = rank,
          taxonomicStatus = status,
-         lifeStage = stage,
-         sex,
          parentNameUsageID, kingdom, phylum, class, order, family, genus,
          occurrenceRemarks = notes) %>%
   mutate(vernacularName = case_when(
@@ -302,10 +299,8 @@ bongo2020_occ <- rbind(bongo2020_occ, bongo2020_occ1)
 bongo2020_occ <- bongo2020_occ[order(bongo2020_occ$Station),]
 
 bongo2020_occ <- bongo2020_occ %>%
-  rename(organismQuantity = Number,
-         scientificname = Species) %>%
-  mutate(organismQuantityType = "individuals",
-         occurrenceID = paste(cast, `Sample ID`, sep = ":"),
+  rename(scientificname = Species) %>%
+  mutate(occurrenceID = paste(cast, `Sample ID`, sep = ":"),
          occurrenceStatus = "present")
 ```
 
@@ -338,7 +333,7 @@ bongo2020_occ_core <- bongo2020_occ %>%
          scientificName = scientificname, 
          scientificNameID = lsid, 
          authority, kingdom, 
-         phylum, class, order, family, genus, Stage, organismQuantity, organismQuantityType, Notes, Preservation) %>%
+         phylum, class, order, family, genus, Notes, Preservation) %>%
   rename(eventID = cast,
          occurrenceRemarks = Notes,
          preparations = Preservation,
@@ -561,7 +556,7 @@ bongo2020_emof_abun <- bongo2020_abun %>%
       measurementValue == "M" ~ "http://vocab.nerc.ac.uk/collection/S10/current/S103/",
       measurementValue == "F" ~ "http://vocab.nerc.ac.uk/collection/S10/current/S102/",
       measurementValue == "adult" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1116/", 
-      measurementValue == "C6" ~ " ",
+      measurementValue == "C6" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1116/",
       measurementValue == "C5" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1112/",
       measurementValue == "C4" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1110/",
       measurementValue == "C3" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S118/",
