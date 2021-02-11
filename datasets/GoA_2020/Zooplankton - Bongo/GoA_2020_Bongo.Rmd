@@ -95,9 +95,7 @@ bongo2020_cruise <- bongo2020 %>%
          parentEventID = project) %>%
   distinct(eventID, .keep_all = TRUE) %>%
   mutate(type = "cruise",
-         waterBody = "Northeast Pacific Ocean",
-         locationID = "http://marineregions.org/mrgid/25585")
-# Confirm that all station coordinates lie within the locationID coordinates. 
+         waterBody = "Northeast Pacific Ocean")
 
 bongo2020_station <- bongo2020 %>%
   select(eventID = station,
