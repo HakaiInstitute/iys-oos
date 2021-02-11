@@ -252,19 +252,20 @@ At time of writing (04-Feb-2021) there is 1 row - for "Trochophore" which still 
 ``` {r}
 bongo2020_abun <- bongo2020_abun %>% select(-genus)
 bongo2020_abun <- left_join(bongo2020_abun, bongo2020_worms_id, by = "scientificname") %>%
+  mutate(occurrenceID = paste(cast, "zocc", row_number(), sep = ":")) %>%
   rename(individualCount = ind_counted,
-         eventID = cast) %>%
-  select(eventID, stage, sex, scientificname, lsid, individualCount, identificationQualifier, 
-         kingdom, phylum, class, order, family, genus, authority, rank, notes) %>%
-  mutate(vernacularName = case_when(
-    scientificname == "Teuthida" ~ "Squid"))
+         eventID = cast)
 
 preparations <- bongo2020_metadata %>%
   select(eventID = cast,
          preparations = Preservation)
 
 # Join this column to the bongo2020_abun dataframe
-bongo2020_abun <- left_join(bongo2020_abun, preparations, by = "eventID")
+bongo2020_abun_fnl <- left_join(bongo2020_abun, preparations, by = "eventID") %>%
+    select(eventID, stage, sex, scientificname, lsid, individualCount, identificationQualifier, 
+         kingdom, phylum, class, order, family, genus, authority, rank, notes) %>%
+  mutate(vernacularName = case_when(
+    scientificname == "Teuthida" ~ "Squid"))
 ```
 
 The second Occurrence Core we create is on the data collected for the dry weight isotope and fatty acid analysis. This data is found in a different data set (`bongo2020`). To deal with these data, we first identify all entries that would not have a WoRMS URN associated to it, and for which no common lowest taxonomic rank can be identified, nor taxonomic resolution be provided by the data provider.
@@ -311,7 +312,9 @@ preparations <- bongo2020_metadata %>%
 
 # Join this column to the bongo2020_abun dataframe
 bongo2020_occ <- left_join(bongo2020_occ, preparations, by = "cast") %>%
-  rename(eventID = sample)
+  rename(eventID = sample) %>%
+  mutate(occurrenceID = paste(eventID, "zocc", row_number(), sep = ":"),
+    occurrenceStatus = "present")
 ```
 
 Next, we start the WoRMS taxon matching procedure. 
@@ -338,13 +341,14 @@ bongo2020_occ_worms_id <- worrms::wm_records_names(unique(bongo2020_occ$scientif
 bongo2020_occ_worms_id <- bongo2020_occ_worms_id[!grepl("503291", bongo2020_occ_worms_id$AphiaID),]
 
 # Merge this dataframe with the original occurrence dataframe:
-bongo2020_occ <- left_join(bongo2020_occ, bongo2020_occ_worms_id, by = "scientificname") %>%
+bongo2020_occ_fnl <- left_join(bongo2020_occ, bongo2020_occ_worms_id, by = "scientificname") %>%
   select(eventID, stage, sex, scientificname, individualCount, identificationQualifier, kingdom, 
-         phylum, class, order, family, genus, lsid, authority, rank, preparations, notes) %>%
+         phylum, class, order, family, genus, lsid, authority, rank, preparations, notes, occurrenceID, 
+         occurrenceStatus) %>%
   mutate(vernacularName = case_when(
     scientificname == "Cephalopoda" ~ "Squid"))
 
-bongo2020_occ_ext <- rbind(bongo2020_abun, bongo2020_occ) %>%
+bongo2020_occ_ext <- rbind(bongo2020_abun_fnl, bongo2020_occ_fnl) %>%
   rename(scientificName = scientificname,
          scientificNameID = lsid,
          lifeStage = stage,
@@ -352,9 +356,7 @@ bongo2020_occ_ext <- rbind(bongo2020_abun, bongo2020_occ) %>%
          taxonRank = rank,
          occurrenceRemarks = notes) %>%
   mutate(
-    basisOfRecord = "PreservedSpecimen",
-    occurrenceID = paste(eventID, "zocc", row_number(), sep = ":"),
-    occurrenceStatus = "present")
+    basisOfRecord = "PreservedSpecimen")
 
 # Reorder by eventID - this at least clusters the eventIDs together. 
 bongo2020_occ_ext <- bongo2020_occ_ext[order(gsub("[a-zA-Z]+", "", bongo2020_occ_ext$eventID)),]
@@ -472,8 +474,7 @@ The previous three chunks of code relate to the sampling event. Next, we create 
 
 ``` {r eMOF, eval = FALSE}
 bongo2020_emof <- bongo2020_occ %>%
-  select(eventID = cast,
-         occurrenceID,
+  select(occurrenceID,
          length = Length_mm,
          weight = Weight_g) %>%
   mutate_all(as.character)
@@ -598,29 +599,10 @@ bongo2020_emof_abun <- bongo2020_abun %>%
 
 # Check whether gastrozooids and gonozooids (which would be a simplification of s0 life stage), can be commonly listed under: http://vocab.nerc.ac.uk/collection/S11/current/S1138/
 
-# Finalize the eMOF core for the abundance / community composition analysis:
-bongo2020_eMOF_abun <- bind_rows(bongo2020_bottomdepth, bongo2020_sampling, bongo2020_instrument,
-                                 bongo2020_emof_abun)
+# Finalize the eMOF extension, so that it includes data on the bottom depth, sampling methods, instrument parameters, length and dry weight data and finally the abundance data:  for the abundance / community composition analysis:
+bongo2020_eMOF <- bind_rows(bongo2020_bottomdepth, bongo2020_sampling, bongo2020_instrument,
+                                 bongo2020_emof_fnl, bongo2020_emof_abun)
 # Make sure the folder path exists already (e.g. ./Bongo/tidy_data)
 write_csv(bongo2020_eMOF_abun, here("Zooplankton - Bongo", "tidy_data", "bongo2020_eMOF_abun.csv"))
-```
-
-Finalize the extended Measurement or Fact core for the 2020 Bongo Zooplankton Length / Dry weight data. 
-
-``` {r bongo_measurementOrFact Core, eval = FALSE}
-bongo2020_measurementOrFact <- bind_rows(bongo2020_bottomdepth, bongo2020_sampling, 
-                                     bongo2020_instrument, bongo2020_emof_fnl) %>%
-  select(
-    eventID,
-    occurrenceID,
-    measurementID,
-    measurementType,
-    measurementTypeID,
-    measurementValue,
-    measurementValueID,
-    measurementUnit,
-    measurementUnitID)
-
-write_csv(bongo2020_measurementOrFact, here("Zooplankton - Bongo", "tidy_data", "bongo2020_measurementOrFact.csv"))
 ```
 
