@@ -55,7 +55,8 @@ bongo2020 <- bongo2020_data %>% filter(Gear == "Bongo") %>%
   mutate(project = "IYS",
          cruise = paste(project, "GoA2020", sep = ":"),
          station = paste(cruise, Station, sep = "_Stn:"),
-         cast = paste(station, Net, sep = ":bongo:Net"))
+         cast = paste(station, Net, sep = ":bongo:Net"),
+         sample = paste(cast, `Sample ID`, sep = ":"))
 
 bongo2020_metadata[2] <- lapply(bongo2020_metadata[2], function (x) {
   x1 <- type.convert(as.character(x), as.is = TRUE)
@@ -80,22 +81,29 @@ bongo2020_metadata$day <- as.numeric(format(as.Date(bongo2020_metadata$eventDate
 
 ## Event Core
 
-The event Core consists of a hierarchical structure with four layers: `project`, `cruise`, `station` and `cast`. Each layer has different information associated to it. `sampleSizeValue` and `sampleSizeUnit` are not included as the volume water filtered is measured both through a flowmeter and through the estimated depth.
+The event Core consists of a hierarchical structure with four layers: `project`, `cruise`, `station` and `cast`. Each layer has different information associated to it. 
+
 
 ``` {r bongo2020_event}
 bongo2020_project <- bongo2020 %>%
   select(eventID = project) %>%
-  distinct(eventID)
+  distinct(eventID) %>%
+  mutate(type = "project")
 
 bongo2020_cruise <- bongo2020 %>%
   select(eventID = cruise,
          parentEventID = project) %>%
-  distinct(eventID, .keep_all = TRUE) 
+  distinct(eventID, .keep_all = TRUE) %>%
+  mutate(type = "cruise",
+         waterBody = "Northeast Pacific Ocean",
+         locationID = "http://marineregions.org/mrgid/25585")
+# Confirm that all station coordinates lie within the locationID coordinates. 
 
 bongo2020_station <- bongo2020 %>%
   select(eventID = station,
          parentEventID = cruise) %>%
-  distinct(eventID, .keep_all = TRUE)
+  distinct(eventID, .keep_all = TRUE) %>%
+  mutate(type = "station")
 
 bongo2020_cast <- bongo2020_metadata %>%
   select(eventID = cast,
@@ -106,10 +114,12 @@ bongo2020_cast <- bongo2020_metadata %>%
          minimumDepthInMetres = `Sample depth_m`,
          maximumDepthInMetres = `Sample depth_m`,
          Notes) %>%
-  mutate(sampleSizeUnit = "m^3",
-         samplingProtocol = "vertical Bongo Net deployment",
-         samplingEffort = "Volume sea water filtered") %>%
   distinct(eventID, .keep_all = TRUE) %>%
+  mutate(type = "vertical Bongo net cast",
+         institutionID = "https://edmo.seadatanet.org/report/2220",
+         institutionCode = "UBC-EOAS",
+         collectionCode = " ",
+         geodeticDatum = "EPSG:4326") %>%
   rename(eventRemarks = Notes)
 
 bongo2020_cast <- bongo2020_cast %>%
@@ -119,19 +129,21 @@ bongo2020_cast <- bongo2020_cast %>%
 coordinates <- obistools::calculate_centroid(bongo2020_cast$footprintWKT) %>% select(coordinateUncertaintyInMeters)
 bongo2020_cast <- cbind(bongo2020_cast, coordinates)
 
+bongo2020_sample <- bongo2020 %>%
+  select(eventID = sample,
+         parentEventID = cast) %>%
+  distinct(eventID, .keep_all = TRUE) %>%
+  mutate(type = "sample")
+
 bongo2020_event <- bind_rows(bongo2020_project,
                              bongo2020_cruise,
                              bongo2020_station,
-                             bongo2020_cast) %>% 
-  mutate(type = "PreservedSpecimen",
-         geodeticDatum = "EPSG:4326 WGS84")
+                             bongo2020_cast,
+                             bongo2020_sample) 
 
 # Check to make sure that all parentEventIDs have a corresponding eventID, and then flatten the data:
 obistools::check_eventids(bongo2020_event)
 bongo2020_event <- obistools::flatten_event(bongo2020_event)
-
-# Show column names:
-print(colnames(bongo2020_event))
 
 # Make sure the folder path exists already (e.g. ./Bongo/tidy_data)
 write_csv(bongo2020_event, here("Zooplankton - Bongo", "tidy_data", "bongo2020_event.csv"))
@@ -145,7 +157,7 @@ Now that the event core has been created, next we focus on the occurrence Cores.
 
 Similar to what was done for the 2019 data, we need to ensure that all recorded data have their own row. What I mean by this, is that for some Sample IDs there are numerous length measurements reported, and a number > 1. These have to get their own data entry row, and unique `occurrenceID`.  
 
-Lets first create an Occurrence Core for the (estimated) taxonomic abundance data. The abundance data file also includes data from 2019 so we need to filter out only the data collected during the 2020 High Seas Expedition. Additionally, the `station` column is saved in such a way that the stations are listed as both numbers and character. As the column currently has the class 'character', station numbers are recorded as 1.0 instead of 1. We need to fix this as well. 
+Lets first create an Occurrence Core for the (estimated) taxonomic abundance data. The abundance data file also includes data from 2019 so we need to filter out only the data collected during the 2020 High Seas Expedition. Additionally, the `station` column is saved in such a way that the stations are listed as both numbers and character. As the column currently has the class 'character', station numbers are recorded as 1.0 instead of 1. We need to fix this as well. I've confirmed with Natalie Mahara (data provider) that abundance/taxonomy data is always from Net 1, unless specified in the comments. 
 
 ``` {r bongo2020_taxa_occ, eval = FALSE}
 bongo2020_taxa$date <- as.Date(bongo2020_taxa$date)
@@ -165,12 +177,13 @@ bongo2020_abun <- subset(bongo2020_taxa, date >= "2020-03-12" & date <= "2020-04
          cruise = paste(project, "GoA2020", sep = ":"),
          station = paste(cruise, station, sep = "_Stn"),
          cast = paste(station, "1", sep = ":bongo:Net"))
-         # Confirmed with Natalie that abundance/taxonomy data is always from Net 1, unless specified in the comments. 
 ```
 
 Manual inspection of this dataframe shows that there are still a few species that will need slight changes in their spelling, as the `worrms` package does not recognize 'sp.' etc. These spelling changes will need to be verified with the data provider to ensure that the correct species is represented. Additionally, some ids contain a life stage (larvae, egg etc). These are also mentioned in a column 'lifestage', so they are removed from the species id. These manual changes are listed below and are not made in the raw data file. This way the original species description is still provided. 
 
 ``` {r}
+bongo2020_abun$identificationQualifer <- ifelse(grepl("sp.", bongo2020_abun$id), "sp. inc.", NA)
+
 bongo2020_abun$id <- gsub("\\b sp.\\b", "", bongo2020_abun$id)
 bongo2020_abun$id <- gsub("egg|nauplius|larva|naplius|calyptopsis|furcillia", "", bongo2020_abun$id)
 
@@ -251,10 +264,12 @@ bongo2020_taxa_abundance <- bongo2020_abun %>%
          taxonRank = rank,
          taxonomicStatus = status,
          parentNameUsageID, kingdom, phylum, class, order, family, genus,
+         verbatimTaxonRank,
          occurrenceRemarks = notes) %>%
   mutate(vernacularName = case_when(
     scientificName == "Teuthida" ~ "Squid"
-  ))
+  ),
+        basisOfRecord = "PreservedSpecimen")
 
 preparations <- bongo2020_metadata %>%
   select(eventID = cast,
@@ -309,6 +324,8 @@ Next, we start the WoRMS taxon matching procedure.
 - [ ] TO DO: In this analysis, Squid is renamed to Cephalopoda, whereas in the taxonomy analysis we renamed it to Teuthida. Confirm this is correct. 
 
 ``` {r}
+bongo2020_occ$identificationQualifer <- ifelse(grepl("sp.", bongo2020_occ$scientificname), "sp. inc.", NA)
+
 bongo2020_occ$scientificname <- gsub("\\b sp.\\b", "", bongo2020_occ$scientificname) 
 worms_id <- worrms::wm_records_names(unique(bongo2020_occ$scientificname), marine_only = FALSE) %>% dplyr::bind_rows()
 
@@ -333,6 +350,7 @@ bongo2020_occ_core <- bongo2020_occ %>%
          scientificName = scientificname, 
          scientificNameID = lsid, 
          authority, kingdom, 
+         verbatimTaxonRank,
          phylum, class, order, family, genus, Notes, Preservation) %>%
   rename(eventID = cast,
          occurrenceRemarks = Notes,
@@ -342,7 +360,8 @@ bongo2020_occ_core <- bongo2020_occ %>%
 # Add any caveats to species identification:
 bongo2020_occ_core <- bongo2020_occ_core %>%
   mutate(vernacularName = case_when(
-      scientificName == "Cephalopoda" ~ "Squid"))
+      scientificName == "Cephalopoda" ~ "Squid"),
+         basisOfRecord = "PreservedSpecimen")
 
 # Make sure the folder path exists already (e.g. ./Bongo/tidy_data)
 write_csv(bongo2020_occ_core, here("Zooplankton - Bongo", "tidy_data", "bongo2020_occurrence.csv"))
@@ -409,14 +428,14 @@ bongo2020_sampling <- bongo2020_meta %>%
            measurementType == "speed_tow" ~ "http://vocab.nerc.ac.uk/collection/P01/current/TOWSPEED/"
          ),
   measurementUnit = case_when(
-    measurementType == "tow_distance" ~ "m",
-    measurementType == "volume_filtered_flowmeter" ~ "m^3",
-    measurementType == "volume_filtered_depth_estimate" ~ "m^3",
-    measurementType == "speed_tow" ~ "m/s"),
+    measurementType == "tow_distance" ~ "meter",
+    measurementType == "volume_filtered_flowmeter" ~ "cubic meter",
+    measurementType == "volume_filtered_depth_estimate" ~ "cubic meter",
+    measurementType == "speed_tow" ~ "meter per second"),
   measurementUnitID = case_when(
-    measurementUnit == "m" ~ "http://vocab.nerc.ac.uk/collection/P06/current/ULAA/",
-    measurementUnit == "m^3" ~ "http://vocab.nerc.ac.uk/collection/P06/current/MCUB/",
-    measurementUnit == "m/s" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UVAA/")) %>%
+    measurementUnit == "meter" ~ "http://vocab.nerc.ac.uk/collection/P06/current/ULAA/",
+    measurementUnit == "cubic meter" ~ "http://vocab.nerc.ac.uk/collection/P06/current/MCUB/",
+    measurementUnit == "meter per second" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UVAA/")) %>%
     select(eventID, measurementID, measurementType, measurementTypeID, measurementValue,
            measurementUnit, measurementUnitID)
 ```
@@ -442,11 +461,11 @@ bongo2020_instrument <- bongo2020_meta %>%
 
 bongo2020_instrument <- bongo2020_instrument %>%
   mutate(measurementUnit = case_when(
-           measurementType == "bongo_mesh" ~ "um",
-           measurementType == "bongo_opening" ~ "m^2"),
+           measurementType == "bongo_mesh" ~ "micrometer",
+           measurementType == "bongo_opening" ~ "square meter"),
          measurementUnitID = case_when(
-           measurementUnit == "um" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UMIC/",
-           measurementUnit == "m^2" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UMSQ/"),
+           measurementUnit == "micrometer" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UMIC/",
+           measurementUnit == "square meter" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UMSQ/"),
          measurementValueID = case_when(
            measurementValue == "Bongo" ~ "http://vocab.nerc.ac.uk/collection/L22/current/NETT0176/")) %>%
   select(eventID, measurementID, measurementType, measurementTypeID, measurementValue,
@@ -507,13 +526,13 @@ bongo2020_emof_fnl <- bongo2020_emof_fnl %>%
       measurementType == "minimumLength" ~ "http://vocab.nerc.ac.uk/collection/P01/current/OBSMINLX/",
       measurementType == "weight" ~ "http://vocab.nerc.ac.uk/collection/S06/current/S0600253/"), 
     measurementUnit = case_when(
-      measurementType == "length" ~ "mm",
-      measurementType == "minimumLength" ~ "mm",
-      measurementType == "maximumLength" ~ "mm",
-      measurementType == "weight" ~ "g"), 
+      measurementType == "length" ~ "millimeter",
+      measurementType == "minimumLength" ~ "millimeter",
+      measurementType == "maximumLength" ~ "millimeter",
+      measurementType == "weight" ~ "grams"), 
     measurementUnitID = case_when(
-      measurementUnit == "mm" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UXMM/",
-      measurementUnit == "g" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UGRM/"))
+      measurementUnit == "millimeter" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UXMM/",
+      measurementUnit == "grams" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UGRM/"))
 ```
 
 Create the eMOF core associated with the community composition or abundance analysis:
@@ -546,8 +565,8 @@ bongo2020_emof_abun <- bongo2020_abun %>%
     measurementUnit = case_when(
       measurementType == "ind_counted" ~ "individuals",
       measurementType == "ind_total" ~ "individuals",
-      measurementType == "abund_m3_depth_est" ~ "individuals/m^3",
-      measurementType == "abund_m3_flow_est" ~ "individuals/m^3"
+      measurementType == "abund_m3_depth_est" ~ "individuals per cubic meter",
+      measurementType == "abund_m3_flow_est" ~ "individuals per cubic meter"
     ), 
     measurementUnitID = case_when(
       measurementUnit == "individuals" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UUUU/", 
