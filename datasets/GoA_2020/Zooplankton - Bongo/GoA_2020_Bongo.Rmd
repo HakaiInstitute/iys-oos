@@ -356,6 +356,9 @@ bongo2020_occ_ext <- rbind(bongo2020_abun, bongo2020_occ) %>%
     occurrenceID = paste(eventID, "zocc", row_number(), sep = ":"),
     occurrenceStatus = "present")
 
+# Reorder by eventID - this at least clusters the eventIDs together. 
+bongo2020_occ_ext <- bongo2020_occ_ext[order(gsub("[a-zA-Z]+", "", bongo2020_occ_ext$eventID)),]
+
 # Make sure the folder path exists already (e.g. ./Bongo/tidy_data)
 write_csv(bongo2020_occ_ext, here("Zooplankton - Bongo", "tidy_data", "bongo2020_occurrence.csv"))
 drive_upload(here("Zooplankton - Bongo", "tidy_data", "bongo2020_occurrence.csv"),
