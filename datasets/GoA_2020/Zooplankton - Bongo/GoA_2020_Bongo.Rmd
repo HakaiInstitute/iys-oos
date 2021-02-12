@@ -255,7 +255,8 @@ bongo2020_abun <- bongo2020_abun %>% select(-genus)
 bongo2020_abun <- left_join(bongo2020_abun, bongo2020_worms_id, by = "scientificname") %>%
   group_by(cast) %>%
   mutate(id = seq_along(cast)) %>%
-  mutate(occurrenceID = paste(cast, id, sep = "-")) %>%
+  mutate(occurrenceID = paste(cast, id, sep = "-"),
+         occurrenceStatus = "present") %>%
   rename(individualCount = ind_counted,
          eventID = cast)
 
@@ -375,11 +376,9 @@ drive_upload(here("Zooplankton - Bongo", "tidy_data", "bongo2020_occurrence.csv"
 
 ***
 
-## extended measurementOrFact
+## extended measurementOrFact extension
 
-In our extended measurementOrFact table(s), we associate the measurements to either the `eventID` (if species does not have an associated WoRMS URN), or the `occurrenceID` (if species has WoRMS URN). 
-
-As a first step though, we associate the _seafloor depth_, _sampling depth_, and variables associated to the sampling event to the cast. There is still debate on whether sampling event facts need to be included, as we are essentially recording metadata in the data. Do note that that this Core standards for measurements and _facts_, and these Bongo net details are _facts_ linked to the Event. For the time being therefore, this information is recorded in this Core. It is important that the facts get linked to the correct layer.
+In our extended measurementOrFact extension, we associate the measurements to either the `eventID` (if species does not have an associated WoRMS URN), or the `occurrenceID` (if species has WoRMS URN). Additionally, measurements or facts related to the sampling instrument, sampling method and bottom depth are linked to the `eventID`. It is important that these facts get linked to the correct layer. 
 
 ``` {r bongo_bottomdepth, eval = FALSE}
 bongo2020_bottomdepth <- bongo2020 %>% 
@@ -397,14 +396,15 @@ bongo2020_bottomdepth <- bongo2020 %>%
   mutate(measurementTypeID = case_when(
     measurementType == "seafloor depth" ~ "http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/"),
         measurementUnit = case_when(
-    measurementType == "seafloor depth" ~ "m"),
+    measurementType == "seafloor depth" ~ "meter"),
         measurementUnitID = case_when(
-    measurementUnit == "m" ~ "http://vocab.nerc.ac.uk/collection/P06/current/ULAA/")) %>%
-  select(eventID, measurementID, measurementType, measurementTypeID, measurementValue, 
+    measurementUnit == "meter" ~ "http://vocab.nerc.ac.uk/collection/P06/current/ULAA/"),
+    measurementValueID = NA) %>%
+  select(eventID, measurementID, measurementType, measurementTypeID, measurementValue, measurementValueID,
          measurementUnit, measurementUnitID)
 ```
 
-Measurements or facts pertaining to the sampling effort are linked in the following chunk of code:
+Measurements or facts pertaining to the sampling effort are linked in the following chunk of code. The speed of the tow was provided by the data provider, and reported in the Cruise Report. 
 
 ``` {r sampling effort, eval = FALSE}
 bongo2020_sampling <- bongo2020_meta %>%
@@ -420,8 +420,8 @@ bongo2020_sampling <- bongo2020_meta %>%
                values_to = "measurementValue") %>%
   mutate(measurementType = recode(measurementType,
                                  `Tow Distance_m` = "tow_distance",
-                                 `Flowmeter Volume Filtered_m3` = "volume_filtered_flowmeter",
-                                 `Depth estimated Volume filtered_m3` = "volume_filtered_depth_estimate"),
+                                 `Flowmeter Volume Filtered_m3` = "Volume filtered as estimated by flowmeter",
+                                 `Depth estimated Volume filtered_m3` = "Volume filtered as estimated by depth-estimate"),
          measurementID = paste(eventID, measurementType, sep = ":"),
          measurementTypeID = case_when(
            measurementType == "tow_distance" ~ "http://vocab.nerc.ac.uk/collection/P01/current/LENTRACK/",
@@ -437,12 +437,13 @@ bongo2020_sampling <- bongo2020_meta %>%
   measurementUnitID = case_when(
     measurementUnit == "meter" ~ "http://vocab.nerc.ac.uk/collection/P06/current/ULAA/",
     measurementUnit == "cubic meter" ~ "http://vocab.nerc.ac.uk/collection/P06/current/MCUB/",
-    measurementUnit == "meter per second" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UVAA/")) %>%
-    select(eventID, measurementID, measurementType, measurementTypeID, measurementValue,
+    measurementUnit == "meter per second" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UVAA/"),
+  measurementValueID = NA) %>%
+    select(eventID, measurementID, measurementType, measurementTypeID, measurementValue, measurementValueID,
            measurementUnit, measurementUnitID)
 ```
 
-Next, add information on the sampling _instrument_. The bongo had a length of 3m, but I couldn't find any controlled vocabulary for sampling instrument length so I omitted this information from the code. Information on the mesh size and sampling instrument opening came from the cruise report and is verified by the data provider. For the sampling instrument:
+Next, add information on the _sampling instrument_. The bongo had a length of 3m, but I couldn't find any controlled vocabulary for sampling instrument length so I omitted this information from the code. Information on the mesh size and sampling instrument opening came from the Cruise Report and is verified by the data provider. 
 
 ``` {r samplingInstrument, eval = FALSE}
 bongo2020_instrument <- bongo2020_meta %>%
@@ -474,7 +475,14 @@ bongo2020_instrument <- bongo2020_instrument %>%
          measurementValueID, measurementUnit, measurementUnitID)
 ```
 
-The previous three chunks of code relate to the sampling event. Next, we create the eMOF core to associate the length and weight measurements for the individuals collected within the Bongo net, particular Net 2. When the species or genus has been identified, the measurements are associated to the `occurrenceID`.  
+The previous three chunks of code relate to the sampling event. Though it's possible to concatenate the measurementsOrFacts extensions, it's also possible to upload them both separately through the IPT. In this case, one eMOF extension would link back to the `eventID` and the other to `occurrenceID`. Save locally.
+
+``` {r emof_ext_eventID}
+bongo2020_eMOF_eventID <- rbind(bongo2020_bottomdepth, bongo2020_sampling, bongo2020_instrument)
+write_csv(bongo2020_eMOF_eventID, here("Zooplankton - Bongo", "tidy_data", "bongo2020_eMOF_eventID.csv"))
+```
+
+Next, we create the eMOF extension to associate the length and weight measurements to the zooplankton.  
 
 ``` {r eMOF, eval = FALSE}
 bongo2020_emof <- bongo2020_occ %>%
@@ -489,7 +497,6 @@ Within this dataframe, there are still the data entries that have a length measu
 
 ``` {r, eval = FALSE}
 range <- bongo2020_emof %>%
-  # bongo_emof2 needs to be replaced with a table that contains the occurrenceIDs!!
   filter(grepl("-", bongo2020_emof$length)) %>%
   separate(col = length, into = c("minimumLength", "maximumLength"), sep = "\\-") %>%
   mutate(length = " ") # required to join dataframes at later stage. 
@@ -506,7 +513,7 @@ So now we have a dataframe where:
     * Species have been identified to a species or genus level
     * Length measurement ranges have been split up into columns of minimumLength and maximumLength.
     
-The following columns of the original raw dataframe are not included, as I'm not sure if these would actually be considered measurements or facts:
+The following columns of the original raw dataframe are not included in the eMOF extension, but information can still be found in the original dataframe:
 * sample_type
 * Group
 * Size_fraction
@@ -534,10 +541,12 @@ bongo2020_emof_fnl <- bongo2020_emof_fnl %>%
       measurementType == "weight" ~ "grams"), 
     measurementUnitID = case_when(
       measurementUnit == "millimeter" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UXMM/",
-      measurementUnit == "grams" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UGRM/"))
+      measurementUnit == "grams" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UGRM/"),
+    measurementValueID = NA,
+    measurementRemarks = NA)
 ```
 
-Create the eMOF core associated with the community composition or abundance analysis:
+Create the eMOF core associated with the community composition or abundance analysis, which are the zooplankton caught in Net 1:
 
 ``` {r eMOF Bongo2020 abundance, eval = FALSE}
 bongo2020_emof_abun <- bongo2020_abun %>%
@@ -555,19 +564,19 @@ bongo2020_emof_abun <- bongo2020_abun %>%
       measurementType == "stage" ~ paste(occurrenceID, "stage", sep = ":"),
       measurementType == "sex" ~ paste(occurrenceID, "sex", sep = ":"),
       measurementType == "individualCount" ~ paste(occurrenceID, "individualCount", sep = ":"),
-      measurementType == "ind_total" ~ paste(occurrenceID, "ind_total", sep = ":"),
+      measurementType == "individualTotal" ~ paste(occurrenceID, "individualTotal", sep = ":"),
       measurementType == "abund_m3_flow_est" ~ paste(occurrenceID, "abund_flow", sep = ":"),
       measurementType == "abund_m3_depth_est" ~ paste(occurrenceID, "abund_depth", sep = ":")),
     measurementTypeID = case_when(
       measurementType == "stage" ~ "http://vocab.nerc.ac.uk/collection/P01/current/LSTAGE01/",
       measurementType == "sex" ~ "http://vocab.nerc.ac.uk/collection/P01/current/ENTSEX01/",
       measurementType == "individualCount" ~ "http://vocab.nerc.ac.uk/collection/P01/current/OCOUNT01/",
-      measurementType == "ind_total" ~ " ",
+      measurementType == "inddividualTotal" ~ " ",
       measurementType == "abund_m3_flow_est" ~ "http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL01/",
       measurementType == "abund_m3_depth_est" ~ "http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL01/"), 
     measurementUnit = case_when(
       measurementType == "individualCount" ~ "individuals",
-      measurementType == "ind_total" ~ "individuals",
+      measurementType == "individualTotal" ~ "individuals",
       measurementType == "abund_m3_depth_est" ~ "individuals per cubic meter",
       measurementType == "abund_m3_flow_est" ~ "individuals per cubic meter"
     ), 
@@ -604,12 +613,22 @@ bongo2020_emof_abun <- bongo2020_abun %>%
     ))
 
 # Check whether gastrozooids and gonozooids (which would be a simplification of s0 life stage), can be commonly listed under: http://vocab.nerc.ac.uk/collection/S11/current/S1138/
+```
 
-# Finalize the eMOF extension, so that it includes data on the bottom depth, sampling methods, instrument parameters, length and dry weight data and finally the abundance data:  for the abundance / community composition analysis:
+An eMOF extension can also be created for only those records that are linked to an `occurrenceID`:
+
+``` {r}
+bongo2020_eMOF_occID <- rbind(bongo2020_emof_fnl, bongo2020_emof_abun)
+write_csv(bongo2020_eMOF_occID, here("Zooplankton - Bongo", "tidy_data", "bongo2020_eMOF_occID.csv"))
+```
+
+Create total eMOF extension, and save locally:
+
+``` {r total eMOF extension}
 bongo2020_eMOF <- bind_rows(bongo2020_bottomdepth, bongo2020_sampling, bongo2020_instrument,
                             bongo2020_emof_fnl, bongo2020_emof_abun)
 # Make sure the folder path exists already (e.g. ./Bongo/tidy_data)
-write_csv(bongo2020_eMOF_abun, here("Zooplankton - Bongo", "tidy_data", "bongo2020_eMOF_abun.csv"))
+write_csv(bongo2020_eMOF, here("Zooplankton - Bongo", "tidy_data", "bongo2020_eMOF.csv"))
 ```
 
 
