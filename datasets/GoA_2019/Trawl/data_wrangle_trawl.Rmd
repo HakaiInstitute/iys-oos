@@ -311,76 +311,86 @@ all(unique_trawl_species == unique(trawl2020_occ$scientificName)) # Answer shoul
 
 ## Extended MeasurementOrFact Extension
 
-Although there exist Darwin Core terms related to class _Occurrence_ such as individualCount, organismQuantity, lifeStage, etc., OBIS recommends adding all measurements to the eMoF extension (De Pooter et al. 2007). There are three benefits of storing measurements in the eMoF extension instead of in the Occurrence core:
-
-1. Individual counts and derived quantifications (abundance or biomass) can be captured without needing to create duplicate occurrence records
-2. The measurementTypeID field enables reference to external controlled vocabularies (e.g. NERC server), rather than maintaining a vocabulary within OBIS, and
-3. Allows an unlimited number of measurement parameters to be stored without altering table structure
-
-From the Occurrence table, we filter for occurrenceStatus == "present", as these have the unique occurrenceIDs that have measurements associated to them. Next, we have to merge it with the trawl df, as that's where the measurements are stored. To merge these dataframes, we rename a few columns in the trawl df so we can merge by specific columns.
+We create two measurements or fact tables initially - one for the measurements pertaining to the overall catch (catch_weight), and one with the measurements pertaining to selected individuals (individual length and weight). These tables will eventually be merged into the measurement or fact extension. 
 
 ```{r eMoF}
-trawl_emof_wrangle <- trawl_sp_wrangle %>% 
-  filter(occurrenceStatus == "present")
-  # Rename trawl column in dataframe `trawl` to `eventID` and use merge()
-  # measurements are found in the trawl dataframe, so we need to transform that
-  # dataframe slightly and merge it with the newly created trawl_emof:
-trawl <- trawl %>% mutate(Species = paste(FISH1, FISH2, sep = " ")) %>%
-  dplyr::rename(scientificName = Species,
-                eventID = trawl)
-trawl_emof <- merge(trawl_emof_wrangle, trawl, by = c("eventID", "scientificName", "Group")) %>%
-  # We have to merge by Group as well because otherwise similar occIDs will be created for different lifestages within a single trawl set (i.e., if both adult and juvenile Chinook salmon are caught these will be given the same occID if it's only done by scientificName).
-  mutate(LMIN = format(LMIN, digits = 2),
-         LMAX = format(LMAX, digits = 2),
-         MASSCATCH = format(MASSCATCH, digits = 4)
-         ) %>% mutate_all(as.character) %>%
-  pivot_longer(cols = c("Group","LMIN","LMAX","PIECES","MASSCATCH"),
-               names_to = "measurementType", values_to = "measurementValue") %>% 
+trawl2020_allcatch_emof <- trawl2020_occ %>%
+  select(occurrenceID,
+         `CATCH_WEIGHT (KG)`,
+         WEIGHT_METHOD) %>%
+  mutate_all(as.character) %>%
+  pivot_longer(cols = c(`CATCH_WEIGHT (KG)`,WEIGHT_METHOD),
+               names_to = "measurementType",
+               values_to = "measurementValue") %>%
   mutate(measurementType = recode(measurementType,
-                                  "Group" = "age class",
-                                  "LMIN" = "minimum length",
-                                  "LMAX" = "maximum length",
-                                  "PIECES" = "number of individuals",
-                                  "MASSCATCH" = "catch biomass"
-                                  ),
+                                  `CATCH_WEIGHT (KG)` = "Total species biomass",
+                                  WEIGHT_METHOD = "Method determining weight"),
+         measurementID = case_when(
+           measurementType == "Total species biomass" ~ paste(occurrenceID, "biomass", sep = "-"),
+           measurementType == "Method determining weight" ~ paste(occurrenceID, "weight_method", sep = "-")),
          measurementTypeID = case_when(
-           measurementType == "minimum length" ~ "http://vocab.nerc.ac.uk/collection/P01/current/OBSMINLX/",
-           measurementType == "maximum length" ~ "http://vocab.nerc.ac.uk/collection/P01/current/OBSMAXLX/",
-           measurementType == "number of individuals" ~ "http://vocab.nerc.ac.uk/collection/S06/current/S0600008/",
-           measurementType == "catch biomass" ~ "http://vocab.nerc.ac.uk/collection/S06/current/S0600088/"
-           ),
-         measurementValue = recode(measurementValue,
-                                   "(juv.)" = "juvenile",
-                                   "(immature)" = "immature",
-                                   "(mature)" = "mature"
-                                   ),
+           measurementType == "Total species biomass" ~ " ",
+           measurementType == "Method determining weight" ~ " "),
          measurementValueID = case_when(
-           measurementValue == "juvenile" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1127/",
-           measurementValue == "immature" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1171/",
-           measurementValue == "mature" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1116/"
-           ),
+           measurementValue == "total" ~ " ",
+           measurementValue == "volume estimate" ~ " "),
          measurementUnit = case_when(
-           measurementType == "number of individuals" ~ "individuals",
-           measurementType == "minimum length" ~ "cm",
-           measurementType == "maximum length" ~ "cm",
-           measurementType == "catch biomass" ~ "kg"
-           ),
+           measurementType == "Total species biomass" ~ "kg"),
          measurementUnitID = case_when(
-           measurementUnit == "individuals" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UUUU/",
-           measurementUnit == "cm" ~ "http://vocab.nerc.ac.uk/collection/P06/current/ULCM/",
-           measurementUnit == "kg" ~ "http://vocab.nerc.ac.uk/collection/P06/current/KGXX/"
-         )
-  ) %>% 
-  select(eventID, 
-         occurrenceID, 
-         measurementType, 
-         measurementTypeID, 
-         measurementValue, 
-         measurementValueID,
-         measurementUnit,
-         measurementUnitID) %>% 
-  drop_na(measurementValue)
+           measurementUnit == "kg" ~ "http://vocab.nerc.ac.uk/collection/P06/current/KGXX/")
+  ) %>%
+  select(occurrenceID, measurementID, measurementType, measurementTypeID, measurementValue, measurementValueID,
+         measurementUnit, measurementUnitID)
+```
 
+Next, create the measurementOrFact extension with length and weight measurements assigned to the individual specimens. 
+
+``` {r}
+trawl2020_ind_emof <- trawl2020_catch_ind_occ %>%
+  select(occurrenceID,
+         `LENGTH (FORK) - mm`:`WEIGHT - ROUND (g)`) %>%
+  mutate_all(as.character) %>%
+  pivot_longer(cols = `LENGTH (FORK) - mm`:`WEIGHT - ROUND (g)`,
+               names_to = "measurementType",
+               values_to = "measurementValue") %>%
+  mutate(measurementType = recode(measurementType,
+                                  `LENGTH (FORK) - mm` = "Fork length",
+                                  `LENGTH (STANDARD) - mm` = "Standard length",
+                                  `LENGTH (TOTAL)` = "Total length",
+                                  `LENGTH (MANTLE) - cm` = "Mantle length",
+                                  `WEIGHT - ROUND (g)` = "weight"),
+         measurementID = case_when(
+           measurementType == "Fork length" ~ paste(occurrenceID, "fork_length", sep = "-"),
+           measurementType == "Standard length" ~ paste(occurrenceID, "standard_length", sep = "-"),
+           measurementType == "Total length" ~ paste(occurrenceID, "total_length", sep = "-"),
+           measurementType == "Mantle length" ~ paste(occurrenceID, "mantle_length", sep = "-"),
+           measurementType == "weight" ~ paste(occurrenceID, "weight", sep = "-")),
+         measurementTypeID = case_when(
+           measurementType == "Fork length" ~ " ",
+           measurementType == "Standard length" ~ " ",
+           measurementType == "Total length" ~ " ",
+           measurementType == "Mantle length" ~ " ",
+           measurementType == "weight" ~ " "),
+         measurementUnit = case_when(
+           measurementType == "Fork length" ~ "millimeters",
+           measurementType == "Standard length" ~ "millimeters",
+           measurementType == "Total length" ~ "millimeters",
+           measurementType == "Mantle length" ~ "centimeters",
+           measurementType == "weight" ~ "grams"),
+         measurementUnitID = case_when(
+           measurementUnit == "millimeters" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UXMM/",
+           measurementUnit == "centimeters" ~ "http://vocab.nerc.ac.uk/collection/P06/current/ULCM/",
+           measurementUnit == "grams" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UGRM/"
+  )) %>%
+  mutate(measurementValueID = NA) %>%
+  drop_na(measurementValue) %>%
+  select(occurrenceID, measurementID, measurementType, measurementTypeID, measurementValue, measurementValueID,
+         measurementUnit, measurementUnitID)
+```
+
+- TO DO: write code to combine the two extended measurementOrFact extensions into a single eMOF extension, and save locally and in GoogleDrive:
+
+``` {r}
 write_csv(trawl_emof, here("Trawl", "tidy_data", "trawl_eMoF.csv"))
 drive_upload(here("Trawl", "tidy_data", "trawl_emof.csv"),
              path = "https://drive.google.com/drive/folders/1MQ6XJQqnWk2puDaBTfHn7wXITjDSeLR7",
