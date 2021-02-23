@@ -1,0 +1,303 @@
+---
+title: "2019 IYS - Bongo Data wrangle"
+author: "Tim van der Stap"
+date: "6/17/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(lubridate)
+library(janitor)
+library(readxl)
+library(here)
+library(parsedate)
+library(googledrive)
+library(uuid)
+```
+
+The raw data is stored on GoogleDrive. The first step is to download the file from Google Drive to a local folder on your computer's hard drive. 
+
+``` {r file_download, eval = FALSE}
+# Make sure your folder path exists already (e.g. ./Bongo/raw_data)
+drive_download("https://docs.google.com/spreadsheets/d/1vvIwlsIkuc9vHtVrv2l3pXeyoWpEX_gw/edit#gid=287253584", 
+               path = here::here("Bongo", "raw_data", 
+                                 "Zoop Bongo Isotopes_IYS_Dry Weight_Mar31.xlsx"),
+               overwrite = TRUE)
+```
+
+
+``` {r data wrangle, eval = FALSE}
+bongo <- read_excel(here("Bongo", "raw_data", 
+                       "Zoop Bongo Isotopes_IYS_Dry Weight_Mar31.xlsx"), 
+                  sheet = "Samples collected") %>%
+  janitor::clean_names() %>%
+  # Convert the standalone time value (UTC+12) into ISO8601 extended format
+  mutate(Date = lubridate::dmy(date),
+         Time = format(start_time, format = "%H:%M:%S"),
+         dateTime = format_iso_8601(as.POSIXct(paste(Date, Time), 
+                                               format="%Y-%m-%d %H:%M:%S", 
+                                               tz="Asia/Kamchatka")),
+         dateTime = str_replace(dateTime, "\\+00:00", "Z"),
+         cruise = "GoA2019",
+         station = paste(cruise, station, sep="_Stn"),
+         cast = paste(station, "cast1", sep=":"),
+         ndepth = paste(cast, net, sep = ":bongo:"),
+         ndepth = paste(ndepth, sample_depth, sep=":"),
+         sample = paste(ndepth, sample_id, sep=":")
+  )
+```
+
+``` {r bongo_event, eval = FALSE}
+bongo_cruise <- bongo %>% 
+  select(eventID = cruise) %>%
+  distinct(eventID) %>%
+  mutate(eventRemarks = "cruise")
+
+bongo_station <- bongo %>%
+  select(eventID = station,
+         parentEventID = cruise) %>% 
+  distinct(eventID, .keep_all = TRUE) %>% 
+  mutate(eventRemarks = "station")
+
+# Join date and coordinates to cast
+bongo_cast <- bongo %>%
+  select(eventID = cast,
+         parentEventID = station,
+         eventDate = dateTime,
+         decimalLatitude = start_latitude,
+         decimalLongitude = start_longitude) %>%
+  distinct(eventID, .keep_all = TRUE) %>%
+  mutate(eventRemarks = "cast")
+
+bongo_ndepth <- bongo %>% 
+  select(eventID = ndepth,
+         parentEventID = cast,
+         minimumDepthInMetres = sample_depth,
+         maximumDepthInMetres = sample_depth) %>% 
+  distinct(eventID, .keep_all = TRUE) %>% 
+  mutate(eventRemarks = "sample")
+
+bongo_sample <- bongo %>%
+  select(eventID = sample,
+         parentEventID = ndepth) %>%
+  distinct(eventID, .keep_all = TRUE) %>%
+  mutate(eventRemarks = "subsample")
+
+bongo_event <- bind_rows(bongo_cruise,bongo_station,bongo_cast,bongo_ndepth,bongo_sample) %>%   select(eventID, parentEventID:maximumDepthInMetres, eventRemarks) %>%
+ mutate(type = "HumanObservation")
+
+# Should sample_type be included in the Event Core, under the heading samplingProtocol? 
+
+# Make sure the folder path exists already (e.g. ./chlorophyll/tidy_data)
+write_csv(bongo_event, here("Bongo", "tidy_data", "bongo_event.csv"))
+drive_upload(here("Bongo", "tidy_data", "bongo_event.csv"),
+             path = " ",
+             name = "bongo_event.csv",
+             overwrite = TRUE)
+```
+
+Brian's comments regarding the size fractions: _Samples were size fractions. IN some cases the 2mm and 4mm size fractions have been split out to obtain measurements f species. The sum of these measurements is the total size fraction biomass._
+
+The column `Number` indicates how often a species was (en)countered in each specific trawl. Some species have counts that are not a specific number (i.e., >3, >4, ~3 and >1). We assume these species, that have often not been identified to a species level, also have to be included in the list of species present. They are often listed in a column headed `Group`.
+
+All species that are listed as `size fraction` belong to the group "Zooplankton". How can we best represent this group according to OBIS standards?
+
+
+``` {r trawl_occ}
+bongo_sp_wrangle <- bongo %>%
+  mutate(occurrenceStatus = ifelse(number > 0, "present", "absent")) %>% 
+  rename(eventID = sample,
+         scientificName = species) %>%
+  select(eventID, scientificName, occurrenceStatus) %>%
+  # For species that have not been identified to a species level, we can perhaps categorize them these under the lowest common classification (Kingdom, phylum etc). 
+  mutate(occurrenceID = paste("IYS_GoA2019_occ", row_number(),sep = ""),
+    scientificNameID = case_when(
+      scientificName == "Size fraction" ~ " ",
+      scientificName == "Thysanoessa spinifera" ~ "urn:lsid:marinespecies.org:taxname:237874", 
+      scientificName == "Sergestes similis" ~ "urn:lsid:marinespecies.org:taxname:514127",
+      # Accepted name is Eusergestes similis
+      scientificName == "Euphausia pacifica" ~ "urn:lsid:marinespecies.org:taxname:237851",
+      scientificName == "Salpa aspera" ~ "urn:lsid:marinespecies.org:taxname:137270",
+      scientificName == "Copepod" ~ "urn:lsid:marinespecies.org:taxname:1080",
+      # Subclass: Copepoda
+      scientificName == "Neocalanus cristatus" ~ "urn:lsid:marinespecies.org:taxname:104470" ,
+      scientificName == "Cyphocaris" ~ "urn:lsid:marinespecies.org:taxname:101603",
+      scientificName == "Squat lobster" ~ "urn:lsid:marinespecies.org:taxname:106671",
+      # Unsure whether the squat lobster is part of the superfamily Chirostyloidea or Galatheoidea, so the lowest common rank (InfraOrder) of Anomura was chosen. 
+      scientificName == "Siphonophore" ~ "urn:lsid:marinespecies.org:taxname:1371",
+      scientificName == "Chaetognath (Sagitta)" ~ "urn:lsid:marinespecies.org:taxname:5949",
+      # Chaetognatha - class: Sagittoidea
+      scientificName == "Beroe sp." ~ "urn:lsid:marinespecies.org:taxname:1434803",
+      scientificName == "Euphausiid" ~ "urn:lsid:marinespecies.org:taxname:110671",
+      # Family: Euphasiidae
+      scientificName == "Chaetognath & Ctenophore" ~ "urn:lsid:marinespecies.org:taxname:2",
+      # Rank: Kingdom is the lowest common rank of phylum 'chaetognatha and 'ctenophora'
+      scientificName == "Siphonophore (Lensia type)" ~ "urn:lsid:marinespecies.org:taxname:135365",
+      scientificName == "Aequorea sp." ~ "urn:lsid:marinespecies.org:taxname:116998",
+      scientificName == "Jelly mass" ~ " ",
+      scientificName == "Radiolarians" ~ "urn:lsid:marinespecies.org:taxname:582421",
+      # Phylum: Radiozoa
+      scientificName == "Paraphronima (gracilis)" ~ "urn:lsid:marinespecies.org:taxname:236597",
+      scientificName == "Crab zoea" ~ " ",
+      scientificName == "Microstomus pacificus" ~ "urn:lsid:marinespecies.org:taxname:274294",
+      scientificName == "Thysanoessa (longipes)" ~ "urn:lsid:marinespecies.org:taxname:237873",
+      scientificName == "Myctophid larva" ~ "urn:lsid:marinespecies.org:taxname:125498",
+      # Family: Myctophidae
+      scientificName == "Jellyfish, radiolarian, chaetognath" ~ " ",
+      scientificName == "Primno pacifica" ~ "urn:lsid:marinespecies.org:taxname:286539",
+      # Genus: Primnoa
+      scientificName == "Japatella diaphana" ~ "urn:lsid:marinespecies.org:taxname:138849",
+      # Genus: Japetella
+      scientificName == "Gelatinous" ~ " ",
+      scientificName == "Clio pyrimidata" ~ "urn:lsid:marinespecies.org:taxname:139033",
+      # Species: Clio pyramidata
+      scientificName == "Paraeuchaeta sp." ~ "urn:lsid:marinespecies.org:taxname:196874",
+      scientificName == "Thysanoessa sp." ~ "urn:lsid:marinespecies.org:taxname:110679",
+      scientificName == "Gastropod veliger" ~ "urn:lsid:marinespecies.org:taxname:101",
+      # Class: Gastropoda - veliger are the planktonic larvae
+      scientificName == "Tarletonbeania crenularis" ~ "urn:lsid:marinespecies.org:taxname:282927",
+      scientificName == "Limacina helicina" ~ "urn:lsid:marinespecies.org:taxname:140223",
+      scientificName == "Phronima (sedentaria)" ~ "urn:lsid:marinespecies.org:taxname:103272",
+      scientificName == "Hydromedusae" ~ " ",
+      scientificName == "Siphonophore" ~ "urn:lsid:marinespecies.org:taxname:1371",
+      # Order: Siphonophorae
+      scientificName == "Ctenophore / jellyfish" ~ " "
+    )
+  ) %>%
+  mutate(Preparations = bongo$preservation)
+```
+
+``` {r bongo_occ, eval = FALSE}
+bongo_occ <- bongo_sp_wrangle %>% 
+  select(eventID, occurrenceID, scientificName, scientificNameID, occurrenceStatus) %>% 
+  mutate(basisOfRecord = "HumanObservation")
+```
+
+## MeasurementOrFact
+
+The following variables are connected to an occurrenceID in the measurementOrFact (eMoF) table: 
+- Length (mm)
+- Length type?
+- Weight (mg)
+# As there is no Controlled Vocabulary for mg, these values are transformed to 'grams'. 
+
+- Tissue (whole/muscle)
+- Stage (= lifeStage? is all NA)
+- Sample type
+# Perhaps sample type should be included in the Event Core under samplingProtocol? It's not a measurement
+- Sub-sample
+
+Add a section about comments/notes associated to the measurements. 
+
+
+``` {r seafloor, eval = FALSE}
+bongo_botdepth <- bongo %>% 
+  select(eventID = cast, depth) %>%
+  distinct(eventID, .keep_all = TRUE) %>%
+  pivot_longer(cols = depth,
+               names_to = "measurementType",
+               values_to = "measurementValue") %>%
+  mutate(measurementValue = as.character(measurementValue),
+         measurementID = paste(eventID, "depth", sep = ":"),
+         measurementType = recode(measurementType,
+                                  depth = "seafloor depth"),
+         measurementTypeID = "http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/",
+         measurementUnit = "m",
+         measurementUnitID = "http://vocab.nerc.ac.uk/collection/P06/current/ULAA/" ) %>%
+  select(measurementID, eventID, measurementType, measurementTypeID, measurementValue,
+         measurementUnit, measurementUnitID)
+```
+
+Next step is creating the extended measurementOrFact (eMoF) table. From personal communication with the data provider (Brian Hunt) _in some cases the 2mm and 4mm size fractions have been split out to obtain measurements of species. The sum of these measurements is the total size fraction biomass_. Therefore we first have to filter out the measurements that have been split out, and sum these fractions. 
+
+Brian indicated that this was only done for some cases in the 2mm and 4mm size fractions, so the first step is to filter out all entries where the weight has not been determined (TBD), make the weight_mg as numeric, and examine all entries where size_fraction = 2 or 4:
+
+``` {r biomass_wrangling, eval = FALSE}
+bongo_biomass <- bongo[!(bongo$weight_mg == "TBD"),]
+bongo_biomass$weight_mg <- as.numeric(as.character(bongo_biomass$weight_mg))
+bongo_biomass <- bongo_biomass %>% filter(size_fraction %in% c(2, 4))
+```
+
+``` {r eMoF, eval = FALSE}
+bongo_measurement <- bongo %>%
+  select(number, size_fraction, sample_type,
+         length = length_mm,
+         length_type, 
+         weight = weight_mg,
+         tissue, stage) %>%
+  mutate_all(as.character) %>%
+  pivot_longer(cols = number:preservation, 
+               names_to = "measurementType",
+               values_to = "measurementValue") %>%
+  mutate(
+    measurementID = case_when(
+      measurementType == "number" ~ paste(eventID, "number", sep = ":"),
+      measurementType == "size_fraction" ~ paste(eventID, "size_fraction", sep = ":"),
+      measurementType == "sample_type" ~ paste(eventID, "sample_type", sep = ":"),
+      measurementType == "length" ~ paste(eventID, "length", sep = ":"),
+      measurementType == "length_type" ~ paste(eventID, "length_type", sep = ":"),
+      measurementType == "weight" ~ paste(eventID, "weight", sep = ":"),
+      measurementType == "tissue" ~ paste(eventID, "tissue", sep = ":"),
+      measurementType == "stage" ~ paste(eventID, "stage", sep = ":")
+    ),
+    measurementTypeID = case_when(
+      measurementType == "number" ~ " ",
+      measurementType == "size_fraction" ~ " ",
+      measurementType == "sample_type" ~ " ",
+      # samplingProtocol
+      measurementType == "length" ~ "http://vocab.nerc.ac.uk/collection/S06/current/S0600015/"
+      # I want to check if maybe there is a better Controlled Vocab for body size
+      measurementType == "length_type" ~ " ",
+      measurementType == "weight" ~ "	http://vocab.nerc.ac.uk/collection/S06/current/S0600088/",
+      measurementType == "tissue" ~ " ",
+      measurementType == "stage" ~ " "
+    ), 
+    measurementUnit = case_when(
+      measurementType == "length" ~ "mm",
+      measurementType == "weight" ~ "g",
+      measurementType == "size_fraction" ~ "" 
+      # If this is equal to mesh size
+    ), 
+    measurementUnitID = case_when(
+      measurementUnit == "mm" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UXMM/",
+      measurementUnit == "g" ~ "	http://vocab.nerc.ac.uk/collection/P06/current/UGRM/"
+      measurementUnit == " "
+      # Reminder: there is no NERC Controlled Vocabulary for mg, so values are formatted to 'grams'. 
+      # Is size fraction equal to mesh size?
+    )
+    )
+    )
+    
+    
+  ))
+
+```
+
+The sample comments needed to be tidied separately (not part of the above pipe sequence) because they belong in the measurementRemarks column. I need to recreate measurementID so that the two data frames can be joined.
+
+``` {r measurementRemarks, eval = FALSE}
+bongo_measurementRemarks <- bongo %>%
+  select(eventID = sample, notes) %>%
+  pivot_longer(cols = notes, values_to = "measurementRemarks") %>%
+  mutate(measurementID = case_when(
+    name == "notes" ~ paste(eventID, "notes", sep = ":"))) %>%
+  select(measurementID, measurementRemarks)
+
+bongo_measurementOrFact <-
+  bind_rows(bongo_botdepth, bongo_measurement) %>%
+  left_join(bongo_measurementRemarks) %>%
+  select(
+    measurementID,
+    eventID,
+    measurementType,
+    measurementTypeID,
+    measurementValue,
+    measurementUnit,
+    measurementUnitID,
+    measurementRemarks
+```
+
+
+
