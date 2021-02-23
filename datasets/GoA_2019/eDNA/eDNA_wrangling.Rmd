@@ -1,0 +1,180 @@
+---
+title: "eDNA Data Standardization"
+author: "Tim van der Stap"
+date: "1/13/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(lubridate)
+library(fuzzyjoin)
+library(worrms)
+library(obistools)
+library(readxl)
+library(here)
+library(parsedate)
+library(googledrive)
+```
+
+## Getting started
+
+The following line only needs to be run once to download the required data sheets from Google Drive to your computer's hard drive.
+
+```{r drive_download, eval=FALSE}
+# Make sure your folder path exists already (e.g. ./eDNA/raw_data)
+drive_download("https://docs.google.com/spreadsheets/d/1K3N1UICefgU2PpwifsIUiLsWrj5Tasrk9hHd9pCT-94/edit#gid=172817106",                path = here("eDNA", "raw_data", "2020_2019_IYS_GoA_filtered_eDNA_detections.xlsx"), overwrite = TRUE)
+
+drive_download("https://docs.google.com/spreadsheets/d/1E0LGEfksHKebkX2ZcXCXMj-Elm6m-NtGY0SeIOuw-a0/edit#gid=1345125331",
+               path = here("eDNA", "raw_data", "2020_2019_sample_info.xlsx"), overwrite = TRUE)
+
+drive_download("https://docs.google.com/spreadsheets/d/1xm_MIx_y8nsvA8I-7G33RcQ_j7w-Qmm-/edit#gid=168338968",
+               path = here("eDNA", "raw_data", "Bridgelog.xlsx"), overwrite = TRUE)
+```
+
+Read in the dataset from your local drive, and combine the data into one dataframe. The data file `2020_2019_sample_info.xlsx` contains the information as to which station the eDNA was collected at. However, no date, time or coordinates are included, these will likely have to come from the Bridgelog file that we have yet to receive for 2019. Once received, information from that Bridgelog file will be included in the metadata associated to the Event Core of eDNA standardization. 
+
+Let's first sub-set for the eDNA data collected during the 2020 cruise, as we do have the Bridgelog sheet from that expedition, but not from the 2019 expedition. From the eDNA_sample_info datasheet, we can determine that these have been classified under Cruise_program 'IYS_GoA_2020'. Using these unique samples for 2020, subset the relevant columns in the detections datasheet, so that only those relevant to 2020 are selected. 
+
+How to deal with the control (H20) samples in the dataset?
+
+``` {r data wrangle, warning = FALSE}
+eDNA_sample_info <- read_excel(here("eDNA", "raw_data",
+                                    "2020_2019_sample_info.xlsx")) %>% 
+  filter(Cruise_program == "IYS_GoA_2020") %>%
+  mutate(Set = as.numeric(Set)) %>%
+  filter(Set != is.na(Set))
+
+# The following lines are to select the columns from the dataset specific to the 2020 Expedition, by linking it to the unique samples from eDNA_sample_info dataframe. 
+eDNA_detections <- read_excel(here("eDNA", "raw_data", 
+                       "2020_2019_IYS_GoA_filtered_eDNA_detections.xlsx"))
+eDNA_detections_2020 <- select(eDNA_detections, contains(unique(eDNA_sample_info$Sample)))
+eDNA_detections_2020 <- cbind(eDNA_detections$OTU, eDNA_detections_2020)
+names(eDNA_detections_2020)[1] <- "OTU"
+
+# The Event Core will have four 'layers' to which specific metadata will get associated: 'project', 'cruise', 'station' and 'sample':
+eDNA <- eDNA_sample_info %>%
+  mutate(project = "IYS",
+         cruise = paste(project, "GoA2020", sep = ":"),
+         station = paste(cruise, Set, sep = "_Stn"),
+         sample = paste(station, Sample, sep = ":Sample:"))
+
+print(head(eDNA))
+```
+
+## Event Core
+
+In the Event Core we include the metadata information pertaining to the various levels. As no metadata pertaining to the date, time and coordinates of the eDNA sampling are included in the eDNA data (only the station number), we need to include this information from the Bridgelog and match by Sample. I don't have specific coordinates of where the eDNA sample was taken, so the start and end coordinates for the trawl from the Bridgelog have been used. 
+
+``` {r pathogen_event, eval = FALSE}
+eDNA_project <- eDNA %>%
+  select(eventID = project) %>%
+  distinct(eventID)
+
+eDNA_cruise <- eDNA %>% 
+  select(eventID = cruise,
+         parentEventID = project) %>%
+  distinct(eventID, .keep_all = TRUE)
+
+eDNA_station <- eDNA %>%
+  select(eventID = station,
+         parentEventID = cruise) %>% 
+  distinct(eventID, .keep_all = TRUE) 
+
+# Join date and coordinates to the eDNA sampling from the bridgelog data sheet. No precise coordinates related to the eDNA sampling are collected, so the trawl coordinates are used.
+bridgelog <- read_excel(path = here("eDNA", "raw_data", "Bridgelog.xlsx"), sheet = "BRIDGE_LOG_FINAL") %>%
+  select(SET_NUMBER, EVENT_DATE, START_LAT_DECDEGREE, START_LONG_DECDEGREE, END_LAT_DECDEGREE, END_LONG_DECDEGREE) %>%
+  rename(Set = SET_NUMBER)
+
+eDNA_sample <- left_join(eDNA, bridgelog, by = "Set") %>%
+  rename(eventID = sample,
+         parentEventID = station,
+         eventDate = EVENT_DATE) %>%
+  mutate(footprintWKT = paste("LINESTRING (", START_LONG_DECDEGREE, START_LAT_DECDEGREE, ",", 
+                              END_LONG_DECDEGREE, END_LAT_DECDEGREE, ")")) %>%
+  filter(!is.na(END_LAT_DECDEGREE)) 
+  # Station 20 needs end lat and long included - this issue needs to be resolved. 
+
+eDNA_coordinates <- obistools::calculate_centroid(eDNA_sample$footprintWKT)
+eDNA_sample <- cbind(eDNA_sample, eDNA_coordinates) %>%
+  select(eventID,
+         parentEventID,
+         eventDate,
+         decimalLatitude,
+         decimalLongitude,
+         footprintWKT,
+         coordinateUncertaintyInMeters) %>%
+  distinct(eventID, .keep_all = TRUE) %>%
+  mutate(minimumDepthInMeters = " ",
+         maximumDepthInMeters = " ",
+         year = as.numeric(format(as.Date(eDNA_sample$eventDate), "%Y")),
+         month = as.numeric(format(as.Date(eDNA_sample$eventDate), "%m")),
+         day = as.numeric(format(as.Date(eDNA_sample$eventDate), "%d")))
+
+# To connect them all together: 
+eDNA_event <- bind_rows(eDNA_project,
+                        eDNA_cruise,
+                        eDNA_station,
+                        eDNA_sample)
+
+# Make sure the folder path exists already (e.g. ./eDNA/tidy_data)
+write_csv(eDNA_event, here("eDNA", "tidy_data", "edna_event.csv"))
+drive_upload(here("eDNA", "tidy_data", "edna_event.csv"),
+             path = "https://drive.google.com/drive/u/0/folders/1uofTO34XpWiSHf7WzSdefY83uyrwjie2",
+             name = "edna_event.csv",
+             overwrite = TRUE)
+```
+
+***
+## Occurrence extension
+
+In the dataset `eDNA_detections`, the column OTU (Operational Taxonomic Units) lists all the species (taxa) observed or tested for. The values in the columns indicate the reads in the library assigned to the appropriate OTU. Reads >= 10 indicates a positive detection (`occurrenceStatus` = present), whereas reads = 0 indicates absence (`occurrenceStatus` = absent). However, data users will have to determine whether this constitutes true species' absence, based on target gene used. 
+
+``` {r eDNA_occ, eval = FALSE}
+eDNA_taxa_2020 <- pivot_longer(eDNA_detections_2020,
+                               cols = `16S_Ceph_W1747`:`COI_W2079`,
+                               names_to = "strings",
+                               values_to = "reads")
+
+# Connect the dataframe to station number (Set) from the eDNA_sample_info dataframe. The strings in the 'strings' column only partially match the string under 'sample' in the eDNA_sample_info dataframe, so use the fuzzyjoin package. We connect these two dataframes because at later stage we want to use that information to construct the unique occurrenceIDs. 
+eDNA_taxa_2020 <- eDNA_taxa_2020 %>% fuzzyjoin::fuzzy_left_join(eDNA_sample_info, by = c("strings" = "Sample"),
+                                                    match_fun = str_detect) %>%
+  rename(scientificname = OTU)
+
+eDNA_taxa <- worrms::wm_records_names(unique(eDNA_taxa_2020$scientificname)) %>% dplyr::bind_rows()
+
+# Use left_join to see for which records WoRMS has an entry in their database:
+match <- left_join(eDNA_taxa_2020, eDNA_taxa, by = "scientificname")
+no_match <- match %>% filter(is.na(AphiaID)) %>% distinct(scientificname)
+
+# Upon manual inspection, there are 29 "taxa" for which no record exists in the WoRMS registry, or whose observation will have to be confirmed with the data provider. Once this is done the information will either have to be entered manually or if new records created in WoRMS, the code can be run again. 
+
+eDNA_occ_2020 <- match %>%
+  mutate(project = "IYS",
+         cruise = paste(project, "GoA2020", sep = ":"),
+         station = paste(cruise, Set, sep = "_Stn"),
+         sample = paste(station, Sample, sep = ":Sample:")) %>%
+  dplyr::rename(scientificNameID = lsid,
+                eventID = sample,
+                scientificName = scientificname,
+                taxonRank = rank,
+                taxonomicStatus = status,
+                scientificNameAuthorship = authority) %>%
+  mutate(occurrenceStatus = ifelse(reads > 0, "present", "absent"),
+         occurrenceID = paste(eventID, "edna-occ", sep = ":"),
+         occurrenceID = paste(occurrenceID, row_number(), sep = "-")) %>%
+  select(eventID, occurrenceID, scientificName, scientificNameID, occurrenceStatus, parentNameUsageID,
+         taxonomicStatus, scientificNameAuthorship, kingdom, phylum, class, order, family, genus, taxonRank)              
+```
+
+Finally, save the Occurrence Core locally and on Google Drive: 
+
+``` {r save_occ, eval = FALSE}
+# Make sure the folder path exists already (e.g. ./eDNA/tidy_data)
+write_csv(eDNA_occ_2020, here("eDNA", "tidy_data", "eDNA_occ.csv"))
+drive_upload(here("eDNA", "tidy_data", "eDNA_occ.csv"),
+             path = " ",
+             name = "eDNA_occ_2020.csv",
+             overwrite = TRUE)
+```
