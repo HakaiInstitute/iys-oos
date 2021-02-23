@@ -336,6 +336,7 @@ trawl_bottomdepth <- trawl2020 %>%
            measurementType == "bottom_depth_at_30_min" ~ "http://vocab.nerc.ac.uk/collection/P07/current/CFSN0481/",
            measurementType == "bottom_depth_at_45_min" ~ "http://vocab.nerc.ac.uk/collection/P07/current/CFSN0481/",
            measurementType == "bottom_depth_at_end" ~ "http://vocab.nerc.ac.uk/collection/P07/current/CFSN0481/"),
+         # Perhaps this is better: http://vocab.nerc.ac.uk/collection/A05/current/EV_BATHY/
          measurementUnit = case_when(
            measurementType == "bottom_depth_at_15_min" ~ "meters",
            measurementType == "bottom_depth_at_30_min" ~ "meters",
@@ -422,7 +423,64 @@ And chunk of code to assign sampling instrument measurements/facts:
 
 ```{r samplingInstrument, eval = FALSE}
 samplingInstrument <- trawl2020 %>%
-  select()
+  select(eventID = trawl,
+         GEAR,
+         `NET OPENING WIDTH (M) - Wing tips`,
+         `NET OPENING WIDTH (M) - Wing tips - 30 min`,
+         `NET OPENING WIDTH (M) - Wing tips - 45 min`,
+         `NET OPENING WIDTH (M) - Wing tips - END`,
+         `NET OPENING WIDTH (M) - Doors`,
+         `NET OPENING WIDTH (M) - Doors - 30 min`,
+         `NET OPENING WIDTH (M) - Doors - 45 min`,
+         `NET OPENING WIDTH (M) - Doors - END`,
+         `NET OPENING DEPTH (metres) - 15 min`,
+         `NET OPENING DEPTH (metres) - 30 min`,
+         `NET OPENING DEPTH (metres) - 45 min`,
+         `NET OPENING DEPTH (metres) - END`) %>%
+  mutate_all(as.character) %>%
+  pivot_longer(cols = `GEAR`:`NET OPENING DEPTH (metres) - END`,
+               names_to = "measurementType",
+               values_to = "measurementValue") %>%
+  mutate(measurementType = recode(measurementType,
+         GEAR = "sampling_gear",
+         `NET OPENING WIDTH (M) - Wing tips` = "net_opening_width_wings",
+         `NET OPENING WIDTH (M) - Wing tips - 30 min` = "net_opening_width_wings_30_min",
+         `NET OPENING WIDTH (M) - Wing tips - 45 min` = "net_opening_width_wings_45_min",
+         `NET OPENING WIDTH (M) - Wing tips - END` = "net_opening_width_wings_end",
+         `NET OPENING WIDTH (M) - Doors` = "net_opening_width_doors",
+         `NET OPENING WIDTH (M) - Doors - 30 min` = "net_opening_width_doors_30_min",
+         `NET OPENING WIDTH (M) - Doors - 45 min` = "net_opening_width_doors_45_min",
+         `NET OPENING WIDTH (M) - Doors - END` = "net_opening_width_doors_end",
+         `NET OPENING DEPTH (metres) - 15 min` = "net_opening_depth_15_min",
+         `NET OPENING DEPTH (metres) - 30 min` = "net_opening_depth_30_min",
+         `NET OPENING DEPTH (metres) - 45 min` = "net_opening_depth_45_min",
+         `NET OPENING DEPTH (metres) - END` = "net_opening_depth_end"),
+         measurementTypeID = case_when(
+           measurementType == "sampling_gear" ~ "http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/",
+           measurementType == "net_opening_width_wings" ~ " ",
+           measurementType == "net_opening_width_wings_30_min" ~ " ",
+           measurementType == "net_opening_width_wings_45_min" ~ " ",
+           measurementType == "net_opening_width_wings_end" ~ " ",
+           measurementType == "net_opening_width_doors" ~ "http://vocab.nerc.ac.uk/collection/Q01/current/Q0100014/",
+           measurementType == "net_opening_width_doors_30_min" ~ "http://vocab.nerc.ac.uk/collection/Q01/current/Q0100014/",
+           measurementType == "net_opening_width_doors_45_min" ~ "http://vocab.nerc.ac.uk/collection/Q01/current/Q0100014/",
+           measurementType == "net_opening_width_doors_end" ~ "http://vocab.nerc.ac.uk/collection/Q01/current/Q0100014/",
+           measurementType == "net_opening_depth_15_min" ~ "http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/",
+           measurementType == "net_opening_depth_30_min" ~ "http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/",
+           measurementType == "net_opening_depth_45_min" ~ "http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/",
+           measurementType == "net_opening_depth_end" ~ "http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/"),
+         measurementUnit = case_when(
+           measurementType != "sampling_gear" ~ "meters"),
+         measurementUnitID = case_when(
+           measurementUnit == "meters" ~ "http://vocab.nerc.ac.uk/collection/P06/current/ULAA/"),
+         measurementValueID = case_when(
+           measurementType == "sampling_gear" ~ " "),
+         measurementID = paste(eventID, measurementType, sep = ":")) %>%
+  select(eventID, measurementID, measurementType, measurementTypeID, measurementValue, measurementValueID,
+         measurementUnit, measurementUnitID)
+
+# Save the occurrence Core locally and in Google Drive:
+write_csv(samplingInstrument, here("Trawl", "tidy_data", "trawl2020_samplingInstrument_emof.csv"))
 ```
 
 And a chunk of code to assign environmental conditions during the trawl:
@@ -433,6 +491,10 @@ trawl_conditions <- trawl2020 %>%
          `WAVE HEIGHT (m)`,
          `SWELL HEIGHT (m)`, 
          `SEA STATE DESCRIPTION`,
+         `TEMPERATURE @ NET (oC) - 15 min`,
+         `TEMPERATURE @ NET (oC) - 30 min`,
+         `TEMPERATURE @ NET (oC) - 45 min`,
+         `TEMPERATURE @ NET (oC) - END`,
          `WIND DIRECTION (degrees)`,
          `WIND SPEED (knots)`,
          `CLOUD/WEATHER`) %>%
@@ -444,13 +506,21 @@ trawl_conditions <- trawl2020 %>%
                                   `WAVE HEIGHT (m)` = "wave_height",
                                   `SWELL HEIGHT (m)` = "swell_height",
                                   `SEA STATE DESCRIPTION` = "sea_state_description",
+                                  `TEMPERATURE @ NET - 15 min` = "temperature_at_net_15_min",
+                                  `TEMPERATURE @ NET - 30 min` = "temperature_at_net_30_min",
+                                  `TEMPERATURE @ NET - 45 min` = "temperature_at_net_45_min",
+                                  `TEMPERATURE @ NET - END` = "temperature_at_net_end",
                                   `WIND DIRECTION (degrees)` = "wind_direction",
                                   `WIND SPEED (knots)` = "wind_speed",
                                   `CLOUD/WEATHER` = "weather_description"),
          measurementTypeID = case_when(
            measurementType == "wave_height" ~ "http://vocab.nerc.ac.uk/collection/P07/current/JNQS0CMX/",
            measurementType == "swell_height" ~ "http://vocab.nerc.ac.uk/collection/P09/current/SWHT/",
-           measurementType == "sea_state_description" ~ " ",
+           measurementType == "sea_state_description" ~ " "
+           measurementType == "temperature_at_net_15_min" ~ " ",
+           measurementType == "temperature_at_net_30_min" ~ " ",
+           measurementType == "temperature_at_net_45_min" ~ " ",
+           measurementType == "temperature_at_net_end" ~ " ",
            measurementType == "wind_direction" ~ "http://vocab.nerc.ac.uk/collection/B39/current/relwinddir/",
            measurementType == "wind_speed" ~ "http://vocab.nerc.ac.uk/collection/P07/current/CFSN0038/",
            measurementType == "weather_description" ~ " "),
@@ -458,11 +528,16 @@ trawl_conditions <- trawl2020 %>%
            measurementType == "wave_height" ~ "meters",
            measurementType == "swell_height" ~ "meters",
            measurementType == "wind_direction" ~ "degrees",
-           measurementType == "wind_speed" ~ "knots",),
+           measurementType == "wind_speed" ~ "knots",
+           measurementType == "temperature_at_net_15_min" ~ "degrees celsius",
+           measurementType == "temperature_at_net_30_min" ~ "degrees celsius",
+           measurementType == "temperature_at_net_45_min" ~ "degrees celsius",
+           measurementType == "temperature_at_net_end" ~ "degrees celsius"),
          measurementUnitID = case_when(
            measurementUnit == "meters" ~ "http://vocab.nerc.ac.uk/collection/P06/current/ULAA/",
            measurementUnit == "degrees" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UAAA/",
-           measurementUnit == "knots" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UKNT/"
+           measurementUnit == "knots" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UKNT/",
+           measurementUnit == "degrees celsius" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UPAA/"
          ),
          measurementValueID = NA,
          measurementID = paste(eventID, measurementType, sep = ":")) %>% 
@@ -473,8 +548,7 @@ trawl_conditions <- trawl2020 %>%
 write_csv(trawl_conditions, here("Trawl", "tidy_data", "trawl2020_conditions_emof.csv"))
 ```
 
-
-
+Next two eMOF extensions are created with measurements pertaining to overall species' catch weight at each trawl, and individual length and weight measurements.
 
 ```{r eMoF}
 trawl2020_allcatch_emof <- trawl2020_occ %>%
@@ -555,6 +629,9 @@ Combine the two extended measurementOrFact extensions into a single eMOF extensi
 
 ``` {r}
 trawl2020_eMOF <- dplyr::bind_rows(trawl2020_allcatch_emof, trawl2020_ind_emof)
+
+# To combine all the extensions, use: 
+# trawl2020_all_emofs <- dplyr::bind_rows(trawl_bottomdepth, samplingEffort, samplingInstrument, trawl_conditions, trawl2020_allcatch_emof, trawl2020_ind_emof)
 
 write_csv(trawl2020_eMOF, here("Trawl", "tidy_data", "trawl_eMOF.csv"))
 drive_upload(here("Trawl", "tidy_data", "trawl_emof.csv"),
