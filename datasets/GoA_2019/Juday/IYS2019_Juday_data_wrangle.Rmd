@@ -1,0 +1,222 @@
+---
+title: "Juday Zooplankton Data Wrangle"
+author: "Tim van der Stap"
+date: "1/16/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(lubridate)
+library(worrms)
+library(obistools)
+library(readxl)
+library(here)
+library(parsedate)
+library(googledrive)
+```
+
+## Getting started
+
+The following line only needs to be run once to download the required data sheets from Google Drive to your computer's hard drive.  
+
+```{r drive_download}
+# Make sure your folder path exists already (e.g. ./Pathogen/raw_data)
+drive_download("https://docs.google.com/spreadsheets/d/10uFwuEdAWdg9V0pCYFbPGJd3J_MunYnb/edit#gid=983563948",                path = here("Juday", "raw_data", "Juday Net Zoopl Data 2019.xlsx"), overwrite = TRUE)
+
+drive_download("https://docs.google.com/spreadsheets/d/1EsvzXqBuFQo4_ne4i0NejXEkp9BkX4uG/edit#gid=515378096",
+               path = here("Juday", "raw_data", "Juday Summary Data 2019.xlsx"), overwrite = TRUE)
+```
+
+These files contain [and this needs to be confirmed!] the finalized data for the zooplankton collected during the 2019 IYS Expedition. The `Juday Net Zoopl Data 2019.xlsx` file contains the raw data in different sheets, though the information is presented in Russian. The other file, `Summary of corrected zooplankton biomass.xlsx` contains the summarized biomass for different size classes. This file is in English. Initially what I will attempt is create a working (provisional) file of the summarized data (`Juday Summary Data 2019_WF.xlsx`), as this will also include information relevant to the Event Core (date, time, coordinates, sampling depth etc). All changes from the original summarized file to the working file with be recorded in the `Juday_Changelog.Rmd` file. 
+
+This .Rmd file will include, at minimum, 6 chunks of code, as I'll be creating an Event, Occurrence and eMOF core for both the summarized and the raw data (once it's translated).
+
+``` {r zoopl_juday, eval = FALSE}
+juday <- read_excel(here("Juday", "raw_data", "Juday Summary Data 2019_WF.xlsx")) %>%
+  mutate(Date = paste(Year, Month, Day, sep = "-")) %>%
+  mutate(Time = format(Time, "%H:%M:%S"),
+         eventDate = format_iso_8601(as.POSIXct(paste(Date, Time),
+                                                format = "%Y-%m-%d %H:%M:%S",
+                                                tz = "Asia/Kamchatka")),
+         eventDate = str_replace(eventDate, "\\+00:00", "Z")) %>%
+  mutate(project = "IYS",
+         cruise = paste(project, "GoA2019", sep = ":"),
+         station = paste(cruise, `GoA survey Station Number`, sep = "_Stn"),
+         cast = paste(station, "juday", sep = ":")) 
+
+juday$year <- as.numeric(format(as.Date(juday$eventDate), "%Y"))
+juday$month <- as.numeric(format(as.Date(juday$eventDate), "%m"))
+juday$day <- as.numeric(format(as.Date(juday$eventDate), "%d"))
+```
+
+## Create the Event core - Summarized Juday data
+
+In the Event Core we include the different metadata information pertaining to the various levels. We need to ensure that the longitude falls within the range of -180 to 180 (inclusive). The `Sampling layer` column reflects the depth at which the samples were taken. 
+
+``` {r pathogen_event, eval = FALSE}
+juday_project <- juday %>%
+  select(eventID = project) %>%
+  distinct(eventID)
+
+juday_cruise <- juday %>% 
+  select(eventID = cruise,
+         parentEventID = project) %>%
+  distinct(eventID, .keep_all = TRUE)
+
+juday_station <- juday %>%
+  select(eventID = station,
+         parentEventID = cruise) %>% 
+  distinct(eventID, .keep_all = TRUE) 
+
+juday_cast <- juday %>%
+  select(eventID = cast,
+         parentEventID = station,
+         eventDate,
+         year,
+         month,
+         day,
+         decimalLatitude = Latitude,
+         decimalLongitude = Longitude,
+         minimumDepthInMeters = `Sampling layer`,
+         maximumDepthInMeters = `Sampling layer`) %>%
+  mutate(decimalLongitude = decimalLongitude - 360) %>%
+  distinct(eventID, .keep_all = TRUE) 
+
+# To connect them all together: 
+juday_event_summary <- bind_rows(juday_project,
+                                 juday_cruise,
+                                 juday_station,
+                                 juday_cast) %>%
+  mutate(type = "PreservedSpecimen")
+
+# Make sure the folder path exists already (e.g. ./Salmon Diet/tidy_data)
+write_csv(juday_event_summary, here("Juday", "tidy_data", "juday_event_summary.csv"))
+```
+
+## Occurrence Core Summarized Juday Data
+
+The Occurrence Core for the summarized Juday Zooplankton data collected during the 2019 IYS High Seas Expedition will include the taxonomic hierarchic information pertaining to the 6 zooplankton groups identified. For this to happen the table will first have to be pivoted to a long format, and filtered for those occurrences where the species or genus was identified in the Juday net.   
+
+Species that can not be identified or that are not registered in the WoRMS database are removed and not included in the Occurrence Core. Measurements pertaining to these observations will be linked directly to the `EventID` (see eMOF). 
+
+``` {r summary_juday_occ, eval = FALSE}
+juday_summary_occ <- juday %>%
+  select(cast,
+         Copepoda:Others) %>%
+  pivot_longer(Copepoda:Others,
+               names_to = "scientificname",
+               values_to = "biomass")
+
+unique_taxa <- unique(juday_summary_occ$scientificname)
+worms_check <- obistools::match_taxa(unique_taxa)
+
+# An initial check through the WoRMS database indicates that there is no record of 'Hydromedusa' in that registry. Hydromedusa(e) are the medusa lifestage of the species Hydrozoa. Therefore, in the unique_taxa dataframe the records of Hydromedusa are replaced with Hydrozoa, and at a later stage medusa are added as a lifeStage in the Occurrence Core. Make sure the record is also replaced in the juday_summary_occ dataframe as we'll be joining the two dataframes together by scientificname. The species listed as 'other' will not have a scientificname associated with it, and are therefore removed for the Occurrence Core. Biomass measurements will be linked to the Event Core. 
+
+# To do: Confirm with data providers that Hydromedusae are Hydrozoa. 
+
+juday_summary_occ<-  juday_summary_occ %>%
+  mutate(lifeStage = case_when(
+    scientificname == "Hydromedusa" ~ "Hydromedusae"))
+juday_summary_occ$scientificname <- gsub("Hydromedusa", "Hydrozoa", juday_summary_occ$scientificname)
+juday_summary_occ <- juday_summary_occ[!grepl("Others", juday_summary_occ$scientificname),]
+
+juday_scientificnames <- worrms::wm_records_names(unique(juday_summary_occ$scientificname)) %>% dplyr::bind_rows() 
+
+IYS2019_juday_occ <- left_join(juday_summary_occ, juday_scientificnames, by = "scientificname") %>%
+  filter(biomass > 0) %>%
+  rename(eventID = cast) %>%
+  mutate(occurrenceStatus = "present",
+         occurrenceID = paste(eventID, "jocc", row_number(), sep = ":"))
+
+Juday_occ <- IYS2019_juday_occ %>%
+  rename(scientificName = scientificname,
+         scientificNameID = lsid,
+         taxonomicStatus = status,
+         taxonRank = rank,
+         scientificNameAuthorship = authority) %>%
+  select(eventID, scientificName, scientificNameID, scientificNameAuthorship,
+         taxonomicStatus, taxonRank, parentNameUsageID, kingdom, phylum, class, order, family, genus, lifeStage)
+
+# Make sure the folder path exists already (e.g. ./Salmon Diet/tidy_data)
+write_csv(Juday_occ, here("Juday", "tidy_data", "juday_occ_summary.csv"))
+```
+
+## extended Measurement or Fact Core Summarized Juday Data
+
+In the follow chunk of code we add the measurements (biomass wet weight) associated to the different zooplankton groups (occurrenceID) and separated between different size classes. Additionally, measurements or facts related to the sampling (water volume sampled, bottom depth etc) are added also, but linked to the relevant eventID rather than occurrenceID. The values are the biomass of zooplankton (wet weight) per cubic metre (m-3). 
+
+However, in the data there are multiple columns that contain aggregated data (i.e. not data specific to a listed occurrence), or measurements for observations where no species could be identified. Therefore these measurements need to be linked to the `eventID`. Therefore we'll create two eMOF tables, one with measurements linked to `eventIDs` and the other measurements linked to an `occurrenceID`. These eMOF tables will be joined into a single eMOF Core. 
+
+``` {r summary_juday_emof, eval = FALSE}
+# First create a table with measurements related to the bottomdepth at sampling location. 
+juday_bottomdepth <- juday %>%
+  select(eventID = cast, 
+         `Station depth`) %>%
+  distinct(eventID, .keep_all = TRUE) %>%
+  mutate_all(as.character) %>%
+  rename(measurementValue = `Station depth`) %>%
+  mutate(measurementID = paste(eventID, "depth", sep = ":"),
+         measurementType = "seafloor depth",
+         measurementTypeID = "http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/",
+         measurementUnit = "m",
+         measurementUnitID = "http://vocab.nerc.ac.uk/collection/P06/current/ULAA/") %>%
+  select(measurementID, measurementType, measurementTypeID, measurementValue, 
+         measurementUnit, measurementUnitID)
+
+# As the measurements include biomass (wet weight) per volume, we need to provide the sampling effort (water volume filtered) and other facts related to the sampling instrument and method (mesh size, speed of tow etc). 
+juday_sampling <- ...
+
+# Lets first create the measurement table for aggregated columns and unidentified species
+juday_summary_emof <- juday %>%
+  select(cast,
+         `Biomass_0.1-0.5 mm`:`Biomass_>1.2 mm`,
+         Others) %>%
+  pivot_longer(cols = `Biomass_0.1-0.5 mm`:Others,
+               values_to = "measurementValue") %>%
+  filter(measurementValue > 0) %>%
+  mutate(measurementUnit = "mg/m^3",
+         measurementUnitID = "http://vocab.nerc.ac.uk/collection/P06/current/UMMC/",
+         measurementTypeID = "http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/",
+         measurementID = case_when(
+           name == "Others" ~ paste(cast, "biomass:others", sep = "-"),
+           name == "Biomass_0.1-0.5 mm" ~ paste(cast, "biomass:0.1-0.5 mm", sep = "-"),
+           name == "Biomass_0.5-1.2 mm" ~ paste(cast, "biomass:0.5-1.2 mm", sep = "-"),
+           name == "Biomass_>1.2 mm" ~ paste(cast, "biomass:>1.2 mm", sep = "-")
+         ),
+         measurementType = case_when(
+           name == "Others" ~ "Zooplankton (unidentified species) biomass",
+           name == "Biomass_0.1-0.5 mm" ~ "Zooplankton biomass size class 0.1-0.5 mm",
+           name == "Biomass_0.5-1.2 mm" ~ "Zooplankton biomass size class 0.5-1.2 mm",
+           name == "Biomass_>1.2 mm" ~ "Zooplankton biomass size class >1.2 mm"
+         )) %>%
+  select(measurementID, measurementType, measurementTypeID,
+         measurementValue, measurementUnit, measurementUnitID)
+
+# Next, create a measurement table for biomass measumrents related to specific zooplankton groups:
+juday_emof_spp <- IYS2019_juday_occ %>%
+  select(occurrenceID, 
+         biomass) %>%
+  rename(measurementValue = biomass) %>%
+  mutate(measurementType = "biomass",
+         measurementTypeID = "http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/",
+         measurementID = paste(occurrenceID, measurementType, sep = "-"),
+         measurementUnit = "mg/m^3",
+         measurementUnitID = "http://vocab.nerc.ac.uk/collection/P06/current/UMMC/") %>%
+  select(measurementID, measurementType, measurementTypeID,
+         measurementValue, measurementUnit, measurementUnitID)
+
+# Combine the two extended measurement or fact tables into a single core, re-order if preferred and save locally:
+juday2019_emof <- rbind(juday_bottomdepth, juday_sampling, juday_summary_emof, juday_emof_spp)
+
+order <- stringr::str_sort(juday2019_emof$measurementID)
+juday2019_emof <- juday2019_emof[match(order, juday2019_emof$measurementID),]
+
+# Make sure the folder path exists already (e.g. ./Juday/tidy_data)
+write_csv(juday2019_emof, here("Juday", "tidy_data", "juday_emof_summary.csv"))
+```
+
+
+
+
