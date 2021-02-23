@@ -307,11 +307,13 @@ obistools::plot_map_leaflet(trawl2020_event_occ) # Issue: Station 20 does not ha
 all(unique_trawl_species == unique(trawl2020_occ$scientificName)) # Answer should be TRUE
 ```
 
+***
+
 ## Extended MeasurementOrFact Extension
 
 We create a few measurements or fact tables initially - one for the measurements pertaining to the overall catch (catch_weight), and one with the measurements pertaining to selected individuals (individual length and weight). These tables will eventually be merged into the measurement or fact extension. 
 
-Additionally, we need to create eMOF tables with measurements pertaining to the sampling event: trawl speed, etc. These come from the `trawl2020` dataset. Variables in the samplingEffort category are tow_speed, tow_duration, tow_distance and tow_direction. There is also data collected on bottom depth, every 15 minutes:
+Additionally, we need to create eMOF tables with measurements pertaining to the sampling event: trawl speed, etc. These come from the `trawl2020` dataset. Variables in the samplingEffort category are tow_speed, tow_duration, tow_distance and tow_direction. There is also data collected on bottom depth, every 15 minutes. We save these tables separatedly, and also combine them to form one final eMOF extension. Through the IPT, multiple eMOF extensions can be uploaded if preferred. 
 
 ```{r bottomdepth, eval = FALSE}
 trawl_bottomdepth <- trawl2020 %>%
@@ -345,6 +347,9 @@ trawl_bottomdepth <- trawl2020 %>%
          measurementID = paste(eventID, measurementType, sep = ":")) %>%
   select(eventID, measurementID, measurementType, measurementTypeID, measurementValue, measurementValueID,
          measurementUnit, measurementUnitID)
+
+# Save the bottom depth extension locally:
+write_csv(trawl_bottomdepth, here("Trawl", "tidy_data", "trawl2020_bottomdepth_emof.csv"))
 ```
 
 Measurements pertaining to the sampling effort: 
@@ -408,6 +413,9 @@ samplingEffort <- trawl2020 %>%
          ) %>%
   select(eventID, measurementID, measurementType, measurementTypeID, measurementValue, measurementValueID,
          measurementUnit, measurementUnitID)
+
+# Save the occurrence Core locally and in Google Drive:
+write_csv(samplingEffort, here("Trawl", "tidy_data", "trawl2020_samplingEffort_emof.csv"))
 ```
 
 And chunk of code to assign sampling instrument measurements/facts:
@@ -460,6 +468,9 @@ trawl_conditions <- trawl2020 %>%
          measurementID = paste(eventID, measurementType, sep = ":")) %>% 
   select(eventID, measurementID, measurementType, measurementTypeID, measurementValue, measurementValueID,
          measurementUnit, measurementUnitID)
+
+# Save the occurrence Core locally and in Google Drive:
+write_csv(trawl_conditions, here("Trawl", "tidy_data", "trawl2020_conditions_emof.csv"))
 ```
 
 
