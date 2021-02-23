@@ -1,0 +1,275 @@
+---
+title: "Pathogen Data wrangle"
+author: "Tim van der Stap"
+date: "8/26/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(lubridate)
+library(taxizesoap)
+library(obistools)
+library(readxl)
+library(here)
+library(parsedate)
+library(googledrive)
+```
+
+## Getting started
+
+The following line only needs to be run once to download the required data sheets from Google Drive to your computer's hard drive.
+
+```{r drive_download}
+# Make sure your folder path exists already (e.g. ./Pathogen/raw_data)
+drive_download("https://docs.google.com/spreadsheets/d/1C0SQXMguIWBCRWQZcStE0nz4LLPd5ljUlqZsvhli6x0/edit#gid=2047605249",                path = here("Pathogen", "raw_data", "Pathogens_IYS_GoA_2019.xlsx"), overwrite = TRUE)
+
+drive_download("https://docs.google.com/spreadsheets/d/1kOtcCcvjk7N2pAuJNKZjvhR35v209kVrZTTgsx-aWQw/edit#gid=929610966",
+               path = here("Pathogen", "raw_data", "Pathogen_info.xlsx"), overwrite = TRUE)
+
+drive_download("https://docs.google.com/spreadsheets/d/1mhvdnETRNwaDEgvRoxYl8HKLuvqjCOLHJsiKZqNCr_4/edit#gid=925605785",
+               path = here("Pathogen", "raw_data", "Sample_info_IYS_GoA_2019_Fish_Health.xlsx"), overwrite = TRUE)
+```
+
+No metadata is mentioned in the Pathogen data as to when and where the salmon were caught (i.e. when trawls took place). To connect the coordinates and time to the eventIDs, this information is taken from the trawl datasheet. Right now I am saving both these files in the Pathogen folder, but once all folders and scripts have been QC'd the location/time can be read straight from the Trawl-specific folder. For now, I'm afraid it would cause confusion when committing/pushing to GitHub. 
+
+``` {r salmon_datetime, eval = FALSE}
+drive_download(file = "https://docs.google.com/spreadsheets/d/1rtT6L5WSi_UiiXfoS95wnDqA8loc959T/edit#gid=668595086", 
+               path = here::here("Pathogen", "raw_data", 
+                                 "2019_GoA_Fish_data_Hakai.xlsx"),
+               overwrite = TRUE)
+
+trawl <- read_excel(here("Pathogen", "raw_data", "2019_GoA_Fish_data_Hakai.xlsx")) %>%
+  mutate(eventDate = format_iso_8601(as.POSIXct(UTC_start)),
+         eventDate = str_replace(eventDate, "\\+00:00", "Z")) %>%
+  mutate(station = paste("GoA2019", NUMBER, sep = "_Stn"))
+```
+
+**Please note that the date and coordinates could change as the trawl data is not finalized.** 
+
+Read in the dataset from your local drive, and combine the data into one dataframe. The data file `Pathogen_info.xlsx` expands on the abbreviations used in the pathogen data file, and will be joined in at a later stage.  
+
+``` {r data wrangle, eval = FALSE}
+pathogen_names <- read_excel(here("Pathogen", "raw_data", 
+                       "Pathogen_info.xlsx"))
+pathogen_floytag <- read_excel(here("Pathogen", "raw_data",
+                                    "Sample_info_IYS_GoA_2019_Fish_Health.xlsx"))
+pathogen_data <- read_excel(here("Pathogen", "raw_data",
+                                 "Pathogens_IYS_GoA_2019.xlsx"))
+
+pathogen <- left_join(pathogen_floytag, pathogen_data, by = "Sample") %>%
+  mutate(project = "IYS",
+         cruise = paste(project, "GoA2019", sep = ":"),
+         station = paste(cruise, Set, sep = "_Stn"),
+         trawl = paste(station, "trawl", sep = ":")
+  )
+
+# Download and read in metadata pertaining to the trawl, and select relevant columns (i.e. floytag, coordinates, date, time, sampling depth, etc)
+```
+
+## Create the Event core
+
+In the Event Core we include the different metadata information pertaining to the various levels. As no metadata pertaining to the date, time and coordinates of the trawl are included in the pathogen data, we need to include this information from the general trawl data and match by Sample. 
+
+``` {r pathogen_event, eval = FALSE}
+pathogen_project <- pathogen %>%
+  select(eventID = project) %>%
+  distinct(eventID)
+
+pathogen_cruise <- pathogen %>% 
+  select(eventID = cruise,
+         parentEventID = project) %>%
+  distinct(eventID, .keep_all = TRUE)
+
+pathogen_station <- pathogen %>%
+  select(eventID = station,
+         parentEventID = cruise) %>% 
+  distinct(eventID, .keep_all = TRUE) 
+
+# Join date and coordinates to trawl. Remember that the date and coordinates are not from the Pathogen data sheet, but from the trawl data sheet. Minimum and maximum depth of the trawl be included here as well if the information becomes available. 
+pathogen_trawl <- salmon %>%
+  left_join(select(
+    trawl,
+    station,
+    UTC_start,
+    X,
+    Y
+  )) %>%
+  select(eventID = trawl,
+         parentEventID = station,
+         eventDate = UTC_start,
+         decimalLatitude = Y,
+         decimalLongitude = X) %>%
+  distinct(eventID, .keep_all = TRUE) 
+
+# The Pathogen data does not include information as to at what depths the trawls were conducted. This information will have to come from the general Trawl data. Should this information become available it should be connected to the general trawl information, along with info such as: speed at which the vessel was traveling during trawl, starting & finish lat/longs of trawl.
+
+# To connect them all together: 
+pathogen_event <- bind_rows(pathogen_project,
+                            pathogen_cruise,
+                            pathogen_station,
+                            pathogen_trawl) %>%
+  select(eventID, parentEventID:decimalLongitude) %>%
+  mutate(type = "PreservedSpecimen")
+
+# Make sure the folder path exists already (e.g. ./Salmon Diet/tidy_data)
+write_csv(salmon_event, here("Pathogen", "tidy_data", "pathogen_event.csv"))
+drive_upload(here("Pathogen", "tidy_data", "pathogen_event.csv"),
+             path = " ",
+             name = "pathogen_event.csv",
+             overwrite = TRUE)
+```
+
+## Occurrence Core
+
+We will combine two occurrence tables into a single Occurrence Core. In this Occurrence Core, there will be a column `associatedTaxa` that will link the pathogens data (relative Ct-values) to the respective salmon species (individual). The first occurrence table will identify which species of salmon is associated to Sample. This information is taken from the dataframe `pathogen_floytag`. The second occurrence table will list all the pathogens identified and measured. 
+
+``` {r occ, eval = FALSE}
+pathogen_salmon_spp <- pathogen %>% mutate(scientificName = case_when(
+    Species == "Coho" ~ "Oncorhynchus kisutch",
+    Species == "Pink" ~ "Oncorhynchus gorbuscha",
+    Species == "Chum" ~ "Oncorhynchus keta",
+    Species == "Chinook" ~ "Oncorhynchus tshawytscha",
+    Species == "Sockeye" ~ "Oncorhynchus nerka"
+  ))
+
+unique_salmon <- unique(pathogen_salmon_spp$scientificName)
+
+pathogen_salmon_scientificnames <- worrms::wm_records_names(unique_salmon) %>% 
+  dplyr::bind_rows() %>%
+  rename(scientificName = scientificname)
+
+pathogen_salmon_spp <- left_join(pathogen_salmon_spp, pathogen_salmon_scientificnames, by = "scientificName") %>%
+  dplyr::rename(scientificNameID = lsid,
+         eventID = trawl,
+         taxonRank = rank,
+         taxonomicStatus = status,
+         scientificNameAuthorship = authority) %>% 
+  mutate(vernacularName = case_when(
+    Species == "Coho" ~ "Coho salmon",
+    Species == "Pink" ~ "Pink salmon",
+    Species == "Chum" ~ "Chum salmon",
+    Species == "Chinook" ~ "Chinook salmon",
+    Species == "Sockeye" ~ "Sockeye salmon"),
+         occurrenceStatus = "present",
+         occurrenceID = paste(eventID, Sample, sep = ":")) %>%
+  select(eventID, Sample, occurrenceID, scientificName, scientificNameID, vernacularName, occurrenceStatus,
+         parentNameUsageID, taxonomicStatus, scientificNameAuthorship, kingdom, phylum, class, order, 
+         family, genus, taxonRank)
+```
+
+Now that we've created the first occurrence table, we create the second one, where the pathogens get assigned a unique identifier (i.e. a WoRMS URN) in the scientificNameID and a unique occurrenceID. Using the column `associatedTaxa` and `associatedOccurrence`, the pathogens will eventually be linked to the correct salmon species and individual. For the pathogen data, the first step is to select the correct columns from the Pathogen data file, and expand on the abbreviations. 
+
+``` {r occ_pathogens, eval = FALSE}
+pathogen_occ <- pathogen %>% 
+  select(trawl,
+         Sample,
+         ae_sal:ye_ruc_glnA) %>%
+  pivot_longer(cols = ae_sal:ye_ruc_glnA,
+               names_to = "Assay name")
+
+pathogen_occ <- left_join(pathogen_occ, pathogen_names, by = "Assay name") %>% filter(value > 0)
+
+# A quick check teaches us that with Paranucleospora theridion / Desmozoon lepeophtherii observation, the latter is the accepted name under WoRMS, so substitute this observation in the dataframe. Additionally, a few other taxa were misspelled, so these names are changed (and confirmed with the data provider). Finally, there are observations which include 'sp.', These need to be removed because the worrms package doesn't recognize these. 
+
+pathogen_occ <- pathogen_occ %>%
+  mutate(Name = gsub("Paranucleospora theridion / Desmozoon lepeophtherii", "Desmozoon lepeophtherii", Name),
+         Name = gsub("\\(Sch)", "", Name),
+         Name = gsub("Viral encephalopathy and retinopathy virus", "Betanodavirus", Name),
+         Name = gsub("Ceratanova shasta", "Ceratonova shasta", Name),
+         Name = gsub("sp.", "", Name)) %>%
+  dplyr::rename(scientificName = Name)
+
+# A list of the unique pathogens (viruses, bacteria, parasites) can be found using:
+unique_pathogens <- unique(pathogen_occ$scientificName)
+
+# I've requested new WoRMS entries for some bacteria, viruses and parasites that were not currently in the database. It is likely that the scientificNameIDs will have to be populated manually once these new taxa have been created in the registry.  
+
+pathogen_taxa_scientificnames <- worrms::wm_records_names(unique_pathogens, marine_only = FALSE) %>%
+  dplyr::bind_rows() %>%
+  rename(scientificName = scientificname)
+
+pathogen_taxa <- left_join(pathogen_occ, pathogen_taxa_scientificnames, by = "scientificName") %>%
+  dplyr::rename(scientificNameID = lsid,
+         eventID = trawl,
+         taxonRank = rank,
+         taxonomicStatus = status,
+         scientificNameAuthorship = authority) %>% 
+  mutate(occurrenceStatus = "present",
+         vernacularName = NA,
+         occurrenceID = paste(eventID, Sample, sep = ":"),
+         occurrenceID = paste(occurrenceID, "p", sep = ":"),
+         occurrenceID = paste(occurrenceID, `Assay name`, sep = ":")) %>%
+  select(eventID, Sample, occurrenceID, scientificName, scientificNameID, vernacularName, occurrenceStatus, parentNameUsageID, taxonomicStatus, scientificNameAuthorship, kingdom, phylum, class, order, family, genus, taxonRank)
+```
+
+What we still have to wait for is new additions being made in the WoRMS registry to include the parasites, viruses or bacteria. Once this is done, we need to combine the occurrence tables of salmonids and pathogens, and create a column `associatedTaxa` and `associatedOccurrence` to indicate that the pathogens were found on or in the salmonid individual (i.e. linking it to the occurrenceID and to the salmon individual): 
+
+``` {r pathogen_occ_final, eval = FALSE}
+pathogen_occ <- rbind(pathogen_salmon_spp, pathogen_taxa)
+
+order <- stringr::str_sort(pathogen_occ$occurrenceID)
+pathogen_occ <- pathogen_occ[match(order, pathogen_occ$occurrenceID),]
+
+pathogen_occ <- pathogen_occ %>%
+  mutate(temp_Sample = paste(pathogen_occ$eventID, Sample, sep = ":")) %>%
+  group_by(eventID) %>%
+  fill(vernacularName) %>%
+  ungroup(eventID)
+
+pathogen_occ <- pathogen_occ %>%
+  mutate(associatedTaxa = ifelse(grepl(":p:", pathogen_occ$occurrenceID),
+                                 paste0('"Pathogen found on"', " : ", '"', vernacularName, '"', sep = " "), ""),
+         associatedOccurrences = ifelse(grepl(":p:", pathogen_occ$occurrenceID),
+                                 paste("Pathogen found on: ", temp_Sample, sep = ""), "")) %>%
+  select(-c(Sample, temp_Sample)) %>%
+  mutate(vernacularName = ifelse(grepl(":p:", pathogen_occ$occurrenceID),
+                                 NA, vernacularName))
+```
+
+Finally, save the Occurrence Core locally and on Google Drive: 
+
+``` {r save_occ, eval = FALSE}
+# Make sure the folder path exists already (e.g. ./Salmon Diet/tidy_data)
+write_csv(pathogen_occ, here("datasets", "GoA_2019", "Pathogen", "tidy_data", "pathogen_occ.csv"))
+drive_upload(here("Pathogen", "tidy_data", "pathogen_spp_occ.csv"),
+             path = " ",
+             name = "pathogen_spp_occ.csv",
+             overwrite = TRUE)
+```
+
+Eventually, the Event Core and Occurrence Core can be combined, so that dates, times, and spatial coordinates can be linked to the species occurrences. However, currently the final version of the dates, times and spatial coordinates is not available (will be in the Fish Trawl Abundance data). Once we have that data, along with the additions made to the WoRMS registry, we can finalize the 2019 IYS Pathogen Data. 
+
+## Measurement Or Fact Core
+
+Is there a need for a measurement Or Fact (eMOF) Core? If so, we need to associate the values reported (relative Ct-values) to the various pathogens.  
+
+``` {r eMOF, eval = FALSE}
+pathogen_spp_measurement <- pathogen %>%
+  select(sample, 
+         ae_sal:ye_ruc_glnA) %>%
+  pivot_longer(cols = ae_sal:ye_ruc_glnA,
+               values_to = "measurementValue") %>%
+  filter(measurementValue > 0) %>%
+  mutate_all(as.character) %>%
+  mutate(measurementID = paste(sample, "p", sep = ":"),
+         measurementID = paste(measurementID, name, sep = ":"),
+         measurementID = paste(measurementID, "Ct", sep = ":")) %>%
+  mutate(measurementType = "Relative Ct-value",
+    measurementTypeID = case_when(
+    measurementType == "Relative Ct-value" ~ " "),
+        measurementUnit = case_when(
+          measurementType == "Relative Ct-value" ~ " "),
+        measurementUnitID = case_when(
+          measurementType == "Relative Ct-value" ~ " ")) %>%  # dimensionless
+  select(measurementID, measurementType, measurementTypeID, measurementValue,
+         measurementUnit, measurementUnitID)   
+  
+# Write up csv file and upload to Google Drive folder
+write_csv(pathogen_spp_measurement, here("Pathogen", "tidy_data", "pathogen_spp_measurement.csv"))
+drive_upload(here("Pathogen", "tidy_data", "pathogen_spp_measurement.csv"),
+             path = " ",
+             name = "pathogen_spp_eMoF.csv",
+             overwrite = TRUE)
+```
