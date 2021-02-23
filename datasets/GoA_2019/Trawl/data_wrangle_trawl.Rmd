@@ -311,11 +311,103 @@ all(unique_trawl_species == unique(trawl2020_occ$scientificName)) # Answer shoul
 
 We create a few measurements or fact tables initially - one for the measurements pertaining to the overall catch (catch_weight), and one with the measurements pertaining to selected individuals (individual length and weight). These tables will eventually be merged into the measurement or fact extension. 
 
-Additionally, we need to create eMOF tables with measurements pertaining to the sampling event: trawl speed, etc. These come from the `trawl2020` dataset. Variables in the samplingEffort category are tow_speed, tow_duration, tow_distance and tow_direction.
+Additionally, we need to create eMOF tables with measurements pertaining to the sampling event: trawl speed, etc. These come from the `trawl2020` dataset. Variables in the samplingEffort category are tow_speed, tow_duration, tow_distance and tow_direction. There is also data collected on bottom depth, every 15 minutes:
+
+```{r bottomdepth, eval = FALSE}
+trawl_bottomdepth <- trawl2020 %>%
+  select(eventID = trawl,
+         `BOTTOM DEPTH (M) - 15 min`,
+         `BOTTOM DEPTH (M) - 30 min`,
+         `BOTTOM DEPTH (M) - 45 min`,
+         `BOTTOM DEPTH (M) - END`) %>%
+  mutate_all(as.character) %>%
+  pivot_longer(cols = `BOTTOM DEPTH (M) - 15 min`:`BOTTOM DEPTH (M) - END`,
+               names_to = "measurementType",
+               values_to = "measurementValue") %>%
+  mutate(measurementType = recode(measurementType,
+                                  `BOTTOM DEPTH (M) - 15 min` = "bottom_depth_at_15_min",
+                                  `BOTTOM DEPTH (M) - 30 min` = "bottom_depth_at_30_min",
+                                  `BOTTOM DEPTH (M) - 45 min` = "bottom_depth_at_45_min",
+                                  `BOTTOM DEPTH (M) - END` = "bottom_depth_at_end"),
+         measurementTypeID = case_when(
+           measurementType == "bottom_depth_at_15_min" ~ "http://vocab.nerc.ac.uk/collection/P07/current/CFSN0481/",
+           measurementType == "bottom_depth_at_30_min" ~ "http://vocab.nerc.ac.uk/collection/P07/current/CFSN0481/",
+           measurementType == "bottom_depth_at_45_min" ~ "http://vocab.nerc.ac.uk/collection/P07/current/CFSN0481/",
+           measurementType == "bottom_depth_at_end" ~ "http://vocab.nerc.ac.uk/collection/P07/current/CFSN0481/"),
+         measurementUnit = case_when(
+           measurementType == "bottom_depth_at_15_min" ~ "meters",
+           measurementType == "bottom_depth_at_30_min" ~ "meters",
+           measurementType == "bottom_depth_at_45_min" ~ "meters",
+           measurementType == "bottom_depth_at_end" ~ "meters"),
+         measurementUnitID = case_when(
+           measurementUnit == "meters" ~ "http://vocab.nerc.ac.uk/collection/P06/current/ULAA/"),
+         measurementValueID = NA,
+         measurementID = paste(eventID, measurementType, sep = ":")) %>%
+  select(eventID, measurementID, measurementType, measurementTypeID, measurementValue, measurementValueID,
+         measurementUnit, measurementUnitID)
+```
+
+Measurements pertaining to the sampling effort: 
 
 ```{r samplingEffort, eval = FALSE}
 samplingEffort <- trawl2020 %>%
-  select()
+  select(eventID = trawl,
+         `DURATION OF TOW (min)`,
+         `DIRECTION OF SET (TRUE) - 15 min`,
+         `DIRECTION OF SET (TRUE) - 30 min`,
+         `DIRECTION OF SET (TRUE) - 45 min`, 
+         `DIRECTION OF SET (TRUE) - END`,
+         `SPEED (Kn) - 15 min`,
+         `SPEED (Kn) - 30 min`,
+         `SPEED (Kn) - 45 min`,
+         `SPEED (Kn) - END`,
+         `DISTANCE OF FISHING OPERATION (nm)`)%>%
+  mutate_all(as.character) %>%
+  pivot_longer(cols = `DURATION OF TOW (min)`:`DISTANCE OF FISHING OPERATION (nm)`,
+               names_to = "measurementType",
+               values_to = "measurementValue") %>%
+  mutate(measurementType = recode(measurementType,
+         `DURATION OF TOW (min)` = "tow_duration",
+         `DIRECTION OF SET (TRUE) - 15 min` = "direction_of_set_at_15_min",
+         `DIRECTION OF SET (TRUE) - 30 min` = "direction_of_set_at_30_min",
+         `DIRECTION OF SET (TRUE) - 45 min` = "direction_of_set_at_45_min", 
+         `DIRECTION OF SET (TRUE) - END` = "direction_of_set_at_end",
+         `SPEED (Kn) - 15 min` = "vessel_speed_at_15_min",
+         `SPEED (Kn) - 30 min` = "vessel_speed_at_30_min",
+         `SPEED (Kn) - 45 min` = "vessel_speed_at_45_min",
+         `SPEED (Kn) - END` = "vessel_speed_at_end",
+         `DISTANCE OF FISHING OPERATION (nm)` = "tow_distance"),
+         measurementTypeID = case_when(
+           measurementType == "tow_duration" ~ "http://vocab.nerc.ac.uk/collection/P01/current/AZDRZZ01/",
+           measurementType == "direction_of_set_at_15_min" ~ "http://vocab.nerc.ac.uk/collection/P07/current/CFSN0481/",
+           measurementType == "direction_of_set_at_30_min" ~ "http://vocab.nerc.ac.uk/collection/P07/current/CFSN0481/",
+           measurementType == "direction_of_set_at_45_min" ~ "http://vocab.nerc.ac.uk/collection/P07/current/CFSN0481/",
+           measurementType == "direction_of_set_at_end" ~ "http://vocab.nerc.ac.uk/collection/P07/current/CFSN0481/",
+           measurementType == "vessel_speed_at_15_min" ~ "http://vocab.nerc.ac.uk/collection/P01/current/TOWSPEED/",
+           measurementType == "vessel_speed_at_30_min" ~ "http://vocab.nerc.ac.uk/collection/P01/current/TOWSPEED/",
+           measurementType == "vessel_speed_at_45_min" ~ "http://vocab.nerc.ac.uk/collection/P01/current/TOWSPEED/",
+           measurementType == "vessel_speed_at_end" ~ "http://vocab.nerc.ac.uk/collection/P01/current/TOWSPEED/",
+           measurementType == "tow_distance" ~ "http://vocab.nerc.ac.uk/collection/P01/current/LENTRACK/"),
+         measurementUnit = case_when(
+           measurementType == "tow_duration" ~ "minutes",
+           measurementType == "direction_of_set_at_15_min" ~ "degrees",
+           measurementType == "direction_of_set_at_30_min" ~ "degrees",
+           measurementType == "direction_of_set_at_45_min" ~ "degrees",
+           measurementType == "direction_of_set_at_end" ~ "degrees",
+           measurementType == "vessel_speed_at_15_min" ~ "knots",
+           measurementType == "vessel_speed_at_30_min" ~ "knots",
+           measurementType == "vessel_speed_at_45_min" ~ "knots",
+           measurementType == "vessel_speed_at_end" ~ "knots",
+           measurementType == "tow_distance" ~ "nautical miles"),
+         measurementUnitID = case_when(
+           measurementUnit == "minutes" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UMIN/",
+           measurementUnit == "degrees" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UABB/",
+           measurementUnit == "knots" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UKNT/"),
+         measurementValueID = NA,
+         measurementID = paste(eventID, measurementType, sep = ":")
+         ) %>%
+  select(eventID, measurementID, measurementType, measurementTypeID, measurementValue, measurementValueID,
+         measurementUnit, measurementUnitID)
 ```
 
 And chunk of code to assign sampling instrument measurements/facts:
@@ -323,6 +415,51 @@ And chunk of code to assign sampling instrument measurements/facts:
 ```{r samplingInstrument, eval = FALSE}
 samplingInstrument <- trawl2020 %>%
   select()
+```
+
+And a chunk of code to assign environmental conditions during the trawl:
+
+```{r environmental conditions, eval = FALSE}
+trawl_conditions <- trawl2020 %>%
+  select(eventID = trawl,
+         `WAVE HEIGHT (m)`,
+         `SWELL HEIGHT (m)`, 
+         `SEA STATE DESCRIPTION`,
+         `WIND DIRECTION (degrees)`,
+         `WIND SPEED (knots)`,
+         `CLOUD/WEATHER`) %>%
+  mutate_all(as.character) %>%
+  pivot_longer(cols = `WAVE HEIGHT (m)`:`CLOUD/WEATHER`,
+               names_to = "measurementType",
+               values_to = "measurementValue") %>%
+  mutate(measurementType = recode(measurementType,
+                                  `WAVE HEIGHT (m)` = "wave_height",
+                                  `SWELL HEIGHT (m)` = "swell_height",
+                                  `SEA STATE DESCRIPTION` = "sea_state_description",
+                                  `WIND DIRECTION (degrees)` = "wind_direction",
+                                  `WIND SPEED (knots)` = "wind_speed",
+                                  `CLOUD/WEATHER` = "weather_description"),
+         measurementTypeID = case_when(
+           measurementType == "wave_height" ~ "http://vocab.nerc.ac.uk/collection/P07/current/JNQS0CMX/",
+           measurementType == "swell_height" ~ "http://vocab.nerc.ac.uk/collection/P09/current/SWHT/",
+           measurementType == "sea_state_description" ~ " ",
+           measurementType == "wind_direction" ~ "http://vocab.nerc.ac.uk/collection/B39/current/relwinddir/",
+           measurementType == "wind_speed" ~ "http://vocab.nerc.ac.uk/collection/P07/current/CFSN0038/",
+           measurementType == "weather_description" ~ " "),
+         measurementUnit = case_when(
+           measurementType == "wave_height" ~ "meters",
+           measurementType == "swell_height" ~ "meters",
+           measurementType == "wind_direction" ~ "degrees",
+           measurementType == "wind_speed" ~ "knots",),
+         measurementUnitID = case_when(
+           measurementUnit == "meters" ~ "http://vocab.nerc.ac.uk/collection/P06/current/ULAA/",
+           measurementUnit == "degrees" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UAAA/",
+           measurementUnit == "knots" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UKNT/"
+         ),
+         measurementValueID = NA,
+         measurementID = paste(eventID, measurementType, sep = ":")) %>% 
+  select(eventID, measurementID, measurementType, measurementTypeID, measurementValue, measurementValueID,
+         measurementUnit, measurementUnitID)
 ```
 
 
