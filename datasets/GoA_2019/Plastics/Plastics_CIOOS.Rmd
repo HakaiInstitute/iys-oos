@@ -1,0 +1,245 @@
+---
+title: "Standardizing Plastics Data"
+author: "Tim van der Stap"
+date: "11/25/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
+library(tidyverse)
+library(lubridate)
+library(openxlsx)
+library(readxl)
+library(parsedate)
+library(googledrive)
+library(here)
+```
+
+## Getting started
+
+The following line only needs to be run once to download the tidied data from Google Drive to your computer's hard drive
+
+```{r drive_download}
+# Make sure your folder path exists already (e.g. ./POM/raw_data)
+
+drive_download("https://docs.google.com/spreadsheets/d/1ulVJc4xQDTdhh-2yTEt-OCv9nsjpdhPO/edit#gid=593479531", path = here("Plastics", "raw_data", "Egger_Goa_dataset.xlsx"))
+```
+
+Now, we need to read in the Excel sheet we want to work with. We have made some slight changes to the file that we are working on, and the changes have been recorded in a `Changelog`, found [here](url). Only structural changes were made that made it easier to read in the data, _no changes were made to the data values_. The original file is Egger_GoA_dataset, the work file is GoA_Plastics. 
+
+We need to first populate the `eventDate` column by formatting the Date column from the spreadsheet and convert it into ISO8601 format. No time or timezone was recorded in the initial dataset submission.
+
+Next, we are going to create new columns that will eventually become our `eventID`s. We are going to have 5 different types of `eventID`s, in order of descending hierarchy: "cruise", "station", "neuston", "Plastic Type" (type of plastic collected with the neuston trawl), and "Size Range" (four different size ranges in which plastic has been categorized). The eventIDs follow a sematic model that describes the hierarchical nature of each event type.
+
+The file that has been read in has been changed slightly to 
+
+```{r excel_wrangle}
+plastic <- openxlsx::read.xlsx(xlsxFile = here("Plastics", "raw_data", "Egger_Goa_dataset.xlsx"), fillMergedCells = TRUE)
+names(plastic) <- paste(names(plastic), plastic[1,], sep = "_")
+names(plastic) <- gsub("_NA", "", names(plastic))
+plastic <- plastic[-c(1:2),]
+
+# Within column Sample.ID, remove anything between the brackets, leaving only the station numbers: 
+plastic$Sample.ID <- gsub("\\s*\\([^\\)]+\\)","", as.character(plastic$Sample.ID))
+
+# Create 4 different dataframes that will be merged into one, all in a long format:
+# 1. Select density [#/km2] columns of the different size classes, and create long format
+# 2. Select total density [#/km2] columns for the different size classes and create long format
+# 3. Select gram [#/km2] columns of the different size classes, and create long format
+# 4. Select total gram [g/km2] columns for the different size classes. 
+
+plastic_density <- plastic[,1:21] %>% pivot_longer(cols = -c(1:5), names_to = c("Size Range_cm", "Plastic Type"),
+                                                   names_sep = "_", values_to = "count per square km")
+plastic_density$`Size Range_cm` <- gsub("cm.*", "", plastic_density$`Size Range_cm`)
+plastic_density_total <- plastic[,c(1:5,22:25)] %>% pivot_longer(cols = -c(1:5), names_to = c("Plastic Type", "Size Range_cm"), names_sep = "_", values_to = "count per square km")
+plastic_density_total$`Size Range_cm` <- gsub("cm", "", plastic_density_total$`Size Range_cm`)
+plastic_density_total$`Plastic Type` <- gsub("\\..*", "", plastic_density_total$`Plastic Type`)
+
+
+plastic_weight <- plastic[,c(1:5, 26:41)] %>% pivot_longer(cols = -c(1:5), names_to = c("Size Range_cm", "Plastic Type"),
+                                                           names_sep = "_", values_to = "weight per square km")
+plastic_weight$`Size Range_cm` <- gsub("cm.*", "", plastic_weight$`Size Range_cm`)
+plastic_weight_total <- plastic[,c(1:5, 42:45)] %>% pivot_longer(cols = -c(1:5), names_to = c("Plastic Type", "Size Range_cm"), names_sep = "_", values_to = "weight per square km")
+plastic_weight_total$`Size Range_cm` <- gsub("cm", "", plastic_weight_total$`Size Range_cm`)
+plastic_weight_total$`Plastic Type` <- gsub("\\..*","",plastic_weight_total$`Plastic Type`)
+
+# Merge all the dataframes
+separate <- left_join(plastic_density, plastic_weight)
+total <- left_join(plastic_density_total, plastic_weight_total)
+plastic <- full_join(separate, total)
+plastic$Sample.ID <- as.numeric(plastic$Sample.ID)
+
+
+# Final dataframe. Still need to work on all the ugly coding...!!!
+plastic <- plastic[order(plastic$Sample.ID),]
+
+plastic <- plastic %>%
+  mutate(eventDate = as.Date(plastic$Date, "%d.%m.%Y"),
+         cruise = "GoA2019",
+         station = paste(cruise, Sample.ID, sep = "_Stn"),
+         trawl = paste(station, "neuston", sep = ":"),
+         plasticType = paste(trawl, `Plastic Type`, sep = ":"),
+         sizeRange = paste(plasticType, `Size Range_cm`, sep = ":"))
+plastic <- plastic %>% 
+  mutate(eventDate = format_iso_8601(as.POSIXct(eventDate, format = "%Y-%m-%d")),
+         eventDate = gsub("\\T.*", "", eventDate))
+```
+
+Next we create the Event Core. 
+
+```{r event}
+plastic_cruise <- plastic %>%
+  select(eventID = cruise) %>%
+  distinct(eventID) %>%
+  mutate(eventRemarks = "cruise")
+
+plastic_station <- plastic %>%
+  select(
+    eventID = station,
+    parentEventID = cruise) %>%
+  distinct(eventID, .keep_all = TRUE) %>%
+  mutate(eventRemarks = "station")
+
+plastic_trawl <- plastic %>%
+  select(eventID = trawl,
+         parentEventID = station,
+         eventDate,
+         decimalLatitude = LAT,
+         decimalLongitude = LON) %>%
+  mutate(decimalLongitude = as.numeric(decimalLongitude),
+         decimalLatitude = as.numeric(decimalLatitude)) %>%
+  distinct(eventID, .keep_all = TRUE) %>%
+  mutate(eventRemarks = "trawl",
+         footprintWKT = paste("POINT", " (", plastic_trawl$decimalLongitude,
+                              " ", plastic_trawl$decimalLatitude, ")"))
+
+coordinates <- obistools::calculate_centroid(plastic_trawl$footprintWKT) %>% select(coordinateUncertaintyInMeters)
+plastic_trawl <- cbind(plastic_trawl, coordinates)
+
+plastic_plasticType <- plastic %>%
+  select(
+    eventID = plasticType,
+    parentEventID = trawl) %>%
+  mutate(minimumDepthInMeters = "0",
+         maximumDepthInMeters = "0.2") %>%
+  distinct(eventID, .keep_all = TRUE) %>%
+  mutate(eventRemarks = "plasticType")
+
+plastic_sizeRange <- plastic %>%
+  select(eventID = sizeRange,
+         parentEventID = plasticType) %>%
+  distinct(eventID, .keep_all = TRUE) %>%
+  mutate(eventRemarks = "sizeRange")
+
+plastic_event <-
+  bind_rows(plastic_cruise, plastic_station, plastic_trawl, plastic_plasticType, plastic_sizeRange) %>%
+  select(eventID, parentEventID:maximumDepthInMeters, coordinateUncertaintyInMeters, eventRemarks) %>% 
+  mutate(type = "Event",
+         geodeticDatum = "EPSG:4326",
+         samplingProtocol = "https://doi.org/10.1088/1748-9326/abbb4f") 
+
+plastic_event <- obistools::flatten_event(plastic_event)
+
+# To see if both eventID and parentEventID are present in the event Core, and if all parentEventIDs have a corresponding eventID:
+obistools::check_eventids(plastic_event)
+
+write_csv(plastic_event, here("Plastics", "tidy_data", "plastic_event.csv"))
+```
+
+Next, we create the eMOF Core. In this table, measurements or facts associated to the measurement or sampling instrument are recorded. Therefore, these include: the width and height (70x40cm) of the neuston net, the square nylon mesh (300 um), speed and duration of the tow (15 min at <2.5knots). Additionally, information pertaining to the size range of the microplastic particles is recorded. 
+
+``` {r sampling effort, eval = FALSE}
+plastic_sampling <- plastic %>%
+  select(eventID = trawl) %>%
+  mutate(speed_tow = "<2.5",
+         duration_tow = 15,
+         volume_water_sampled = " ",
+         sea_state = `Sea.state.[Beaufort]`) %>%
+  distinct(eventID, .keep_all = TRUE) %>%
+  mutate_all(as.character) %>%
+  pivot_longer(cols = speed_tow:volume_water_filtered,
+               names_to = "measurementType",
+               values_to = "measurementValue") %>%
+  mutate(measurementID = paste(eventID, measurementType, sep = ":"),
+         measurementTypeID = case_when(
+           measurementType == "speed_tow" ~ "http://vocab.nerc.ac.uk/collection/P01/current/TOWSPEED/",
+           measurementType == "volume_water_sampled" ~ "http://vocab.nerc.ac.uk/collection/P01/current/VOLWBSMP/",
+           measurementType == "duration_tow" ~ " "
+           measurementType == "sea_state" ~ "http://vocab.nerc.ac.uk/collection/P01/current/WMOCSSXX/"
+         ),
+  measurementUnit = case_when(
+    measurementType == "duration_tow" ~ "min",
+    measurementType == "final_volume_filtered" ~ "L",
+    measurementType == "speed_tow" ~ "knots"),
+  measurementUnitID = case_when(
+    measurementUnit == "min" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UMIN/",
+    measurementUnit == "L" ~ "http://vocab.nerc.ac.uk/collection/P06/current/ULIT/",
+    measurementUnit == "knots" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UKNT/"
+  )) %>%
+    select(eventID, measurementID, measurementType, measurementTypeID, measurementValue,
+           measurementUnit, measurementUnitID)
+```
+
+The information pertaining to the sampling instrument (neuston net) is provided in the chunk below, and will also be added to the extended measurement or fact core.  a length of 3m, but I couldn't find any controlled vocabulary for sampling instrument length so I omitted this information from the code. For the sampling instrument
+
+``` {r samplingInstrument, eval = FALSE}
+plastic_instrument <- plastic %>%
+  select(eventID = trawl) %>%
+  mutate(neuston_mesh = 300,
+         neuston_opening_width = 0.7,
+         neuston_opening_height = 0.4,
+         gear = " ") %>%
+  distinct(eventID, .keep_all = TRUE) %>%
+  mutate_all(as.character) %>%
+  pivot_longer(cols = neuston_mesh:gear,
+               names_to = "measurementType",
+               values_to = "measurementValue") %>%
+  mutate(measurementID = paste(eventID, measurementType, sep = ":"),
+         measurementTypeID = case_when(
+           measurementType == "gear" ~ "http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/",
+           measurementType == "neuston_mesh" ~ "http://vocab.nerc.ac.uk/collection/Q01/current/Q0100015/",
+           measurementType == "neuston_opening_width" ~ "http://vocab.nerc.ac.uk/collection/P01/current/MTHWDTH1/",
+           measurementType == "neuston_opening_height" ~ "http://vocab.nerc.ac.uk/collection/P01/current/MTHHGHT1/"))
+
+plastic_instrument <- plastic_instrument %>%
+  mutate(measurementUnit = case_when(
+           measurementType == "neuston_mesh" ~ "um",
+           measurementType == "neuston_opening_width" ~ "cm",
+           measurementType == "neuston_opening_height" ~ "cm"),
+         measurementUnitID = case_when(
+           measurementUnit == "um" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UMIC/",
+           measurementUnit == "cm" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UMSQ/"),
+         measurementValueID = case_when(
+           measurementValue == "Neuston Net" ~ "http://vocab.nerc.ac.uk/collection/L22/current/NETT0188/")) %>%
+  select(eventID, measurementID, measurementType, measurementTypeID, measurementValue,
+         measurementValueID, measurementUnit, measurementUnitID)
+```
+
+Finally, we add the information or values that they collected on the count (#) and weight (g) per km^2. This information gets associated to the `eventID` layer of each size range. 
+
+``` {r plastic_measurements, eval = FALSE}
+plastic_values <- plastic %>%
+  select(eventID = sizeRange,
+         count = `count per square km`,
+         weight = `weight per square km`) %>%
+  distinct(eventID, .keep_all = TRUE) %>%
+  mutate_all(as.character) %>%
+  pivot_longer(cols = count:weight,
+               names_to = "measurementType",
+               values_to = "measurementValue") %>%
+  mutate(measurementID = paste(eventID, measurementType, sep = ":"),
+         measurementTypeID = case_when(
+           measurementType == "count" ~ "http://vocab.nerc.ac.uk/collection/S06/current/S0600008/",
+           measurementType == "weight" ~ "http://vocab.nerc.ac.uk/collection/S06/current/S0600148/"),
+           # assuming that weight is dry weigh
+         measurementUnit = case_when(
+           measurementType == "weight" ~ "g/km^2",
+           measurementType == "count" ~ "#/km^2"),
+         measurementUnitID = case_when(
+           measurementUnit == "g/km^2" ~ " ",
+           measurementUnit == "#/km^2" ~ "http://vocab.nerc.ac.uk/collection/P06/current/NPKM")
+         ) %>%
+  select(eventID, measurementID, measurementType, measurementTypeID, measurementValue,
+         measurementUnit, measurementUnitID)
+```

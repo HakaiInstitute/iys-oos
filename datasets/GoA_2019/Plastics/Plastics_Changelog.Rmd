@@ -1,0 +1,20 @@
+---
+title: "Plastics_Changelog"
+author: "Tim van der Stap"
+date: "11/25/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This .Rmd file is to describe any manual changes made to the Egger_GoA_dataset.xlsx file. Please note that manual changes were only made to ensure that it was easier to read in the file into R, and that no changes were made to any values. The original file includes all the relevant information and presented in a good overview and format. 
+
+The manual changes made were:
+
+* The header columns have been unmerged. Additionally, whereas the headers initially were spread out over two rows, with size range in the top row and the plastic type in the second row, these two rows have now been merged.
+
+* The cell that contained 'Gulf of Alaska Expedition' has been removed. 
+
+* The Sample ID now reflect only the stations, and no longer the values in brackets - which were...?
