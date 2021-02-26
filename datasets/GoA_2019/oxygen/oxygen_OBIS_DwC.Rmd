@@ -1,0 +1,239 @@
+---
+title: "Transforming Gulf of Alaska 2019 Oxygen Dataset to OBIS-DwC"
+author: "Julian Gan"
+date: "02/06/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
+library(tidyverse)
+library(lubridate)
+library(readxl)
+library(parsedate)
+library(googledrive)
+library(here)
+```
+
+## Getting started
+
+The following line only needs to be run once to download the tidied data from Google Drive to your computer's hard drive
+
+```{r drive_download}
+drive_download("https://drive.google.com/open?id=1MQysK1BEp9xcZH64ilq63Sx3ri5SJYCx", path = here("oxygen", "raw_data", "IYS_GoA_2019_Hydro&Chemistry_20190326.xlsx"))
+```
+
+The Excel file contains two tabs: `Hydro_GoA` contains temperature and salinity measurements collected by the Sea-bird CTD at discrete depths. The `Chemistry-GoA` file contains nutrient, oxygen, and pH data. This script focuses on only transforming the oxygen data to OBIS-DwC. Dates, however, will be pulled from the `Hydro_GoA` tab because there is no temporal data in `Chemistry_GoA`.
+
+Next, we are going to create new columns that will eventually become our `eventID`s. We are going to have 5 different types of `eventID`s, in order of descending hierarchy: "cruise", "station", "cast", and "ndepth" (depth at which the sample was taken with a niskin). The eventIDs follow a sematic model that describes the hierarchical nature of each event type. Each sample is given an `eventID` because the "niskin" `eventID` should be interoperable with other datasets.
+
+```{r excel_wrangle}
+# Create a primary key in the Hydro_GoA sheet so that the date column can be joined to Chemistry_GoA
+hydro <-
+  read_excel(
+    here(
+      "oxygen",
+      "raw_data",
+      "IYS_GoA_2019_Hydro&Chemistry_20190326.xlsx"
+    ),
+    sheet = "Hydro_GoA"
+  ) %>%
+  mutate(station = paste("GoA2019", Station, sep = "_Stn"))
+
+# Create columns for eventIDs in Chemistry_GoA
+chemistry <-
+  read_excel(
+    here(
+      "oxygen",
+      "raw_data",
+      "IYS_GoA_2019_Hydro&Chemistry_20190326.xlsx"
+    ),
+    sheet = "Chemistry_GoA"
+  ) %>%
+  mutate(
+    cruise = "GoA2019",
+    station = paste(cruise, Station, sep = "_Stn"),
+    cast = paste(station, "cast1", sep = ":"),
+    ndepth = paste(cast, `Depth [m]`, sep = ":niskin:")
+  )
+```
+
+
+## Create the Event core
+
+To help distinguish the different hierarchical event levels, we use the column `eventRemarks`. The column `type` is is a Record-class term to describe the nature of the data resoure, but is not required by OBIS.
+
+```{r event}
+oxy_cruise <- chemistry %>%
+  select(eventID = cruise) %>%
+  distinct(eventID) %>%
+  mutate(eventRemarks = "cruise")
+
+# The "station" event category exists to tie casts and trawl data together.
+oxy_station <- chemistry %>%
+  select(
+    eventID = station,
+    parentEventID = cruise
+  ) %>%
+  distinct(eventID, .keep_all = TRUE) %>%
+  mutate(eventRemarks = "station")
+
+# eventDate, decimalLatitude and decimalLongitude are attributes associated with the "cast" record type, because sampling times and cast and trawl coordinates differ amongst datasets.
+oxy_cast <- chemistry %>%
+  left_join(select(hydro,
+                   station,
+                   date)) %>%
+  select(eventID = cast,
+         parentEventID = station,
+         eventDate = date,
+         decimalLatitude = Latitude,
+         decimalLongitude = Longitude) %>%
+  distinct(eventID, .keep_all = TRUE) %>%
+  mutate(decimalLongitude = decimalLongitude-360)
+oxy_cast <- oxy_cast %>%
+  mutate(eventRemarks = "cast",
+         footprintWKT = paste("POINT", " (", oxy_cast$decimalLongitude,
+                              " ", oxy_cast$decimalLatitude, ")"))
+
+coordinates <- obistools::calculate_centroid(oxy_cast$footprintWKT) %>% select(coordinateUncertaintyInMeters)
+oxy_cast <- cbind(oxy_cast, coordinates)
+
+oxy_ndepth <- chemistry %>%
+  select(
+    eventID = ndepth,
+    parentEventID = cast,
+    minimumDepthInMetres = `Depth [m]`,
+    maximumDepthInMetres = `Depth [m]`
+  ) %>%
+  distinct(eventID, .keep_all = TRUE) %>%
+  mutate(eventRemarks = "sample")
+
+oxy_event <-
+  bind_rows(oxy_cruise, oxy_station, oxy_cast, oxy_ndepth) %>%
+  select(eventID, parentEventID:maximumDepthInMetres, coordinateUncertaintyInMeters, eventRemarks) %>% 
+  select(-footprintWKT) %>%
+  mutate(type = "Event",
+         geodeticDatum = "EPSG:4326")
+```
+
+```{r save event}
+# The .gitignore file has been configured to ignore all files in the tidy_data folder so no data gets pushed to the Git repository.
+write_csv(oxy_event, here("oxygen", "tidy_data", "oxy_event.csv"))
+
+# drive_upload can't overwrite files based on name alone, so if you're re-running this script after creating the first file, make sure to delete the older version from Google Drive.
+drive_upload(here("oxygen", "tidy_data", "oxy_event.csv"),
+             path = "https://drive.google.com/drive/folders/1k2b_kijF70wAF00E4NfzRIxoISkqiI1v",
+             name = "oxy_event.csv")
+```
+
+
+## Create the ExtendedMeasurementorFact extension 
+
+The eMoF extension links measurement records with records in the Event core table. Since this dataset is comprised only of environmental abiotic data, there is no `occurrenceID` column and records are linked by `eventID` instead. NERC vocabulary used for `measurementTypeID` were determined via personal communication with the data provider.
+
+```{r measurements}
+# Seafloor (bottom) depth is a measurement of the niskin cast.
+oxy_botdepth <- chemistry %>%
+  select(eventID = cast, `Bot. Depth [m]`) %>%
+  distinct(eventID, .keep_all = TRUE) %>%
+  pivot_longer(cols = `Bot. Depth [m]`,
+               names_to = "measurementType",
+               values_to = "measurementValue") %>%
+  mutate(
+    measurementValue = as.numeric((measurementValue)),
+    measurementID = paste(eventID, "depth", sep = ":"),
+    measurementType = recode(measurementType,
+                             "Bot. Depth [m]" = "seafloor_depth"),
+    measurementTypeID = "http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/",
+    measurementUnit = "m",
+    measurementUnitID = "http://vocab.nerc.ac.uk/collection/P06/current/ULAA/"
+  ) %>%
+  select(
+    measurementID,
+    eventID,
+    measurementType,
+    measurementTypeID,
+    measurementValue,
+    measurementUnit,
+    measurementUnitID
+  )
+
+# Subsetting oxygen measurements from the rest of the dataset
+oxy_measurement <- chemistry %>% 
+  select(eventID = ndepth,
+         `O2 [ml/l]`,
+         `[%] oxygen saturation`,
+         `biochemichal oxygen consumption (for 5 days) [ml/l]`,
+         `Oxygen by Rinko [ml/l]`) %>% 
+  pivot_longer(cols = `O2 [ml/l]`:`Oxygen by Rinko [ml/l]`,
+               names_to = "measurementType",
+               values_to = "measurementValue"
+  ) %>% 
+  mutate(
+    measurementType = recode(
+      measurementType,
+      "O2 [ml/l]" = "oxygen_concentration_lab",
+      "[%] oxygen saturation" = "oxygen_saturation",
+      "biochemichal oxygen consumption (for 5 days) [ml/l]" = "BOD5",
+      "Oxygen by Rinko [ml/l]" = "oxygen_concentration_Rinko"
+    ),
+    measurementTypeID = recode(
+      measurementType,
+      "oxygen_concentration_lab" = "http://vocab.nerc.ac.uk/collection/P01/current/DOXYWITX/",
+      "oxygen_saturation" = "http://vocab.nerc.ac.uk/collection/P01/current/OXYSWW01/",
+      "BOD5" = "http://vocab.nerc.ac.uk/collection/P01/current/BODZZZZZ/",
+      "oxygen_concentration_Rinko" = "http://vocab.nerc.ac.uk/collection/P01/current/DOXYUZ01/"
+    ),
+    measurementUnit = recode(
+      measurementType,
+      "oxygen_concentration_lab" = "mL/L",
+      "oxygen_saturation" = "percent",
+      "BOD5" = "mL/L",
+      "oxygen_concentration_Rinko" = "mL/L"
+    ),
+    measurementUnitID = recode(
+      measurementUnit,
+      "mL/L" = "http://vocab.nerc.ac.uk/collection/P06/current/UMLL/",
+      "percent" = "http://vocab.nerc.ac.uk/collection/P06/current/UPCT/"
+    ),
+    measurementID = case_when(
+      measurementType == "oxygen_concentration_lab" ~ paste(eventID, "O2", sep = ":"),
+      measurementType == "oxygen_saturation" ~ paste(eventID, "O2sat", sep = ":"),
+      measurementType == "BOD5" ~ paste(eventID, "BOD5", sep = ":"),
+      measurementType == "oxygen_concentration_Rinko" ~ paste(eventID, "O2_R", sep = ":")
+    )
+  ) %>% 
+  drop_na(measurementValue)
+
+
+oxy_eMoF <-
+  bind_rows(oxy_botdepth, oxy_measurement) %>%
+  select(
+    measurementID,
+    eventID,
+    measurementType,
+    measurementTypeID,
+    measurementValue,
+    measurementUnit,
+    measurementUnitID
+  )
+```
+
+```{r save eMoF}
+write_csv(oxy_eMoF,
+          here("oxygen", "tidy_data", "oxy_eMoF.csv"))
+
+drive_upload(
+  here("oxygen", "tidy_data", "oxy_eMoF.csv"),
+  path = "https://drive.google.com/drive/folders/1k2b_kijF70wAF00E4NfzRIxoISkqiI1v",
+  name = "oxygen_eMoF.csv"
+)
+```
+
+To visualize the sampling stations in a map:
+
+``` {r oxy_visualizations, eval = FALSE}
+oxy_leaflet <- obistools::plot_map_leaflet(oxy_event)
+oxy_map <- obistools::plot_map(oxy_event, zoom = TRUE)
+ggsave(filename = "oxy_map.png", plot = oxy_map, path = here::here("oxygen", "maps"))
+```
