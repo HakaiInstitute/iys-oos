@@ -550,34 +550,48 @@ write_csv(trawl_conditions, here("Trawl", "tidy_data", "trawl2020_conditions_emo
 
 Next two eMOF extensions are created with measurements pertaining to overall species' catch weight at each trawl, and individual length and weight measurements.
 
+count - total: http://vocab.nerc.ac.uk/collection/P01/current/OCOUNT01/
+
+
 ```{r eMoF}
-trawl2020_allcatch_emof <- trawl2020_occ %>%
+trawl2020_allcatch_measurement <- trawl2020_occ %>%
   select(occurrenceID,
-         `CATCH_WEIGHT (KG)`,
+         organismQuantity,
+         `CATCH_WEIGHT (KG)`) %>%
+  mutate_all(as.character) %>%
+  pivot_longer(cols = c(organismQuantity, `CATCH_WEIGHT (KG)`),
+               names_to = "measurementType",
+               values_to = "measurementValue")
+
+trawl2020_methods <- trawl2020_occ %>%
+  select(occurrenceID,
+         `COUNT_METHOD                 (Total, Volume est, Weight est)`,
          WEIGHT_METHOD) %>%
   mutate_all(as.character) %>%
-  pivot_longer(cols = c(`CATCH_WEIGHT (KG)`,WEIGHT_METHOD),
-               names_to = "measurementType",
-               values_to = "measurementValue") %>%
+  pivot_longer(cols = c(`COUNT_METHOD                 (Total, Volume est, Weight est)`, WEIGHT_METHOD),
+                        values_to = "measurementMethod") %>%
+  select(measurementMethod)
+
+trawl2020_allcatch_emof <- cbind(trawl2020_allcatch_measurement, trawl2020_methods) %>% 
   mutate(measurementType = recode(measurementType,
                                   `CATCH_WEIGHT (KG)` = "Total species biomass",
-                                  WEIGHT_METHOD = "Method determining weight"),
+                                  organismQuantity = "count"),
          measurementID = case_when(
-           measurementType == "Total species biomass" ~ paste(occurrenceID, "biomass", sep = "-"),
-           measurementType == "Method determining weight" ~ paste(occurrenceID, "weight_method", sep = "-")),
+           measurementType == "count" ~ paste(occurrenceID, "count", sep = "-"),
+           measurementType == "Total species biomass" ~ paste(occurrenceID, "biomass", sep = "-")),
          measurementTypeID = case_when(
            measurementType == "Total species biomass" ~ "http://vocab.nerc.ac.uk/collection/S06/current/S0600088/",
-           measurementType == "Method determining weight" ~ " "),
-         measurementValueID = case_when(
-           measurementValue == "total" ~ " ",
-           measurementValue == "volume estimate" ~ " "),
+           measurementType == "count" ~ "http://vocab.nerc.ac.uk/collection/P09/current/OCNT/"),
+         # When possible there might be new terms created for counts done through visual estimation etc. 
          measurementUnit = case_when(
-           measurementType == "Total species biomass" ~ "kg"),
+           measurementType == "Total species biomass" ~ "kg",
+           measurementType == "count" ~ "individuals"),
          measurementUnitID = case_when(
-           measurementUnit == "kg" ~ "http://vocab.nerc.ac.uk/collection/P06/current/KGXX/")
+           measurementUnit == "kg" ~ "http://vocab.nerc.ac.uk/collection/P06/current/KGXX/",
+           measurementUnit == "individuals" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UUUU/")
   ) %>%
   select(occurrenceID, measurementID, measurementType, measurementTypeID, measurementValue, measurementValueID,
-         measurementUnit, measurementUnitID)
+         measurementUnit, measurementUnitID, measurementMethod)
 ```
 
 Next, create the measurementOrFact extension with length and weight measurements assigned to the individual specimens. 
