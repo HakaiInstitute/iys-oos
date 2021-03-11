@@ -132,10 +132,6 @@ bongo_cast <- bongo_fnl %>%
          decimalLongitude = longitude,
          minimumDepthInMeters = sample_depth,
          maximumDepthInMeters = sample_depth) %>%
-  #       sampleSizeValue = final_volume_filtered) %>%
-  #mutate(sampleSizeUnit = "L",
-  #       samplingProtocol = "vertical Bongo Net deployment",
-  #       samplingEffort = "Volume sea water filtered") %>%
   distinct(eventID, .keep_all = TRUE) %>%
   mutate(type = "bongo net cast")
 
@@ -153,11 +149,8 @@ bongo_sample <- bongo %>%
   mutate(type = "bongo net sampleID")
 
 bongo_event <- bind_rows(bongo_project, bongo_cruise,bongo_station,bongo_cast, bongo_sample) %>% 
-  mutate(type = "HumanObservation",
+  mutate(basisOfRecord = "HumanObservation",
          geodeticDatum = "EPSG:4326")
-
-col_order <- c("eventID", "parentEventID", "eventDate", "year", "month", "day", "decimalLatitude", "decimalLongitude", "footprintWKT", "coordinateUncertaintyInMeters", "minimumDepthInMeters", "maximumDepthInMeters", "geodeticDatum", "type", "eventRemarks")
-bongo_event <- bongo_event[, col_order]
 
 # To do: figure out way to flatten the event core. 
 bongo_event <- obistools::flatten_event(bongo_event)
@@ -170,11 +163,10 @@ drive_upload(here("Bongo", "tidy_data", "bongo_event.csv"),
              overwrite = TRUE)
 ```
 
-## Occurrence Core
+## Occurrence extension
 
-Two Occurrence Cores will be created, as we're dealing with two separate datasets created from the same data collection event. One dataset includes dry weight from isotope or fatty acid analysis, whereas the other dataset contains species-specific (estimated) abundance at each sampling station, with sex and lifestage. From my understanding, samples in Net 1 from the bongo sampling instrument were typically fixed as a whole for community and abundance analysis. Zooplankton in Net 2 was used predominantly for isotope or fatty acid analysis. On occasion, some individuals from Net 1 were used in the isotope or fatty acid analysis, though unfortunately which individuals or sample_ids were used in both studies has not been accurately reported.   
-
-An `occurrenceID` and `occurrenceStatus` will only be provided to data entries where species have been identified to a level for which we can find a WoRMS URN. So first we inspect all the unique input for the `species` column, and filter out the species that can _not_ be identified. Measurements of weight, length, and life stage will still be included, however they will linked directly to the `eventID` (the sample_id) rather than the `occurrenceID`. In other words, these data entries will not be included in the Occurrence Core!
+Two Occurrence tables will be created, as we're dealing with two separate datasets created from the same data collection event. One dataset includes dry weight measurements, whereas the other dataset contains species-specific (estimated) abundance at each sampling station, with sex and lifestage. From my understanding, samples in Net 1 from the bongo sampling instrument were typically fixed as a whole for community and abundance analysis. Zooplankton in Net 2 was used predominantly for isotope or fatty acid analysis. On occasion, some individuals from Net 1 were used in the isotope or fatty acid analysis, though unfortunately which individuals or sample_ids were used in both studies has not been accurately reported.   
+An `occurrenceID` and `occurrenceStatus` will only be provided to data entries where species have been identified to a level for which we can find a WoRMS URN. So first we inspect all the unique input for the `species` column, and filter out the species that can _not_ be identified. Measurements of weight, length, and life stage will still be included, however they will linked directly to the `eventID` (the sample_id) rather than the `occurrenceID`. In other words, these data entries will not be included in the Occurrence extension!
 
 After internal discussion, it was opted to associate an `occurrenceID` to an entry as long as we can find a WoRMS taxon / URN, even if a species can only be identified up to a phylum or kingdom level. For entries where Species = `Size fraction`, will not have an Occurrence Core associated to it, because it is not possible to associate a URN from WoRMS to this class or group (`Zooplankton`). The same goes for entries where no common rank can be associated, such as `Jellyfish, radiolarian, chaetognath` and `Gelatinous`. For data entries where multiple groups are lumped together (i.e. "Jelly fish, radiolarian and chaetognath"), and a common taxonomic level can not be found, we have opted _not_ to split them into separate occurrenceIDs because it is not possible to associate any measurements to the entry.
 
@@ -182,9 +174,9 @@ After internal discussion, it was opted to associate an `occurrenceID` to an ent
 
 ***
 
-Let's first create an Occurrence Core for the (estimated) abundance data. The abundance data also includes data collected in 2020 so we do need to filter for the samples collected in 2019 first. 
+Let's first create an Occurrence extension for the (estimated) abundance data. The abundance data also includes data collected in 2020 so we do need to filter for the samples collected in 2019 first. 
 
-``` {r bongo abundance occ, eval = FALSE}
+``` {r bongo2019 abundance occ, eval = FALSE}
 bongo2019_abun <- read_excel(here("Bongo", "raw_data", 
                                   "IYS Zooplankton Taxonomy Abundance Data.xlsx"), 
                   sheet = "All data") 
@@ -197,6 +189,7 @@ bongo2019_abun <- subset(bongo2019_abun, date >= "2019-02-19" & date <= "2019-03
          cast = paste(station, "1", sep = ":bongo:Net"))
 
 # Manual inspection of this dataframe shows that there are still a few species that will need slight changes in their spelling, as the worrms package does not recognize 'sp.' etc. Additionally, some ids contain a lifestage (larvae, egg, trochophores, etc). These are also mentioned in a column 'lifestage', so they are removed from the species id. These manual changes are listed below and are not made in the raw data file. This way the original species description is still provided. 
+bongo2019_abun$identificationQualifier <- ifelse(grepl("sp.", bongo2019_abun$id), "sp. inc", NA)
 bongo2019_abun$id <- gsub("\\b sp.\\b", "", bongo2019_abun$id)
 bongo2019_abun$id <- gsub("egg|nauplius|larva|juvenile|calyptopsis|furcillia", "", bongo2019_abun$id)
 
@@ -206,7 +199,7 @@ worms_id <- worrms::wm_records_names(unique(bongo2019_abun$scientificname), mari
 # Find out which species are not found in the WoRMS database:
 no_worms_id <- left_join(bongo2019_abun, worms_id, by = "scientificname") %>% filter(is.na(AphiaID)) %>% distinct(scientificname)
 
-# These species will need to have their names changed in the original dataframe (bongo2019_abun) which we'll do below. I write this out so it is clear which names or species observations have been altered, so this can be verified. 
+# These species will need to have their names changed in the original dataframe (bongo2019_abun) which we'll do below. I write this out so it is clear which names or species observations have been altered, so this can be verified. Verification has been done with the data provider.  
 
 bongo2019_abun$scientificname <- gsub("Chaetognath|Chaetognath ", "Chaetognatha", bongo2019_abun$scientificname)
 bongo2019_abun$scientificname <- gsub("Disconchoecia elegans", "Discoconchoecia elegans", bongo2019_abun$scientificname)
@@ -249,14 +242,13 @@ bongo2019_abun$scientificname <- gsub("Chaetognathasp. (no heads)", "Chaetognath
 bongo2019_worms_id <- worrms::wm_records_names(unique(bongo2019_abun$scientificname), marine_only = FALSE) %>%
   dplyr::bind_rows()
 
-# After manual inspection, there are some AphiaIDs that need to be removed
+# After manual inspection, there are some AphiaIDs that need to be removed as they are either duplicates, or alternate representations. 
 bongo2019_worms_id <- filter(bongo2019_worms_id, !(AphiaID %in% c("956054", "956065", "163921",
                                                                   "719191", "1391513", "534090")))
 
 # Find out which species are not found in the WoRMS database:
+# This 
 no_worms_id_2 <- left_join(bongo2019_abun, bongo2019_worms_id, by = "scientificname") %>% filter(is.na(AphiaID)) %>% distinct(scientificname)
-
-# Only the two scientificnames for which I haven't found the correct name yet need to be added. 
 
 # Merge this dataset back into original dataframe. First remove the column "genus" from bongo2019_abun, because otherwise this one is copied. 
 bongo2019_abun <- bongo2019_abun %>% select(-genus)
@@ -272,7 +264,7 @@ bongo2019_taxa_abundance <- bongo2019_abun %>%
          scientificAuthorityName = authority,
          taxonRank = rank,
          taxonomicStatus = status,
-         parentNameUsageID, kingdom, phylum, class, order, family, genus) %>%
+         kingdom, phylum, class, order, family, genus) %>%
   mutate(occurrenceID = paste(eventID, "bongo_occ", row_number(), sep = ":"),
          occurrenceStatus = "present")
 
