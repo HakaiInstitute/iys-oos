@@ -253,21 +253,16 @@ no_worms_id_2 <- left_join(bongo2019_abun, bongo2019_worms_id, by = "scientificn
 # Merge this dataset back into original dataframe. First remove the column "genus" from bongo2019_abun, because otherwise this one is copied. 
 bongo2019_abun <- bongo2019_abun %>% select(-genus)
 bongo2019_abun <- left_join(bongo2019_abun, bongo2019_worms_id, by = "scientificname") %>%
-  mutate(occurrenceID = paste(station, "bongo_occ", row_number(), sep = ":"),
-         occurrenceStatus = "present")
 bongo2019_taxa_abundance <- bongo2019_abun %>%
-  select(eventID = station,
-         occurrenceID,
-         occurrenceStatus,
+  select(eventID = cast,
          scientificName = scientificname,
          scientificNameID = lsid,
          scientificAuthorityName = authority,
+         individualCount = ind_counted,
          taxonRank = rank,
          taxonomicStatus = status,
          identificationQualifier,
-         kingdom, phylum, class, order, family, genus) %>%
-  mutate(occurrenceID = paste(eventID, "bongo_occ", row_number(), sep = ":"),
-         occurrenceStatus = "present")
+         kingdom, phylum, class, order, family, genus) 
 
 # Make sure the folder path exists already (e.g. ./Bongo/tidy_data)
 write_csv(bongo2019_taxa_abundance, here("Bongo", "tidy_data", "bongo2019_taxa_occ.csv"))
@@ -616,13 +611,23 @@ bongo2019_occ_fnl <- left_join(bongo2019_occ_fnl, preservation, by = c("station"
 
 bongo2019_occ_core <- bongo2019_occ_fnl %>%
   rename(Preparations = preservation) %>%
-  select(eventID, occurrenceID, scientificName, 
+  select(eventID, scientificName, 
          scientificNameID = lsid, 
-         parentNameUsageID,
+         scientificAuthorityName = authority,
+         individualCount = number,
+         vernacularName,
+         taxonRank = rank,
+         taxonomicStatus = status,
          sex,
          lifeStage,
-         kingdom, phylum, class, order, family, genus, occurrenceStatus, Preparations, occurrenceRemarks)
+         kingdom, phylum, class, order, family, genus, Preparations, occurrenceRemarks)
 # I change bongo_occ_fnl into a new dataframe (bongo2019_occ_core) because we're going to use the bongo_occ_fnl dataset in the eMoF table, but not all columns.
+
+# Combine the two occurrence extensions (1 - occurrences in Net 1 for the abundance / community composition study, 2 - occurrences in Net 2 for the isotope / fatty acid analysis)
+bongo2019_zoo_ext <- plyr::rbind.fill(bongo2019_taxa_abundance, bongo2019_occ_core) %>%
+  mutate(occurrenceID = paste(eventID, "zoop", sep = ":"),
+         occurrenceID = paste(occurrenceID, row_number(), sep = "-"),
+         occurrenceStatus = "present")
 
 # Make sure the folder path exists already (e.g. ./Bongo/tidy_data)
 write_csv(bongo2019_occ_core, here("Bongo", "tidy_data", "bongo2019_occ.csv"))
