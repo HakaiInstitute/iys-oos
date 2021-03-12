@@ -185,7 +185,6 @@ bongo2019_abun <- subset(bongo2019_abun, date >= "2019-02-19" & date <= "2019-03
   mutate(project = "IYS",
          cruise = paste(project, "GoA2019", sep = ":"),
          station = paste(cruise, station, sep = "_Stn"),
-         # Confirm that abundance / community analysis only done from Net 1. 
          cast = paste(station, "1", sep = ":bongo:Net"))
 
 # Manual inspection of this dataframe shows that there are still a few species that will need slight changes in their spelling, as the worrms package does not recognize 'sp.' etc. Additionally, some ids contain a lifestage (larvae, egg, trochophores, etc). These are also mentioned in a column 'lifestage', so they are removed from the species id. These manual changes are listed below and are not made in the raw data file. This way the original species description is still provided. 
@@ -247,38 +246,36 @@ bongo2019_worms_id <- filter(bongo2019_worms_id, !(AphiaID %in% c("956054", "956
                                                                   "719191", "1391513", "534090")))
 
 # Find out which species are not found in the WoRMS database:
-# This 
 no_worms_id_2 <- left_join(bongo2019_abun, bongo2019_worms_id, by = "scientificname") %>% filter(is.na(AphiaID)) %>% distinct(scientificname)
 
 # Merge this dataset back into original dataframe. First remove the column "genus" from bongo2019_abun, because otherwise this one is copied. 
 bongo2019_abun <- bongo2019_abun %>% select(-genus)
-bongo2019_abun <- left_join(bongo2019_abun, bongo2019_worms_id, by = "scientificname") %>%
-  mutate(occurrenceID = paste(station, "bongo_occ", row_number(), sep = ":"),
-         occurrenceStatus = "present")
+bongo2019_abun <- left_join(bongo2019_abun, bongo2019_worms_id, by = "scientificname")
 bongo2019_taxa_abundance <- bongo2019_abun %>%
-  select(eventID = station,
-         occurrenceID,
-         occurrenceStatus,
+  select(eventID = cast,
          scientificName = scientificname,
          scientificNameID = lsid,
          scientificAuthorityName = authority,
+         individualCount = ind_counted,
+         lifeStage = stage,
+         sex,
          taxonRank = rank,
          taxonomicStatus = status,
          identificationQualifier,
-         kingdom, phylum, class, order, family, genus) %>%
-  mutate(occurrenceID = paste(eventID, "bongo_occ", row_number(), sep = ":"),
-         occurrenceStatus = "present")
+         kingdom, phylum, class, order, family, genus) 
 
 # Make sure the folder path exists already (e.g. ./Bongo/tidy_data)
 write_csv(bongo2019_taxa_abundance, here("Bongo", "tidy_data", "bongo2019_taxa_occ.csv"))
 ```
 
 To do: confirm that all unique species in the original dataset are represented in the bongo2019_taxa_abundance dataframe. 
-So now we've created the first Occurrence Core coming from the Zooplankton Bongo data, on community analysis / abundance estimates. This Occurrence Core will need to have an associated eMOF core as well, which should include `sex`, `lifeStage`, and the various ways in which abundance or total number is estimated? i.e. `ind_total` = total number of individuals estimated in the entire sample, `abund_m3_flow_est` = total abundance estimates from the flow meter, and `abund_m3_depth_est` = total abundance of individuals estimated using the depth-estimated estimate. These terms might require new additions to controlled vocabulary. 
+So now we've created the first Occurrence extension coming from the Zooplankton Bongo data, on community analysis / abundance estimates. This Occurrence extension will need to have an associated eMOF extension linked to it as well, which should include `sex`, `lifeStage`, and the various ways in which abundance or total number is estimated? i.e. `ind_total` = total number of individuals estimated in the entire sample, `abund_m3_flow_est` = total abundance estimates from the flow meter, and `abund_m3_depth_est` = total abundance of individuals estimated using the depth-estimated estimate. These terms might require new additions to controlled vocabulary. 
 
 *** 
 
 The second Occurrence extension we create is on the data collected for the dry weight isotope and fatty acid analysis. This data is found in a different data set (`bongo`).  
+
+**Important data limitation alert**: Some individuals from Net 1 were also used in the fatty acid / isotope analysis. These individuals have been **filtered out** of the data because we could not trace back exactly which individuals were used in both studies.
 
 ``` {r bongo_occ_pre_wrangle, eval = FALSE}
 unique(bongo$species)
@@ -286,7 +283,8 @@ unique(bongo$species)
 # Identify all entries that have not been identified to species or genus level: 
 bongo2019_taxa <- bongo %>% filter(!(species %in% c("Size fraction", "Chaetognath & Ctenophore", "Jelly mass",
                                               "Jellyfish, radiolarian, chaetognath", "Gelatinous",
-                                              "Ctenophore / jellyfish")))
+                                              "Ctenophore / jellyfish"))) %>%
+  filter(net == 2)
 
 unidentified_spp <- bongo %>% filter(species %in% c("Size fraction", "Chaetognath & Ctenophore", "Jelly mass",
                                                     "Jellyfish, radiolarian, chaetognath", "Gelatinous", 
@@ -616,16 +614,26 @@ bongo2019_occ_fnl <- left_join(bongo2019_occ_fnl, preservation, by = c("station"
 
 bongo2019_occ_core <- bongo2019_occ_fnl %>%
   rename(Preparations = preservation) %>%
-  select(eventID, occurrenceID, scientificName, 
+  select(eventID, scientificName, 
          scientificNameID = lsid, 
-         parentNameUsageID,
+         scientificAuthorityName = authority,
+         individualCount = number,
+         vernacularName,
+         taxonRank = rank,
+         taxonomicStatus = status,
          sex,
          lifeStage,
-         kingdom, phylum, class, order, family, genus, occurrenceStatus, Preparations, occurrenceRemarks)
+         kingdom, phylum, class, order, family, genus, Preparations, occurrenceRemarks)
 # I change bongo_occ_fnl into a new dataframe (bongo2019_occ_core) because we're going to use the bongo_occ_fnl dataset in the eMoF table, but not all columns.
 
+# Combine the two occurrence extensions (1 - occurrences in Net 1 for the abundance / community composition study, 2 - occurrences in Net 2 for the isotope / fatty acid analysis)
+bongo2019_zoo_ext <- plyr::rbind.fill(bongo2019_taxa_abundance, bongo2019_occ_core) %>%
+  mutate(occurrenceID = paste(eventID, "zoop", sep = ":"),
+         occurrenceID = paste(occurrenceID, row_number(), sep = "-"),
+         occurrenceStatus = "present")
+
 # Make sure the folder path exists already (e.g. ./Bongo/tidy_data)
-write_csv(bongo2019_occ_core, here("Bongo", "tidy_data", "bongo2019_occ.csv"))
+write_csv(bongo2019_zoo_ext, here("Bongo", "tidy_data", "bongo2019_occ.csv"))
 drive_upload(here("Bongo", "tidy_data", "bongo_occ.csv"),
              path = "https://drive.google.com/drive/u/0/folders/1cAJP-DGSQZdRhrIYraX8MJXO-h_7qbn2",
              name = "bongo_occ.csv",
