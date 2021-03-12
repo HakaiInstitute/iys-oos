@@ -50,7 +50,10 @@ Read in the datasets from your local drive. To connect additional metadata infor
 bongo <- read_excel(here("Bongo", "raw_data", 
                        "Zoop Bongo Isotopes_IYS_Dry Weight_Mar31.xlsx"), 
                   sheet = "Samples collected") %>%
-  janitor::clean_names() %>%
+  janitor::clean_names()
+
+bongo$sample_id <- gsub("\\b.0\\b", "", bongo$sample_id)
+bongo <- bongo %>%
   mutate(project = "IYS",
          cruise = paste(project, "GoA2019", sep = ":"),
          station = paste(cruise, station, sep = "_Stn"),
@@ -149,7 +152,7 @@ bongo_sample <- bongo %>%
   mutate(type = "bongo net sampleID")
 
 bongo_event <- bind_rows(bongo_project, bongo_cruise,bongo_station,bongo_cast, bongo_sample) %>% 
-  mutate(basisOfRecord = "HumanObservation",
+  mutate(basisOfRecord = "HumanObservation", #should any sample from Net2 be PreservedSpecimen, and samples from Net 1 be "Human Observation"?
          geodeticDatum = "EPSG:4326")
 
 # To do: figure out way to flatten the event core. 
@@ -176,7 +179,7 @@ After internal discussion, it was opted to associate an `occurrenceID` to an ent
 
 Let's first create an Occurrence extension for the (estimated) abundance data. The abundance data also includes data collected in 2020 so we do need to filter for the samples collected in 2019 first. 
 
-``` {r bongo2019 abundance occ, eval = FALSE}
+``` {r bongo2019 abundance occ, eval = FALSE, warning = FALSE}
 bongo2019_abun <- read_excel(here("Bongo", "raw_data", 
                                   "IYS Zooplankton Taxonomy Abundance Data.xlsx"), 
                   sheet = "All data") 
@@ -333,9 +336,9 @@ bongo2019 <- worrms::wm_records_names(unique(bongo2019_taxa$species)) %>% bind_r
 bongo2019_taxa_occ <- left_join(bongo2019_taxa, bongo2019, by = "species")
 ```
 
-Upon inspection of the species filtered out of the bongo dataset, some sample_ids have associated notes in which sometimes species are specified, see e.g. sample_id Z80, Z15, SS102 etc. Where the notes specify the species and individual measurements (e.g. SS81) I have dealt with these samples in a later stage. However, the other sample_ids I have left as is -- notes are added to the eMoF table in a column labeled `measurementRemarks`. 
+Upon inspection of the species filtered out of the bongo dataset, some sample_ids have notes in which species are specified, see e.g. sample_id Z80, Z15, SS102 etc. Where the notes specify the species and individual measurements (e.g. SS81) I have dealt with these samples in a later stage. However, the other sample_ids I have left as is -- notes are added to the eMoF table in a column labeled `measurementRemarks`. 
 
-When examining the bongo_taxa_occ dataset, numerous data entries have the `sample_id` 'Petri dish' associated to them, with the only distinguishable feature being a difference in length measurement. In our current set up, all Petri dish sample_ids belonging to the same station have the same eventID (e.g. GoA2019_Stn10:cast1:bongo:Net1:Petri dish), although they are different data entries with different associated measurements. Therefore we need attach a unique sampleID to them and then merge them back to the dataframe. Make sure that the value reported in the `number` column is numeric. 
+When examining the bongo_taxa_occ dataset, numerous data entries have the `sample_id` 'Petri dish' associated to them, with the only distinguishable feature being a difference in length measurement. In our current set up, all Petri dish sample_ids belonging to the same station have the same `eventID` (e.g. GoA2019_Stn10:cast1:bongo:Net1:Petri dish), although they are different data entries with different associated measurements. Therefore we need attach a unique sampleID to them and then merge them back to the dataframe. Make sure that the value reported in the `number` column is numeric. 
 
 ``` {r petri_dish, eval = FALSE}
 bongo_occ_petri <- bongo2019_taxa_occ %>% filter(sample_id == "Petri dish") %>%
@@ -566,7 +569,7 @@ To create the final occurrence extension, the five occurrence tables are joined.
 bongo2019_occ_fnl <- rbind(bongo2019_occ1, bongo2019_occ2, bongo2019_occ3, bongo2019_occ4, bongo2019_occ5) 
 bongo2019_occ_fnl <- bongo2019_occ_fnl[mixedorder(as.character(bongo2019_occ_fnl$eventID)),]
 bongo2019_occ_fnl <- bongo2019_occ_fnl %>%
-  mutate(occurrenceID = paste("IYS_GoA2019_zocc", row_number(), sep = ""),
+  mutate(
   scientificName = ifelse(grepl("Sagitta", bongo2019_occ_fnl$scientificName), "Sagittoidea", scientificName),
   scientificName = ifelse(grepl("E pacifica", bongo2019_occ_fnl$scientificName), "Euphausia pacifica", scientificName),
   scientificName = ifelse(grepl("T spinifera", bongo2019_occ_fnl$scientificName), "Thysanoessa spinifera",
@@ -587,11 +590,10 @@ temp <- worrms::wm_records_names(bongo2019_no_worms_id$scientificName) %>% dplyr
 bongo2019_no_worms_id <- left_join(bongo2019_no_worms_id, temp, by = "scientificName") %>% distinct()
 
 # Join this back to the dataframe with all the worms ids: bongo2019_worms_id
-bongo2019_occ_fnl <- bongo2019_worms_id
 bongo2019_occ_fnl <- plyr::rbind.fill(bongo2019_worms_id, bongo2019_no_worms_id)
 ```
 
-It is recommended that columns `sex` and `lifestage` are added to both Occurrence and eMoF extension, so they get added here also. Please note, controlled vocabulary for the lifestage won't be added until the eMOF extension. 
+It is recommended that columns `sex` and `lifestage` are added to both Occurrence and eMoF extension, so they get added here also. Please note however, that controlled vocabulary for the lifestage won't be added until the eMOF extension. 
 
 ``` {r, eval = FALSE}
 bongo2019_occ_fnl <- bongo2019_occ_fnl %>%
