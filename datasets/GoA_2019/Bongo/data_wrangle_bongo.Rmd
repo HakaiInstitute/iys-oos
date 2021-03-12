@@ -250,15 +250,22 @@ no_worms_id_2 <- left_join(bongo2019_abun, bongo2019_worms_id, by = "scientificn
 
 # Merge this dataset back into original dataframe. First remove the column "genus" from bongo2019_abun, because otherwise this one is copied. 
 bongo2019_abun <- bongo2019_abun %>% select(-genus)
+<<<<<<< HEAD
 bongo2019_abun <- left_join(bongo2019_abun, bongo2019_worms_id, by = "scientificname")
+=======
+bongo2019_abun <- left_join(bongo2019_abun, bongo2019_worms_id, by = "scientificname") %>%
+>>>>>>> 4af98c6c4a005a8bbc40cf8229101cf55b3db877
 bongo2019_taxa_abundance <- bongo2019_abun %>%
   select(eventID = cast,
          scientificName = scientificname,
          scientificNameID = lsid,
          scientificAuthorityName = authority,
          individualCount = ind_counted,
+<<<<<<< HEAD
          lifeStage = stage,
          sex,
+=======
+>>>>>>> 4af98c6c4a005a8bbc40cf8229101cf55b3db877
          taxonRank = rank,
          taxonomicStatus = status,
          identificationQualifier,
