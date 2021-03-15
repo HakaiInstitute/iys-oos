@@ -19,3 +19,6 @@ Manual changes are described here, any scripts used to aid in data tidying can b
 * For sampleID `SS106` the value in the `lifeStage` column has been changed from `CV` to `adult` (as per comm. with Natalie Mahara). `CV` describes a life stage of copepodites, and SS106 is not a copepoda but E. pacifica.
 * For sampleID `SS107` the value in the `lifeStage` column has been changed from `CV` to `NA`. This sample refers to Radiolarians, and the `CV` life stage is only applicable to copepodites. 
 
+**Important data limitation alert**
+
+Some samples were taken from Net 1 (abundance and community composition study) and also used in the fatty acid / isotope analysis. However, while that dataframe _usually_ does identify whether the samples were taken from Net 1, the datasheet from the abundance / community composition study does _not_ indicate which samples were also used for the other study. Given that the information on life stage and sex does not always match, it's not possible to accurately cross-reference. As such, dry weight and length measurements from samples taken from Net 1 are _not_ included in the extended measurementOrFact extension (eMOF). This omittance has no implications for the occurrence records (presence/absence) of all zooplankton collected with a bongo net. 
