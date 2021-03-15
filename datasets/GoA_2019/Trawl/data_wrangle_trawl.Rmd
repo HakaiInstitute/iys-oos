@@ -603,18 +603,18 @@ trawl2020_methods <- trawl2020_occ %>%
 trawl2020_allcatch_emof <- cbind(trawl2020_allcatch_measurement, trawl2020_methods) %>% 
   mutate(measurementType = recode(measurementType,
                                   `CATCH_WEIGHT (KG)` = "Total species biomass",
-                                  organismQuantity = "count"),
+                                  organismQuantity = "individualCount"),
          measurementID = case_when(
-           measurementType == "count" ~ paste(occurrenceID, "count", sep = "-"),
+           measurementType == "individualCount" ~ paste(occurrenceID, "individualCount", sep = "-"),
            measurementType == "Total species biomass" ~ paste(occurrenceID, "biomass", sep = "-")),
          measurementTypeID = case_when(
            measurementType == "Total species biomass" ~ "http://vocab.nerc.ac.uk/collection/S06/current/S0600088/",
-           measurementType == "count" ~ "http://vocab.nerc.ac.uk/collection/P01/current/OCOUNT01/"),
+           measurementType == "individualCount" ~ "http://vocab.nerc.ac.uk/collection/P01/current/OCOUNT01/"),
          measurementUnit = case_when(
-           measurementType == "Total species biomass" ~ "kg",
-           measurementType == "count" ~ "individuals"),
+           measurementType == "Total species biomass" ~ "kilogram",
+           measurementType == "individualCount" ~ "individuals"),
          measurementUnitID = case_when(
-           measurementUnit == "kg" ~ "http://vocab.nerc.ac.uk/collection/P06/current/KGXX/",
+           measurementUnit == "kilogram" ~ "http://vocab.nerc.ac.uk/collection/P06/current/KGXX/",
            measurementUnit == "individuals" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UUUU/"),
          measurementValueID = NA) %>%
   select(occurrenceID, measurementID, measurementType, measurementTypeID, measurementValue, measurementValueID,
