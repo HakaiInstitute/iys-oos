@@ -1,5 +1,13 @@
 eventID,measurementID,measurementType,measurementTypeID,measurementValue,measurementValueID,measurementUnit,measurementUnitID
 IYS:GoA2020_Stn1:trawl,IYS:GoA2020_Stn1:trawl:sampling_gear,sampling_gear,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/,GoA 2020 Trawl Net, ,NA,NA
+IYS:GoA2020_Stn1:trawl,IYS:GoA2020_Stn1:trawl:headrope_depth_15_min,headrope_depth_15_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn1:trawl,IYS:GoA2020_Stn1:trawl:headrope_depth_30_min,headrope_depth_30_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn1:trawl,IYS:GoA2020_Stn1:trawl:headrope_depth_45_min,headrope_depth_45_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn1:trawl,IYS:GoA2020_Stn1:trawl:headrope_depth_end,headrope_depth_end, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn1:trawl,IYS:GoA2020_Stn1:trawl:warp_distance_15_min,warp_distance_15_min, ,274,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn1:trawl,IYS:GoA2020_Stn1:trawl:warp_distance_30_min,warp_distance_30_min, ,274,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn1:trawl,IYS:GoA2020_Stn1:trawl:warp_distance_45_min,warp_distance_45_min, ,274,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn1:trawl,IYS:GoA2020_Stn1:trawl:warp_distance_end,warp_distance_end, ,274,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn1:trawl,IYS:GoA2020_Stn1:trawl:net_opening_width_wings,net_opening_width_wings, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn1:trawl,IYS:GoA2020_Stn1:trawl:net_opening_width_wings_30_min,net_opening_width_wings_30_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn1:trawl,IYS:GoA2020_Stn1:trawl:net_opening_width_wings_45_min,net_opening_width_wings_45_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
@@ -13,6 +21,14 @@ IYS:GoA2020_Stn1:trawl,IYS:GoA2020_Stn1:trawl:net_opening_depth_30_min,net_openi
 IYS:GoA2020_Stn1:trawl,IYS:GoA2020_Stn1:trawl:net_opening_depth_45_min,net_opening_depth_45_min,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn1:trawl,IYS:GoA2020_Stn1:trawl:net_opening_depth_end,net_opening_depth_end,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn2:trawl,IYS:GoA2020_Stn2:trawl:sampling_gear,sampling_gear,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/,GoA 2020 Trawl Net, ,NA,NA
+IYS:GoA2020_Stn2:trawl,IYS:GoA2020_Stn2:trawl:headrope_depth_15_min,headrope_depth_15_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn2:trawl,IYS:GoA2020_Stn2:trawl:headrope_depth_30_min,headrope_depth_30_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn2:trawl,IYS:GoA2020_Stn2:trawl:headrope_depth_45_min,headrope_depth_45_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn2:trawl,IYS:GoA2020_Stn2:trawl:headrope_depth_end,headrope_depth_end, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn2:trawl,IYS:GoA2020_Stn2:trawl:warp_distance_15_min,warp_distance_15_min, ,256,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn2:trawl,IYS:GoA2020_Stn2:trawl:warp_distance_30_min,warp_distance_30_min, ,247,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn2:trawl,IYS:GoA2020_Stn2:trawl:warp_distance_45_min,warp_distance_45_min, ,235,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn2:trawl,IYS:GoA2020_Stn2:trawl:warp_distance_end,warp_distance_end, ,235,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn2:trawl,IYS:GoA2020_Stn2:trawl:net_opening_width_wings,net_opening_width_wings, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn2:trawl,IYS:GoA2020_Stn2:trawl:net_opening_width_wings_30_min,net_opening_width_wings_30_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn2:trawl,IYS:GoA2020_Stn2:trawl:net_opening_width_wings_45_min,net_opening_width_wings_45_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
@@ -26,6 +42,14 @@ IYS:GoA2020_Stn2:trawl,IYS:GoA2020_Stn2:trawl:net_opening_depth_30_min,net_openi
 IYS:GoA2020_Stn2:trawl,IYS:GoA2020_Stn2:trawl:net_opening_depth_45_min,net_opening_depth_45_min,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,20,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn2:trawl,IYS:GoA2020_Stn2:trawl:net_opening_depth_end,net_opening_depth_end,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,18,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn3:trawl,IYS:GoA2020_Stn3:trawl:sampling_gear,sampling_gear,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/,GoA 2020 Trawl Net, ,NA,NA
+IYS:GoA2020_Stn3:trawl,IYS:GoA2020_Stn3:trawl:headrope_depth_15_min,headrope_depth_15_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn3:trawl,IYS:GoA2020_Stn3:trawl:headrope_depth_30_min,headrope_depth_30_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn3:trawl,IYS:GoA2020_Stn3:trawl:headrope_depth_45_min,headrope_depth_45_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn3:trawl,IYS:GoA2020_Stn3:trawl:headrope_depth_end,headrope_depth_end, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn3:trawl,IYS:GoA2020_Stn3:trawl:warp_distance_15_min,warp_distance_15_min, ,278,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn3:trawl,IYS:GoA2020_Stn3:trawl:warp_distance_30_min,warp_distance_30_min, ,276,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn3:trawl,IYS:GoA2020_Stn3:trawl:warp_distance_45_min,warp_distance_45_min, ,278,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn3:trawl,IYS:GoA2020_Stn3:trawl:warp_distance_end,warp_distance_end, ,293,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn3:trawl,IYS:GoA2020_Stn3:trawl:net_opening_width_wings,net_opening_width_wings, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn3:trawl,IYS:GoA2020_Stn3:trawl:net_opening_width_wings_30_min,net_opening_width_wings_30_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn3:trawl,IYS:GoA2020_Stn3:trawl:net_opening_width_wings_45_min,net_opening_width_wings_45_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
@@ -39,6 +63,14 @@ IYS:GoA2020_Stn3:trawl,IYS:GoA2020_Stn3:trawl:net_opening_depth_30_min,net_openi
 IYS:GoA2020_Stn3:trawl,IYS:GoA2020_Stn3:trawl:net_opening_depth_45_min,net_opening_depth_45_min,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,15,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn3:trawl,IYS:GoA2020_Stn3:trawl:net_opening_depth_end,net_opening_depth_end,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,16,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn4:trawl,IYS:GoA2020_Stn4:trawl:sampling_gear,sampling_gear,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/,GoA 2020 Trawl Net, ,NA,NA
+IYS:GoA2020_Stn4:trawl,IYS:GoA2020_Stn4:trawl:headrope_depth_15_min,headrope_depth_15_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn4:trawl,IYS:GoA2020_Stn4:trawl:headrope_depth_30_min,headrope_depth_30_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn4:trawl,IYS:GoA2020_Stn4:trawl:headrope_depth_45_min,headrope_depth_45_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn4:trawl,IYS:GoA2020_Stn4:trawl:headrope_depth_end,headrope_depth_end, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn4:trawl,IYS:GoA2020_Stn4:trawl:warp_distance_15_min,warp_distance_15_min, ,256,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn4:trawl,IYS:GoA2020_Stn4:trawl:warp_distance_30_min,warp_distance_30_min, ,270,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn4:trawl,IYS:GoA2020_Stn4:trawl:warp_distance_45_min,warp_distance_45_min, ,265,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn4:trawl,IYS:GoA2020_Stn4:trawl:warp_distance_end,warp_distance_end, ,265,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn4:trawl,IYS:GoA2020_Stn4:trawl:net_opening_width_wings,net_opening_width_wings, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn4:trawl,IYS:GoA2020_Stn4:trawl:net_opening_width_wings_30_min,net_opening_width_wings_30_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn4:trawl,IYS:GoA2020_Stn4:trawl:net_opening_width_wings_45_min,net_opening_width_wings_45_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
@@ -52,6 +84,14 @@ IYS:GoA2020_Stn4:trawl,IYS:GoA2020_Stn4:trawl:net_opening_depth_30_min,net_openi
 IYS:GoA2020_Stn4:trawl,IYS:GoA2020_Stn4:trawl:net_opening_depth_45_min,net_opening_depth_45_min,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn4:trawl,IYS:GoA2020_Stn4:trawl:net_opening_depth_end,net_opening_depth_end,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn5:trawl,IYS:GoA2020_Stn5:trawl:sampling_gear,sampling_gear,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/,GoA 2020 Trawl Net, ,NA,NA
+IYS:GoA2020_Stn5:trawl,IYS:GoA2020_Stn5:trawl:headrope_depth_15_min,headrope_depth_15_min, ,30,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn5:trawl,IYS:GoA2020_Stn5:trawl:headrope_depth_30_min,headrope_depth_30_min, ,30,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn5:trawl,IYS:GoA2020_Stn5:trawl:headrope_depth_45_min,headrope_depth_45_min, ,28,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn5:trawl,IYS:GoA2020_Stn5:trawl:headrope_depth_end,headrope_depth_end, ,30,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn5:trawl,IYS:GoA2020_Stn5:trawl:warp_distance_15_min,warp_distance_15_min, ,360,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn5:trawl,IYS:GoA2020_Stn5:trawl:warp_distance_30_min,warp_distance_30_min, ,370,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn5:trawl,IYS:GoA2020_Stn5:trawl:warp_distance_45_min,warp_distance_45_min, ,393,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn5:trawl,IYS:GoA2020_Stn5:trawl:warp_distance_end,warp_distance_end, ,400,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn5:trawl,IYS:GoA2020_Stn5:trawl:net_opening_width_wings,net_opening_width_wings, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn5:trawl,IYS:GoA2020_Stn5:trawl:net_opening_width_wings_30_min,net_opening_width_wings_30_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn5:trawl,IYS:GoA2020_Stn5:trawl:net_opening_width_wings_45_min,net_opening_width_wings_45_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
@@ -65,6 +105,14 @@ IYS:GoA2020_Stn5:trawl,IYS:GoA2020_Stn5:trawl:net_opening_depth_30_min,net_openi
 IYS:GoA2020_Stn5:trawl,IYS:GoA2020_Stn5:trawl:net_opening_depth_45_min,net_opening_depth_45_min,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,9,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn5:trawl,IYS:GoA2020_Stn5:trawl:net_opening_depth_end,net_opening_depth_end,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,9,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn6:trawl,IYS:GoA2020_Stn6:trawl:sampling_gear,sampling_gear,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/,GoA 2020 Trawl Net, ,NA,NA
+IYS:GoA2020_Stn6:trawl,IYS:GoA2020_Stn6:trawl:headrope_depth_15_min,headrope_depth_15_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn6:trawl,IYS:GoA2020_Stn6:trawl:headrope_depth_30_min,headrope_depth_30_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn6:trawl,IYS:GoA2020_Stn6:trawl:headrope_depth_45_min,headrope_depth_45_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn6:trawl,IYS:GoA2020_Stn6:trawl:headrope_depth_end,headrope_depth_end, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn6:trawl,IYS:GoA2020_Stn6:trawl:warp_distance_15_min,warp_distance_15_min, ,225,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn6:trawl,IYS:GoA2020_Stn6:trawl:warp_distance_30_min,warp_distance_30_min, ,238,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn6:trawl,IYS:GoA2020_Stn6:trawl:warp_distance_45_min,warp_distance_45_min, ,247,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn6:trawl,IYS:GoA2020_Stn6:trawl:warp_distance_end,warp_distance_end, ,240,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn6:trawl,IYS:GoA2020_Stn6:trawl:net_opening_width_wings,net_opening_width_wings, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn6:trawl,IYS:GoA2020_Stn6:trawl:net_opening_width_wings_30_min,net_opening_width_wings_30_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn6:trawl,IYS:GoA2020_Stn6:trawl:net_opening_width_wings_45_min,net_opening_width_wings_45_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
@@ -78,6 +126,14 @@ IYS:GoA2020_Stn6:trawl,IYS:GoA2020_Stn6:trawl:net_opening_depth_30_min,net_openi
 IYS:GoA2020_Stn6:trawl,IYS:GoA2020_Stn6:trawl:net_opening_depth_45_min,net_opening_depth_45_min,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,19,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn6:trawl,IYS:GoA2020_Stn6:trawl:net_opening_depth_end,net_opening_depth_end,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,20,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn7:trawl,IYS:GoA2020_Stn7:trawl:sampling_gear,sampling_gear,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/,GoA 2020 Trawl Net, ,NA,NA
+IYS:GoA2020_Stn7:trawl,IYS:GoA2020_Stn7:trawl:headrope_depth_15_min,headrope_depth_15_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn7:trawl,IYS:GoA2020_Stn7:trawl:headrope_depth_30_min,headrope_depth_30_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn7:trawl,IYS:GoA2020_Stn7:trawl:headrope_depth_45_min,headrope_depth_45_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn7:trawl,IYS:GoA2020_Stn7:trawl:headrope_depth_end,headrope_depth_end, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn7:trawl,IYS:GoA2020_Stn7:trawl:warp_distance_15_min,warp_distance_15_min, ,250,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn7:trawl,IYS:GoA2020_Stn7:trawl:warp_distance_30_min,warp_distance_30_min, ,258,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn7:trawl,IYS:GoA2020_Stn7:trawl:warp_distance_45_min,warp_distance_45_min, ,256,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn7:trawl,IYS:GoA2020_Stn7:trawl:warp_distance_end,warp_distance_end, ,256,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn7:trawl,IYS:GoA2020_Stn7:trawl:net_opening_width_wings,net_opening_width_wings, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn7:trawl,IYS:GoA2020_Stn7:trawl:net_opening_width_wings_30_min,net_opening_width_wings_30_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn7:trawl,IYS:GoA2020_Stn7:trawl:net_opening_width_wings_45_min,net_opening_width_wings_45_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
@@ -91,6 +147,14 @@ IYS:GoA2020_Stn7:trawl,IYS:GoA2020_Stn7:trawl:net_opening_depth_30_min,net_openi
 IYS:GoA2020_Stn7:trawl,IYS:GoA2020_Stn7:trawl:net_opening_depth_45_min,net_opening_depth_45_min,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn7:trawl,IYS:GoA2020_Stn7:trawl:net_opening_depth_end,net_opening_depth_end,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn8:trawl,IYS:GoA2020_Stn8:trawl:sampling_gear,sampling_gear,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/,GoA 2020 Trawl Net, ,NA,NA
+IYS:GoA2020_Stn8:trawl,IYS:GoA2020_Stn8:trawl:headrope_depth_15_min,headrope_depth_15_min, ,2,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn8:trawl,IYS:GoA2020_Stn8:trawl:headrope_depth_30_min,headrope_depth_30_min, ,2,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn8:trawl,IYS:GoA2020_Stn8:trawl:headrope_depth_45_min,headrope_depth_45_min, ,2,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn8:trawl,IYS:GoA2020_Stn8:trawl:headrope_depth_end,headrope_depth_end, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn8:trawl,IYS:GoA2020_Stn8:trawl:warp_distance_15_min,warp_distance_15_min, ,265,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn8:trawl,IYS:GoA2020_Stn8:trawl:warp_distance_30_min,warp_distance_30_min, ,255,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn8:trawl,IYS:GoA2020_Stn8:trawl:warp_distance_45_min,warp_distance_45_min, ,260,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn8:trawl,IYS:GoA2020_Stn8:trawl:warp_distance_end,warp_distance_end, ,260,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn8:trawl,IYS:GoA2020_Stn8:trawl:net_opening_width_wings,net_opening_width_wings, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn8:trawl,IYS:GoA2020_Stn8:trawl:net_opening_width_wings_30_min,net_opening_width_wings_30_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn8:trawl,IYS:GoA2020_Stn8:trawl:net_opening_width_wings_45_min,net_opening_width_wings_45_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
@@ -104,6 +168,14 @@ IYS:GoA2020_Stn8:trawl,IYS:GoA2020_Stn8:trawl:net_opening_depth_30_min,net_openi
 IYS:GoA2020_Stn8:trawl,IYS:GoA2020_Stn8:trawl:net_opening_depth_45_min,net_opening_depth_45_min,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,18,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn8:trawl,IYS:GoA2020_Stn8:trawl:net_opening_depth_end,net_opening_depth_end,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,18,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn9:trawl,IYS:GoA2020_Stn9:trawl:sampling_gear,sampling_gear,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/,GoA 2020 Trawl Net, ,NA,NA
+IYS:GoA2020_Stn9:trawl,IYS:GoA2020_Stn9:trawl:headrope_depth_15_min,headrope_depth_15_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn9:trawl,IYS:GoA2020_Stn9:trawl:headrope_depth_30_min,headrope_depth_30_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn9:trawl,IYS:GoA2020_Stn9:trawl:headrope_depth_45_min,headrope_depth_45_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn9:trawl,IYS:GoA2020_Stn9:trawl:headrope_depth_end,headrope_depth_end, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn9:trawl,IYS:GoA2020_Stn9:trawl:warp_distance_15_min,warp_distance_15_min, ,247,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn9:trawl,IYS:GoA2020_Stn9:trawl:warp_distance_30_min,warp_distance_30_min, ,245,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn9:trawl,IYS:GoA2020_Stn9:trawl:warp_distance_45_min,warp_distance_45_min, ,245,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn9:trawl,IYS:GoA2020_Stn9:trawl:warp_distance_end,warp_distance_end, ,247,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn9:trawl,IYS:GoA2020_Stn9:trawl:net_opening_width_wings,net_opening_width_wings, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn9:trawl,IYS:GoA2020_Stn9:trawl:net_opening_width_wings_30_min,net_opening_width_wings_30_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn9:trawl,IYS:GoA2020_Stn9:trawl:net_opening_width_wings_45_min,net_opening_width_wings_45_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
@@ -117,6 +189,14 @@ IYS:GoA2020_Stn9:trawl,IYS:GoA2020_Stn9:trawl:net_opening_depth_30_min,net_openi
 IYS:GoA2020_Stn9:trawl,IYS:GoA2020_Stn9:trawl:net_opening_depth_45_min,net_opening_depth_45_min,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,17,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn9:trawl,IYS:GoA2020_Stn9:trawl:net_opening_depth_end,net_opening_depth_end,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,18,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn10:trawl,IYS:GoA2020_Stn10:trawl:sampling_gear,sampling_gear,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/,GoA 2020 Trawl Net, ,NA,NA
+IYS:GoA2020_Stn10:trawl,IYS:GoA2020_Stn10:trawl:headrope_depth_15_min,headrope_depth_15_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn10:trawl,IYS:GoA2020_Stn10:trawl:headrope_depth_30_min,headrope_depth_30_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn10:trawl,IYS:GoA2020_Stn10:trawl:headrope_depth_45_min,headrope_depth_45_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn10:trawl,IYS:GoA2020_Stn10:trawl:headrope_depth_end,headrope_depth_end, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn10:trawl,IYS:GoA2020_Stn10:trawl:warp_distance_15_min,warp_distance_15_min, ,237,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn10:trawl,IYS:GoA2020_Stn10:trawl:warp_distance_30_min,warp_distance_30_min, ,256,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn10:trawl,IYS:GoA2020_Stn10:trawl:warp_distance_45_min,warp_distance_45_min, ,256,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn10:trawl,IYS:GoA2020_Stn10:trawl:warp_distance_end,warp_distance_end, ,256,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn10:trawl,IYS:GoA2020_Stn10:trawl:net_opening_width_wings,net_opening_width_wings, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn10:trawl,IYS:GoA2020_Stn10:trawl:net_opening_width_wings_30_min,net_opening_width_wings_30_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn10:trawl,IYS:GoA2020_Stn10:trawl:net_opening_width_wings_45_min,net_opening_width_wings_45_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
@@ -130,6 +210,14 @@ IYS:GoA2020_Stn10:trawl,IYS:GoA2020_Stn10:trawl:net_opening_depth_30_min,net_ope
 IYS:GoA2020_Stn10:trawl,IYS:GoA2020_Stn10:trawl:net_opening_depth_45_min,net_opening_depth_45_min,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,19,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn10:trawl,IYS:GoA2020_Stn10:trawl:net_opening_depth_end,net_opening_depth_end,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,17,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn11:trawl,IYS:GoA2020_Stn11:trawl:sampling_gear,sampling_gear,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/,GoA 2020 Trawl Net, ,NA,NA
+IYS:GoA2020_Stn11:trawl,IYS:GoA2020_Stn11:trawl:headrope_depth_15_min,headrope_depth_15_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn11:trawl,IYS:GoA2020_Stn11:trawl:headrope_depth_30_min,headrope_depth_30_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn11:trawl,IYS:GoA2020_Stn11:trawl:headrope_depth_45_min,headrope_depth_45_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn11:trawl,IYS:GoA2020_Stn11:trawl:headrope_depth_end,headrope_depth_end, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn11:trawl,IYS:GoA2020_Stn11:trawl:warp_distance_15_min,warp_distance_15_min, ,237,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn11:trawl,IYS:GoA2020_Stn11:trawl:warp_distance_30_min,warp_distance_30_min, ,250,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn11:trawl,IYS:GoA2020_Stn11:trawl:warp_distance_45_min,warp_distance_45_min, ,250,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn11:trawl,IYS:GoA2020_Stn11:trawl:warp_distance_end,warp_distance_end, ,255,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn11:trawl,IYS:GoA2020_Stn11:trawl:net_opening_width_wings,net_opening_width_wings, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn11:trawl,IYS:GoA2020_Stn11:trawl:net_opening_width_wings_30_min,net_opening_width_wings_30_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn11:trawl,IYS:GoA2020_Stn11:trawl:net_opening_width_wings_45_min,net_opening_width_wings_45_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
@@ -143,6 +231,14 @@ IYS:GoA2020_Stn11:trawl,IYS:GoA2020_Stn11:trawl:net_opening_depth_30_min,net_ope
 IYS:GoA2020_Stn11:trawl,IYS:GoA2020_Stn11:trawl:net_opening_depth_45_min,net_opening_depth_45_min,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,17,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn11:trawl,IYS:GoA2020_Stn11:trawl:net_opening_depth_end,net_opening_depth_end,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,17,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn12:trawl,IYS:GoA2020_Stn12:trawl:sampling_gear,sampling_gear,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/,GoA 2020 Trawl Net, ,NA,NA
+IYS:GoA2020_Stn12:trawl,IYS:GoA2020_Stn12:trawl:headrope_depth_15_min,headrope_depth_15_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn12:trawl,IYS:GoA2020_Stn12:trawl:headrope_depth_30_min,headrope_depth_30_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn12:trawl,IYS:GoA2020_Stn12:trawl:headrope_depth_45_min,headrope_depth_45_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn12:trawl,IYS:GoA2020_Stn12:trawl:headrope_depth_end,headrope_depth_end, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn12:trawl,IYS:GoA2020_Stn12:trawl:warp_distance_15_min,warp_distance_15_min, ,260,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn12:trawl,IYS:GoA2020_Stn12:trawl:warp_distance_30_min,warp_distance_30_min, ,255,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn12:trawl,IYS:GoA2020_Stn12:trawl:warp_distance_45_min,warp_distance_45_min, ,290,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn12:trawl,IYS:GoA2020_Stn12:trawl:warp_distance_end,warp_distance_end, ,250,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn12:trawl,IYS:GoA2020_Stn12:trawl:net_opening_width_wings,net_opening_width_wings, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn12:trawl,IYS:GoA2020_Stn12:trawl:net_opening_width_wings_30_min,net_opening_width_wings_30_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn12:trawl,IYS:GoA2020_Stn12:trawl:net_opening_width_wings_45_min,net_opening_width_wings_45_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
@@ -156,6 +252,14 @@ IYS:GoA2020_Stn12:trawl,IYS:GoA2020_Stn12:trawl:net_opening_depth_30_min,net_ope
 IYS:GoA2020_Stn12:trawl,IYS:GoA2020_Stn12:trawl:net_opening_depth_45_min,net_opening_depth_45_min,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,18,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn12:trawl,IYS:GoA2020_Stn12:trawl:net_opening_depth_end,net_opening_depth_end,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,21,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn13:trawl,IYS:GoA2020_Stn13:trawl:sampling_gear,sampling_gear,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/,GoA 2020 Trawl Net, ,NA,NA
+IYS:GoA2020_Stn13:trawl,IYS:GoA2020_Stn13:trawl:headrope_depth_15_min,headrope_depth_15_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn13:trawl,IYS:GoA2020_Stn13:trawl:headrope_depth_30_min,headrope_depth_30_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn13:trawl,IYS:GoA2020_Stn13:trawl:headrope_depth_45_min,headrope_depth_45_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn13:trawl,IYS:GoA2020_Stn13:trawl:headrope_depth_end,headrope_depth_end, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn13:trawl,IYS:GoA2020_Stn13:trawl:warp_distance_15_min,warp_distance_15_min, ,250,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn13:trawl,IYS:GoA2020_Stn13:trawl:warp_distance_30_min,warp_distance_30_min, ,255,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn13:trawl,IYS:GoA2020_Stn13:trawl:warp_distance_45_min,warp_distance_45_min, ,255,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn13:trawl,IYS:GoA2020_Stn13:trawl:warp_distance_end,warp_distance_end, ,255,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn13:trawl,IYS:GoA2020_Stn13:trawl:net_opening_width_wings,net_opening_width_wings, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn13:trawl,IYS:GoA2020_Stn13:trawl:net_opening_width_wings_30_min,net_opening_width_wings_30_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn13:trawl,IYS:GoA2020_Stn13:trawl:net_opening_width_wings_45_min,net_opening_width_wings_45_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
@@ -169,6 +273,14 @@ IYS:GoA2020_Stn13:trawl,IYS:GoA2020_Stn13:trawl:net_opening_depth_30_min,net_ope
 IYS:GoA2020_Stn13:trawl,IYS:GoA2020_Stn13:trawl:net_opening_depth_45_min,net_opening_depth_45_min,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,17,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn13:trawl,IYS:GoA2020_Stn13:trawl:net_opening_depth_end,net_opening_depth_end,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,16,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn14:trawl,IYS:GoA2020_Stn14:trawl:sampling_gear,sampling_gear,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/,GoA 2020 Trawl Net, ,NA,NA
+IYS:GoA2020_Stn14:trawl,IYS:GoA2020_Stn14:trawl:headrope_depth_15_min,headrope_depth_15_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn14:trawl,IYS:GoA2020_Stn14:trawl:headrope_depth_30_min,headrope_depth_30_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn14:trawl,IYS:GoA2020_Stn14:trawl:headrope_depth_45_min,headrope_depth_45_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn14:trawl,IYS:GoA2020_Stn14:trawl:headrope_depth_end,headrope_depth_end, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn14:trawl,IYS:GoA2020_Stn14:trawl:warp_distance_15_min,warp_distance_15_min, ,236,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn14:trawl,IYS:GoA2020_Stn14:trawl:warp_distance_30_min,warp_distance_30_min, ,256,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn14:trawl,IYS:GoA2020_Stn14:trawl:warp_distance_45_min,warp_distance_45_min, ,275,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn14:trawl,IYS:GoA2020_Stn14:trawl:warp_distance_end,warp_distance_end, ,275,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn14:trawl,IYS:GoA2020_Stn14:trawl:net_opening_width_wings,net_opening_width_wings, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn14:trawl,IYS:GoA2020_Stn14:trawl:net_opening_width_wings_30_min,net_opening_width_wings_30_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn14:trawl,IYS:GoA2020_Stn14:trawl:net_opening_width_wings_45_min,net_opening_width_wings_45_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
@@ -182,6 +294,14 @@ IYS:GoA2020_Stn14:trawl,IYS:GoA2020_Stn14:trawl:net_opening_depth_30_min,net_ope
 IYS:GoA2020_Stn14:trawl,IYS:GoA2020_Stn14:trawl:net_opening_depth_45_min,net_opening_depth_45_min,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn14:trawl,IYS:GoA2020_Stn14:trawl:net_opening_depth_end,net_opening_depth_end,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn15:trawl,IYS:GoA2020_Stn15:trawl:sampling_gear,sampling_gear,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/,GoA 2020 Trawl Net, ,NA,NA
+IYS:GoA2020_Stn15:trawl,IYS:GoA2020_Stn15:trawl:headrope_depth_15_min,headrope_depth_15_min, ,28,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn15:trawl,IYS:GoA2020_Stn15:trawl:headrope_depth_30_min,headrope_depth_30_min, ,33,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn15:trawl,IYS:GoA2020_Stn15:trawl:headrope_depth_45_min,headrope_depth_45_min, ,30,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn15:trawl,IYS:GoA2020_Stn15:trawl:headrope_depth_end,headrope_depth_end, ,33,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn15:trawl,IYS:GoA2020_Stn15:trawl:warp_distance_15_min,warp_distance_15_min, ,393,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn15:trawl,IYS:GoA2020_Stn15:trawl:warp_distance_30_min,warp_distance_30_min, ,400,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn15:trawl,IYS:GoA2020_Stn15:trawl:warp_distance_45_min,warp_distance_45_min, ,400,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn15:trawl,IYS:GoA2020_Stn15:trawl:warp_distance_end,warp_distance_end, ,405,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn15:trawl,IYS:GoA2020_Stn15:trawl:net_opening_width_wings,net_opening_width_wings, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn15:trawl,IYS:GoA2020_Stn15:trawl:net_opening_width_wings_30_min,net_opening_width_wings_30_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn15:trawl,IYS:GoA2020_Stn15:trawl:net_opening_width_wings_45_min,net_opening_width_wings_45_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
@@ -195,6 +315,14 @@ IYS:GoA2020_Stn15:trawl,IYS:GoA2020_Stn15:trawl:net_opening_depth_30_min,net_ope
 IYS:GoA2020_Stn15:trawl,IYS:GoA2020_Stn15:trawl:net_opening_depth_45_min,net_opening_depth_45_min,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,10,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn15:trawl,IYS:GoA2020_Stn15:trawl:net_opening_depth_end,net_opening_depth_end,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,10,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn16:trawl,IYS:GoA2020_Stn16:trawl:sampling_gear,sampling_gear,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/,GoA 2020 Trawl Net, ,NA,NA
+IYS:GoA2020_Stn16:trawl,IYS:GoA2020_Stn16:trawl:headrope_depth_15_min,headrope_depth_15_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn16:trawl,IYS:GoA2020_Stn16:trawl:headrope_depth_30_min,headrope_depth_30_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn16:trawl,IYS:GoA2020_Stn16:trawl:headrope_depth_45_min,headrope_depth_45_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn16:trawl,IYS:GoA2020_Stn16:trawl:headrope_depth_end,headrope_depth_end, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn16:trawl,IYS:GoA2020_Stn16:trawl:warp_distance_15_min,warp_distance_15_min, ,255,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn16:trawl,IYS:GoA2020_Stn16:trawl:warp_distance_30_min,warp_distance_30_min, ,250,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn16:trawl,IYS:GoA2020_Stn16:trawl:warp_distance_45_min,warp_distance_45_min, ,235,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn16:trawl,IYS:GoA2020_Stn16:trawl:warp_distance_end,warp_distance_end, ,242,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn16:trawl,IYS:GoA2020_Stn16:trawl:net_opening_width_wings,net_opening_width_wings, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn16:trawl,IYS:GoA2020_Stn16:trawl:net_opening_width_wings_30_min,net_opening_width_wings_30_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn16:trawl,IYS:GoA2020_Stn16:trawl:net_opening_width_wings_45_min,net_opening_width_wings_45_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
@@ -208,6 +336,14 @@ IYS:GoA2020_Stn16:trawl,IYS:GoA2020_Stn16:trawl:net_opening_depth_30_min,net_ope
 IYS:GoA2020_Stn16:trawl,IYS:GoA2020_Stn16:trawl:net_opening_depth_45_min,net_opening_depth_45_min,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,19,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn16:trawl,IYS:GoA2020_Stn16:trawl:net_opening_depth_end,net_opening_depth_end,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,19,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn17:trawl,IYS:GoA2020_Stn17:trawl:sampling_gear,sampling_gear,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/,GoA 2020 Trawl Net, ,NA,NA
+IYS:GoA2020_Stn17:trawl,IYS:GoA2020_Stn17:trawl:headrope_depth_15_min,headrope_depth_15_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn17:trawl,IYS:GoA2020_Stn17:trawl:headrope_depth_30_min,headrope_depth_30_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn17:trawl,IYS:GoA2020_Stn17:trawl:headrope_depth_45_min,headrope_depth_45_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn17:trawl,IYS:GoA2020_Stn17:trawl:headrope_depth_end,headrope_depth_end, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn17:trawl,IYS:GoA2020_Stn17:trawl:warp_distance_15_min,warp_distance_15_min, ,245,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn17:trawl,IYS:GoA2020_Stn17:trawl:warp_distance_30_min,warp_distance_30_min, ,251,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn17:trawl,IYS:GoA2020_Stn17:trawl:warp_distance_45_min,warp_distance_45_min, ,239,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn17:trawl,IYS:GoA2020_Stn17:trawl:warp_distance_end,warp_distance_end, ,256,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn17:trawl,IYS:GoA2020_Stn17:trawl:net_opening_width_wings,net_opening_width_wings, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn17:trawl,IYS:GoA2020_Stn17:trawl:net_opening_width_wings_30_min,net_opening_width_wings_30_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn17:trawl,IYS:GoA2020_Stn17:trawl:net_opening_width_wings_45_min,net_opening_width_wings_45_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
@@ -221,6 +357,14 @@ IYS:GoA2020_Stn17:trawl,IYS:GoA2020_Stn17:trawl:net_opening_depth_30_min,net_ope
 IYS:GoA2020_Stn17:trawl,IYS:GoA2020_Stn17:trawl:net_opening_depth_45_min,net_opening_depth_45_min,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,19,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn17:trawl,IYS:GoA2020_Stn17:trawl:net_opening_depth_end,net_opening_depth_end,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,18,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn18:trawl,IYS:GoA2020_Stn18:trawl:sampling_gear,sampling_gear,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/,GoA 2020 Trawl Net, ,NA,NA
+IYS:GoA2020_Stn18:trawl,IYS:GoA2020_Stn18:trawl:headrope_depth_15_min,headrope_depth_15_min, ,29,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn18:trawl,IYS:GoA2020_Stn18:trawl:headrope_depth_30_min,headrope_depth_30_min, ,29,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn18:trawl,IYS:GoA2020_Stn18:trawl:headrope_depth_45_min,headrope_depth_45_min, ,28,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn18:trawl,IYS:GoA2020_Stn18:trawl:headrope_depth_end,headrope_depth_end, ,28,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn18:trawl,IYS:GoA2020_Stn18:trawl:warp_distance_15_min,warp_distance_15_min, ,402,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn18:trawl,IYS:GoA2020_Stn18:trawl:warp_distance_30_min,warp_distance_30_min, ,415,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn18:trawl,IYS:GoA2020_Stn18:trawl:warp_distance_45_min,warp_distance_45_min, ,414,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn18:trawl,IYS:GoA2020_Stn18:trawl:warp_distance_end,warp_distance_end, ,414,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn18:trawl,IYS:GoA2020_Stn18:trawl:net_opening_width_wings,net_opening_width_wings, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn18:trawl,IYS:GoA2020_Stn18:trawl:net_opening_width_wings_30_min,net_opening_width_wings_30_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn18:trawl,IYS:GoA2020_Stn18:trawl:net_opening_width_wings_45_min,net_opening_width_wings_45_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
@@ -234,6 +378,14 @@ IYS:GoA2020_Stn18:trawl,IYS:GoA2020_Stn18:trawl:net_opening_depth_30_min,net_ope
 IYS:GoA2020_Stn18:trawl,IYS:GoA2020_Stn18:trawl:net_opening_depth_45_min,net_opening_depth_45_min,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,11,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn18:trawl,IYS:GoA2020_Stn18:trawl:net_opening_depth_end,net_opening_depth_end,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,11,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn19:trawl,IYS:GoA2020_Stn19:trawl:sampling_gear,sampling_gear,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/,GoA 2020 Trawl Net, ,NA,NA
+IYS:GoA2020_Stn19:trawl,IYS:GoA2020_Stn19:trawl:headrope_depth_15_min,headrope_depth_15_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn19:trawl,IYS:GoA2020_Stn19:trawl:headrope_depth_30_min,headrope_depth_30_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn19:trawl,IYS:GoA2020_Stn19:trawl:headrope_depth_45_min,headrope_depth_45_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn19:trawl,IYS:GoA2020_Stn19:trawl:headrope_depth_end,headrope_depth_end, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn19:trawl,IYS:GoA2020_Stn19:trawl:warp_distance_15_min,warp_distance_15_min, ,235,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn19:trawl,IYS:GoA2020_Stn19:trawl:warp_distance_30_min,warp_distance_30_min, ,243,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn19:trawl,IYS:GoA2020_Stn19:trawl:warp_distance_45_min,warp_distance_45_min, ,245,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn19:trawl,IYS:GoA2020_Stn19:trawl:warp_distance_end,warp_distance_end, ,240,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn19:trawl,IYS:GoA2020_Stn19:trawl:net_opening_width_wings,net_opening_width_wings, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn19:trawl,IYS:GoA2020_Stn19:trawl:net_opening_width_wings_30_min,net_opening_width_wings_30_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn19:trawl,IYS:GoA2020_Stn19:trawl:net_opening_width_wings_45_min,net_opening_width_wings_45_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
@@ -247,6 +399,14 @@ IYS:GoA2020_Stn19:trawl,IYS:GoA2020_Stn19:trawl:net_opening_depth_30_min,net_ope
 IYS:GoA2020_Stn19:trawl,IYS:GoA2020_Stn19:trawl:net_opening_depth_45_min,net_opening_depth_45_min,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,9,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn19:trawl,IYS:GoA2020_Stn19:trawl:net_opening_depth_end,net_opening_depth_end,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,22,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn20:trawl,IYS:GoA2020_Stn20:trawl:sampling_gear,sampling_gear,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/,GoA 2020 Trawl Net, ,NA,NA
+IYS:GoA2020_Stn20:trawl,IYS:GoA2020_Stn20:trawl:headrope_depth_15_min,headrope_depth_15_min, ,8,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn20:trawl,IYS:GoA2020_Stn20:trawl:headrope_depth_30_min,headrope_depth_30_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn20:trawl,IYS:GoA2020_Stn20:trawl:headrope_depth_45_min,headrope_depth_45_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn20:trawl,IYS:GoA2020_Stn20:trawl:headrope_depth_end,headrope_depth_end, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn20:trawl,IYS:GoA2020_Stn20:trawl:warp_distance_15_min,warp_distance_15_min, ,247,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn20:trawl,IYS:GoA2020_Stn20:trawl:warp_distance_30_min,warp_distance_30_min, ,245,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn20:trawl,IYS:GoA2020_Stn20:trawl:warp_distance_45_min,warp_distance_45_min, ,247,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn20:trawl,IYS:GoA2020_Stn20:trawl:warp_distance_end,warp_distance_end, ,260,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn20:trawl,IYS:GoA2020_Stn20:trawl:net_opening_width_wings,net_opening_width_wings, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn20:trawl,IYS:GoA2020_Stn20:trawl:net_opening_width_wings_30_min,net_opening_width_wings_30_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn20:trawl,IYS:GoA2020_Stn20:trawl:net_opening_width_wings_45_min,net_opening_width_wings_45_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
@@ -260,6 +420,14 @@ IYS:GoA2020_Stn20:trawl,IYS:GoA2020_Stn20:trawl:net_opening_depth_30_min,net_ope
 IYS:GoA2020_Stn20:trawl,IYS:GoA2020_Stn20:trawl:net_opening_depth_45_min,net_opening_depth_45_min,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,18,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn20:trawl,IYS:GoA2020_Stn20:trawl:net_opening_depth_end,net_opening_depth_end,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,18,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn21:trawl,IYS:GoA2020_Stn21:trawl:sampling_gear,sampling_gear,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/,GoA 2020 Trawl Net, ,NA,NA
+IYS:GoA2020_Stn21:trawl,IYS:GoA2020_Stn21:trawl:headrope_depth_15_min,headrope_depth_15_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn21:trawl,IYS:GoA2020_Stn21:trawl:headrope_depth_30_min,headrope_depth_30_min, ,14,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn21:trawl,IYS:GoA2020_Stn21:trawl:headrope_depth_45_min,headrope_depth_45_min, ,5,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn21:trawl,IYS:GoA2020_Stn21:trawl:headrope_depth_end,headrope_depth_end, ,18,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn21:trawl,IYS:GoA2020_Stn21:trawl:warp_distance_15_min,warp_distance_15_min, ,245,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn21:trawl,IYS:GoA2020_Stn21:trawl:warp_distance_30_min,warp_distance_30_min, ,258,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn21:trawl,IYS:GoA2020_Stn21:trawl:warp_distance_45_min,warp_distance_45_min, ,258,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn21:trawl,IYS:GoA2020_Stn21:trawl:warp_distance_end,warp_distance_end, ,258,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn21:trawl,IYS:GoA2020_Stn21:trawl:net_opening_width_wings,net_opening_width_wings, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn21:trawl,IYS:GoA2020_Stn21:trawl:net_opening_width_wings_30_min,net_opening_width_wings_30_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn21:trawl,IYS:GoA2020_Stn21:trawl:net_opening_width_wings_45_min,net_opening_width_wings_45_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
@@ -273,6 +441,14 @@ IYS:GoA2020_Stn21:trawl,IYS:GoA2020_Stn21:trawl:net_opening_depth_30_min,net_ope
 IYS:GoA2020_Stn21:trawl,IYS:GoA2020_Stn21:trawl:net_opening_depth_45_min,net_opening_depth_45_min,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,15,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn21:trawl,IYS:GoA2020_Stn21:trawl:net_opening_depth_end,net_opening_depth_end,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,2,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn22:trawl,IYS:GoA2020_Stn22:trawl:sampling_gear,sampling_gear,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/,GoA 2020 Trawl Net, ,NA,NA
+IYS:GoA2020_Stn22:trawl,IYS:GoA2020_Stn22:trawl:headrope_depth_15_min,headrope_depth_15_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn22:trawl,IYS:GoA2020_Stn22:trawl:headrope_depth_30_min,headrope_depth_30_min, ,10,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn22:trawl,IYS:GoA2020_Stn22:trawl:headrope_depth_45_min,headrope_depth_45_min, ,12,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn22:trawl,IYS:GoA2020_Stn22:trawl:headrope_depth_end,headrope_depth_end, ,10,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn22:trawl,IYS:GoA2020_Stn22:trawl:warp_distance_15_min,warp_distance_15_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn22:trawl,IYS:GoA2020_Stn22:trawl:warp_distance_30_min,warp_distance_30_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn22:trawl,IYS:GoA2020_Stn22:trawl:warp_distance_45_min,warp_distance_45_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn22:trawl,IYS:GoA2020_Stn22:trawl:warp_distance_end,warp_distance_end, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn22:trawl,IYS:GoA2020_Stn22:trawl:net_opening_width_wings,net_opening_width_wings, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn22:trawl,IYS:GoA2020_Stn22:trawl:net_opening_width_wings_30_min,net_opening_width_wings_30_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn22:trawl,IYS:GoA2020_Stn22:trawl:net_opening_width_wings_45_min,net_opening_width_wings_45_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
@@ -286,6 +462,14 @@ IYS:GoA2020_Stn22:trawl,IYS:GoA2020_Stn22:trawl:net_opening_depth_30_min,net_ope
 IYS:GoA2020_Stn22:trawl,IYS:GoA2020_Stn22:trawl:net_opening_depth_45_min,net_opening_depth_45_min,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,12,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn22:trawl,IYS:GoA2020_Stn22:trawl:net_opening_depth_end,net_opening_depth_end,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,10,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn23:trawl,IYS:GoA2020_Stn23:trawl:sampling_gear,sampling_gear,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/,GoA 2020 Trawl Net, ,NA,NA
+IYS:GoA2020_Stn23:trawl,IYS:GoA2020_Stn23:trawl:headrope_depth_15_min,headrope_depth_15_min, ,3,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn23:trawl,IYS:GoA2020_Stn23:trawl:headrope_depth_30_min,headrope_depth_30_min, ,1.5,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn23:trawl,IYS:GoA2020_Stn23:trawl:headrope_depth_45_min,headrope_depth_45_min, ,1.5,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn23:trawl,IYS:GoA2020_Stn23:trawl:headrope_depth_end,headrope_depth_end, ,1.5,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn23:trawl,IYS:GoA2020_Stn23:trawl:warp_distance_15_min,warp_distance_15_min, ,242,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn23:trawl,IYS:GoA2020_Stn23:trawl:warp_distance_30_min,warp_distance_30_min, ,221,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn23:trawl,IYS:GoA2020_Stn23:trawl:warp_distance_45_min,warp_distance_45_min, ,230,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn23:trawl,IYS:GoA2020_Stn23:trawl:warp_distance_end,warp_distance_end, ,232,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn23:trawl,IYS:GoA2020_Stn23:trawl:net_opening_width_wings,net_opening_width_wings, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn23:trawl,IYS:GoA2020_Stn23:trawl:net_opening_width_wings_30_min,net_opening_width_wings_30_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn23:trawl,IYS:GoA2020_Stn23:trawl:net_opening_width_wings_45_min,net_opening_width_wings_45_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
@@ -299,6 +483,14 @@ IYS:GoA2020_Stn23:trawl,IYS:GoA2020_Stn23:trawl:net_opening_depth_30_min,net_ope
 IYS:GoA2020_Stn23:trawl,IYS:GoA2020_Stn23:trawl:net_opening_depth_45_min,net_opening_depth_45_min,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,23,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn23:trawl,IYS:GoA2020_Stn23:trawl:net_opening_depth_end,net_opening_depth_end,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,23,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn24:trawl,IYS:GoA2020_Stn24:trawl:sampling_gear,sampling_gear,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/,GoA 2020 Trawl Net, ,NA,NA
+IYS:GoA2020_Stn24:trawl,IYS:GoA2020_Stn24:trawl:headrope_depth_15_min,headrope_depth_15_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn24:trawl,IYS:GoA2020_Stn24:trawl:headrope_depth_30_min,headrope_depth_30_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn24:trawl,IYS:GoA2020_Stn24:trawl:headrope_depth_45_min,headrope_depth_45_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn24:trawl,IYS:GoA2020_Stn24:trawl:headrope_depth_end,headrope_depth_end, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn24:trawl,IYS:GoA2020_Stn24:trawl:warp_distance_15_min,warp_distance_15_min, ,245,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn24:trawl,IYS:GoA2020_Stn24:trawl:warp_distance_30_min,warp_distance_30_min, ,245,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn24:trawl,IYS:GoA2020_Stn24:trawl:warp_distance_45_min,warp_distance_45_min, ,243,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn24:trawl,IYS:GoA2020_Stn24:trawl:warp_distance_end,warp_distance_end, ,250,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn24:trawl,IYS:GoA2020_Stn24:trawl:net_opening_width_wings,net_opening_width_wings, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn24:trawl,IYS:GoA2020_Stn24:trawl:net_opening_width_wings_30_min,net_opening_width_wings_30_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn24:trawl,IYS:GoA2020_Stn24:trawl:net_opening_width_wings_45_min,net_opening_width_wings_45_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
@@ -312,6 +504,14 @@ IYS:GoA2020_Stn24:trawl,IYS:GoA2020_Stn24:trawl:net_opening_depth_30_min,net_ope
 IYS:GoA2020_Stn24:trawl,IYS:GoA2020_Stn24:trawl:net_opening_depth_45_min,net_opening_depth_45_min,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn24:trawl,IYS:GoA2020_Stn24:trawl:net_opening_depth_end,net_opening_depth_end,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn25:trawl,IYS:GoA2020_Stn25:trawl:sampling_gear,sampling_gear,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/,GoA 2020 Trawl Net, ,NA,NA
+IYS:GoA2020_Stn25:trawl,IYS:GoA2020_Stn25:trawl:headrope_depth_15_min,headrope_depth_15_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn25:trawl,IYS:GoA2020_Stn25:trawl:headrope_depth_30_min,headrope_depth_30_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn25:trawl,IYS:GoA2020_Stn25:trawl:headrope_depth_45_min,headrope_depth_45_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn25:trawl,IYS:GoA2020_Stn25:trawl:headrope_depth_end,headrope_depth_end, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn25:trawl,IYS:GoA2020_Stn25:trawl:warp_distance_15_min,warp_distance_15_min, ,285,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn25:trawl,IYS:GoA2020_Stn25:trawl:warp_distance_30_min,warp_distance_30_min, ,285,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn25:trawl,IYS:GoA2020_Stn25:trawl:warp_distance_45_min,warp_distance_45_min, ,250,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn25:trawl,IYS:GoA2020_Stn25:trawl:warp_distance_end,warp_distance_end, ,267,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn25:trawl,IYS:GoA2020_Stn25:trawl:net_opening_width_wings,net_opening_width_wings, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn25:trawl,IYS:GoA2020_Stn25:trawl:net_opening_width_wings_30_min,net_opening_width_wings_30_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn25:trawl,IYS:GoA2020_Stn25:trawl:net_opening_width_wings_45_min,net_opening_width_wings_45_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
@@ -325,6 +525,14 @@ IYS:GoA2020_Stn25:trawl,IYS:GoA2020_Stn25:trawl:net_opening_depth_30_min,net_ope
 IYS:GoA2020_Stn25:trawl,IYS:GoA2020_Stn25:trawl:net_opening_depth_45_min,net_opening_depth_45_min,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn25:trawl,IYS:GoA2020_Stn25:trawl:net_opening_depth_end,net_opening_depth_end,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn26:trawl,IYS:GoA2020_Stn26:trawl:sampling_gear,sampling_gear,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/,GoA 2020 Trawl Net, ,NA,NA
+IYS:GoA2020_Stn26:trawl,IYS:GoA2020_Stn26:trawl:headrope_depth_15_min,headrope_depth_15_min, ,5,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn26:trawl,IYS:GoA2020_Stn26:trawl:headrope_depth_30_min,headrope_depth_30_min, ,5,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn26:trawl,IYS:GoA2020_Stn26:trawl:headrope_depth_45_min,headrope_depth_45_min, ,5,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn26:trawl,IYS:GoA2020_Stn26:trawl:headrope_depth_end,headrope_depth_end, ,5,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn26:trawl,IYS:GoA2020_Stn26:trawl:warp_distance_15_min,warp_distance_15_min, ,220,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn26:trawl,IYS:GoA2020_Stn26:trawl:warp_distance_30_min,warp_distance_30_min, ,192,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn26:trawl,IYS:GoA2020_Stn26:trawl:warp_distance_45_min,warp_distance_45_min, ,180,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn26:trawl,IYS:GoA2020_Stn26:trawl:warp_distance_end,warp_distance_end, ,170,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn26:trawl,IYS:GoA2020_Stn26:trawl:net_opening_width_wings,net_opening_width_wings, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn26:trawl,IYS:GoA2020_Stn26:trawl:net_opening_width_wings_30_min,net_opening_width_wings_30_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn26:trawl,IYS:GoA2020_Stn26:trawl:net_opening_width_wings_45_min,net_opening_width_wings_45_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
@@ -338,6 +546,14 @@ IYS:GoA2020_Stn26:trawl,IYS:GoA2020_Stn26:trawl:net_opening_depth_30_min,net_ope
 IYS:GoA2020_Stn26:trawl,IYS:GoA2020_Stn26:trawl:net_opening_depth_45_min,net_opening_depth_45_min,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,23,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn26:trawl,IYS:GoA2020_Stn26:trawl:net_opening_depth_end,net_opening_depth_end,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,23,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn27:trawl,IYS:GoA2020_Stn27:trawl:sampling_gear,sampling_gear,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/,GoA 2020 Trawl Net, ,NA,NA
+IYS:GoA2020_Stn27:trawl,IYS:GoA2020_Stn27:trawl:headrope_depth_15_min,headrope_depth_15_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn27:trawl,IYS:GoA2020_Stn27:trawl:headrope_depth_30_min,headrope_depth_30_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn27:trawl,IYS:GoA2020_Stn27:trawl:headrope_depth_45_min,headrope_depth_45_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn27:trawl,IYS:GoA2020_Stn27:trawl:headrope_depth_end,headrope_depth_end, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn27:trawl,IYS:GoA2020_Stn27:trawl:warp_distance_15_min,warp_distance_15_min, ,170,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn27:trawl,IYS:GoA2020_Stn27:trawl:warp_distance_30_min,warp_distance_30_min, ,165,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn27:trawl,IYS:GoA2020_Stn27:trawl:warp_distance_45_min,warp_distance_45_min, ,165,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn27:trawl,IYS:GoA2020_Stn27:trawl:warp_distance_end,warp_distance_end, ,165,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn27:trawl,IYS:GoA2020_Stn27:trawl:net_opening_width_wings,net_opening_width_wings, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn27:trawl,IYS:GoA2020_Stn27:trawl:net_opening_width_wings_30_min,net_opening_width_wings_30_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn27:trawl,IYS:GoA2020_Stn27:trawl:net_opening_width_wings_45_min,net_opening_width_wings_45_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
@@ -351,6 +567,14 @@ IYS:GoA2020_Stn27:trawl,IYS:GoA2020_Stn27:trawl:net_opening_depth_30_min,net_ope
 IYS:GoA2020_Stn27:trawl,IYS:GoA2020_Stn27:trawl:net_opening_depth_45_min,net_opening_depth_45_min,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn27:trawl,IYS:GoA2020_Stn27:trawl:net_opening_depth_end,net_opening_depth_end,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn28:trawl,IYS:GoA2020_Stn28:trawl:sampling_gear,sampling_gear,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/,GoA 2020 Trawl Net, ,NA,NA
+IYS:GoA2020_Stn28:trawl,IYS:GoA2020_Stn28:trawl:headrope_depth_15_min,headrope_depth_15_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn28:trawl,IYS:GoA2020_Stn28:trawl:headrope_depth_30_min,headrope_depth_30_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn28:trawl,IYS:GoA2020_Stn28:trawl:headrope_depth_45_min,headrope_depth_45_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn28:trawl,IYS:GoA2020_Stn28:trawl:headrope_depth_end,headrope_depth_end, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn28:trawl,IYS:GoA2020_Stn28:trawl:warp_distance_15_min,warp_distance_15_min, ,238,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn28:trawl,IYS:GoA2020_Stn28:trawl:warp_distance_30_min,warp_distance_30_min, ,231,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn28:trawl,IYS:GoA2020_Stn28:trawl:warp_distance_45_min,warp_distance_45_min, ,245,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn28:trawl,IYS:GoA2020_Stn28:trawl:warp_distance_end,warp_distance_end, ,245,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn28:trawl,IYS:GoA2020_Stn28:trawl:net_opening_width_wings,net_opening_width_wings, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn28:trawl,IYS:GoA2020_Stn28:trawl:net_opening_width_wings_30_min,net_opening_width_wings_30_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn28:trawl,IYS:GoA2020_Stn28:trawl:net_opening_width_wings_45_min,net_opening_width_wings_45_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
@@ -364,6 +588,14 @@ IYS:GoA2020_Stn28:trawl,IYS:GoA2020_Stn28:trawl:net_opening_depth_30_min,net_ope
 IYS:GoA2020_Stn28:trawl,IYS:GoA2020_Stn28:trawl:net_opening_depth_45_min,net_opening_depth_45_min,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,23,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn28:trawl,IYS:GoA2020_Stn28:trawl:net_opening_depth_end,net_opening_depth_end,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,23,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn29:trawl,IYS:GoA2020_Stn29:trawl:sampling_gear,sampling_gear,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/,GoA 2020 Trawl Net, ,NA,NA
+IYS:GoA2020_Stn29:trawl,IYS:GoA2020_Stn29:trawl:headrope_depth_15_min,headrope_depth_15_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn29:trawl,IYS:GoA2020_Stn29:trawl:headrope_depth_30_min,headrope_depth_30_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn29:trawl,IYS:GoA2020_Stn29:trawl:headrope_depth_45_min,headrope_depth_45_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn29:trawl,IYS:GoA2020_Stn29:trawl:headrope_depth_end,headrope_depth_end, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn29:trawl,IYS:GoA2020_Stn29:trawl:warp_distance_15_min,warp_distance_15_min, ,260,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn29:trawl,IYS:GoA2020_Stn29:trawl:warp_distance_30_min,warp_distance_30_min, ,265,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn29:trawl,IYS:GoA2020_Stn29:trawl:warp_distance_45_min,warp_distance_45_min, ,265,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn29:trawl,IYS:GoA2020_Stn29:trawl:warp_distance_end,warp_distance_end, ,260,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn29:trawl,IYS:GoA2020_Stn29:trawl:net_opening_width_wings,net_opening_width_wings, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn29:trawl,IYS:GoA2020_Stn29:trawl:net_opening_width_wings_30_min,net_opening_width_wings_30_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn29:trawl,IYS:GoA2020_Stn29:trawl:net_opening_width_wings_45_min,net_opening_width_wings_45_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
@@ -377,6 +609,14 @@ IYS:GoA2020_Stn29:trawl,IYS:GoA2020_Stn29:trawl:net_opening_depth_30_min,net_ope
 IYS:GoA2020_Stn29:trawl,IYS:GoA2020_Stn29:trawl:net_opening_depth_45_min,net_opening_depth_45_min,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,20,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn29:trawl,IYS:GoA2020_Stn29:trawl:net_opening_depth_end,net_opening_depth_end,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,20,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn30:trawl,IYS:GoA2020_Stn30:trawl:sampling_gear,sampling_gear,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/,GoA 2020 Trawl Net, ,NA,NA
+IYS:GoA2020_Stn30:trawl,IYS:GoA2020_Stn30:trawl:headrope_depth_15_min,headrope_depth_15_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn30:trawl,IYS:GoA2020_Stn30:trawl:headrope_depth_30_min,headrope_depth_30_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn30:trawl,IYS:GoA2020_Stn30:trawl:headrope_depth_45_min,headrope_depth_45_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn30:trawl,IYS:GoA2020_Stn30:trawl:headrope_depth_end,headrope_depth_end, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn30:trawl,IYS:GoA2020_Stn30:trawl:warp_distance_15_min,warp_distance_15_min, ,235,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn30:trawl,IYS:GoA2020_Stn30:trawl:warp_distance_30_min,warp_distance_30_min, ,230,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn30:trawl,IYS:GoA2020_Stn30:trawl:warp_distance_45_min,warp_distance_45_min, ,230,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn30:trawl,IYS:GoA2020_Stn30:trawl:warp_distance_end,warp_distance_end, ,230,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn30:trawl,IYS:GoA2020_Stn30:trawl:net_opening_width_wings,net_opening_width_wings, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn30:trawl,IYS:GoA2020_Stn30:trawl:net_opening_width_wings_30_min,net_opening_width_wings_30_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn30:trawl,IYS:GoA2020_Stn30:trawl:net_opening_width_wings_45_min,net_opening_width_wings_45_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
@@ -390,6 +630,14 @@ IYS:GoA2020_Stn30:trawl,IYS:GoA2020_Stn30:trawl:net_opening_depth_30_min,net_ope
 IYS:GoA2020_Stn30:trawl,IYS:GoA2020_Stn30:trawl:net_opening_depth_45_min,net_opening_depth_45_min,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn30:trawl,IYS:GoA2020_Stn30:trawl:net_opening_depth_end,net_opening_depth_end,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn31:trawl,IYS:GoA2020_Stn31:trawl:sampling_gear,sampling_gear,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/,GoA 2020 Trawl Net, ,NA,NA
+IYS:GoA2020_Stn31:trawl,IYS:GoA2020_Stn31:trawl:headrope_depth_15_min,headrope_depth_15_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn31:trawl,IYS:GoA2020_Stn31:trawl:headrope_depth_30_min,headrope_depth_30_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn31:trawl,IYS:GoA2020_Stn31:trawl:headrope_depth_45_min,headrope_depth_45_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn31:trawl,IYS:GoA2020_Stn31:trawl:headrope_depth_end,headrope_depth_end, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn31:trawl,IYS:GoA2020_Stn31:trawl:warp_distance_15_min,warp_distance_15_min, ,235,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn31:trawl,IYS:GoA2020_Stn31:trawl:warp_distance_30_min,warp_distance_30_min, ,230,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn31:trawl,IYS:GoA2020_Stn31:trawl:warp_distance_45_min,warp_distance_45_min, ,235,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn31:trawl,IYS:GoA2020_Stn31:trawl:warp_distance_end,warp_distance_end, ,230,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn31:trawl,IYS:GoA2020_Stn31:trawl:net_opening_width_wings,net_opening_width_wings, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn31:trawl,IYS:GoA2020_Stn31:trawl:net_opening_width_wings_30_min,net_opening_width_wings_30_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn31:trawl,IYS:GoA2020_Stn31:trawl:net_opening_width_wings_45_min,net_opening_width_wings_45_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
@@ -403,6 +651,14 @@ IYS:GoA2020_Stn31:trawl,IYS:GoA2020_Stn31:trawl:net_opening_depth_30_min,net_ope
 IYS:GoA2020_Stn31:trawl,IYS:GoA2020_Stn31:trawl:net_opening_depth_45_min,net_opening_depth_45_min,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,21,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn31:trawl,IYS:GoA2020_Stn31:trawl:net_opening_depth_end,net_opening_depth_end,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,21,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn32:trawl,IYS:GoA2020_Stn32:trawl:sampling_gear,sampling_gear,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/,GoA 2020 Trawl Net, ,NA,NA
+IYS:GoA2020_Stn32:trawl,IYS:GoA2020_Stn32:trawl:headrope_depth_15_min,headrope_depth_15_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn32:trawl,IYS:GoA2020_Stn32:trawl:headrope_depth_30_min,headrope_depth_30_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn32:trawl,IYS:GoA2020_Stn32:trawl:headrope_depth_45_min,headrope_depth_45_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn32:trawl,IYS:GoA2020_Stn32:trawl:headrope_depth_end,headrope_depth_end, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn32:trawl,IYS:GoA2020_Stn32:trawl:warp_distance_15_min,warp_distance_15_min, ,230,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn32:trawl,IYS:GoA2020_Stn32:trawl:warp_distance_30_min,warp_distance_30_min, ,230,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn32:trawl,IYS:GoA2020_Stn32:trawl:warp_distance_45_min,warp_distance_45_min, ,230,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn32:trawl,IYS:GoA2020_Stn32:trawl:warp_distance_end,warp_distance_end, ,228,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn32:trawl,IYS:GoA2020_Stn32:trawl:net_opening_width_wings,net_opening_width_wings, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn32:trawl,IYS:GoA2020_Stn32:trawl:net_opening_width_wings_30_min,net_opening_width_wings_30_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn32:trawl,IYS:GoA2020_Stn32:trawl:net_opening_width_wings_45_min,net_opening_width_wings_45_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
@@ -416,6 +672,14 @@ IYS:GoA2020_Stn32:trawl,IYS:GoA2020_Stn32:trawl:net_opening_depth_30_min,net_ope
 IYS:GoA2020_Stn32:trawl,IYS:GoA2020_Stn32:trawl:net_opening_depth_45_min,net_opening_depth_45_min,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,21,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn32:trawl,IYS:GoA2020_Stn32:trawl:net_opening_depth_end,net_opening_depth_end,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,21,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn33:trawl,IYS:GoA2020_Stn33:trawl:sampling_gear,sampling_gear,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/,GoA 2020 Trawl Net, ,NA,NA
+IYS:GoA2020_Stn33:trawl,IYS:GoA2020_Stn33:trawl:headrope_depth_15_min,headrope_depth_15_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn33:trawl,IYS:GoA2020_Stn33:trawl:headrope_depth_30_min,headrope_depth_30_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn33:trawl,IYS:GoA2020_Stn33:trawl:headrope_depth_45_min,headrope_depth_45_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn33:trawl,IYS:GoA2020_Stn33:trawl:headrope_depth_end,headrope_depth_end, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn33:trawl,IYS:GoA2020_Stn33:trawl:warp_distance_15_min,warp_distance_15_min, ,242,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn33:trawl,IYS:GoA2020_Stn33:trawl:warp_distance_30_min,warp_distance_30_min, ,251,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn33:trawl,IYS:GoA2020_Stn33:trawl:warp_distance_45_min,warp_distance_45_min, ,251,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn33:trawl,IYS:GoA2020_Stn33:trawl:warp_distance_end,warp_distance_end, ,230,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn33:trawl,IYS:GoA2020_Stn33:trawl:net_opening_width_wings,net_opening_width_wings, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn33:trawl,IYS:GoA2020_Stn33:trawl:net_opening_width_wings_30_min,net_opening_width_wings_30_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn33:trawl,IYS:GoA2020_Stn33:trawl:net_opening_width_wings_45_min,net_opening_width_wings_45_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
@@ -429,6 +693,14 @@ IYS:GoA2020_Stn33:trawl,IYS:GoA2020_Stn33:trawl:net_opening_depth_30_min,net_ope
 IYS:GoA2020_Stn33:trawl,IYS:GoA2020_Stn33:trawl:net_opening_depth_45_min,net_opening_depth_45_min,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,20,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn33:trawl,IYS:GoA2020_Stn33:trawl:net_opening_depth_end,net_opening_depth_end,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,20,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn34:trawl,IYS:GoA2020_Stn34:trawl:sampling_gear,sampling_gear,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/,GoA 2020 Trawl Net, ,NA,NA
+IYS:GoA2020_Stn34:trawl,IYS:GoA2020_Stn34:trawl:headrope_depth_15_min,headrope_depth_15_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn34:trawl,IYS:GoA2020_Stn34:trawl:headrope_depth_30_min,headrope_depth_30_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn34:trawl,IYS:GoA2020_Stn34:trawl:headrope_depth_45_min,headrope_depth_45_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn34:trawl,IYS:GoA2020_Stn34:trawl:headrope_depth_end,headrope_depth_end, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn34:trawl,IYS:GoA2020_Stn34:trawl:warp_distance_15_min,warp_distance_15_min, ,225,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn34:trawl,IYS:GoA2020_Stn34:trawl:warp_distance_30_min,warp_distance_30_min, ,230,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn34:trawl,IYS:GoA2020_Stn34:trawl:warp_distance_45_min,warp_distance_45_min, ,235,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn34:trawl,IYS:GoA2020_Stn34:trawl:warp_distance_end,warp_distance_end, ,230,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn34:trawl,IYS:GoA2020_Stn34:trawl:net_opening_width_wings,net_opening_width_wings, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn34:trawl,IYS:GoA2020_Stn34:trawl:net_opening_width_wings_30_min,net_opening_width_wings_30_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn34:trawl,IYS:GoA2020_Stn34:trawl:net_opening_width_wings_45_min,net_opening_width_wings_45_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
@@ -442,6 +714,14 @@ IYS:GoA2020_Stn34:trawl,IYS:GoA2020_Stn34:trawl:net_opening_depth_30_min,net_ope
 IYS:GoA2020_Stn34:trawl,IYS:GoA2020_Stn34:trawl:net_opening_depth_45_min,net_opening_depth_45_min,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,19,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn34:trawl,IYS:GoA2020_Stn34:trawl:net_opening_depth_end,net_opening_depth_end,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,19,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn35:trawl,IYS:GoA2020_Stn35:trawl:sampling_gear,sampling_gear,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/,GoA 2020 Trawl Net, ,NA,NA
+IYS:GoA2020_Stn35:trawl,IYS:GoA2020_Stn35:trawl:headrope_depth_15_min,headrope_depth_15_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn35:trawl,IYS:GoA2020_Stn35:trawl:headrope_depth_30_min,headrope_depth_30_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn35:trawl,IYS:GoA2020_Stn35:trawl:headrope_depth_45_min,headrope_depth_45_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn35:trawl,IYS:GoA2020_Stn35:trawl:headrope_depth_end,headrope_depth_end, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn35:trawl,IYS:GoA2020_Stn35:trawl:warp_distance_15_min,warp_distance_15_min, ,238,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn35:trawl,IYS:GoA2020_Stn35:trawl:warp_distance_30_min,warp_distance_30_min, ,254,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn35:trawl,IYS:GoA2020_Stn35:trawl:warp_distance_45_min,warp_distance_45_min, ,242,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn35:trawl,IYS:GoA2020_Stn35:trawl:warp_distance_end,warp_distance_end, ,242,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn35:trawl,IYS:GoA2020_Stn35:trawl:net_opening_width_wings,net_opening_width_wings, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn35:trawl,IYS:GoA2020_Stn35:trawl:net_opening_width_wings_30_min,net_opening_width_wings_30_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn35:trawl,IYS:GoA2020_Stn35:trawl:net_opening_width_wings_45_min,net_opening_width_wings_45_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
@@ -455,6 +735,14 @@ IYS:GoA2020_Stn35:trawl,IYS:GoA2020_Stn35:trawl:net_opening_depth_30_min,net_ope
 IYS:GoA2020_Stn35:trawl,IYS:GoA2020_Stn35:trawl:net_opening_depth_45_min,net_opening_depth_45_min,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn35:trawl,IYS:GoA2020_Stn35:trawl:net_opening_depth_end,net_opening_depth_end,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn36:trawl,IYS:GoA2020_Stn36:trawl:sampling_gear,sampling_gear,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/,GoA 2020 Trawl Net, ,NA,NA
+IYS:GoA2020_Stn36:trawl,IYS:GoA2020_Stn36:trawl:headrope_depth_15_min,headrope_depth_15_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn36:trawl,IYS:GoA2020_Stn36:trawl:headrope_depth_30_min,headrope_depth_30_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn36:trawl,IYS:GoA2020_Stn36:trawl:headrope_depth_45_min,headrope_depth_45_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn36:trawl,IYS:GoA2020_Stn36:trawl:headrope_depth_end,headrope_depth_end, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn36:trawl,IYS:GoA2020_Stn36:trawl:warp_distance_15_min,warp_distance_15_min, ,225,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn36:trawl,IYS:GoA2020_Stn36:trawl:warp_distance_30_min,warp_distance_30_min, ,235,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn36:trawl,IYS:GoA2020_Stn36:trawl:warp_distance_45_min,warp_distance_45_min, ,240,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn36:trawl,IYS:GoA2020_Stn36:trawl:warp_distance_end,warp_distance_end, ,250,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn36:trawl,IYS:GoA2020_Stn36:trawl:net_opening_width_wings,net_opening_width_wings, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn36:trawl,IYS:GoA2020_Stn36:trawl:net_opening_width_wings_30_min,net_opening_width_wings_30_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn36:trawl,IYS:GoA2020_Stn36:trawl:net_opening_width_wings_45_min,net_opening_width_wings_45_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
@@ -468,6 +756,14 @@ IYS:GoA2020_Stn36:trawl,IYS:GoA2020_Stn36:trawl:net_opening_depth_30_min,net_ope
 IYS:GoA2020_Stn36:trawl,IYS:GoA2020_Stn36:trawl:net_opening_depth_45_min,net_opening_depth_45_min,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,20,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn36:trawl,IYS:GoA2020_Stn36:trawl:net_opening_depth_end,net_opening_depth_end,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,20,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn37:trawl,IYS:GoA2020_Stn37:trawl:sampling_gear,sampling_gear,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/,GoA 2020 Trawl Net, ,NA,NA
+IYS:GoA2020_Stn37:trawl,IYS:GoA2020_Stn37:trawl:headrope_depth_15_min,headrope_depth_15_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn37:trawl,IYS:GoA2020_Stn37:trawl:headrope_depth_30_min,headrope_depth_30_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn37:trawl,IYS:GoA2020_Stn37:trawl:headrope_depth_45_min,headrope_depth_45_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn37:trawl,IYS:GoA2020_Stn37:trawl:headrope_depth_end,headrope_depth_end, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn37:trawl,IYS:GoA2020_Stn37:trawl:warp_distance_15_min,warp_distance_15_min, ,260,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn37:trawl,IYS:GoA2020_Stn37:trawl:warp_distance_30_min,warp_distance_30_min, ,260,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn37:trawl,IYS:GoA2020_Stn37:trawl:warp_distance_45_min,warp_distance_45_min, ,260,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn37:trawl,IYS:GoA2020_Stn37:trawl:warp_distance_end,warp_distance_end, ,260,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn37:trawl,IYS:GoA2020_Stn37:trawl:net_opening_width_wings,net_opening_width_wings, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn37:trawl,IYS:GoA2020_Stn37:trawl:net_opening_width_wings_30_min,net_opening_width_wings_30_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn37:trawl,IYS:GoA2020_Stn37:trawl:net_opening_width_wings_45_min,net_opening_width_wings_45_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
@@ -481,6 +777,14 @@ IYS:GoA2020_Stn37:trawl,IYS:GoA2020_Stn37:trawl:net_opening_depth_30_min,net_ope
 IYS:GoA2020_Stn37:trawl,IYS:GoA2020_Stn37:trawl:net_opening_depth_45_min,net_opening_depth_45_min,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,18,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn37:trawl,IYS:GoA2020_Stn37:trawl:net_opening_depth_end,net_opening_depth_end,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,18,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn38:trawl,IYS:GoA2020_Stn38:trawl:sampling_gear,sampling_gear,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/,GoA 2020 Trawl Net, ,NA,NA
+IYS:GoA2020_Stn38:trawl,IYS:GoA2020_Stn38:trawl:headrope_depth_15_min,headrope_depth_15_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn38:trawl,IYS:GoA2020_Stn38:trawl:headrope_depth_30_min,headrope_depth_30_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn38:trawl,IYS:GoA2020_Stn38:trawl:headrope_depth_45_min,headrope_depth_45_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn38:trawl,IYS:GoA2020_Stn38:trawl:headrope_depth_end,headrope_depth_end, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn38:trawl,IYS:GoA2020_Stn38:trawl:warp_distance_15_min,warp_distance_15_min, ,278,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn38:trawl,IYS:GoA2020_Stn38:trawl:warp_distance_30_min,warp_distance_30_min, ,265,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn38:trawl,IYS:GoA2020_Stn38:trawl:warp_distance_45_min,warp_distance_45_min, ,275,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn38:trawl,IYS:GoA2020_Stn38:trawl:warp_distance_end,warp_distance_end, ,275,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn38:trawl,IYS:GoA2020_Stn38:trawl:net_opening_width_wings,net_opening_width_wings, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn38:trawl,IYS:GoA2020_Stn38:trawl:net_opening_width_wings_30_min,net_opening_width_wings_30_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn38:trawl,IYS:GoA2020_Stn38:trawl:net_opening_width_wings_45_min,net_opening_width_wings_45_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
@@ -494,6 +798,14 @@ IYS:GoA2020_Stn38:trawl,IYS:GoA2020_Stn38:trawl:net_opening_depth_30_min,net_ope
 IYS:GoA2020_Stn38:trawl,IYS:GoA2020_Stn38:trawl:net_opening_depth_45_min,net_opening_depth_45_min,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,20,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn38:trawl,IYS:GoA2020_Stn38:trawl:net_opening_depth_end,net_opening_depth_end,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,20,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn39:trawl,IYS:GoA2020_Stn39:trawl:sampling_gear,sampling_gear,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/,GoA 2020 Trawl Net, ,NA,NA
+IYS:GoA2020_Stn39:trawl,IYS:GoA2020_Stn39:trawl:headrope_depth_15_min,headrope_depth_15_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn39:trawl,IYS:GoA2020_Stn39:trawl:headrope_depth_30_min,headrope_depth_30_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn39:trawl,IYS:GoA2020_Stn39:trawl:headrope_depth_45_min,headrope_depth_45_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn39:trawl,IYS:GoA2020_Stn39:trawl:headrope_depth_end,headrope_depth_end, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn39:trawl,IYS:GoA2020_Stn39:trawl:warp_distance_15_min,warp_distance_15_min, ,243,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn39:trawl,IYS:GoA2020_Stn39:trawl:warp_distance_30_min,warp_distance_30_min, ,265,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn39:trawl,IYS:GoA2020_Stn39:trawl:warp_distance_45_min,warp_distance_45_min, ,302,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn39:trawl,IYS:GoA2020_Stn39:trawl:warp_distance_end,warp_distance_end, ,255,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn39:trawl,IYS:GoA2020_Stn39:trawl:net_opening_width_wings,net_opening_width_wings, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn39:trawl,IYS:GoA2020_Stn39:trawl:net_opening_width_wings_30_min,net_opening_width_wings_30_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn39:trawl,IYS:GoA2020_Stn39:trawl:net_opening_width_wings_45_min,net_opening_width_wings_45_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
@@ -507,6 +819,14 @@ IYS:GoA2020_Stn39:trawl,IYS:GoA2020_Stn39:trawl:net_opening_depth_30_min,net_ope
 IYS:GoA2020_Stn39:trawl,IYS:GoA2020_Stn39:trawl:net_opening_depth_45_min,net_opening_depth_45_min,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,15,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn39:trawl,IYS:GoA2020_Stn39:trawl:net_opening_depth_end,net_opening_depth_end,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,20,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn40:trawl,IYS:GoA2020_Stn40:trawl:sampling_gear,sampling_gear,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/,GoA 2020 Trawl Net, ,NA,NA
+IYS:GoA2020_Stn40:trawl,IYS:GoA2020_Stn40:trawl:headrope_depth_15_min,headrope_depth_15_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn40:trawl,IYS:GoA2020_Stn40:trawl:headrope_depth_30_min,headrope_depth_30_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn40:trawl,IYS:GoA2020_Stn40:trawl:headrope_depth_45_min,headrope_depth_45_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn40:trawl,IYS:GoA2020_Stn40:trawl:headrope_depth_end,headrope_depth_end, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn40:trawl,IYS:GoA2020_Stn40:trawl:warp_distance_15_min,warp_distance_15_min, ,245,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn40:trawl,IYS:GoA2020_Stn40:trawl:warp_distance_30_min,warp_distance_30_min, ,248,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn40:trawl,IYS:GoA2020_Stn40:trawl:warp_distance_45_min,warp_distance_45_min, ,240,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn40:trawl,IYS:GoA2020_Stn40:trawl:warp_distance_end,warp_distance_end, ,240,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn40:trawl,IYS:GoA2020_Stn40:trawl:net_opening_width_wings,net_opening_width_wings, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn40:trawl,IYS:GoA2020_Stn40:trawl:net_opening_width_wings_30_min,net_opening_width_wings_30_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn40:trawl,IYS:GoA2020_Stn40:trawl:net_opening_width_wings_45_min,net_opening_width_wings_45_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
@@ -520,6 +840,14 @@ IYS:GoA2020_Stn40:trawl,IYS:GoA2020_Stn40:trawl:net_opening_depth_30_min,net_ope
 IYS:GoA2020_Stn40:trawl,IYS:GoA2020_Stn40:trawl:net_opening_depth_45_min,net_opening_depth_45_min,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,22,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn40:trawl,IYS:GoA2020_Stn40:trawl:net_opening_depth_end,net_opening_depth_end,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,22,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn41:trawl,IYS:GoA2020_Stn41:trawl:sampling_gear,sampling_gear,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/,GoA 2020 Trawl Net, ,NA,NA
+IYS:GoA2020_Stn41:trawl,IYS:GoA2020_Stn41:trawl:headrope_depth_15_min,headrope_depth_15_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn41:trawl,IYS:GoA2020_Stn41:trawl:headrope_depth_30_min,headrope_depth_30_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn41:trawl,IYS:GoA2020_Stn41:trawl:headrope_depth_45_min,headrope_depth_45_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn41:trawl,IYS:GoA2020_Stn41:trawl:headrope_depth_end,headrope_depth_end, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn41:trawl,IYS:GoA2020_Stn41:trawl:warp_distance_15_min,warp_distance_15_min, ,240,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn41:trawl,IYS:GoA2020_Stn41:trawl:warp_distance_30_min,warp_distance_30_min, ,240,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn41:trawl,IYS:GoA2020_Stn41:trawl:warp_distance_45_min,warp_distance_45_min, ,240,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn41:trawl,IYS:GoA2020_Stn41:trawl:warp_distance_end,warp_distance_end, ,245,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn41:trawl,IYS:GoA2020_Stn41:trawl:net_opening_width_wings,net_opening_width_wings, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn41:trawl,IYS:GoA2020_Stn41:trawl:net_opening_width_wings_30_min,net_opening_width_wings_30_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn41:trawl,IYS:GoA2020_Stn41:trawl:net_opening_width_wings_45_min,net_opening_width_wings_45_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
@@ -533,6 +861,14 @@ IYS:GoA2020_Stn41:trawl,IYS:GoA2020_Stn41:trawl:net_opening_depth_30_min,net_ope
 IYS:GoA2020_Stn41:trawl,IYS:GoA2020_Stn41:trawl:net_opening_depth_45_min,net_opening_depth_45_min,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,20,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn41:trawl,IYS:GoA2020_Stn41:trawl:net_opening_depth_end,net_opening_depth_end,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,18,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn42:trawl,IYS:GoA2020_Stn42:trawl:sampling_gear,sampling_gear,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/,GoA 2020 Trawl Net, ,NA,NA
+IYS:GoA2020_Stn42:trawl,IYS:GoA2020_Stn42:trawl:headrope_depth_15_min,headrope_depth_15_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn42:trawl,IYS:GoA2020_Stn42:trawl:headrope_depth_30_min,headrope_depth_30_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn42:trawl,IYS:GoA2020_Stn42:trawl:headrope_depth_45_min,headrope_depth_45_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn42:trawl,IYS:GoA2020_Stn42:trawl:headrope_depth_end,headrope_depth_end, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn42:trawl,IYS:GoA2020_Stn42:trawl:warp_distance_15_min,warp_distance_15_min, ,230,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn42:trawl,IYS:GoA2020_Stn42:trawl:warp_distance_30_min,warp_distance_30_min, ,235,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn42:trawl,IYS:GoA2020_Stn42:trawl:warp_distance_45_min,warp_distance_45_min, ,247,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn42:trawl,IYS:GoA2020_Stn42:trawl:warp_distance_end,warp_distance_end, ,235,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn42:trawl,IYS:GoA2020_Stn42:trawl:net_opening_width_wings,net_opening_width_wings, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn42:trawl,IYS:GoA2020_Stn42:trawl:net_opening_width_wings_30_min,net_opening_width_wings_30_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn42:trawl,IYS:GoA2020_Stn42:trawl:net_opening_width_wings_45_min,net_opening_width_wings_45_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
@@ -546,6 +882,14 @@ IYS:GoA2020_Stn42:trawl,IYS:GoA2020_Stn42:trawl:net_opening_depth_30_min,net_ope
 IYS:GoA2020_Stn42:trawl,IYS:GoA2020_Stn42:trawl:net_opening_depth_45_min,net_opening_depth_45_min,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,19,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn42:trawl,IYS:GoA2020_Stn42:trawl:net_opening_depth_end,net_opening_depth_end,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,19,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn43:trawl,IYS:GoA2020_Stn43:trawl:sampling_gear,sampling_gear,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/,GoA 2020 Trawl Net, ,NA,NA
+IYS:GoA2020_Stn43:trawl,IYS:GoA2020_Stn43:trawl:headrope_depth_15_min,headrope_depth_15_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn43:trawl,IYS:GoA2020_Stn43:trawl:headrope_depth_30_min,headrope_depth_30_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn43:trawl,IYS:GoA2020_Stn43:trawl:headrope_depth_45_min,headrope_depth_45_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn43:trawl,IYS:GoA2020_Stn43:trawl:headrope_depth_end,headrope_depth_end, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn43:trawl,IYS:GoA2020_Stn43:trawl:warp_distance_15_min,warp_distance_15_min, ,227,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn43:trawl,IYS:GoA2020_Stn43:trawl:warp_distance_30_min,warp_distance_30_min, ,247,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn43:trawl,IYS:GoA2020_Stn43:trawl:warp_distance_45_min,warp_distance_45_min, ,240,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn43:trawl,IYS:GoA2020_Stn43:trawl:warp_distance_end,warp_distance_end, ,245,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn43:trawl,IYS:GoA2020_Stn43:trawl:net_opening_width_wings,net_opening_width_wings, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn43:trawl,IYS:GoA2020_Stn43:trawl:net_opening_width_wings_30_min,net_opening_width_wings_30_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn43:trawl,IYS:GoA2020_Stn43:trawl:net_opening_width_wings_45_min,net_opening_width_wings_45_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
@@ -559,6 +903,14 @@ IYS:GoA2020_Stn43:trawl,IYS:GoA2020_Stn43:trawl:net_opening_depth_30_min,net_ope
 IYS:GoA2020_Stn43:trawl,IYS:GoA2020_Stn43:trawl:net_opening_depth_45_min,net_opening_depth_45_min,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,19,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn43:trawl,IYS:GoA2020_Stn43:trawl:net_opening_depth_end,net_opening_depth_end,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,20,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn44:trawl,IYS:GoA2020_Stn44:trawl:sampling_gear,sampling_gear,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/,GoA 2020 Trawl Net, ,NA,NA
+IYS:GoA2020_Stn44:trawl,IYS:GoA2020_Stn44:trawl:headrope_depth_15_min,headrope_depth_15_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn44:trawl,IYS:GoA2020_Stn44:trawl:headrope_depth_30_min,headrope_depth_30_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn44:trawl,IYS:GoA2020_Stn44:trawl:headrope_depth_45_min,headrope_depth_45_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn44:trawl,IYS:GoA2020_Stn44:trawl:headrope_depth_end,headrope_depth_end, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn44:trawl,IYS:GoA2020_Stn44:trawl:warp_distance_15_min,warp_distance_15_min, ,247,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn44:trawl,IYS:GoA2020_Stn44:trawl:warp_distance_30_min,warp_distance_30_min, ,247,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn44:trawl,IYS:GoA2020_Stn44:trawl:warp_distance_45_min,warp_distance_45_min, ,247,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn44:trawl,IYS:GoA2020_Stn44:trawl:warp_distance_end,warp_distance_end, ,245,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn44:trawl,IYS:GoA2020_Stn44:trawl:net_opening_width_wings,net_opening_width_wings, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn44:trawl,IYS:GoA2020_Stn44:trawl:net_opening_width_wings_30_min,net_opening_width_wings_30_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn44:trawl,IYS:GoA2020_Stn44:trawl:net_opening_width_wings_45_min,net_opening_width_wings_45_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
@@ -572,6 +924,14 @@ IYS:GoA2020_Stn44:trawl,IYS:GoA2020_Stn44:trawl:net_opening_depth_30_min,net_ope
 IYS:GoA2020_Stn44:trawl,IYS:GoA2020_Stn44:trawl:net_opening_depth_45_min,net_opening_depth_45_min,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn44:trawl,IYS:GoA2020_Stn44:trawl:net_opening_depth_end,net_opening_depth_end,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn45:trawl,IYS:GoA2020_Stn45:trawl:sampling_gear,sampling_gear,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/,GoA 2020 Trawl Net, ,NA,NA
+IYS:GoA2020_Stn45:trawl,IYS:GoA2020_Stn45:trawl:headrope_depth_15_min,headrope_depth_15_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn45:trawl,IYS:GoA2020_Stn45:trawl:headrope_depth_30_min,headrope_depth_30_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn45:trawl,IYS:GoA2020_Stn45:trawl:headrope_depth_45_min,headrope_depth_45_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn45:trawl,IYS:GoA2020_Stn45:trawl:headrope_depth_end,headrope_depth_end, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn45:trawl,IYS:GoA2020_Stn45:trawl:warp_distance_15_min,warp_distance_15_min, ,230,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn45:trawl,IYS:GoA2020_Stn45:trawl:warp_distance_30_min,warp_distance_30_min, ,235,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn45:trawl,IYS:GoA2020_Stn45:trawl:warp_distance_45_min,warp_distance_45_min, ,235,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn45:trawl,IYS:GoA2020_Stn45:trawl:warp_distance_end,warp_distance_end, ,235,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn45:trawl,IYS:GoA2020_Stn45:trawl:net_opening_width_wings,net_opening_width_wings, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn45:trawl,IYS:GoA2020_Stn45:trawl:net_opening_width_wings_30_min,net_opening_width_wings_30_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn45:trawl,IYS:GoA2020_Stn45:trawl:net_opening_width_wings_45_min,net_opening_width_wings_45_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
@@ -585,6 +945,14 @@ IYS:GoA2020_Stn45:trawl,IYS:GoA2020_Stn45:trawl:net_opening_depth_30_min,net_ope
 IYS:GoA2020_Stn45:trawl,IYS:GoA2020_Stn45:trawl:net_opening_depth_45_min,net_opening_depth_45_min,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn45:trawl,IYS:GoA2020_Stn45:trawl:net_opening_depth_end,net_opening_depth_end,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn46:trawl,IYS:GoA2020_Stn46:trawl:sampling_gear,sampling_gear,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/,GoA 2020 Trawl Net, ,NA,NA
+IYS:GoA2020_Stn46:trawl,IYS:GoA2020_Stn46:trawl:headrope_depth_15_min,headrope_depth_15_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn46:trawl,IYS:GoA2020_Stn46:trawl:headrope_depth_30_min,headrope_depth_30_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn46:trawl,IYS:GoA2020_Stn46:trawl:headrope_depth_45_min,headrope_depth_45_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn46:trawl,IYS:GoA2020_Stn46:trawl:headrope_depth_end,headrope_depth_end, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn46:trawl,IYS:GoA2020_Stn46:trawl:warp_distance_15_min,warp_distance_15_min, ,256,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn46:trawl,IYS:GoA2020_Stn46:trawl:warp_distance_30_min,warp_distance_30_min, ,280,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn46:trawl,IYS:GoA2020_Stn46:trawl:warp_distance_45_min,warp_distance_45_min, ,287,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn46:trawl,IYS:GoA2020_Stn46:trawl:warp_distance_end,warp_distance_end, ,287,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn46:trawl,IYS:GoA2020_Stn46:trawl:net_opening_width_wings,net_opening_width_wings, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn46:trawl,IYS:GoA2020_Stn46:trawl:net_opening_width_wings_30_min,net_opening_width_wings_30_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn46:trawl,IYS:GoA2020_Stn46:trawl:net_opening_width_wings_45_min,net_opening_width_wings_45_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
@@ -598,6 +966,14 @@ IYS:GoA2020_Stn46:trawl,IYS:GoA2020_Stn46:trawl:net_opening_depth_30_min,net_ope
 IYS:GoA2020_Stn46:trawl,IYS:GoA2020_Stn46:trawl:net_opening_depth_45_min,net_opening_depth_45_min,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,19,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn46:trawl,IYS:GoA2020_Stn46:trawl:net_opening_depth_end,net_opening_depth_end,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,19,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn47:trawl,IYS:GoA2020_Stn47:trawl:sampling_gear,sampling_gear,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/,GoA 2020 Trawl Net, ,NA,NA
+IYS:GoA2020_Stn47:trawl,IYS:GoA2020_Stn47:trawl:headrope_depth_15_min,headrope_depth_15_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn47:trawl,IYS:GoA2020_Stn47:trawl:headrope_depth_30_min,headrope_depth_30_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn47:trawl,IYS:GoA2020_Stn47:trawl:headrope_depth_45_min,headrope_depth_45_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn47:trawl,IYS:GoA2020_Stn47:trawl:headrope_depth_end,headrope_depth_end, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn47:trawl,IYS:GoA2020_Stn47:trawl:warp_distance_15_min,warp_distance_15_min, ,230,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn47:trawl,IYS:GoA2020_Stn47:trawl:warp_distance_30_min,warp_distance_30_min, ,230,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn47:trawl,IYS:GoA2020_Stn47:trawl:warp_distance_45_min,warp_distance_45_min, ,238,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn47:trawl,IYS:GoA2020_Stn47:trawl:warp_distance_end,warp_distance_end, ,249,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn47:trawl,IYS:GoA2020_Stn47:trawl:net_opening_width_wings,net_opening_width_wings, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn47:trawl,IYS:GoA2020_Stn47:trawl:net_opening_width_wings_30_min,net_opening_width_wings_30_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn47:trawl,IYS:GoA2020_Stn47:trawl:net_opening_width_wings_45_min,net_opening_width_wings_45_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
@@ -611,6 +987,14 @@ IYS:GoA2020_Stn47:trawl,IYS:GoA2020_Stn47:trawl:net_opening_depth_30_min,net_ope
 IYS:GoA2020_Stn47:trawl,IYS:GoA2020_Stn47:trawl:net_opening_depth_45_min,net_opening_depth_45_min,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn47:trawl,IYS:GoA2020_Stn47:trawl:net_opening_depth_end,net_opening_depth_end,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn48:trawl,IYS:GoA2020_Stn48:trawl:sampling_gear,sampling_gear,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/,GoA 2020 Trawl Net, ,NA,NA
+IYS:GoA2020_Stn48:trawl,IYS:GoA2020_Stn48:trawl:headrope_depth_15_min,headrope_depth_15_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn48:trawl,IYS:GoA2020_Stn48:trawl:headrope_depth_30_min,headrope_depth_30_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn48:trawl,IYS:GoA2020_Stn48:trawl:headrope_depth_45_min,headrope_depth_45_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn48:trawl,IYS:GoA2020_Stn48:trawl:headrope_depth_end,headrope_depth_end, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn48:trawl,IYS:GoA2020_Stn48:trawl:warp_distance_15_min,warp_distance_15_min, ,230,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn48:trawl,IYS:GoA2020_Stn48:trawl:warp_distance_30_min,warp_distance_30_min, ,253,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn48:trawl,IYS:GoA2020_Stn48:trawl:warp_distance_45_min,warp_distance_45_min, ,262,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn48:trawl,IYS:GoA2020_Stn48:trawl:warp_distance_end,warp_distance_end, ,265,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn48:trawl,IYS:GoA2020_Stn48:trawl:net_opening_width_wings,net_opening_width_wings, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn48:trawl,IYS:GoA2020_Stn48:trawl:net_opening_width_wings_30_min,net_opening_width_wings_30_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn48:trawl,IYS:GoA2020_Stn48:trawl:net_opening_width_wings_45_min,net_opening_width_wings_45_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
@@ -624,6 +1008,14 @@ IYS:GoA2020_Stn48:trawl,IYS:GoA2020_Stn48:trawl:net_opening_depth_30_min,net_ope
 IYS:GoA2020_Stn48:trawl,IYS:GoA2020_Stn48:trawl:net_opening_depth_45_min,net_opening_depth_45_min,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn48:trawl,IYS:GoA2020_Stn48:trawl:net_opening_depth_end,net_opening_depth_end,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn49:trawl,IYS:GoA2020_Stn49:trawl:sampling_gear,sampling_gear,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/,GoA 2020 Trawl Net, ,NA,NA
+IYS:GoA2020_Stn49:trawl,IYS:GoA2020_Stn49:trawl:headrope_depth_15_min,headrope_depth_15_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn49:trawl,IYS:GoA2020_Stn49:trawl:headrope_depth_30_min,headrope_depth_30_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn49:trawl,IYS:GoA2020_Stn49:trawl:headrope_depth_45_min,headrope_depth_45_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn49:trawl,IYS:GoA2020_Stn49:trawl:headrope_depth_end,headrope_depth_end, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn49:trawl,IYS:GoA2020_Stn49:trawl:warp_distance_15_min,warp_distance_15_min, ,230,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn49:trawl,IYS:GoA2020_Stn49:trawl:warp_distance_30_min,warp_distance_30_min, ,260,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn49:trawl,IYS:GoA2020_Stn49:trawl:warp_distance_45_min,warp_distance_45_min, ,269,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn49:trawl,IYS:GoA2020_Stn49:trawl:warp_distance_end,warp_distance_end, ,270,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn49:trawl,IYS:GoA2020_Stn49:trawl:net_opening_width_wings,net_opening_width_wings, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn49:trawl,IYS:GoA2020_Stn49:trawl:net_opening_width_wings_30_min,net_opening_width_wings_30_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn49:trawl,IYS:GoA2020_Stn49:trawl:net_opening_width_wings_45_min,net_opening_width_wings_45_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
@@ -637,6 +1029,14 @@ IYS:GoA2020_Stn49:trawl,IYS:GoA2020_Stn49:trawl:net_opening_depth_30_min,net_ope
 IYS:GoA2020_Stn49:trawl,IYS:GoA2020_Stn49:trawl:net_opening_depth_45_min,net_opening_depth_45_min,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,18,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn49:trawl,IYS:GoA2020_Stn49:trawl:net_opening_depth_end,net_opening_depth_end,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,18,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn50:trawl,IYS:GoA2020_Stn50:trawl:sampling_gear,sampling_gear,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/,GoA 2020 Trawl Net, ,NA,NA
+IYS:GoA2020_Stn50:trawl,IYS:GoA2020_Stn50:trawl:headrope_depth_15_min,headrope_depth_15_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn50:trawl,IYS:GoA2020_Stn50:trawl:headrope_depth_30_min,headrope_depth_30_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn50:trawl,IYS:GoA2020_Stn50:trawl:headrope_depth_45_min,headrope_depth_45_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn50:trawl,IYS:GoA2020_Stn50:trawl:headrope_depth_end,headrope_depth_end, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn50:trawl,IYS:GoA2020_Stn50:trawl:warp_distance_15_min,warp_distance_15_min, ,287,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn50:trawl,IYS:GoA2020_Stn50:trawl:warp_distance_30_min,warp_distance_30_min, ,311,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn50:trawl,IYS:GoA2020_Stn50:trawl:warp_distance_45_min,warp_distance_45_min, ,320,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn50:trawl,IYS:GoA2020_Stn50:trawl:warp_distance_end,warp_distance_end, ,326,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn50:trawl,IYS:GoA2020_Stn50:trawl:net_opening_width_wings,net_opening_width_wings, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn50:trawl,IYS:GoA2020_Stn50:trawl:net_opening_width_wings_30_min,net_opening_width_wings_30_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn50:trawl,IYS:GoA2020_Stn50:trawl:net_opening_width_wings_45_min,net_opening_width_wings_45_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
@@ -650,6 +1050,14 @@ IYS:GoA2020_Stn50:trawl,IYS:GoA2020_Stn50:trawl:net_opening_depth_30_min,net_ope
 IYS:GoA2020_Stn50:trawl,IYS:GoA2020_Stn50:trawl:net_opening_depth_45_min,net_opening_depth_45_min,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,19,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn50:trawl,IYS:GoA2020_Stn50:trawl:net_opening_depth_end,net_opening_depth_end,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,18,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn51:trawl,IYS:GoA2020_Stn51:trawl:sampling_gear,sampling_gear,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/,GoA 2020 Trawl Net, ,NA,NA
+IYS:GoA2020_Stn51:trawl,IYS:GoA2020_Stn51:trawl:headrope_depth_15_min,headrope_depth_15_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn51:trawl,IYS:GoA2020_Stn51:trawl:headrope_depth_30_min,headrope_depth_30_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn51:trawl,IYS:GoA2020_Stn51:trawl:headrope_depth_45_min,headrope_depth_45_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn51:trawl,IYS:GoA2020_Stn51:trawl:headrope_depth_end,headrope_depth_end, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn51:trawl,IYS:GoA2020_Stn51:trawl:warp_distance_15_min,warp_distance_15_min, ,205,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn51:trawl,IYS:GoA2020_Stn51:trawl:warp_distance_30_min,warp_distance_30_min, ,205,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn51:trawl,IYS:GoA2020_Stn51:trawl:warp_distance_45_min,warp_distance_45_min, ,205,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn51:trawl,IYS:GoA2020_Stn51:trawl:warp_distance_end,warp_distance_end, ,205,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn51:trawl,IYS:GoA2020_Stn51:trawl:net_opening_width_wings,net_opening_width_wings, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn51:trawl,IYS:GoA2020_Stn51:trawl:net_opening_width_wings_30_min,net_opening_width_wings_30_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn51:trawl,IYS:GoA2020_Stn51:trawl:net_opening_width_wings_45_min,net_opening_width_wings_45_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
@@ -663,6 +1071,14 @@ IYS:GoA2020_Stn51:trawl,IYS:GoA2020_Stn51:trawl:net_opening_depth_30_min,net_ope
 IYS:GoA2020_Stn51:trawl,IYS:GoA2020_Stn51:trawl:net_opening_depth_45_min,net_opening_depth_45_min,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,19,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn51:trawl,IYS:GoA2020_Stn51:trawl:net_opening_depth_end,net_opening_depth_end,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/,19,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn52:trawl,IYS:GoA2020_Stn52:trawl:sampling_gear,sampling_gear,http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/,GoA 2020 Trawl Net, ,NA,NA
+IYS:GoA2020_Stn52:trawl,IYS:GoA2020_Stn52:trawl:headrope_depth_15_min,headrope_depth_15_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn52:trawl,IYS:GoA2020_Stn52:trawl:headrope_depth_30_min,headrope_depth_30_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn52:trawl,IYS:GoA2020_Stn52:trawl:headrope_depth_45_min,headrope_depth_45_min, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn52:trawl,IYS:GoA2020_Stn52:trawl:headrope_depth_end,headrope_depth_end, ,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn52:trawl,IYS:GoA2020_Stn52:trawl:warp_distance_15_min,warp_distance_15_min, ,287,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn52:trawl,IYS:GoA2020_Stn52:trawl:warp_distance_30_min,warp_distance_30_min, ,309,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn52:trawl,IYS:GoA2020_Stn52:trawl:warp_distance_45_min,warp_distance_45_min, ,275,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+IYS:GoA2020_Stn52:trawl,IYS:GoA2020_Stn52:trawl:warp_distance_end,warp_distance_end, ,270,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn52:trawl,IYS:GoA2020_Stn52:trawl:net_opening_width_wings,net_opening_width_wings, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn52:trawl,IYS:GoA2020_Stn52:trawl:net_opening_width_wings_30_min,net_opening_width_wings_30_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn52:trawl,IYS:GoA2020_Stn52:trawl:net_opening_width_wings_45_min,net_opening_width_wings_45_min, ,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/

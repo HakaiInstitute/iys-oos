@@ -2,312 +2,520 @@ eventID,measurementID,measurementType,measurementTypeID,measurementValue,measure
 IYS:GoA2020_Stn1:trawl,IYS:GoA2020_Stn1:trawl:wave_height,wave_height,http://vocab.nerc.ac.uk/collection/P07/current/JNQS0CMX/,1.8,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn1:trawl,IYS:GoA2020_Stn1:trawl:swell_height,swell_height,http://vocab.nerc.ac.uk/collection/P09/current/SWHT/,8.5,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn1:trawl,IYS:GoA2020_Stn1:trawl:sea_state_description,sea_state_description, ,NA,NA,NA,NA
+IYS:GoA2020_Stn1:trawl,IYS:GoA2020_Stn1:trawl:TEMPERATURE @ NET (oC) - 15 min,TEMPERATURE @ NET (oC) - 15 min,NA,NA,NA,NA,NA
+IYS:GoA2020_Stn1:trawl,IYS:GoA2020_Stn1:trawl:TEMPERATURE @ NET (oC) - 30 min,TEMPERATURE @ NET (oC) - 30 min,NA,NA,NA,NA,NA
+IYS:GoA2020_Stn1:trawl,IYS:GoA2020_Stn1:trawl:TEMPERATURE @ NET (oC) - 45 min,TEMPERATURE @ NET (oC) - 45 min,NA,NA,NA,NA,NA
+IYS:GoA2020_Stn1:trawl,IYS:GoA2020_Stn1:trawl:TEMPERATURE @ NET (oC) - END,TEMPERATURE @ NET (oC) - END,NA,NA,NA,NA,NA
 IYS:GoA2020_Stn1:trawl,IYS:GoA2020_Stn1:trawl:wind_direction,wind_direction,http://vocab.nerc.ac.uk/collection/B39/current/relwinddir/,270,NA,degrees,http://vocab.nerc.ac.uk/collection/P06/current/UAAA/
 IYS:GoA2020_Stn1:trawl,IYS:GoA2020_Stn1:trawl:wind_speed,wind_speed,http://vocab.nerc.ac.uk/collection/P07/current/CFSN0038/,15,NA,knots,http://vocab.nerc.ac.uk/collection/P06/current/UKNT/
 IYS:GoA2020_Stn1:trawl,IYS:GoA2020_Stn1:trawl:weather_description,weather_description, ,NA,NA,NA,NA
 IYS:GoA2020_Stn2:trawl,IYS:GoA2020_Stn2:trawl:wave_height,wave_height,http://vocab.nerc.ac.uk/collection/P07/current/JNQS0CMX/,3,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn2:trawl,IYS:GoA2020_Stn2:trawl:swell_height,swell_height,http://vocab.nerc.ac.uk/collection/P09/current/SWHT/,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn2:trawl,IYS:GoA2020_Stn2:trawl:sea_state_description,sea_state_description, ,choppy,NA,NA,NA
+IYS:GoA2020_Stn2:trawl,IYS:GoA2020_Stn2:trawl:TEMPERATURE @ NET (oC) - 15 min,TEMPERATURE @ NET (oC) - 15 min,NA,8.7,NA,NA,NA
+IYS:GoA2020_Stn2:trawl,IYS:GoA2020_Stn2:trawl:TEMPERATURE @ NET (oC) - 30 min,TEMPERATURE @ NET (oC) - 30 min,NA,8.7,NA,NA,NA
+IYS:GoA2020_Stn2:trawl,IYS:GoA2020_Stn2:trawl:TEMPERATURE @ NET (oC) - 45 min,TEMPERATURE @ NET (oC) - 45 min,NA,8.7,NA,NA,NA
+IYS:GoA2020_Stn2:trawl,IYS:GoA2020_Stn2:trawl:TEMPERATURE @ NET (oC) - END,TEMPERATURE @ NET (oC) - END,NA,8.7,NA,NA,NA
 IYS:GoA2020_Stn2:trawl,IYS:GoA2020_Stn2:trawl:wind_direction,wind_direction,http://vocab.nerc.ac.uk/collection/B39/current/relwinddir/,315,NA,degrees,http://vocab.nerc.ac.uk/collection/P06/current/UAAA/
 IYS:GoA2020_Stn2:trawl,IYS:GoA2020_Stn2:trawl:wind_speed,wind_speed,http://vocab.nerc.ac.uk/collection/P07/current/CFSN0038/,30,NA,knots,http://vocab.nerc.ac.uk/collection/P06/current/UKNT/
 IYS:GoA2020_Stn2:trawl,IYS:GoA2020_Stn2:trawl:weather_description,weather_description, ,sunny,NA,NA,NA
 IYS:GoA2020_Stn3:trawl,IYS:GoA2020_Stn3:trawl:wave_height,wave_height,http://vocab.nerc.ac.uk/collection/P07/current/JNQS0CMX/,2,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn3:trawl,IYS:GoA2020_Stn3:trawl:swell_height,swell_height,http://vocab.nerc.ac.uk/collection/P09/current/SWHT/,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn3:trawl,IYS:GoA2020_Stn3:trawl:sea_state_description,sea_state_description, ,white caps,NA,NA,NA
+IYS:GoA2020_Stn3:trawl,IYS:GoA2020_Stn3:trawl:TEMPERATURE @ NET (oC) - 15 min,TEMPERATURE @ NET (oC) - 15 min,NA,8.5,NA,NA,NA
+IYS:GoA2020_Stn3:trawl,IYS:GoA2020_Stn3:trawl:TEMPERATURE @ NET (oC) - 30 min,TEMPERATURE @ NET (oC) - 30 min,NA,8.5,NA,NA,NA
+IYS:GoA2020_Stn3:trawl,IYS:GoA2020_Stn3:trawl:TEMPERATURE @ NET (oC) - 45 min,TEMPERATURE @ NET (oC) - 45 min,NA,8.5,NA,NA,NA
+IYS:GoA2020_Stn3:trawl,IYS:GoA2020_Stn3:trawl:TEMPERATURE @ NET (oC) - END,TEMPERATURE @ NET (oC) - END,NA,8.5,NA,NA,NA
 IYS:GoA2020_Stn3:trawl,IYS:GoA2020_Stn3:trawl:wind_direction,wind_direction,http://vocab.nerc.ac.uk/collection/B39/current/relwinddir/,45,NA,degrees,http://vocab.nerc.ac.uk/collection/P06/current/UAAA/
 IYS:GoA2020_Stn3:trawl,IYS:GoA2020_Stn3:trawl:wind_speed,wind_speed,http://vocab.nerc.ac.uk/collection/P07/current/CFSN0038/,20,NA,knots,http://vocab.nerc.ac.uk/collection/P06/current/UKNT/
 IYS:GoA2020_Stn3:trawl,IYS:GoA2020_Stn3:trawl:weather_description,weather_description, ,overcast,NA,NA,NA
 IYS:GoA2020_Stn4:trawl,IYS:GoA2020_Stn4:trawl:wave_height,wave_height,http://vocab.nerc.ac.uk/collection/P07/current/JNQS0CMX/,1,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn4:trawl,IYS:GoA2020_Stn4:trawl:swell_height,swell_height,http://vocab.nerc.ac.uk/collection/P09/current/SWHT/,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn4:trawl,IYS:GoA2020_Stn4:trawl:sea_state_description,sea_state_description, ,NA,NA,NA,NA
+IYS:GoA2020_Stn4:trawl,IYS:GoA2020_Stn4:trawl:TEMPERATURE @ NET (oC) - 15 min,TEMPERATURE @ NET (oC) - 15 min,NA,8.3,NA,NA,NA
+IYS:GoA2020_Stn4:trawl,IYS:GoA2020_Stn4:trawl:TEMPERATURE @ NET (oC) - 30 min,TEMPERATURE @ NET (oC) - 30 min,NA,8.3,NA,NA,NA
+IYS:GoA2020_Stn4:trawl,IYS:GoA2020_Stn4:trawl:TEMPERATURE @ NET (oC) - 45 min,TEMPERATURE @ NET (oC) - 45 min,NA,8.1,NA,NA,NA
+IYS:GoA2020_Stn4:trawl,IYS:GoA2020_Stn4:trawl:TEMPERATURE @ NET (oC) - END,TEMPERATURE @ NET (oC) - END,NA,8.1,NA,NA,NA
 IYS:GoA2020_Stn4:trawl,IYS:GoA2020_Stn4:trawl:wind_direction,wind_direction,http://vocab.nerc.ac.uk/collection/B39/current/relwinddir/,360,NA,degrees,http://vocab.nerc.ac.uk/collection/P06/current/UAAA/
 IYS:GoA2020_Stn4:trawl,IYS:GoA2020_Stn4:trawl:wind_speed,wind_speed,http://vocab.nerc.ac.uk/collection/P07/current/CFSN0038/,5,NA,knots,http://vocab.nerc.ac.uk/collection/P06/current/UKNT/
 IYS:GoA2020_Stn4:trawl,IYS:GoA2020_Stn4:trawl:weather_description,weather_description, ,NA,NA,NA,NA
 IYS:GoA2020_Stn5:trawl,IYS:GoA2020_Stn5:trawl:wave_height,wave_height,http://vocab.nerc.ac.uk/collection/P07/current/JNQS0CMX/,1,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn5:trawl,IYS:GoA2020_Stn5:trawl:swell_height,swell_height,http://vocab.nerc.ac.uk/collection/P09/current/SWHT/,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn5:trawl,IYS:GoA2020_Stn5:trawl:sea_state_description,sea_state_description, ,NA,NA,NA,NA
+IYS:GoA2020_Stn5:trawl,IYS:GoA2020_Stn5:trawl:TEMPERATURE @ NET (oC) - 15 min,TEMPERATURE @ NET (oC) - 15 min,NA,8.3,NA,NA,NA
+IYS:GoA2020_Stn5:trawl,IYS:GoA2020_Stn5:trawl:TEMPERATURE @ NET (oC) - 30 min,TEMPERATURE @ NET (oC) - 30 min,NA,8.3,NA,NA,NA
+IYS:GoA2020_Stn5:trawl,IYS:GoA2020_Stn5:trawl:TEMPERATURE @ NET (oC) - 45 min,TEMPERATURE @ NET (oC) - 45 min,NA,8.3,NA,NA,NA
+IYS:GoA2020_Stn5:trawl,IYS:GoA2020_Stn5:trawl:TEMPERATURE @ NET (oC) - END,TEMPERATURE @ NET (oC) - END,NA,8.3,NA,NA,NA
 IYS:GoA2020_Stn5:trawl,IYS:GoA2020_Stn5:trawl:wind_direction,wind_direction,http://vocab.nerc.ac.uk/collection/B39/current/relwinddir/,360,NA,degrees,http://vocab.nerc.ac.uk/collection/P06/current/UAAA/
 IYS:GoA2020_Stn5:trawl,IYS:GoA2020_Stn5:trawl:wind_speed,wind_speed,http://vocab.nerc.ac.uk/collection/P07/current/CFSN0038/,10,NA,knots,http://vocab.nerc.ac.uk/collection/P06/current/UKNT/
 IYS:GoA2020_Stn5:trawl,IYS:GoA2020_Stn5:trawl:weather_description,weather_description, ,NA,NA,NA,NA
 IYS:GoA2020_Stn6:trawl,IYS:GoA2020_Stn6:trawl:wave_height,wave_height,http://vocab.nerc.ac.uk/collection/P07/current/JNQS0CMX/,1,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn6:trawl,IYS:GoA2020_Stn6:trawl:swell_height,swell_height,http://vocab.nerc.ac.uk/collection/P09/current/SWHT/,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn6:trawl,IYS:GoA2020_Stn6:trawl:sea_state_description,sea_state_description, ,NA,NA,NA,NA
+IYS:GoA2020_Stn6:trawl,IYS:GoA2020_Stn6:trawl:TEMPERATURE @ NET (oC) - 15 min,TEMPERATURE @ NET (oC) - 15 min,NA,8.3,NA,NA,NA
+IYS:GoA2020_Stn6:trawl,IYS:GoA2020_Stn6:trawl:TEMPERATURE @ NET (oC) - 30 min,TEMPERATURE @ NET (oC) - 30 min,NA,8.3,NA,NA,NA
+IYS:GoA2020_Stn6:trawl,IYS:GoA2020_Stn6:trawl:TEMPERATURE @ NET (oC) - 45 min,TEMPERATURE @ NET (oC) - 45 min,NA,8.3,NA,NA,NA
+IYS:GoA2020_Stn6:trawl,IYS:GoA2020_Stn6:trawl:TEMPERATURE @ NET (oC) - END,TEMPERATURE @ NET (oC) - END,NA,8.3,NA,NA,NA
 IYS:GoA2020_Stn6:trawl,IYS:GoA2020_Stn6:trawl:wind_direction,wind_direction,http://vocab.nerc.ac.uk/collection/B39/current/relwinddir/,360,NA,degrees,http://vocab.nerc.ac.uk/collection/P06/current/UAAA/
 IYS:GoA2020_Stn6:trawl,IYS:GoA2020_Stn6:trawl:wind_speed,wind_speed,http://vocab.nerc.ac.uk/collection/P07/current/CFSN0038/,15,NA,knots,http://vocab.nerc.ac.uk/collection/P06/current/UKNT/
 IYS:GoA2020_Stn6:trawl,IYS:GoA2020_Stn6:trawl:weather_description,weather_description, ,cloudy,NA,NA,NA
 IYS:GoA2020_Stn7:trawl,IYS:GoA2020_Stn7:trawl:wave_height,wave_height,http://vocab.nerc.ac.uk/collection/P07/current/JNQS0CMX/,0.5,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn7:trawl,IYS:GoA2020_Stn7:trawl:swell_height,swell_height,http://vocab.nerc.ac.uk/collection/P09/current/SWHT/,1,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn7:trawl,IYS:GoA2020_Stn7:trawl:sea_state_description,sea_state_description, ,NA,NA,NA,NA
+IYS:GoA2020_Stn7:trawl,IYS:GoA2020_Stn7:trawl:TEMPERATURE @ NET (oC) - 15 min,TEMPERATURE @ NET (oC) - 15 min,NA,8.4,NA,NA,NA
+IYS:GoA2020_Stn7:trawl,IYS:GoA2020_Stn7:trawl:TEMPERATURE @ NET (oC) - 30 min,TEMPERATURE @ NET (oC) - 30 min,NA,8.3,NA,NA,NA
+IYS:GoA2020_Stn7:trawl,IYS:GoA2020_Stn7:trawl:TEMPERATURE @ NET (oC) - 45 min,TEMPERATURE @ NET (oC) - 45 min,NA,8.3,NA,NA,NA
+IYS:GoA2020_Stn7:trawl,IYS:GoA2020_Stn7:trawl:TEMPERATURE @ NET (oC) - END,TEMPERATURE @ NET (oC) - END,NA,8.3,NA,NA,NA
 IYS:GoA2020_Stn7:trawl,IYS:GoA2020_Stn7:trawl:wind_direction,wind_direction,http://vocab.nerc.ac.uk/collection/B39/current/relwinddir/,45,NA,degrees,http://vocab.nerc.ac.uk/collection/P06/current/UAAA/
 IYS:GoA2020_Stn7:trawl,IYS:GoA2020_Stn7:trawl:wind_speed,wind_speed,http://vocab.nerc.ac.uk/collection/P07/current/CFSN0038/,light,NA,knots,http://vocab.nerc.ac.uk/collection/P06/current/UKNT/
 IYS:GoA2020_Stn7:trawl,IYS:GoA2020_Stn7:trawl:weather_description,weather_description, ,NA,NA,NA,NA
 IYS:GoA2020_Stn8:trawl,IYS:GoA2020_Stn8:trawl:wave_height,wave_height,http://vocab.nerc.ac.uk/collection/P07/current/JNQS0CMX/,1,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn8:trawl,IYS:GoA2020_Stn8:trawl:swell_height,swell_height,http://vocab.nerc.ac.uk/collection/P09/current/SWHT/,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn8:trawl,IYS:GoA2020_Stn8:trawl:sea_state_description,sea_state_description, ,NA,NA,NA,NA
+IYS:GoA2020_Stn8:trawl,IYS:GoA2020_Stn8:trawl:TEMPERATURE @ NET (oC) - 15 min,TEMPERATURE @ NET (oC) - 15 min,NA,8.1,NA,NA,NA
+IYS:GoA2020_Stn8:trawl,IYS:GoA2020_Stn8:trawl:TEMPERATURE @ NET (oC) - 30 min,TEMPERATURE @ NET (oC) - 30 min,NA,8.1,NA,NA,NA
+IYS:GoA2020_Stn8:trawl,IYS:GoA2020_Stn8:trawl:TEMPERATURE @ NET (oC) - 45 min,TEMPERATURE @ NET (oC) - 45 min,NA,8.2,NA,NA,NA
+IYS:GoA2020_Stn8:trawl,IYS:GoA2020_Stn8:trawl:TEMPERATURE @ NET (oC) - END,TEMPERATURE @ NET (oC) - END,NA,8.2,NA,NA,NA
 IYS:GoA2020_Stn8:trawl,IYS:GoA2020_Stn8:trawl:wind_direction,wind_direction,http://vocab.nerc.ac.uk/collection/B39/current/relwinddir/,360,NA,degrees,http://vocab.nerc.ac.uk/collection/P06/current/UAAA/
 IYS:GoA2020_Stn8:trawl,IYS:GoA2020_Stn8:trawl:wind_speed,wind_speed,http://vocab.nerc.ac.uk/collection/P07/current/CFSN0038/,light,NA,knots,http://vocab.nerc.ac.uk/collection/P06/current/UKNT/
 IYS:GoA2020_Stn8:trawl,IYS:GoA2020_Stn8:trawl:weather_description,weather_description, ,NA,NA,NA,NA
 IYS:GoA2020_Stn9:trawl,IYS:GoA2020_Stn9:trawl:wave_height,wave_height,http://vocab.nerc.ac.uk/collection/P07/current/JNQS0CMX/,0.5,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn9:trawl,IYS:GoA2020_Stn9:trawl:swell_height,swell_height,http://vocab.nerc.ac.uk/collection/P09/current/SWHT/,1,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn9:trawl,IYS:GoA2020_Stn9:trawl:sea_state_description,sea_state_description, ,NA,NA,NA,NA
+IYS:GoA2020_Stn9:trawl,IYS:GoA2020_Stn9:trawl:TEMPERATURE @ NET (oC) - 15 min,TEMPERATURE @ NET (oC) - 15 min,NA,7.7,NA,NA,NA
+IYS:GoA2020_Stn9:trawl,IYS:GoA2020_Stn9:trawl:TEMPERATURE @ NET (oC) - 30 min,TEMPERATURE @ NET (oC) - 30 min,NA,7.2,NA,NA,NA
+IYS:GoA2020_Stn9:trawl,IYS:GoA2020_Stn9:trawl:TEMPERATURE @ NET (oC) - 45 min,TEMPERATURE @ NET (oC) - 45 min,NA,7.7,NA,NA,NA
+IYS:GoA2020_Stn9:trawl,IYS:GoA2020_Stn9:trawl:TEMPERATURE @ NET (oC) - END,TEMPERATURE @ NET (oC) - END,NA,7.7,NA,NA,NA
 IYS:GoA2020_Stn9:trawl,IYS:GoA2020_Stn9:trawl:wind_direction,wind_direction,http://vocab.nerc.ac.uk/collection/B39/current/relwinddir/,NA,NA,degrees,http://vocab.nerc.ac.uk/collection/P06/current/UAAA/
 IYS:GoA2020_Stn9:trawl,IYS:GoA2020_Stn9:trawl:wind_speed,wind_speed,http://vocab.nerc.ac.uk/collection/P07/current/CFSN0038/,0,NA,knots,http://vocab.nerc.ac.uk/collection/P06/current/UKNT/
 IYS:GoA2020_Stn9:trawl,IYS:GoA2020_Stn9:trawl:weather_description,weather_description, ,NA,NA,NA,NA
 IYS:GoA2020_Stn10:trawl,IYS:GoA2020_Stn10:trawl:wave_height,wave_height,http://vocab.nerc.ac.uk/collection/P07/current/JNQS0CMX/,0.5,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn10:trawl,IYS:GoA2020_Stn10:trawl:swell_height,swell_height,http://vocab.nerc.ac.uk/collection/P09/current/SWHT/,1,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn10:trawl,IYS:GoA2020_Stn10:trawl:sea_state_description,sea_state_description, ,NA,NA,NA,NA
+IYS:GoA2020_Stn10:trawl,IYS:GoA2020_Stn10:trawl:TEMPERATURE @ NET (oC) - 15 min,TEMPERATURE @ NET (oC) - 15 min,NA,7.5,NA,NA,NA
+IYS:GoA2020_Stn10:trawl,IYS:GoA2020_Stn10:trawl:TEMPERATURE @ NET (oC) - 30 min,TEMPERATURE @ NET (oC) - 30 min,NA,7.5,NA,NA,NA
+IYS:GoA2020_Stn10:trawl,IYS:GoA2020_Stn10:trawl:TEMPERATURE @ NET (oC) - 45 min,TEMPERATURE @ NET (oC) - 45 min,NA,7.5,NA,NA,NA
+IYS:GoA2020_Stn10:trawl,IYS:GoA2020_Stn10:trawl:TEMPERATURE @ NET (oC) - END,TEMPERATURE @ NET (oC) - END,NA,7.5,NA,NA,NA
 IYS:GoA2020_Stn10:trawl,IYS:GoA2020_Stn10:trawl:wind_direction,wind_direction,http://vocab.nerc.ac.uk/collection/B39/current/relwinddir/,NA,NA,degrees,http://vocab.nerc.ac.uk/collection/P06/current/UAAA/
 IYS:GoA2020_Stn10:trawl,IYS:GoA2020_Stn10:trawl:wind_speed,wind_speed,http://vocab.nerc.ac.uk/collection/P07/current/CFSN0038/,0,NA,knots,http://vocab.nerc.ac.uk/collection/P06/current/UKNT/
 IYS:GoA2020_Stn10:trawl,IYS:GoA2020_Stn10:trawl:weather_description,weather_description, ,NA,NA,NA,NA
 IYS:GoA2020_Stn11:trawl,IYS:GoA2020_Stn11:trawl:wave_height,wave_height,http://vocab.nerc.ac.uk/collection/P07/current/JNQS0CMX/,0.5,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn11:trawl,IYS:GoA2020_Stn11:trawl:swell_height,swell_height,http://vocab.nerc.ac.uk/collection/P09/current/SWHT/,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn11:trawl,IYS:GoA2020_Stn11:trawl:sea_state_description,sea_state_description, ,NA,NA,NA,NA
+IYS:GoA2020_Stn11:trawl,IYS:GoA2020_Stn11:trawl:TEMPERATURE @ NET (oC) - 15 min,TEMPERATURE @ NET (oC) - 15 min,NA,7.1,NA,NA,NA
+IYS:GoA2020_Stn11:trawl,IYS:GoA2020_Stn11:trawl:TEMPERATURE @ NET (oC) - 30 min,TEMPERATURE @ NET (oC) - 30 min,NA,7.1,NA,NA,NA
+IYS:GoA2020_Stn11:trawl,IYS:GoA2020_Stn11:trawl:TEMPERATURE @ NET (oC) - 45 min,TEMPERATURE @ NET (oC) - 45 min,NA,7.1,NA,NA,NA
+IYS:GoA2020_Stn11:trawl,IYS:GoA2020_Stn11:trawl:TEMPERATURE @ NET (oC) - END,TEMPERATURE @ NET (oC) - END,NA,7.1,NA,NA,NA
 IYS:GoA2020_Stn11:trawl,IYS:GoA2020_Stn11:trawl:wind_direction,wind_direction,http://vocab.nerc.ac.uk/collection/B39/current/relwinddir/,NA,NA,degrees,http://vocab.nerc.ac.uk/collection/P06/current/UAAA/
 IYS:GoA2020_Stn11:trawl,IYS:GoA2020_Stn11:trawl:wind_speed,wind_speed,http://vocab.nerc.ac.uk/collection/P07/current/CFSN0038/,0,NA,knots,http://vocab.nerc.ac.uk/collection/P06/current/UKNT/
 IYS:GoA2020_Stn11:trawl,IYS:GoA2020_Stn11:trawl:weather_description,weather_description, ,NA,NA,NA,NA
 IYS:GoA2020_Stn12:trawl,IYS:GoA2020_Stn12:trawl:wave_height,wave_height,http://vocab.nerc.ac.uk/collection/P07/current/JNQS0CMX/,0.5,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn12:trawl,IYS:GoA2020_Stn12:trawl:swell_height,swell_height,http://vocab.nerc.ac.uk/collection/P09/current/SWHT/,1,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn12:trawl,IYS:GoA2020_Stn12:trawl:sea_state_description,sea_state_description, ,NA,NA,NA,NA
+IYS:GoA2020_Stn12:trawl,IYS:GoA2020_Stn12:trawl:TEMPERATURE @ NET (oC) - 15 min,TEMPERATURE @ NET (oC) - 15 min,NA,7.4,NA,NA,NA
+IYS:GoA2020_Stn12:trawl,IYS:GoA2020_Stn12:trawl:TEMPERATURE @ NET (oC) - 30 min,TEMPERATURE @ NET (oC) - 30 min,NA,7.4,NA,NA,NA
+IYS:GoA2020_Stn12:trawl,IYS:GoA2020_Stn12:trawl:TEMPERATURE @ NET (oC) - 45 min,TEMPERATURE @ NET (oC) - 45 min,NA,7.4,NA,NA,NA
+IYS:GoA2020_Stn12:trawl,IYS:GoA2020_Stn12:trawl:TEMPERATURE @ NET (oC) - END,TEMPERATURE @ NET (oC) - END,NA,7.4,NA,NA,NA
 IYS:GoA2020_Stn12:trawl,IYS:GoA2020_Stn12:trawl:wind_direction,wind_direction,http://vocab.nerc.ac.uk/collection/B39/current/relwinddir/,315,NA,degrees,http://vocab.nerc.ac.uk/collection/P06/current/UAAA/
 IYS:GoA2020_Stn12:trawl,IYS:GoA2020_Stn12:trawl:wind_speed,wind_speed,http://vocab.nerc.ac.uk/collection/P07/current/CFSN0038/,light,NA,knots,http://vocab.nerc.ac.uk/collection/P06/current/UKNT/
 IYS:GoA2020_Stn12:trawl,IYS:GoA2020_Stn12:trawl:weather_description,weather_description, ,NA,NA,NA,NA
 IYS:GoA2020_Stn13:trawl,IYS:GoA2020_Stn13:trawl:wave_height,wave_height,http://vocab.nerc.ac.uk/collection/P07/current/JNQS0CMX/,1.5,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn13:trawl,IYS:GoA2020_Stn13:trawl:swell_height,swell_height,http://vocab.nerc.ac.uk/collection/P09/current/SWHT/,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn13:trawl,IYS:GoA2020_Stn13:trawl:sea_state_description,sea_state_description, ,NA,NA,NA,NA
+IYS:GoA2020_Stn13:trawl,IYS:GoA2020_Stn13:trawl:TEMPERATURE @ NET (oC) - 15 min,TEMPERATURE @ NET (oC) - 15 min,NA,6.7,NA,NA,NA
+IYS:GoA2020_Stn13:trawl,IYS:GoA2020_Stn13:trawl:TEMPERATURE @ NET (oC) - 30 min,TEMPERATURE @ NET (oC) - 30 min,NA,6.7,NA,NA,NA
+IYS:GoA2020_Stn13:trawl,IYS:GoA2020_Stn13:trawl:TEMPERATURE @ NET (oC) - 45 min,TEMPERATURE @ NET (oC) - 45 min,NA,6.7,NA,NA,NA
+IYS:GoA2020_Stn13:trawl,IYS:GoA2020_Stn13:trawl:TEMPERATURE @ NET (oC) - END,TEMPERATURE @ NET (oC) - END,NA,6.7,NA,NA,NA
 IYS:GoA2020_Stn13:trawl,IYS:GoA2020_Stn13:trawl:wind_direction,wind_direction,http://vocab.nerc.ac.uk/collection/B39/current/relwinddir/,315,NA,degrees,http://vocab.nerc.ac.uk/collection/P06/current/UAAA/
 IYS:GoA2020_Stn13:trawl,IYS:GoA2020_Stn13:trawl:wind_speed,wind_speed,http://vocab.nerc.ac.uk/collection/P07/current/CFSN0038/,25,NA,knots,http://vocab.nerc.ac.uk/collection/P06/current/UKNT/
 IYS:GoA2020_Stn13:trawl,IYS:GoA2020_Stn13:trawl:weather_description,weather_description, ,NA,NA,NA,NA
 IYS:GoA2020_Stn14:trawl,IYS:GoA2020_Stn14:trawl:wave_height,wave_height,http://vocab.nerc.ac.uk/collection/P07/current/JNQS0CMX/,1,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn14:trawl,IYS:GoA2020_Stn14:trawl:swell_height,swell_height,http://vocab.nerc.ac.uk/collection/P09/current/SWHT/,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn14:trawl,IYS:GoA2020_Stn14:trawl:sea_state_description,sea_state_description, ,NA,NA,NA,NA
+IYS:GoA2020_Stn14:trawl,IYS:GoA2020_Stn14:trawl:TEMPERATURE @ NET (oC) - 15 min,TEMPERATURE @ NET (oC) - 15 min,NA,6.5,NA,NA,NA
+IYS:GoA2020_Stn14:trawl,IYS:GoA2020_Stn14:trawl:TEMPERATURE @ NET (oC) - 30 min,TEMPERATURE @ NET (oC) - 30 min,NA,6.5,NA,NA,NA
+IYS:GoA2020_Stn14:trawl,IYS:GoA2020_Stn14:trawl:TEMPERATURE @ NET (oC) - 45 min,TEMPERATURE @ NET (oC) - 45 min,NA,6.5,NA,NA,NA
+IYS:GoA2020_Stn14:trawl,IYS:GoA2020_Stn14:trawl:TEMPERATURE @ NET (oC) - END,TEMPERATURE @ NET (oC) - END,NA,6.5,NA,NA,NA
 IYS:GoA2020_Stn14:trawl,IYS:GoA2020_Stn14:trawl:wind_direction,wind_direction,http://vocab.nerc.ac.uk/collection/B39/current/relwinddir/,360,NA,degrees,http://vocab.nerc.ac.uk/collection/P06/current/UAAA/
 IYS:GoA2020_Stn14:trawl,IYS:GoA2020_Stn14:trawl:wind_speed,wind_speed,http://vocab.nerc.ac.uk/collection/P07/current/CFSN0038/,15,NA,knots,http://vocab.nerc.ac.uk/collection/P06/current/UKNT/
 IYS:GoA2020_Stn14:trawl,IYS:GoA2020_Stn14:trawl:weather_description,weather_description, ,NA,NA,NA,NA
 IYS:GoA2020_Stn15:trawl,IYS:GoA2020_Stn15:trawl:wave_height,wave_height,http://vocab.nerc.ac.uk/collection/P07/current/JNQS0CMX/,1.5,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn15:trawl,IYS:GoA2020_Stn15:trawl:swell_height,swell_height,http://vocab.nerc.ac.uk/collection/P09/current/SWHT/,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn15:trawl,IYS:GoA2020_Stn15:trawl:sea_state_description,sea_state_description, ,NA,NA,NA,NA
+IYS:GoA2020_Stn15:trawl,IYS:GoA2020_Stn15:trawl:TEMPERATURE @ NET (oC) - 15 min,TEMPERATURE @ NET (oC) - 15 min,NA,6.5,NA,NA,NA
+IYS:GoA2020_Stn15:trawl,IYS:GoA2020_Stn15:trawl:TEMPERATURE @ NET (oC) - 30 min,TEMPERATURE @ NET (oC) - 30 min,NA,6.5,NA,NA,NA
+IYS:GoA2020_Stn15:trawl,IYS:GoA2020_Stn15:trawl:TEMPERATURE @ NET (oC) - 45 min,TEMPERATURE @ NET (oC) - 45 min,NA,6.5,NA,NA,NA
+IYS:GoA2020_Stn15:trawl,IYS:GoA2020_Stn15:trawl:TEMPERATURE @ NET (oC) - END,TEMPERATURE @ NET (oC) - END,NA,6.5,NA,NA,NA
 IYS:GoA2020_Stn15:trawl,IYS:GoA2020_Stn15:trawl:wind_direction,wind_direction,http://vocab.nerc.ac.uk/collection/B39/current/relwinddir/,360,NA,degrees,http://vocab.nerc.ac.uk/collection/P06/current/UAAA/
 IYS:GoA2020_Stn15:trawl,IYS:GoA2020_Stn15:trawl:wind_speed,wind_speed,http://vocab.nerc.ac.uk/collection/P07/current/CFSN0038/,8,NA,knots,http://vocab.nerc.ac.uk/collection/P06/current/UKNT/
 IYS:GoA2020_Stn15:trawl,IYS:GoA2020_Stn15:trawl:weather_description,weather_description, ,NA,NA,NA,NA
 IYS:GoA2020_Stn16:trawl,IYS:GoA2020_Stn16:trawl:wave_height,wave_height,http://vocab.nerc.ac.uk/collection/P07/current/JNQS0CMX/,1,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn16:trawl,IYS:GoA2020_Stn16:trawl:swell_height,swell_height,http://vocab.nerc.ac.uk/collection/P09/current/SWHT/,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn16:trawl,IYS:GoA2020_Stn16:trawl:sea_state_description,sea_state_description, ,NA,NA,NA,NA
+IYS:GoA2020_Stn16:trawl,IYS:GoA2020_Stn16:trawl:TEMPERATURE @ NET (oC) - 15 min,TEMPERATURE @ NET (oC) - 15 min,NA,5.4,NA,NA,NA
+IYS:GoA2020_Stn16:trawl,IYS:GoA2020_Stn16:trawl:TEMPERATURE @ NET (oC) - 30 min,TEMPERATURE @ NET (oC) - 30 min,NA,5.4,NA,NA,NA
+IYS:GoA2020_Stn16:trawl,IYS:GoA2020_Stn16:trawl:TEMPERATURE @ NET (oC) - 45 min,TEMPERATURE @ NET (oC) - 45 min,NA,5.4,NA,NA,NA
+IYS:GoA2020_Stn16:trawl,IYS:GoA2020_Stn16:trawl:TEMPERATURE @ NET (oC) - END,TEMPERATURE @ NET (oC) - END,NA,5.4,NA,NA,NA
 IYS:GoA2020_Stn16:trawl,IYS:GoA2020_Stn16:trawl:wind_direction,wind_direction,http://vocab.nerc.ac.uk/collection/B39/current/relwinddir/,360,NA,degrees,http://vocab.nerc.ac.uk/collection/P06/current/UAAA/
 IYS:GoA2020_Stn16:trawl,IYS:GoA2020_Stn16:trawl:wind_speed,wind_speed,http://vocab.nerc.ac.uk/collection/P07/current/CFSN0038/,10,NA,knots,http://vocab.nerc.ac.uk/collection/P06/current/UKNT/
 IYS:GoA2020_Stn16:trawl,IYS:GoA2020_Stn16:trawl:weather_description,weather_description, ,NA,NA,NA,NA
 IYS:GoA2020_Stn17:trawl,IYS:GoA2020_Stn17:trawl:wave_height,wave_height,http://vocab.nerc.ac.uk/collection/P07/current/JNQS0CMX/,1,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn17:trawl,IYS:GoA2020_Stn17:trawl:swell_height,swell_height,http://vocab.nerc.ac.uk/collection/P09/current/SWHT/,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn17:trawl,IYS:GoA2020_Stn17:trawl:sea_state_description,sea_state_description, ,NA,NA,NA,NA
+IYS:GoA2020_Stn17:trawl,IYS:GoA2020_Stn17:trawl:TEMPERATURE @ NET (oC) - 15 min,TEMPERATURE @ NET (oC) - 15 min,NA,5.7,NA,NA,NA
+IYS:GoA2020_Stn17:trawl,IYS:GoA2020_Stn17:trawl:TEMPERATURE @ NET (oC) - 30 min,TEMPERATURE @ NET (oC) - 30 min,NA,5.7,NA,NA,NA
+IYS:GoA2020_Stn17:trawl,IYS:GoA2020_Stn17:trawl:TEMPERATURE @ NET (oC) - 45 min,TEMPERATURE @ NET (oC) - 45 min,NA,5.7,NA,NA,NA
+IYS:GoA2020_Stn17:trawl,IYS:GoA2020_Stn17:trawl:TEMPERATURE @ NET (oC) - END,TEMPERATURE @ NET (oC) - END,NA,5.7,NA,NA,NA
 IYS:GoA2020_Stn17:trawl,IYS:GoA2020_Stn17:trawl:wind_direction,wind_direction,http://vocab.nerc.ac.uk/collection/B39/current/relwinddir/,45,NA,degrees,http://vocab.nerc.ac.uk/collection/P06/current/UAAA/
 IYS:GoA2020_Stn17:trawl,IYS:GoA2020_Stn17:trawl:wind_speed,wind_speed,http://vocab.nerc.ac.uk/collection/P07/current/CFSN0038/,18,NA,knots,http://vocab.nerc.ac.uk/collection/P06/current/UKNT/
 IYS:GoA2020_Stn17:trawl,IYS:GoA2020_Stn17:trawl:weather_description,weather_description, ,NA,NA,NA,NA
 IYS:GoA2020_Stn18:trawl,IYS:GoA2020_Stn18:trawl:wave_height,wave_height,http://vocab.nerc.ac.uk/collection/P07/current/JNQS0CMX/,1,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn18:trawl,IYS:GoA2020_Stn18:trawl:swell_height,swell_height,http://vocab.nerc.ac.uk/collection/P09/current/SWHT/,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn18:trawl,IYS:GoA2020_Stn18:trawl:sea_state_description,sea_state_description, ,NA,NA,NA,NA
+IYS:GoA2020_Stn18:trawl,IYS:GoA2020_Stn18:trawl:TEMPERATURE @ NET (oC) - 15 min,TEMPERATURE @ NET (oC) - 15 min,NA,6.1,NA,NA,NA
+IYS:GoA2020_Stn18:trawl,IYS:GoA2020_Stn18:trawl:TEMPERATURE @ NET (oC) - 30 min,TEMPERATURE @ NET (oC) - 30 min,NA,6.1,NA,NA,NA
+IYS:GoA2020_Stn18:trawl,IYS:GoA2020_Stn18:trawl:TEMPERATURE @ NET (oC) - 45 min,TEMPERATURE @ NET (oC) - 45 min,NA,6.1,NA,NA,NA
+IYS:GoA2020_Stn18:trawl,IYS:GoA2020_Stn18:trawl:TEMPERATURE @ NET (oC) - END,TEMPERATURE @ NET (oC) - END,NA,6.1,NA,NA,NA
 IYS:GoA2020_Stn18:trawl,IYS:GoA2020_Stn18:trawl:wind_direction,wind_direction,http://vocab.nerc.ac.uk/collection/B39/current/relwinddir/,45,NA,degrees,http://vocab.nerc.ac.uk/collection/P06/current/UAAA/
 IYS:GoA2020_Stn18:trawl,IYS:GoA2020_Stn18:trawl:wind_speed,wind_speed,http://vocab.nerc.ac.uk/collection/P07/current/CFSN0038/,18,NA,knots,http://vocab.nerc.ac.uk/collection/P06/current/UKNT/
 IYS:GoA2020_Stn18:trawl,IYS:GoA2020_Stn18:trawl:weather_description,weather_description, ,NA,NA,NA,NA
 IYS:GoA2020_Stn19:trawl,IYS:GoA2020_Stn19:trawl:wave_height,wave_height,http://vocab.nerc.ac.uk/collection/P07/current/JNQS0CMX/,0.5,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn19:trawl,IYS:GoA2020_Stn19:trawl:swell_height,swell_height,http://vocab.nerc.ac.uk/collection/P09/current/SWHT/,1,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn19:trawl,IYS:GoA2020_Stn19:trawl:sea_state_description,sea_state_description, ,NA,NA,NA,NA
+IYS:GoA2020_Stn19:trawl,IYS:GoA2020_Stn19:trawl:TEMPERATURE @ NET (oC) - 15 min,TEMPERATURE @ NET (oC) - 15 min,NA,6.9,NA,NA,NA
+IYS:GoA2020_Stn19:trawl,IYS:GoA2020_Stn19:trawl:TEMPERATURE @ NET (oC) - 30 min,TEMPERATURE @ NET (oC) - 30 min,NA,6.9,NA,NA,NA
+IYS:GoA2020_Stn19:trawl,IYS:GoA2020_Stn19:trawl:TEMPERATURE @ NET (oC) - 45 min,TEMPERATURE @ NET (oC) - 45 min,NA,6.9,NA,NA,NA
+IYS:GoA2020_Stn19:trawl,IYS:GoA2020_Stn19:trawl:TEMPERATURE @ NET (oC) - END,TEMPERATURE @ NET (oC) - END,NA,6.9,NA,NA,NA
 IYS:GoA2020_Stn19:trawl,IYS:GoA2020_Stn19:trawl:wind_direction,wind_direction,http://vocab.nerc.ac.uk/collection/B39/current/relwinddir/,360,NA,degrees,http://vocab.nerc.ac.uk/collection/P06/current/UAAA/
 IYS:GoA2020_Stn19:trawl,IYS:GoA2020_Stn19:trawl:wind_speed,wind_speed,http://vocab.nerc.ac.uk/collection/P07/current/CFSN0038/,light,NA,knots,http://vocab.nerc.ac.uk/collection/P06/current/UKNT/
 IYS:GoA2020_Stn19:trawl,IYS:GoA2020_Stn19:trawl:weather_description,weather_description, ,NA,NA,NA,NA
 IYS:GoA2020_Stn20:trawl,IYS:GoA2020_Stn20:trawl:wave_height,wave_height,http://vocab.nerc.ac.uk/collection/P07/current/JNQS0CMX/,0.5,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn20:trawl,IYS:GoA2020_Stn20:trawl:swell_height,swell_height,http://vocab.nerc.ac.uk/collection/P09/current/SWHT/,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn20:trawl,IYS:GoA2020_Stn20:trawl:sea_state_description,sea_state_description, ,NA,NA,NA,NA
+IYS:GoA2020_Stn20:trawl,IYS:GoA2020_Stn20:trawl:TEMPERATURE @ NET (oC) - 15 min,TEMPERATURE @ NET (oC) - 15 min,NA,7.3,NA,NA,NA
+IYS:GoA2020_Stn20:trawl,IYS:GoA2020_Stn20:trawl:TEMPERATURE @ NET (oC) - 30 min,TEMPERATURE @ NET (oC) - 30 min,NA,7.3,NA,NA,NA
+IYS:GoA2020_Stn20:trawl,IYS:GoA2020_Stn20:trawl:TEMPERATURE @ NET (oC) - 45 min,TEMPERATURE @ NET (oC) - 45 min,NA,7.3,NA,NA,NA
+IYS:GoA2020_Stn20:trawl,IYS:GoA2020_Stn20:trawl:TEMPERATURE @ NET (oC) - END,TEMPERATURE @ NET (oC) - END,NA,7.3,NA,NA,NA
 IYS:GoA2020_Stn20:trawl,IYS:GoA2020_Stn20:trawl:wind_direction,wind_direction,http://vocab.nerc.ac.uk/collection/B39/current/relwinddir/,variable,NA,degrees,http://vocab.nerc.ac.uk/collection/P06/current/UAAA/
 IYS:GoA2020_Stn20:trawl,IYS:GoA2020_Stn20:trawl:wind_speed,wind_speed,http://vocab.nerc.ac.uk/collection/P07/current/CFSN0038/,light,NA,knots,http://vocab.nerc.ac.uk/collection/P06/current/UKNT/
 IYS:GoA2020_Stn20:trawl,IYS:GoA2020_Stn20:trawl:weather_description,weather_description, ,NA,NA,NA,NA
 IYS:GoA2020_Stn21:trawl,IYS:GoA2020_Stn21:trawl:wave_height,wave_height,http://vocab.nerc.ac.uk/collection/P07/current/JNQS0CMX/,1,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn21:trawl,IYS:GoA2020_Stn21:trawl:swell_height,swell_height,http://vocab.nerc.ac.uk/collection/P09/current/SWHT/,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn21:trawl,IYS:GoA2020_Stn21:trawl:sea_state_description,sea_state_description, ,NA,NA,NA,NA
+IYS:GoA2020_Stn21:trawl,IYS:GoA2020_Stn21:trawl:TEMPERATURE @ NET (oC) - 15 min,TEMPERATURE @ NET (oC) - 15 min,NA,6.1,NA,NA,NA
+IYS:GoA2020_Stn21:trawl,IYS:GoA2020_Stn21:trawl:TEMPERATURE @ NET (oC) - 30 min,TEMPERATURE @ NET (oC) - 30 min,NA,6.1,NA,NA,NA
+IYS:GoA2020_Stn21:trawl,IYS:GoA2020_Stn21:trawl:TEMPERATURE @ NET (oC) - 45 min,TEMPERATURE @ NET (oC) - 45 min,NA,6.1,NA,NA,NA
+IYS:GoA2020_Stn21:trawl,IYS:GoA2020_Stn21:trawl:TEMPERATURE @ NET (oC) - END,TEMPERATURE @ NET (oC) - END,NA,6.1,NA,NA,NA
 IYS:GoA2020_Stn21:trawl,IYS:GoA2020_Stn21:trawl:wind_direction,wind_direction,http://vocab.nerc.ac.uk/collection/B39/current/relwinddir/,225,NA,degrees,http://vocab.nerc.ac.uk/collection/P06/current/UAAA/
 IYS:GoA2020_Stn21:trawl,IYS:GoA2020_Stn21:trawl:wind_speed,wind_speed,http://vocab.nerc.ac.uk/collection/P07/current/CFSN0038/,15,NA,knots,http://vocab.nerc.ac.uk/collection/P06/current/UKNT/
 IYS:GoA2020_Stn21:trawl,IYS:GoA2020_Stn21:trawl:weather_description,weather_description, ,NA,NA,NA,NA
 IYS:GoA2020_Stn22:trawl,IYS:GoA2020_Stn22:trawl:wave_height,wave_height,http://vocab.nerc.ac.uk/collection/P07/current/JNQS0CMX/,1.5,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn22:trawl,IYS:GoA2020_Stn22:trawl:swell_height,swell_height,http://vocab.nerc.ac.uk/collection/P09/current/SWHT/,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn22:trawl,IYS:GoA2020_Stn22:trawl:sea_state_description,sea_state_description, ,NA,NA,NA,NA
+IYS:GoA2020_Stn22:trawl,IYS:GoA2020_Stn22:trawl:TEMPERATURE @ NET (oC) - 15 min,TEMPERATURE @ NET (oC) - 15 min,NA,6.5,NA,NA,NA
+IYS:GoA2020_Stn22:trawl,IYS:GoA2020_Stn22:trawl:TEMPERATURE @ NET (oC) - 30 min,TEMPERATURE @ NET (oC) - 30 min,NA,6.5,NA,NA,NA
+IYS:GoA2020_Stn22:trawl,IYS:GoA2020_Stn22:trawl:TEMPERATURE @ NET (oC) - 45 min,TEMPERATURE @ NET (oC) - 45 min,NA,6.5,NA,NA,NA
+IYS:GoA2020_Stn22:trawl,IYS:GoA2020_Stn22:trawl:TEMPERATURE @ NET (oC) - END,TEMPERATURE @ NET (oC) - END,NA,6.5,NA,NA,NA
 IYS:GoA2020_Stn22:trawl,IYS:GoA2020_Stn22:trawl:wind_direction,wind_direction,http://vocab.nerc.ac.uk/collection/B39/current/relwinddir/,225,NA,degrees,http://vocab.nerc.ac.uk/collection/P06/current/UAAA/
 IYS:GoA2020_Stn22:trawl,IYS:GoA2020_Stn22:trawl:wind_speed,wind_speed,http://vocab.nerc.ac.uk/collection/P07/current/CFSN0038/,25,NA,knots,http://vocab.nerc.ac.uk/collection/P06/current/UKNT/
 IYS:GoA2020_Stn22:trawl,IYS:GoA2020_Stn22:trawl:weather_description,weather_description, ,NA,NA,NA,NA
 IYS:GoA2020_Stn23:trawl,IYS:GoA2020_Stn23:trawl:wave_height,wave_height,http://vocab.nerc.ac.uk/collection/P07/current/JNQS0CMX/,2.5,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn23:trawl,IYS:GoA2020_Stn23:trawl:swell_height,swell_height,http://vocab.nerc.ac.uk/collection/P09/current/SWHT/,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn23:trawl,IYS:GoA2020_Stn23:trawl:sea_state_description,sea_state_description, ,NA,NA,NA,NA
+IYS:GoA2020_Stn23:trawl,IYS:GoA2020_Stn23:trawl:TEMPERATURE @ NET (oC) - 15 min,TEMPERATURE @ NET (oC) - 15 min,NA,5.9,NA,NA,NA
+IYS:GoA2020_Stn23:trawl,IYS:GoA2020_Stn23:trawl:TEMPERATURE @ NET (oC) - 30 min,TEMPERATURE @ NET (oC) - 30 min,NA,5.9,NA,NA,NA
+IYS:GoA2020_Stn23:trawl,IYS:GoA2020_Stn23:trawl:TEMPERATURE @ NET (oC) - 45 min,TEMPERATURE @ NET (oC) - 45 min,NA,5.9,NA,NA,NA
+IYS:GoA2020_Stn23:trawl,IYS:GoA2020_Stn23:trawl:TEMPERATURE @ NET (oC) - END,TEMPERATURE @ NET (oC) - END,NA,5.9,NA,NA,NA
 IYS:GoA2020_Stn23:trawl,IYS:GoA2020_Stn23:trawl:wind_direction,wind_direction,http://vocab.nerc.ac.uk/collection/B39/current/relwinddir/,315,NA,degrees,http://vocab.nerc.ac.uk/collection/P06/current/UAAA/
 IYS:GoA2020_Stn23:trawl,IYS:GoA2020_Stn23:trawl:wind_speed,wind_speed,http://vocab.nerc.ac.uk/collection/P07/current/CFSN0038/,25,NA,knots,http://vocab.nerc.ac.uk/collection/P06/current/UKNT/
 IYS:GoA2020_Stn23:trawl,IYS:GoA2020_Stn23:trawl:weather_description,weather_description, ,NA,NA,NA,NA
 IYS:GoA2020_Stn24:trawl,IYS:GoA2020_Stn24:trawl:wave_height,wave_height,http://vocab.nerc.ac.uk/collection/P07/current/JNQS0CMX/,1.5,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn24:trawl,IYS:GoA2020_Stn24:trawl:swell_height,swell_height,http://vocab.nerc.ac.uk/collection/P09/current/SWHT/,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn24:trawl,IYS:GoA2020_Stn24:trawl:sea_state_description,sea_state_description, ,NA,NA,NA,NA
+IYS:GoA2020_Stn24:trawl,IYS:GoA2020_Stn24:trawl:TEMPERATURE @ NET (oC) - 15 min,TEMPERATURE @ NET (oC) - 15 min,NA,6.6,NA,NA,NA
+IYS:GoA2020_Stn24:trawl,IYS:GoA2020_Stn24:trawl:TEMPERATURE @ NET (oC) - 30 min,TEMPERATURE @ NET (oC) - 30 min,NA,6.6,NA,NA,NA
+IYS:GoA2020_Stn24:trawl,IYS:GoA2020_Stn24:trawl:TEMPERATURE @ NET (oC) - 45 min,TEMPERATURE @ NET (oC) - 45 min,NA,6.6,NA,NA,NA
+IYS:GoA2020_Stn24:trawl,IYS:GoA2020_Stn24:trawl:TEMPERATURE @ NET (oC) - END,TEMPERATURE @ NET (oC) - END,NA,6.6,NA,NA,NA
 IYS:GoA2020_Stn24:trawl,IYS:GoA2020_Stn24:trawl:wind_direction,wind_direction,http://vocab.nerc.ac.uk/collection/B39/current/relwinddir/,315,NA,degrees,http://vocab.nerc.ac.uk/collection/P06/current/UAAA/
 IYS:GoA2020_Stn24:trawl,IYS:GoA2020_Stn24:trawl:wind_speed,wind_speed,http://vocab.nerc.ac.uk/collection/P07/current/CFSN0038/,12,NA,knots,http://vocab.nerc.ac.uk/collection/P06/current/UKNT/
 IYS:GoA2020_Stn24:trawl,IYS:GoA2020_Stn24:trawl:weather_description,weather_description, ,NA,NA,NA,NA
 IYS:GoA2020_Stn25:trawl,IYS:GoA2020_Stn25:trawl:wave_height,wave_height,http://vocab.nerc.ac.uk/collection/P07/current/JNQS0CMX/,1,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn25:trawl,IYS:GoA2020_Stn25:trawl:swell_height,swell_height,http://vocab.nerc.ac.uk/collection/P09/current/SWHT/,0.5,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn25:trawl,IYS:GoA2020_Stn25:trawl:sea_state_description,sea_state_description, ,NA,NA,NA,NA
+IYS:GoA2020_Stn25:trawl,IYS:GoA2020_Stn25:trawl:TEMPERATURE @ NET (oC) - 15 min,TEMPERATURE @ NET (oC) - 15 min,NA,6.9,NA,NA,NA
+IYS:GoA2020_Stn25:trawl,IYS:GoA2020_Stn25:trawl:TEMPERATURE @ NET (oC) - 30 min,TEMPERATURE @ NET (oC) - 30 min,NA,6.9,NA,NA,NA
+IYS:GoA2020_Stn25:trawl,IYS:GoA2020_Stn25:trawl:TEMPERATURE @ NET (oC) - 45 min,TEMPERATURE @ NET (oC) - 45 min,NA,6.9,NA,NA,NA
+IYS:GoA2020_Stn25:trawl,IYS:GoA2020_Stn25:trawl:TEMPERATURE @ NET (oC) - END,TEMPERATURE @ NET (oC) - END,NA,6.9,NA,NA,NA
 IYS:GoA2020_Stn25:trawl,IYS:GoA2020_Stn25:trawl:wind_direction,wind_direction,http://vocab.nerc.ac.uk/collection/B39/current/relwinddir/,295,NA,degrees,http://vocab.nerc.ac.uk/collection/P06/current/UAAA/
 IYS:GoA2020_Stn25:trawl,IYS:GoA2020_Stn25:trawl:wind_speed,wind_speed,http://vocab.nerc.ac.uk/collection/P07/current/CFSN0038/,15,NA,knots,http://vocab.nerc.ac.uk/collection/P06/current/UKNT/
 IYS:GoA2020_Stn25:trawl,IYS:GoA2020_Stn25:trawl:weather_description,weather_description, ,20% cloud/sun,NA,NA,NA
 IYS:GoA2020_Stn26:trawl,IYS:GoA2020_Stn26:trawl:wave_height,wave_height,http://vocab.nerc.ac.uk/collection/P07/current/JNQS0CMX/,0.5,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn26:trawl,IYS:GoA2020_Stn26:trawl:swell_height,swell_height,http://vocab.nerc.ac.uk/collection/P09/current/SWHT/,0,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn26:trawl,IYS:GoA2020_Stn26:trawl:sea_state_description,sea_state_description, ,NA,NA,NA,NA
+IYS:GoA2020_Stn26:trawl,IYS:GoA2020_Stn26:trawl:TEMPERATURE @ NET (oC) - 15 min,TEMPERATURE @ NET (oC) - 15 min,NA,6.1,NA,NA,NA
+IYS:GoA2020_Stn26:trawl,IYS:GoA2020_Stn26:trawl:TEMPERATURE @ NET (oC) - 30 min,TEMPERATURE @ NET (oC) - 30 min,NA,6.1,NA,NA,NA
+IYS:GoA2020_Stn26:trawl,IYS:GoA2020_Stn26:trawl:TEMPERATURE @ NET (oC) - 45 min,TEMPERATURE @ NET (oC) - 45 min,NA,6.1,NA,NA,NA
+IYS:GoA2020_Stn26:trawl,IYS:GoA2020_Stn26:trawl:TEMPERATURE @ NET (oC) - END,TEMPERATURE @ NET (oC) - END,NA,6.1,NA,NA,NA
 IYS:GoA2020_Stn26:trawl,IYS:GoA2020_Stn26:trawl:wind_direction,wind_direction,http://vocab.nerc.ac.uk/collection/B39/current/relwinddir/,270,NA,degrees,http://vocab.nerc.ac.uk/collection/P06/current/UAAA/
 IYS:GoA2020_Stn26:trawl,IYS:GoA2020_Stn26:trawl:wind_speed,wind_speed,http://vocab.nerc.ac.uk/collection/P07/current/CFSN0038/,15,NA,knots,http://vocab.nerc.ac.uk/collection/P06/current/UKNT/
 IYS:GoA2020_Stn26:trawl,IYS:GoA2020_Stn26:trawl:weather_description,weather_description, ,NA,NA,NA,NA
 IYS:GoA2020_Stn27:trawl,IYS:GoA2020_Stn27:trawl:wave_height,wave_height,http://vocab.nerc.ac.uk/collection/P07/current/JNQS0CMX/,0.5,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn27:trawl,IYS:GoA2020_Stn27:trawl:swell_height,swell_height,http://vocab.nerc.ac.uk/collection/P09/current/SWHT/,1,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn27:trawl,IYS:GoA2020_Stn27:trawl:sea_state_description,sea_state_description, ,NA,NA,NA,NA
+IYS:GoA2020_Stn27:trawl,IYS:GoA2020_Stn27:trawl:TEMPERATURE @ NET (oC) - 15 min,TEMPERATURE @ NET (oC) - 15 min,NA,6.3,NA,NA,NA
+IYS:GoA2020_Stn27:trawl,IYS:GoA2020_Stn27:trawl:TEMPERATURE @ NET (oC) - 30 min,TEMPERATURE @ NET (oC) - 30 min,NA,6.4,NA,NA,NA
+IYS:GoA2020_Stn27:trawl,IYS:GoA2020_Stn27:trawl:TEMPERATURE @ NET (oC) - 45 min,TEMPERATURE @ NET (oC) - 45 min,NA,6.4,NA,NA,NA
+IYS:GoA2020_Stn27:trawl,IYS:GoA2020_Stn27:trawl:TEMPERATURE @ NET (oC) - END,TEMPERATURE @ NET (oC) - END,NA,6.4,NA,NA,NA
 IYS:GoA2020_Stn27:trawl,IYS:GoA2020_Stn27:trawl:wind_direction,wind_direction,http://vocab.nerc.ac.uk/collection/B39/current/relwinddir/,270,NA,degrees,http://vocab.nerc.ac.uk/collection/P06/current/UAAA/
 IYS:GoA2020_Stn27:trawl,IYS:GoA2020_Stn27:trawl:wind_speed,wind_speed,http://vocab.nerc.ac.uk/collection/P07/current/CFSN0038/,light,NA,knots,http://vocab.nerc.ac.uk/collection/P06/current/UKNT/
 IYS:GoA2020_Stn27:trawl,IYS:GoA2020_Stn27:trawl:weather_description,weather_description, ,100% cloud,NA,NA,NA
 IYS:GoA2020_Stn28:trawl,IYS:GoA2020_Stn28:trawl:wave_height,wave_height,http://vocab.nerc.ac.uk/collection/P07/current/JNQS0CMX/,0.5,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn28:trawl,IYS:GoA2020_Stn28:trawl:swell_height,swell_height,http://vocab.nerc.ac.uk/collection/P09/current/SWHT/,1,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn28:trawl,IYS:GoA2020_Stn28:trawl:sea_state_description,sea_state_description, ,NA,NA,NA,NA
+IYS:GoA2020_Stn28:trawl,IYS:GoA2020_Stn28:trawl:TEMPERATURE @ NET (oC) - 15 min,TEMPERATURE @ NET (oC) - 15 min,NA,6.8,NA,NA,NA
+IYS:GoA2020_Stn28:trawl,IYS:GoA2020_Stn28:trawl:TEMPERATURE @ NET (oC) - 30 min,TEMPERATURE @ NET (oC) - 30 min,NA,6.8,NA,NA,NA
+IYS:GoA2020_Stn28:trawl,IYS:GoA2020_Stn28:trawl:TEMPERATURE @ NET (oC) - 45 min,TEMPERATURE @ NET (oC) - 45 min,NA,6.8,NA,NA,NA
+IYS:GoA2020_Stn28:trawl,IYS:GoA2020_Stn28:trawl:TEMPERATURE @ NET (oC) - END,TEMPERATURE @ NET (oC) - END,NA,6.8,NA,NA,NA
 IYS:GoA2020_Stn28:trawl,IYS:GoA2020_Stn28:trawl:wind_direction,wind_direction,http://vocab.nerc.ac.uk/collection/B39/current/relwinddir/,270,NA,degrees,http://vocab.nerc.ac.uk/collection/P06/current/UAAA/
 IYS:GoA2020_Stn28:trawl,IYS:GoA2020_Stn28:trawl:wind_speed,wind_speed,http://vocab.nerc.ac.uk/collection/P07/current/CFSN0038/,15,NA,knots,http://vocab.nerc.ac.uk/collection/P06/current/UKNT/
 IYS:GoA2020_Stn28:trawl,IYS:GoA2020_Stn28:trawl:weather_description,weather_description, ,NA,NA,NA,NA
 IYS:GoA2020_Stn29:trawl,IYS:GoA2020_Stn29:trawl:wave_height,wave_height,http://vocab.nerc.ac.uk/collection/P07/current/JNQS0CMX/,0.5,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn29:trawl,IYS:GoA2020_Stn29:trawl:swell_height,swell_height,http://vocab.nerc.ac.uk/collection/P09/current/SWHT/,1,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn29:trawl,IYS:GoA2020_Stn29:trawl:sea_state_description,sea_state_description, ,NA,NA,NA,NA
+IYS:GoA2020_Stn29:trawl,IYS:GoA2020_Stn29:trawl:TEMPERATURE @ NET (oC) - 15 min,TEMPERATURE @ NET (oC) - 15 min,NA,6.8,NA,NA,NA
+IYS:GoA2020_Stn29:trawl,IYS:GoA2020_Stn29:trawl:TEMPERATURE @ NET (oC) - 30 min,TEMPERATURE @ NET (oC) - 30 min,NA,6.8,NA,NA,NA
+IYS:GoA2020_Stn29:trawl,IYS:GoA2020_Stn29:trawl:TEMPERATURE @ NET (oC) - 45 min,TEMPERATURE @ NET (oC) - 45 min,NA,6.8,NA,NA,NA
+IYS:GoA2020_Stn29:trawl,IYS:GoA2020_Stn29:trawl:TEMPERATURE @ NET (oC) - END,TEMPERATURE @ NET (oC) - END,NA,6.8,NA,NA,NA
 IYS:GoA2020_Stn29:trawl,IYS:GoA2020_Stn29:trawl:wind_direction,wind_direction,http://vocab.nerc.ac.uk/collection/B39/current/relwinddir/,270,NA,degrees,http://vocab.nerc.ac.uk/collection/P06/current/UAAA/
 IYS:GoA2020_Stn29:trawl,IYS:GoA2020_Stn29:trawl:wind_speed,wind_speed,http://vocab.nerc.ac.uk/collection/P07/current/CFSN0038/,15,NA,knots,http://vocab.nerc.ac.uk/collection/P06/current/UKNT/
 IYS:GoA2020_Stn29:trawl,IYS:GoA2020_Stn29:trawl:weather_description,weather_description, ,100% cloud and fog,NA,NA,NA
 IYS:GoA2020_Stn30:trawl,IYS:GoA2020_Stn30:trawl:wave_height,wave_height,http://vocab.nerc.ac.uk/collection/P07/current/JNQS0CMX/,1,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn30:trawl,IYS:GoA2020_Stn30:trawl:swell_height,swell_height,http://vocab.nerc.ac.uk/collection/P09/current/SWHT/,1,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn30:trawl,IYS:GoA2020_Stn30:trawl:sea_state_description,sea_state_description, ,NA,NA,NA,NA
+IYS:GoA2020_Stn30:trawl,IYS:GoA2020_Stn30:trawl:TEMPERATURE @ NET (oC) - 15 min,TEMPERATURE @ NET (oC) - 15 min,NA,6.6,NA,NA,NA
+IYS:GoA2020_Stn30:trawl,IYS:GoA2020_Stn30:trawl:TEMPERATURE @ NET (oC) - 30 min,TEMPERATURE @ NET (oC) - 30 min,NA,6.6,NA,NA,NA
+IYS:GoA2020_Stn30:trawl,IYS:GoA2020_Stn30:trawl:TEMPERATURE @ NET (oC) - 45 min,TEMPERATURE @ NET (oC) - 45 min,NA,6.6,NA,NA,NA
+IYS:GoA2020_Stn30:trawl,IYS:GoA2020_Stn30:trawl:TEMPERATURE @ NET (oC) - END,TEMPERATURE @ NET (oC) - END,NA,6.6,NA,NA,NA
 IYS:GoA2020_Stn30:trawl,IYS:GoA2020_Stn30:trawl:wind_direction,wind_direction,http://vocab.nerc.ac.uk/collection/B39/current/relwinddir/,270,NA,degrees,http://vocab.nerc.ac.uk/collection/P06/current/UAAA/
 IYS:GoA2020_Stn30:trawl,IYS:GoA2020_Stn30:trawl:wind_speed,wind_speed,http://vocab.nerc.ac.uk/collection/P07/current/CFSN0038/,20,NA,knots,http://vocab.nerc.ac.uk/collection/P06/current/UKNT/
 IYS:GoA2020_Stn30:trawl,IYS:GoA2020_Stn30:trawl:weather_description,weather_description, ,100% cloud,NA,NA,NA
 IYS:GoA2020_Stn31:trawl,IYS:GoA2020_Stn31:trawl:wave_height,wave_height,http://vocab.nerc.ac.uk/collection/P07/current/JNQS0CMX/,1.5,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn31:trawl,IYS:GoA2020_Stn31:trawl:swell_height,swell_height,http://vocab.nerc.ac.uk/collection/P09/current/SWHT/,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn31:trawl,IYS:GoA2020_Stn31:trawl:sea_state_description,sea_state_description, ,NA,NA,NA,NA
+IYS:GoA2020_Stn31:trawl,IYS:GoA2020_Stn31:trawl:TEMPERATURE @ NET (oC) - 15 min,TEMPERATURE @ NET (oC) - 15 min,NA,6.4,NA,NA,NA
+IYS:GoA2020_Stn31:trawl,IYS:GoA2020_Stn31:trawl:TEMPERATURE @ NET (oC) - 30 min,TEMPERATURE @ NET (oC) - 30 min,NA,6.4,NA,NA,NA
+IYS:GoA2020_Stn31:trawl,IYS:GoA2020_Stn31:trawl:TEMPERATURE @ NET (oC) - 45 min,TEMPERATURE @ NET (oC) - 45 min,NA,6.4,NA,NA,NA
+IYS:GoA2020_Stn31:trawl,IYS:GoA2020_Stn31:trawl:TEMPERATURE @ NET (oC) - END,TEMPERATURE @ NET (oC) - END,NA,6.4,NA,NA,NA
 IYS:GoA2020_Stn31:trawl,IYS:GoA2020_Stn31:trawl:wind_direction,wind_direction,http://vocab.nerc.ac.uk/collection/B39/current/relwinddir/,270,NA,degrees,http://vocab.nerc.ac.uk/collection/P06/current/UAAA/
 IYS:GoA2020_Stn31:trawl,IYS:GoA2020_Stn31:trawl:wind_speed,wind_speed,http://vocab.nerc.ac.uk/collection/P07/current/CFSN0038/,20,NA,knots,http://vocab.nerc.ac.uk/collection/P06/current/UKNT/
 IYS:GoA2020_Stn31:trawl,IYS:GoA2020_Stn31:trawl:weather_description,weather_description, ,NA,NA,NA,NA
 IYS:GoA2020_Stn32:trawl,IYS:GoA2020_Stn32:trawl:wave_height,wave_height,http://vocab.nerc.ac.uk/collection/P07/current/JNQS0CMX/,2.5,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn32:trawl,IYS:GoA2020_Stn32:trawl:swell_height,swell_height,http://vocab.nerc.ac.uk/collection/P09/current/SWHT/,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn32:trawl,IYS:GoA2020_Stn32:trawl:sea_state_description,sea_state_description, ,NA,NA,NA,NA
+IYS:GoA2020_Stn32:trawl,IYS:GoA2020_Stn32:trawl:TEMPERATURE @ NET (oC) - 15 min,TEMPERATURE @ NET (oC) - 15 min,NA,6.4,NA,NA,NA
+IYS:GoA2020_Stn32:trawl,IYS:GoA2020_Stn32:trawl:TEMPERATURE @ NET (oC) - 30 min,TEMPERATURE @ NET (oC) - 30 min,NA,6.4,NA,NA,NA
+IYS:GoA2020_Stn32:trawl,IYS:GoA2020_Stn32:trawl:TEMPERATURE @ NET (oC) - 45 min,TEMPERATURE @ NET (oC) - 45 min,NA,6.4,NA,NA,NA
+IYS:GoA2020_Stn32:trawl,IYS:GoA2020_Stn32:trawl:TEMPERATURE @ NET (oC) - END,TEMPERATURE @ NET (oC) - END,NA,6.4,NA,NA,NA
 IYS:GoA2020_Stn32:trawl,IYS:GoA2020_Stn32:trawl:wind_direction,wind_direction,http://vocab.nerc.ac.uk/collection/B39/current/relwinddir/,270,NA,degrees,http://vocab.nerc.ac.uk/collection/P06/current/UAAA/
 IYS:GoA2020_Stn32:trawl,IYS:GoA2020_Stn32:trawl:wind_speed,wind_speed,http://vocab.nerc.ac.uk/collection/P07/current/CFSN0038/,25,NA,knots,http://vocab.nerc.ac.uk/collection/P06/current/UKNT/
 IYS:GoA2020_Stn32:trawl,IYS:GoA2020_Stn32:trawl:weather_description,weather_description, ,NA,NA,NA,NA
 IYS:GoA2020_Stn33:trawl,IYS:GoA2020_Stn33:trawl:wave_height,wave_height,http://vocab.nerc.ac.uk/collection/P07/current/JNQS0CMX/,1.5,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn33:trawl,IYS:GoA2020_Stn33:trawl:swell_height,swell_height,http://vocab.nerc.ac.uk/collection/P09/current/SWHT/,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn33:trawl,IYS:GoA2020_Stn33:trawl:sea_state_description,sea_state_description, ,NA,NA,NA,NA
+IYS:GoA2020_Stn33:trawl,IYS:GoA2020_Stn33:trawl:TEMPERATURE @ NET (oC) - 15 min,TEMPERATURE @ NET (oC) - 15 min,NA,6.6,NA,NA,NA
+IYS:GoA2020_Stn33:trawl,IYS:GoA2020_Stn33:trawl:TEMPERATURE @ NET (oC) - 30 min,TEMPERATURE @ NET (oC) - 30 min,NA,6.6,NA,NA,NA
+IYS:GoA2020_Stn33:trawl,IYS:GoA2020_Stn33:trawl:TEMPERATURE @ NET (oC) - 45 min,TEMPERATURE @ NET (oC) - 45 min,NA,6.6,NA,NA,NA
+IYS:GoA2020_Stn33:trawl,IYS:GoA2020_Stn33:trawl:TEMPERATURE @ NET (oC) - END,TEMPERATURE @ NET (oC) - END,NA,6.6,NA,NA,NA
 IYS:GoA2020_Stn33:trawl,IYS:GoA2020_Stn33:trawl:wind_direction,wind_direction,http://vocab.nerc.ac.uk/collection/B39/current/relwinddir/,270,NA,degrees,http://vocab.nerc.ac.uk/collection/P06/current/UAAA/
 IYS:GoA2020_Stn33:trawl,IYS:GoA2020_Stn33:trawl:wind_speed,wind_speed,http://vocab.nerc.ac.uk/collection/P07/current/CFSN0038/,25,NA,knots,http://vocab.nerc.ac.uk/collection/P06/current/UKNT/
 IYS:GoA2020_Stn33:trawl,IYS:GoA2020_Stn33:trawl:weather_description,weather_description, ,50% cloud,NA,NA,NA
 IYS:GoA2020_Stn34:trawl,IYS:GoA2020_Stn34:trawl:wave_height,wave_height,http://vocab.nerc.ac.uk/collection/P07/current/JNQS0CMX/,2,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn34:trawl,IYS:GoA2020_Stn34:trawl:swell_height,swell_height,http://vocab.nerc.ac.uk/collection/P09/current/SWHT/,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn34:trawl,IYS:GoA2020_Stn34:trawl:sea_state_description,sea_state_description, ,NA,NA,NA,NA
+IYS:GoA2020_Stn34:trawl,IYS:GoA2020_Stn34:trawl:TEMPERATURE @ NET (oC) - 15 min,TEMPERATURE @ NET (oC) - 15 min,NA,6.8,NA,NA,NA
+IYS:GoA2020_Stn34:trawl,IYS:GoA2020_Stn34:trawl:TEMPERATURE @ NET (oC) - 30 min,TEMPERATURE @ NET (oC) - 30 min,NA,6.8,NA,NA,NA
+IYS:GoA2020_Stn34:trawl,IYS:GoA2020_Stn34:trawl:TEMPERATURE @ NET (oC) - 45 min,TEMPERATURE @ NET (oC) - 45 min,NA,6.8,NA,NA,NA
+IYS:GoA2020_Stn34:trawl,IYS:GoA2020_Stn34:trawl:TEMPERATURE @ NET (oC) - END,TEMPERATURE @ NET (oC) - END,NA,6.8,NA,NA,NA
 IYS:GoA2020_Stn34:trawl,IYS:GoA2020_Stn34:trawl:wind_direction,wind_direction,http://vocab.nerc.ac.uk/collection/B39/current/relwinddir/,315,NA,degrees,http://vocab.nerc.ac.uk/collection/P06/current/UAAA/
 IYS:GoA2020_Stn34:trawl,IYS:GoA2020_Stn34:trawl:wind_speed,wind_speed,http://vocab.nerc.ac.uk/collection/P07/current/CFSN0038/,20,NA,knots,http://vocab.nerc.ac.uk/collection/P06/current/UKNT/
 IYS:GoA2020_Stn34:trawl,IYS:GoA2020_Stn34:trawl:weather_description,weather_description, ,NA,NA,NA,NA
 IYS:GoA2020_Stn35:trawl,IYS:GoA2020_Stn35:trawl:wave_height,wave_height,http://vocab.nerc.ac.uk/collection/P07/current/JNQS0CMX/,1,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn35:trawl,IYS:GoA2020_Stn35:trawl:swell_height,swell_height,http://vocab.nerc.ac.uk/collection/P09/current/SWHT/,1.5,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn35:trawl,IYS:GoA2020_Stn35:trawl:sea_state_description,sea_state_description, ,NA,NA,NA,NA
+IYS:GoA2020_Stn35:trawl,IYS:GoA2020_Stn35:trawl:TEMPERATURE @ NET (oC) - 15 min,TEMPERATURE @ NET (oC) - 15 min,NA,7.3,NA,NA,NA
+IYS:GoA2020_Stn35:trawl,IYS:GoA2020_Stn35:trawl:TEMPERATURE @ NET (oC) - 30 min,TEMPERATURE @ NET (oC) - 30 min,NA,7.3,NA,NA,NA
+IYS:GoA2020_Stn35:trawl,IYS:GoA2020_Stn35:trawl:TEMPERATURE @ NET (oC) - 45 min,TEMPERATURE @ NET (oC) - 45 min,NA,7.3,NA,NA,NA
+IYS:GoA2020_Stn35:trawl,IYS:GoA2020_Stn35:trawl:TEMPERATURE @ NET (oC) - END,TEMPERATURE @ NET (oC) - END,NA,7.3,NA,NA,NA
 IYS:GoA2020_Stn35:trawl,IYS:GoA2020_Stn35:trawl:wind_direction,wind_direction,http://vocab.nerc.ac.uk/collection/B39/current/relwinddir/,360,NA,degrees,http://vocab.nerc.ac.uk/collection/P06/current/UAAA/
 IYS:GoA2020_Stn35:trawl,IYS:GoA2020_Stn35:trawl:wind_speed,wind_speed,http://vocab.nerc.ac.uk/collection/P07/current/CFSN0038/,10,NA,knots,http://vocab.nerc.ac.uk/collection/P06/current/UKNT/
 IYS:GoA2020_Stn35:trawl,IYS:GoA2020_Stn35:trawl:weather_description,weather_description, ,NA,NA,NA,NA
 IYS:GoA2020_Stn36:trawl,IYS:GoA2020_Stn36:trawl:wave_height,wave_height,http://vocab.nerc.ac.uk/collection/P07/current/JNQS0CMX/,0.5,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn36:trawl,IYS:GoA2020_Stn36:trawl:swell_height,swell_height,http://vocab.nerc.ac.uk/collection/P09/current/SWHT/,1,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn36:trawl,IYS:GoA2020_Stn36:trawl:sea_state_description,sea_state_description, ,NA,NA,NA,NA
+IYS:GoA2020_Stn36:trawl,IYS:GoA2020_Stn36:trawl:TEMPERATURE @ NET (oC) - 15 min,TEMPERATURE @ NET (oC) - 15 min,NA,7.3,NA,NA,NA
+IYS:GoA2020_Stn36:trawl,IYS:GoA2020_Stn36:trawl:TEMPERATURE @ NET (oC) - 30 min,TEMPERATURE @ NET (oC) - 30 min,NA,7.3,NA,NA,NA
+IYS:GoA2020_Stn36:trawl,IYS:GoA2020_Stn36:trawl:TEMPERATURE @ NET (oC) - 45 min,TEMPERATURE @ NET (oC) - 45 min,NA,7.3,NA,NA,NA
+IYS:GoA2020_Stn36:trawl,IYS:GoA2020_Stn36:trawl:TEMPERATURE @ NET (oC) - END,TEMPERATURE @ NET (oC) - END,NA,7.3,NA,NA,NA
 IYS:GoA2020_Stn36:trawl,IYS:GoA2020_Stn36:trawl:wind_direction,wind_direction,http://vocab.nerc.ac.uk/collection/B39/current/relwinddir/,360,NA,degrees,http://vocab.nerc.ac.uk/collection/P06/current/UAAA/
 IYS:GoA2020_Stn36:trawl,IYS:GoA2020_Stn36:trawl:wind_speed,wind_speed,http://vocab.nerc.ac.uk/collection/P07/current/CFSN0038/,light,NA,knots,http://vocab.nerc.ac.uk/collection/P06/current/UKNT/
 IYS:GoA2020_Stn36:trawl,IYS:GoA2020_Stn36:trawl:weather_description,weather_description, ,NA,NA,NA,NA
 IYS:GoA2020_Stn37:trawl,IYS:GoA2020_Stn37:trawl:wave_height,wave_height,http://vocab.nerc.ac.uk/collection/P07/current/JNQS0CMX/,0.5,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn37:trawl,IYS:GoA2020_Stn37:trawl:swell_height,swell_height,http://vocab.nerc.ac.uk/collection/P09/current/SWHT/,1,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn37:trawl,IYS:GoA2020_Stn37:trawl:sea_state_description,sea_state_description, ,NA,NA,NA,NA
+IYS:GoA2020_Stn37:trawl,IYS:GoA2020_Stn37:trawl:TEMPERATURE @ NET (oC) - 15 min,TEMPERATURE @ NET (oC) - 15 min,NA,7.3,NA,NA,NA
+IYS:GoA2020_Stn37:trawl,IYS:GoA2020_Stn37:trawl:TEMPERATURE @ NET (oC) - 30 min,TEMPERATURE @ NET (oC) - 30 min,NA,7.3,NA,NA,NA
+IYS:GoA2020_Stn37:trawl,IYS:GoA2020_Stn37:trawl:TEMPERATURE @ NET (oC) - 45 min,TEMPERATURE @ NET (oC) - 45 min,NA,7.3,NA,NA,NA
+IYS:GoA2020_Stn37:trawl,IYS:GoA2020_Stn37:trawl:TEMPERATURE @ NET (oC) - END,TEMPERATURE @ NET (oC) - END,NA,7.3,NA,NA,NA
 IYS:GoA2020_Stn37:trawl,IYS:GoA2020_Stn37:trawl:wind_direction,wind_direction,http://vocab.nerc.ac.uk/collection/B39/current/relwinddir/,360,NA,degrees,http://vocab.nerc.ac.uk/collection/P06/current/UAAA/
 IYS:GoA2020_Stn37:trawl,IYS:GoA2020_Stn37:trawl:wind_speed,wind_speed,http://vocab.nerc.ac.uk/collection/P07/current/CFSN0038/,light,NA,knots,http://vocab.nerc.ac.uk/collection/P06/current/UKNT/
 IYS:GoA2020_Stn37:trawl,IYS:GoA2020_Stn37:trawl:weather_description,weather_description, ,10% cloud,NA,NA,NA
 IYS:GoA2020_Stn38:trawl,IYS:GoA2020_Stn38:trawl:wave_height,wave_height,http://vocab.nerc.ac.uk/collection/P07/current/JNQS0CMX/,0.5,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn38:trawl,IYS:GoA2020_Stn38:trawl:swell_height,swell_height,http://vocab.nerc.ac.uk/collection/P09/current/SWHT/,1,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn38:trawl,IYS:GoA2020_Stn38:trawl:sea_state_description,sea_state_description, ,NA,NA,NA,NA
+IYS:GoA2020_Stn38:trawl,IYS:GoA2020_Stn38:trawl:TEMPERATURE @ NET (oC) - 15 min,TEMPERATURE @ NET (oC) - 15 min,NA,8.1,NA,NA,NA
+IYS:GoA2020_Stn38:trawl,IYS:GoA2020_Stn38:trawl:TEMPERATURE @ NET (oC) - 30 min,TEMPERATURE @ NET (oC) - 30 min,NA,8.1,NA,NA,NA
+IYS:GoA2020_Stn38:trawl,IYS:GoA2020_Stn38:trawl:TEMPERATURE @ NET (oC) - 45 min,TEMPERATURE @ NET (oC) - 45 min,NA,8.1,NA,NA,NA
+IYS:GoA2020_Stn38:trawl,IYS:GoA2020_Stn38:trawl:TEMPERATURE @ NET (oC) - END,TEMPERATURE @ NET (oC) - END,NA,8.1,NA,NA,NA
 IYS:GoA2020_Stn38:trawl,IYS:GoA2020_Stn38:trawl:wind_direction,wind_direction,http://vocab.nerc.ac.uk/collection/B39/current/relwinddir/,360,NA,degrees,http://vocab.nerc.ac.uk/collection/P06/current/UAAA/
 IYS:GoA2020_Stn38:trawl,IYS:GoA2020_Stn38:trawl:wind_speed,wind_speed,http://vocab.nerc.ac.uk/collection/P07/current/CFSN0038/,light,NA,knots,http://vocab.nerc.ac.uk/collection/P06/current/UKNT/
 IYS:GoA2020_Stn38:trawl,IYS:GoA2020_Stn38:trawl:weather_description,weather_description, ,10% cloud,NA,NA,NA
 IYS:GoA2020_Stn39:trawl,IYS:GoA2020_Stn39:trawl:wave_height,wave_height,http://vocab.nerc.ac.uk/collection/P07/current/JNQS0CMX/,0.5,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn39:trawl,IYS:GoA2020_Stn39:trawl:swell_height,swell_height,http://vocab.nerc.ac.uk/collection/P09/current/SWHT/,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn39:trawl,IYS:GoA2020_Stn39:trawl:sea_state_description,sea_state_description, ,NA,NA,NA,NA
+IYS:GoA2020_Stn39:trawl,IYS:GoA2020_Stn39:trawl:TEMPERATURE @ NET (oC) - 15 min,TEMPERATURE @ NET (oC) - 15 min,NA,7.8,NA,NA,NA
+IYS:GoA2020_Stn39:trawl,IYS:GoA2020_Stn39:trawl:TEMPERATURE @ NET (oC) - 30 min,TEMPERATURE @ NET (oC) - 30 min,NA,7.8,NA,NA,NA
+IYS:GoA2020_Stn39:trawl,IYS:GoA2020_Stn39:trawl:TEMPERATURE @ NET (oC) - 45 min,TEMPERATURE @ NET (oC) - 45 min,NA,7.8,NA,NA,NA
+IYS:GoA2020_Stn39:trawl,IYS:GoA2020_Stn39:trawl:TEMPERATURE @ NET (oC) - END,TEMPERATURE @ NET (oC) - END,NA,7.8,NA,NA,NA
 IYS:GoA2020_Stn39:trawl,IYS:GoA2020_Stn39:trawl:wind_direction,wind_direction,http://vocab.nerc.ac.uk/collection/B39/current/relwinddir/,90,NA,degrees,http://vocab.nerc.ac.uk/collection/P06/current/UAAA/
 IYS:GoA2020_Stn39:trawl,IYS:GoA2020_Stn39:trawl:wind_speed,wind_speed,http://vocab.nerc.ac.uk/collection/P07/current/CFSN0038/,10,NA,knots,http://vocab.nerc.ac.uk/collection/P06/current/UKNT/
 IYS:GoA2020_Stn39:trawl,IYS:GoA2020_Stn39:trawl:weather_description,weather_description, ,NA,NA,NA,NA
 IYS:GoA2020_Stn40:trawl,IYS:GoA2020_Stn40:trawl:wave_height,wave_height,http://vocab.nerc.ac.uk/collection/P07/current/JNQS0CMX/,0.5,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn40:trawl,IYS:GoA2020_Stn40:trawl:swell_height,swell_height,http://vocab.nerc.ac.uk/collection/P09/current/SWHT/,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn40:trawl,IYS:GoA2020_Stn40:trawl:sea_state_description,sea_state_description, ,NA,NA,NA,NA
+IYS:GoA2020_Stn40:trawl,IYS:GoA2020_Stn40:trawl:TEMPERATURE @ NET (oC) - 15 min,TEMPERATURE @ NET (oC) - 15 min,NA,8,NA,NA,NA
+IYS:GoA2020_Stn40:trawl,IYS:GoA2020_Stn40:trawl:TEMPERATURE @ NET (oC) - 30 min,TEMPERATURE @ NET (oC) - 30 min,NA,8,NA,NA,NA
+IYS:GoA2020_Stn40:trawl,IYS:GoA2020_Stn40:trawl:TEMPERATURE @ NET (oC) - 45 min,TEMPERATURE @ NET (oC) - 45 min,NA,8,NA,NA,NA
+IYS:GoA2020_Stn40:trawl,IYS:GoA2020_Stn40:trawl:TEMPERATURE @ NET (oC) - END,TEMPERATURE @ NET (oC) - END,NA,8,NA,NA,NA
 IYS:GoA2020_Stn40:trawl,IYS:GoA2020_Stn40:trawl:wind_direction,wind_direction,http://vocab.nerc.ac.uk/collection/B39/current/relwinddir/,90,NA,degrees,http://vocab.nerc.ac.uk/collection/P06/current/UAAA/
 IYS:GoA2020_Stn40:trawl,IYS:GoA2020_Stn40:trawl:wind_speed,wind_speed,http://vocab.nerc.ac.uk/collection/P07/current/CFSN0038/,9,NA,knots,http://vocab.nerc.ac.uk/collection/P06/current/UKNT/
 IYS:GoA2020_Stn40:trawl,IYS:GoA2020_Stn40:trawl:weather_description,weather_description, ,90% cloud,NA,NA,NA
 IYS:GoA2020_Stn41:trawl,IYS:GoA2020_Stn41:trawl:wave_height,wave_height,http://vocab.nerc.ac.uk/collection/P07/current/JNQS0CMX/,1,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn41:trawl,IYS:GoA2020_Stn41:trawl:swell_height,swell_height,http://vocab.nerc.ac.uk/collection/P09/current/SWHT/,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn41:trawl,IYS:GoA2020_Stn41:trawl:sea_state_description,sea_state_description, ,NA,NA,NA,NA
+IYS:GoA2020_Stn41:trawl,IYS:GoA2020_Stn41:trawl:TEMPERATURE @ NET (oC) - 15 min,TEMPERATURE @ NET (oC) - 15 min,NA,8.1,NA,NA,NA
+IYS:GoA2020_Stn41:trawl,IYS:GoA2020_Stn41:trawl:TEMPERATURE @ NET (oC) - 30 min,TEMPERATURE @ NET (oC) - 30 min,NA,8.1,NA,NA,NA
+IYS:GoA2020_Stn41:trawl,IYS:GoA2020_Stn41:trawl:TEMPERATURE @ NET (oC) - 45 min,TEMPERATURE @ NET (oC) - 45 min,NA,8.1,NA,NA,NA
+IYS:GoA2020_Stn41:trawl,IYS:GoA2020_Stn41:trawl:TEMPERATURE @ NET (oC) - END,TEMPERATURE @ NET (oC) - END,NA,8.1,NA,NA,NA
 IYS:GoA2020_Stn41:trawl,IYS:GoA2020_Stn41:trawl:wind_direction,wind_direction,http://vocab.nerc.ac.uk/collection/B39/current/relwinddir/,135,NA,degrees,http://vocab.nerc.ac.uk/collection/P06/current/UAAA/
 IYS:GoA2020_Stn41:trawl,IYS:GoA2020_Stn41:trawl:wind_speed,wind_speed,http://vocab.nerc.ac.uk/collection/P07/current/CFSN0038/,15,NA,knots,http://vocab.nerc.ac.uk/collection/P06/current/UKNT/
 IYS:GoA2020_Stn41:trawl,IYS:GoA2020_Stn41:trawl:weather_description,weather_description, ,NA,NA,NA,NA
 IYS:GoA2020_Stn42:trawl,IYS:GoA2020_Stn42:trawl:wave_height,wave_height,http://vocab.nerc.ac.uk/collection/P07/current/JNQS0CMX/,1.5,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn42:trawl,IYS:GoA2020_Stn42:trawl:swell_height,swell_height,http://vocab.nerc.ac.uk/collection/P09/current/SWHT/,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn42:trawl,IYS:GoA2020_Stn42:trawl:sea_state_description,sea_state_description, ,NA,NA,NA,NA
+IYS:GoA2020_Stn42:trawl,IYS:GoA2020_Stn42:trawl:TEMPERATURE @ NET (oC) - 15 min,TEMPERATURE @ NET (oC) - 15 min,NA,9.4,NA,NA,NA
+IYS:GoA2020_Stn42:trawl,IYS:GoA2020_Stn42:trawl:TEMPERATURE @ NET (oC) - 30 min,TEMPERATURE @ NET (oC) - 30 min,NA,9.4,NA,NA,NA
+IYS:GoA2020_Stn42:trawl,IYS:GoA2020_Stn42:trawl:TEMPERATURE @ NET (oC) - 45 min,TEMPERATURE @ NET (oC) - 45 min,NA,9.4,NA,NA,NA
+IYS:GoA2020_Stn42:trawl,IYS:GoA2020_Stn42:trawl:TEMPERATURE @ NET (oC) - END,TEMPERATURE @ NET (oC) - END,NA,9.4,NA,NA,NA
 IYS:GoA2020_Stn42:trawl,IYS:GoA2020_Stn42:trawl:wind_direction,wind_direction,http://vocab.nerc.ac.uk/collection/B39/current/relwinddir/,360,NA,degrees,http://vocab.nerc.ac.uk/collection/P06/current/UAAA/
 IYS:GoA2020_Stn42:trawl,IYS:GoA2020_Stn42:trawl:wind_speed,wind_speed,http://vocab.nerc.ac.uk/collection/P07/current/CFSN0038/,10,NA,knots,http://vocab.nerc.ac.uk/collection/P06/current/UKNT/
 IYS:GoA2020_Stn42:trawl,IYS:GoA2020_Stn42:trawl:weather_description,weather_description, ,NA,NA,NA,NA
 IYS:GoA2020_Stn43:trawl,IYS:GoA2020_Stn43:trawl:wave_height,wave_height,http://vocab.nerc.ac.uk/collection/P07/current/JNQS0CMX/,0.5,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn43:trawl,IYS:GoA2020_Stn43:trawl:swell_height,swell_height,http://vocab.nerc.ac.uk/collection/P09/current/SWHT/,1,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn43:trawl,IYS:GoA2020_Stn43:trawl:sea_state_description,sea_state_description, ,NA,NA,NA,NA
+IYS:GoA2020_Stn43:trawl,IYS:GoA2020_Stn43:trawl:TEMPERATURE @ NET (oC) - 15 min,TEMPERATURE @ NET (oC) - 15 min,NA,8.7,NA,NA,NA
+IYS:GoA2020_Stn43:trawl,IYS:GoA2020_Stn43:trawl:TEMPERATURE @ NET (oC) - 30 min,TEMPERATURE @ NET (oC) - 30 min,NA,8.7,NA,NA,NA
+IYS:GoA2020_Stn43:trawl,IYS:GoA2020_Stn43:trawl:TEMPERATURE @ NET (oC) - 45 min,TEMPERATURE @ NET (oC) - 45 min,NA,8.7,NA,NA,NA
+IYS:GoA2020_Stn43:trawl,IYS:GoA2020_Stn43:trawl:TEMPERATURE @ NET (oC) - END,TEMPERATURE @ NET (oC) - END,NA,8.7,NA,NA,NA
 IYS:GoA2020_Stn43:trawl,IYS:GoA2020_Stn43:trawl:wind_direction,wind_direction,http://vocab.nerc.ac.uk/collection/B39/current/relwinddir/,90,NA,degrees,http://vocab.nerc.ac.uk/collection/P06/current/UAAA/
 IYS:GoA2020_Stn43:trawl,IYS:GoA2020_Stn43:trawl:wind_speed,wind_speed,http://vocab.nerc.ac.uk/collection/P07/current/CFSN0038/,light,NA,knots,http://vocab.nerc.ac.uk/collection/P06/current/UKNT/
 IYS:GoA2020_Stn43:trawl,IYS:GoA2020_Stn43:trawl:weather_description,weather_description, ,95% cloud,NA,NA,NA
 IYS:GoA2020_Stn44:trawl,IYS:GoA2020_Stn44:trawl:wave_height,wave_height,http://vocab.nerc.ac.uk/collection/P07/current/JNQS0CMX/,0.5,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn44:trawl,IYS:GoA2020_Stn44:trawl:swell_height,swell_height,http://vocab.nerc.ac.uk/collection/P09/current/SWHT/,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn44:trawl,IYS:GoA2020_Stn44:trawl:sea_state_description,sea_state_description, ,NA,NA,NA,NA
+IYS:GoA2020_Stn44:trawl,IYS:GoA2020_Stn44:trawl:TEMPERATURE @ NET (oC) - 15 min,TEMPERATURE @ NET (oC) - 15 min,NA,8.7,NA,NA,NA
+IYS:GoA2020_Stn44:trawl,IYS:GoA2020_Stn44:trawl:TEMPERATURE @ NET (oC) - 30 min,TEMPERATURE @ NET (oC) - 30 min,NA,8.7,NA,NA,NA
+IYS:GoA2020_Stn44:trawl,IYS:GoA2020_Stn44:trawl:TEMPERATURE @ NET (oC) - 45 min,TEMPERATURE @ NET (oC) - 45 min,NA,8.7,NA,NA,NA
+IYS:GoA2020_Stn44:trawl,IYS:GoA2020_Stn44:trawl:TEMPERATURE @ NET (oC) - END,TEMPERATURE @ NET (oC) - END,NA,8.7,NA,NA,NA
 IYS:GoA2020_Stn44:trawl,IYS:GoA2020_Stn44:trawl:wind_direction,wind_direction,http://vocab.nerc.ac.uk/collection/B39/current/relwinddir/,315,NA,degrees,http://vocab.nerc.ac.uk/collection/P06/current/UAAA/
 IYS:GoA2020_Stn44:trawl,IYS:GoA2020_Stn44:trawl:wind_speed,wind_speed,http://vocab.nerc.ac.uk/collection/P07/current/CFSN0038/,10,NA,knots,http://vocab.nerc.ac.uk/collection/P06/current/UKNT/
 IYS:GoA2020_Stn44:trawl,IYS:GoA2020_Stn44:trawl:weather_description,weather_description, ,NA,NA,NA,NA
 IYS:GoA2020_Stn45:trawl,IYS:GoA2020_Stn45:trawl:wave_height,wave_height,http://vocab.nerc.ac.uk/collection/P07/current/JNQS0CMX/,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn45:trawl,IYS:GoA2020_Stn45:trawl:swell_height,swell_height,http://vocab.nerc.ac.uk/collection/P09/current/SWHT/,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn45:trawl,IYS:GoA2020_Stn45:trawl:sea_state_description,sea_state_description, ,NA,NA,NA,NA
+IYS:GoA2020_Stn45:trawl,IYS:GoA2020_Stn45:trawl:TEMPERATURE @ NET (oC) - 15 min,TEMPERATURE @ NET (oC) - 15 min,NA,8.8,NA,NA,NA
+IYS:GoA2020_Stn45:trawl,IYS:GoA2020_Stn45:trawl:TEMPERATURE @ NET (oC) - 30 min,TEMPERATURE @ NET (oC) - 30 min,NA,8.8,NA,NA,NA
+IYS:GoA2020_Stn45:trawl,IYS:GoA2020_Stn45:trawl:TEMPERATURE @ NET (oC) - 45 min,TEMPERATURE @ NET (oC) - 45 min,NA,8.8,NA,NA,NA
+IYS:GoA2020_Stn45:trawl,IYS:GoA2020_Stn45:trawl:TEMPERATURE @ NET (oC) - END,TEMPERATURE @ NET (oC) - END,NA,8.8,NA,NA,NA
 IYS:GoA2020_Stn45:trawl,IYS:GoA2020_Stn45:trawl:wind_direction,wind_direction,http://vocab.nerc.ac.uk/collection/B39/current/relwinddir/,NA,NA,degrees,http://vocab.nerc.ac.uk/collection/P06/current/UAAA/
 IYS:GoA2020_Stn45:trawl,IYS:GoA2020_Stn45:trawl:wind_speed,wind_speed,http://vocab.nerc.ac.uk/collection/P07/current/CFSN0038/,NA,NA,knots,http://vocab.nerc.ac.uk/collection/P06/current/UKNT/
 IYS:GoA2020_Stn45:trawl,IYS:GoA2020_Stn45:trawl:weather_description,weather_description, ,NA,NA,NA,NA
 IYS:GoA2020_Stn46:trawl,IYS:GoA2020_Stn46:trawl:wave_height,wave_height,http://vocab.nerc.ac.uk/collection/P07/current/JNQS0CMX/,1,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn46:trawl,IYS:GoA2020_Stn46:trawl:swell_height,swell_height,http://vocab.nerc.ac.uk/collection/P09/current/SWHT/,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn46:trawl,IYS:GoA2020_Stn46:trawl:sea_state_description,sea_state_description, ,NA,NA,NA,NA
+IYS:GoA2020_Stn46:trawl,IYS:GoA2020_Stn46:trawl:TEMPERATURE @ NET (oC) - 15 min,TEMPERATURE @ NET (oC) - 15 min,NA,8.8,NA,NA,NA
+IYS:GoA2020_Stn46:trawl,IYS:GoA2020_Stn46:trawl:TEMPERATURE @ NET (oC) - 30 min,TEMPERATURE @ NET (oC) - 30 min,NA,8.8,NA,NA,NA
+IYS:GoA2020_Stn46:trawl,IYS:GoA2020_Stn46:trawl:TEMPERATURE @ NET (oC) - 45 min,TEMPERATURE @ NET (oC) - 45 min,NA,8.8,NA,NA,NA
+IYS:GoA2020_Stn46:trawl,IYS:GoA2020_Stn46:trawl:TEMPERATURE @ NET (oC) - END,TEMPERATURE @ NET (oC) - END,NA,8.8,NA,NA,NA
 IYS:GoA2020_Stn46:trawl,IYS:GoA2020_Stn46:trawl:wind_direction,wind_direction,http://vocab.nerc.ac.uk/collection/B39/current/relwinddir/,360,NA,degrees,http://vocab.nerc.ac.uk/collection/P06/current/UAAA/
 IYS:GoA2020_Stn46:trawl,IYS:GoA2020_Stn46:trawl:wind_speed,wind_speed,http://vocab.nerc.ac.uk/collection/P07/current/CFSN0038/,20,NA,knots,http://vocab.nerc.ac.uk/collection/P06/current/UKNT/
 IYS:GoA2020_Stn46:trawl,IYS:GoA2020_Stn46:trawl:weather_description,weather_description, ,NA,NA,NA,NA
 IYS:GoA2020_Stn47:trawl,IYS:GoA2020_Stn47:trawl:wave_height,wave_height,http://vocab.nerc.ac.uk/collection/P07/current/JNQS0CMX/,1,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn47:trawl,IYS:GoA2020_Stn47:trawl:swell_height,swell_height,http://vocab.nerc.ac.uk/collection/P09/current/SWHT/,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn47:trawl,IYS:GoA2020_Stn47:trawl:sea_state_description,sea_state_description, ,NA,NA,NA,NA
+IYS:GoA2020_Stn47:trawl,IYS:GoA2020_Stn47:trawl:TEMPERATURE @ NET (oC) - 15 min,TEMPERATURE @ NET (oC) - 15 min,NA,8.4,NA,NA,NA
+IYS:GoA2020_Stn47:trawl,IYS:GoA2020_Stn47:trawl:TEMPERATURE @ NET (oC) - 30 min,TEMPERATURE @ NET (oC) - 30 min,NA,8.4,NA,NA,NA
+IYS:GoA2020_Stn47:trawl,IYS:GoA2020_Stn47:trawl:TEMPERATURE @ NET (oC) - 45 min,TEMPERATURE @ NET (oC) - 45 min,NA,8.4,NA,NA,NA
+IYS:GoA2020_Stn47:trawl,IYS:GoA2020_Stn47:trawl:TEMPERATURE @ NET (oC) - END,TEMPERATURE @ NET (oC) - END,NA,8.4,NA,NA,NA
 IYS:GoA2020_Stn47:trawl,IYS:GoA2020_Stn47:trawl:wind_direction,wind_direction,http://vocab.nerc.ac.uk/collection/B39/current/relwinddir/,315,NA,degrees,http://vocab.nerc.ac.uk/collection/P06/current/UAAA/
 IYS:GoA2020_Stn47:trawl,IYS:GoA2020_Stn47:trawl:wind_speed,wind_speed,http://vocab.nerc.ac.uk/collection/P07/current/CFSN0038/,20,NA,knots,http://vocab.nerc.ac.uk/collection/P06/current/UKNT/
 IYS:GoA2020_Stn47:trawl,IYS:GoA2020_Stn47:trawl:weather_description,weather_description, ,NA,NA,NA,NA
 IYS:GoA2020_Stn48:trawl,IYS:GoA2020_Stn48:trawl:wave_height,wave_height,http://vocab.nerc.ac.uk/collection/P07/current/JNQS0CMX/,1,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn48:trawl,IYS:GoA2020_Stn48:trawl:swell_height,swell_height,http://vocab.nerc.ac.uk/collection/P09/current/SWHT/,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn48:trawl,IYS:GoA2020_Stn48:trawl:sea_state_description,sea_state_description, ,NA,NA,NA,NA
+IYS:GoA2020_Stn48:trawl,IYS:GoA2020_Stn48:trawl:TEMPERATURE @ NET (oC) - 15 min,TEMPERATURE @ NET (oC) - 15 min,NA,8.5,NA,NA,NA
+IYS:GoA2020_Stn48:trawl,IYS:GoA2020_Stn48:trawl:TEMPERATURE @ NET (oC) - 30 min,TEMPERATURE @ NET (oC) - 30 min,NA,8.5,NA,NA,NA
+IYS:GoA2020_Stn48:trawl,IYS:GoA2020_Stn48:trawl:TEMPERATURE @ NET (oC) - 45 min,TEMPERATURE @ NET (oC) - 45 min,NA,8.5,NA,NA,NA
+IYS:GoA2020_Stn48:trawl,IYS:GoA2020_Stn48:trawl:TEMPERATURE @ NET (oC) - END,TEMPERATURE @ NET (oC) - END,NA,8.5,NA,NA,NA
 IYS:GoA2020_Stn48:trawl,IYS:GoA2020_Stn48:trawl:wind_direction,wind_direction,http://vocab.nerc.ac.uk/collection/B39/current/relwinddir/,360,NA,degrees,http://vocab.nerc.ac.uk/collection/P06/current/UAAA/
 IYS:GoA2020_Stn48:trawl,IYS:GoA2020_Stn48:trawl:wind_speed,wind_speed,http://vocab.nerc.ac.uk/collection/P07/current/CFSN0038/,20,NA,knots,http://vocab.nerc.ac.uk/collection/P06/current/UKNT/
 IYS:GoA2020_Stn48:trawl,IYS:GoA2020_Stn48:trawl:weather_description,weather_description, ,90% cloud,NA,NA,NA
 IYS:GoA2020_Stn49:trawl,IYS:GoA2020_Stn49:trawl:wave_height,wave_height,http://vocab.nerc.ac.uk/collection/P07/current/JNQS0CMX/,0.5,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn49:trawl,IYS:GoA2020_Stn49:trawl:swell_height,swell_height,http://vocab.nerc.ac.uk/collection/P09/current/SWHT/,1,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn49:trawl,IYS:GoA2020_Stn49:trawl:sea_state_description,sea_state_description, ,NA,NA,NA,NA
+IYS:GoA2020_Stn49:trawl,IYS:GoA2020_Stn49:trawl:TEMPERATURE @ NET (oC) - 15 min,TEMPERATURE @ NET (oC) - 15 min,NA,8.3,NA,NA,NA
+IYS:GoA2020_Stn49:trawl,IYS:GoA2020_Stn49:trawl:TEMPERATURE @ NET (oC) - 30 min,TEMPERATURE @ NET (oC) - 30 min,NA,8.3,NA,NA,NA
+IYS:GoA2020_Stn49:trawl,IYS:GoA2020_Stn49:trawl:TEMPERATURE @ NET (oC) - 45 min,TEMPERATURE @ NET (oC) - 45 min,NA,8.3,NA,NA,NA
+IYS:GoA2020_Stn49:trawl,IYS:GoA2020_Stn49:trawl:TEMPERATURE @ NET (oC) - END,TEMPERATURE @ NET (oC) - END,NA,8.3,NA,NA,NA
 IYS:GoA2020_Stn49:trawl,IYS:GoA2020_Stn49:trawl:wind_direction,wind_direction,http://vocab.nerc.ac.uk/collection/B39/current/relwinddir/,360,NA,degrees,http://vocab.nerc.ac.uk/collection/P06/current/UAAA/
 IYS:GoA2020_Stn49:trawl,IYS:GoA2020_Stn49:trawl:wind_speed,wind_speed,http://vocab.nerc.ac.uk/collection/P07/current/CFSN0038/,16,NA,knots,http://vocab.nerc.ac.uk/collection/P06/current/UKNT/
 IYS:GoA2020_Stn49:trawl,IYS:GoA2020_Stn49:trawl:weather_description,weather_description, ,NA,NA,NA,NA
 IYS:GoA2020_Stn50:trawl,IYS:GoA2020_Stn50:trawl:wave_height,wave_height,http://vocab.nerc.ac.uk/collection/P07/current/JNQS0CMX/,1,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn50:trawl,IYS:GoA2020_Stn50:trawl:swell_height,swell_height,http://vocab.nerc.ac.uk/collection/P09/current/SWHT/,NA,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn50:trawl,IYS:GoA2020_Stn50:trawl:sea_state_description,sea_state_description, ,NA,NA,NA,NA
+IYS:GoA2020_Stn50:trawl,IYS:GoA2020_Stn50:trawl:TEMPERATURE @ NET (oC) - 15 min,TEMPERATURE @ NET (oC) - 15 min,NA,8.8,NA,NA,NA
+IYS:GoA2020_Stn50:trawl,IYS:GoA2020_Stn50:trawl:TEMPERATURE @ NET (oC) - 30 min,TEMPERATURE @ NET (oC) - 30 min,NA,8.8,NA,NA,NA
+IYS:GoA2020_Stn50:trawl,IYS:GoA2020_Stn50:trawl:TEMPERATURE @ NET (oC) - 45 min,TEMPERATURE @ NET (oC) - 45 min,NA,8.8,NA,NA,NA
+IYS:GoA2020_Stn50:trawl,IYS:GoA2020_Stn50:trawl:TEMPERATURE @ NET (oC) - END,TEMPERATURE @ NET (oC) - END,NA,8.8,NA,NA,NA
 IYS:GoA2020_Stn50:trawl,IYS:GoA2020_Stn50:trawl:wind_direction,wind_direction,http://vocab.nerc.ac.uk/collection/B39/current/relwinddir/,360,NA,degrees,http://vocab.nerc.ac.uk/collection/P06/current/UAAA/
 IYS:GoA2020_Stn50:trawl,IYS:GoA2020_Stn50:trawl:wind_speed,wind_speed,http://vocab.nerc.ac.uk/collection/P07/current/CFSN0038/,15,NA,knots,http://vocab.nerc.ac.uk/collection/P06/current/UKNT/
 IYS:GoA2020_Stn50:trawl,IYS:GoA2020_Stn50:trawl:weather_description,weather_description, ,NA,NA,NA,NA
 IYS:GoA2020_Stn51:trawl,IYS:GoA2020_Stn51:trawl:wave_height,wave_height,http://vocab.nerc.ac.uk/collection/P07/current/JNQS0CMX/,0.5,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn51:trawl,IYS:GoA2020_Stn51:trawl:swell_height,swell_height,http://vocab.nerc.ac.uk/collection/P09/current/SWHT/,1,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn51:trawl,IYS:GoA2020_Stn51:trawl:sea_state_description,sea_state_description, ,NA,NA,NA,NA
+IYS:GoA2020_Stn51:trawl,IYS:GoA2020_Stn51:trawl:TEMPERATURE @ NET (oC) - 15 min,TEMPERATURE @ NET (oC) - 15 min,NA,8.8,NA,NA,NA
+IYS:GoA2020_Stn51:trawl,IYS:GoA2020_Stn51:trawl:TEMPERATURE @ NET (oC) - 30 min,TEMPERATURE @ NET (oC) - 30 min,NA,8.8,NA,NA,NA
+IYS:GoA2020_Stn51:trawl,IYS:GoA2020_Stn51:trawl:TEMPERATURE @ NET (oC) - 45 min,TEMPERATURE @ NET (oC) - 45 min,NA,8.8,NA,NA,NA
+IYS:GoA2020_Stn51:trawl,IYS:GoA2020_Stn51:trawl:TEMPERATURE @ NET (oC) - END,TEMPERATURE @ NET (oC) - END,NA,8.8,NA,NA,NA
 IYS:GoA2020_Stn51:trawl,IYS:GoA2020_Stn51:trawl:wind_direction,wind_direction,http://vocab.nerc.ac.uk/collection/B39/current/relwinddir/,295,NA,degrees,http://vocab.nerc.ac.uk/collection/P06/current/UAAA/
 IYS:GoA2020_Stn51:trawl,IYS:GoA2020_Stn51:trawl:wind_speed,wind_speed,http://vocab.nerc.ac.uk/collection/P07/current/CFSN0038/,6,NA,knots,http://vocab.nerc.ac.uk/collection/P06/current/UKNT/
 IYS:GoA2020_Stn51:trawl,IYS:GoA2020_Stn51:trawl:weather_description,weather_description, ,10% cloud,NA,NA,NA
 IYS:GoA2020_Stn52:trawl,IYS:GoA2020_Stn52:trawl:wave_height,wave_height,http://vocab.nerc.ac.uk/collection/P07/current/JNQS0CMX/,0.5,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn52:trawl,IYS:GoA2020_Stn52:trawl:swell_height,swell_height,http://vocab.nerc.ac.uk/collection/P09/current/SWHT/,1,NA,meters,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
 IYS:GoA2020_Stn52:trawl,IYS:GoA2020_Stn52:trawl:sea_state_description,sea_state_description, ,NA,NA,NA,NA
+IYS:GoA2020_Stn52:trawl,IYS:GoA2020_Stn52:trawl:TEMPERATURE @ NET (oC) - 15 min,TEMPERATURE @ NET (oC) - 15 min,NA,9,NA,NA,NA
+IYS:GoA2020_Stn52:trawl,IYS:GoA2020_Stn52:trawl:TEMPERATURE @ NET (oC) - 30 min,TEMPERATURE @ NET (oC) - 30 min,NA,9,NA,NA,NA
+IYS:GoA2020_Stn52:trawl,IYS:GoA2020_Stn52:trawl:TEMPERATURE @ NET (oC) - 45 min,TEMPERATURE @ NET (oC) - 45 min,NA,9,NA,NA,NA
+IYS:GoA2020_Stn52:trawl,IYS:GoA2020_Stn52:trawl:TEMPERATURE @ NET (oC) - END,TEMPERATURE @ NET (oC) - END,NA,9,NA,NA,NA
 IYS:GoA2020_Stn52:trawl,IYS:GoA2020_Stn52:trawl:wind_direction,wind_direction,http://vocab.nerc.ac.uk/collection/B39/current/relwinddir/,NA,NA,degrees,http://vocab.nerc.ac.uk/collection/P06/current/UAAA/
 IYS:GoA2020_Stn52:trawl,IYS:GoA2020_Stn52:trawl:wind_speed,wind_speed,http://vocab.nerc.ac.uk/collection/P07/current/CFSN0038/,0,NA,knots,http://vocab.nerc.ac.uk/collection/P06/current/UKNT/
 IYS:GoA2020_Stn52:trawl,IYS:GoA2020_Stn52:trawl:weather_description,weather_description, ,NA,NA,NA,NA

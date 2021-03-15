@@ -369,223 +369,594 @@ summary {
 </div>
 
 
-<p>The first step is to download the file from GoogleDrive and save it in a local folder:</p>
-<pre class="r"><code>drive_download(file = &quot;https://docs.google.com/spreadsheets/d/1rtT6L5WSi_UiiXfoS95wnDqA8loc959T/edit#gid=668595086&quot;, 
-               path = here::here(&quot;Trawl&quot;, &quot;raw_data&quot;, 
-                                 &quot;2019_GoA_Fish_data_Hakai.xlsx&quot;),
+<p>The first step is to download the files from GoogleDrive and save it in a local folder. One file contains the bridgelog data and aggregated data, whereas the other contains specimen-specific catch measurements.</p>
+<pre class="r"><code>drive_download(file = &quot;https://docs.google.com/spreadsheets/d/1xm_MIx_y8nsvA8I-7G33RcQ_j7w-Qmm-/edit#gid=168338968&quot;, 
+               path = here::here(&quot;Trawl&quot;, &quot;raw_data&quot;, &quot;2020_GoA_Fish_Trawl_data.xlsx&quot;),
+               overwrite = TRUE)
+
+drive_download(file = &quot;https://docs.google.com/spreadsheets/d/1m_o8Ux3s-0CS4rE3CP7cT3kFOY4-e97B/edit#gid=1644980763&quot;,
+               path = here::here(&quot;Trawl&quot;, &quot;raw_data&quot;, &quot;2020_GoA_Fish_Specimen_data.xlsx&quot;),
                overwrite = TRUE)</code></pre>
-<p>The trawl data is read from the local folder, and the date/time is formatted to the iso 8601 standards. Additionally, three extra columns are created for each <code>eventID</code>: “cruise”, “station” and “trawl”. Currently, the column <code>NUMBER</code> refers to the trawl set number, but it is unclear whether this is synonymous to Station. Station is not specifically recorded, and a total of 63 unique NUMBERs are recorded. We will need confirmation that NUMBER refers to a unique trawl done at a station. Regardless, we add an additional layer of <code>Trawl</code> under <code>Station</code> should multiple trawls be undertaken at a single station (in the future).</p>
-<pre class="r"><code>trawl &lt;- read_excel(here(&quot;Trawl&quot;, &quot;raw_data&quot;, &quot;2019_GoA_Fish_data_Hakai.xlsx&quot;)) %&gt;%
-  mutate(eventDate = format_iso_8601(as.POSIXct(UTC_start)),
+<p>The trawl data is read from the local folder, and the date/time is formatted to the ISO 8601 standards. Additionally, five layers are created to populate the event Core: “project”, “cruise”, “station”, “trawl” and “sample”. Following the discussion <a href="https://github.com/iobis/env-data/issues/10">here</a>, data on total species’ catch biomass gets linked to the <code>trawl</code> layer (through an <code>occurrenceID</code>) in the Event Core, whereas individual fish measurements get linked the <code>sample</code> layer (see diagram <a href="https://lucid.app/lucidchart/a1d199b4-ef42-45fc-a384-273925fef7d7/edit?page=0_0#?folder_id=home&amp;browser=icon">here</a>). The fish trawl abundance data file also includes the bridgelog file sheet, where metadata is recorded. When reading the data in from the local folder make sure that a clear distinction is made between the bridgelog (metadata) and the catch data.</p>
+<pre class="r"><code>trawl2020 &lt;- read_excel(here(&quot;Trawl&quot;, &quot;raw_data&quot;, &quot;2020_GoA_Fish_Trawl_data.xlsx&quot;), sheet = &quot;BRIDGE_LOG_FINAL&quot;) %&gt;%
+  mutate(Time = format(TIME_FISHING_START, &quot;%H:%M:%S&quot;),
+         eventDate = format_iso_8601(as.POSIXct(paste(EVENT_DATE, Time),
+                                                format = &quot;%Y-%m-%d %H:%M:%S&quot;,
+                                                tz = &quot;Asia/Kamchatka&quot;)), # Confirm this timezone. 
          eventDate = str_replace(eventDate, &quot;\\+00:00&quot;, &quot;Z&quot;),
-         cruise = &quot;GoA2019&quot;, 
-         station = paste(cruise, NUMBER, sep=&quot;_Stn&quot;),
-         trawl = paste(station, &quot;trawl1&quot;, sep=&quot;:&quot;))</code></pre>
+         project = &quot;IYS&quot;,
+         cruise = paste(project, &quot;GoA2020&quot;, sep = &quot;:&quot;), 
+         station = paste(cruise, SET_NUMBER, sep=&quot;_Stn&quot;),
+         trawl = paste(station, &quot;trawl&quot;, sep=&quot;:&quot;))
+
+# For OBIS it is useful to parse the eventDate and extract year, month and day from it, for visualizations purposes.
+trawl2020$year &lt;- as.numeric(format(as.Date(trawl2020$eventDate), &quot;%Y&quot;))
+trawl2020$month &lt;- as.numeric(format(as.Date(trawl2020$eventDate), &quot;%m&quot;))
+trawl2020$day &lt;- as.numeric(format(as.Date(trawl2020$eventDate), &quot;%d&quot;))
+
+trawl2020_allCatch &lt;- read_excel(here(&quot;Trawl&quot;, &quot;raw_data&quot;, &quot;2020_GoA_Fish_Trawl_data.xlsx&quot;), sheet = &quot;CATCH_FINAL&quot;) %&gt;%
+  mutate(project = &quot;IYS&quot;,
+         cruise = paste(project, &quot;GoA2020&quot;, sep = &quot;:&quot;),
+         station = paste(cruise, `SET_NUMBER`, sep = &quot;_Stn&quot;),
+         trawl = paste(station, &quot;trawl&quot;, sep = &quot;:&quot;))
+
+trawl2020_specimen &lt;- read_excel(here(&quot;Trawl&quot;, &quot;raw_data&quot;, &quot;2020_GoA_Fish_Specimen_data.xlsx&quot;), 
+                                 sheet = &quot;SPECIMEN_FINAL&quot;) %&gt;%
+  mutate(project = &quot;IYS&quot;,
+         cruise = paste(project, &quot;GoA2020&quot;, sep = &quot;:&quot;),
+         station = paste(cruise, SET_NUMBER, sep = &quot;_Stn&quot;),
+         trawl = paste(station, &quot;trawl&quot;, sep = &quot;:&quot;),
+         sample = paste(trawl, &quot;sample&quot;, sep = &quot;:&quot;),
+         sample = paste(sample, row_number(), sep = &quot;:&quot;))</code></pre>
 <div id="event-core" class="section level2">
 <h2>Event Core</h2>
-<p>Next, dataframes are created for each unique <code>eventID</code> layer, with unique associated columns. Eventually, the data frames get joined, and the event table gets saved locally and in Google Drive.</p>
-<pre class="r"><code>trawl_cruise &lt;- trawl %&gt;% 
-  select(eventID = cruise) %&gt;% 
-  distinct(eventID) %&gt;% 
+<p>Next, dataframes are created for each unique <code>eventID</code> layer, with unique associated columns. Eventually, the data frames get joined, and the event table gets saved locally and in Google Drive. The column <code>eventRemarks</code> is not a required column, but includes descriptive information pertaining to any issues that arose during the setting of the trawl net.</p>
+<pre class="r"><code>trawl2020_project &lt;- trawl2020 %&gt;%
+  select(eventID = project) %&gt;%
+  distinct(eventID) %&gt;%
+  mutate(type = &quot;project&quot;)
+
+trawl2020_cruise &lt;- trawl2020 %&gt;% 
+  select(eventID = cruise,
+         parentEventID = project) %&gt;% 
+  distinct(eventID, .keep_all = TRUE) %&gt;%
   mutate(type = &quot;cruise&quot;)
 
-trawl_station &lt;- trawl %&gt;% 
+trawl2020_station &lt;- trawl2020 %&gt;% 
   select(eventID = station,
-         parentEventID = cruise,
-         eventDate,
-         decimalLatitude = Y,
-         decimalLongitude = X) %&gt;% 
-  distinct(eventID, .keep_all = TRUE) %&gt;% 
+         parentEventID = cruise) %&gt;% 
+  distinct(eventID, .keep_all = TRUE) %&gt;%
   mutate(type = &quot;station&quot;)
 
-trawl_trawl &lt;- trawl %&gt;% 
+# The coordinates associated to the trawl need to be presented in a LINESTRING:
+trawl2020_coordinates &lt;- trawl2020 %&gt;%
   select(eventID = trawl,
-         parentEventID = station) %&gt;% 
-  distinct(eventID, .keep_all = TRUE) %&gt;% 
-  mutate(type = &quot;trawl&quot;)
+         START_LAT_DECDEGREE,
+         START_LONG_DECDEGREE,
+         END_LAT_DECDEGREE,
+         END_LONG_DECDEGREE) %&gt;%
+  mutate(footprintWKT = paste(&quot;LINESTRING (&quot;, START_LONG_DECDEGREE, START_LAT_DECDEGREE, &quot;,&quot;, 
+                              END_LONG_DECDEGREE, END_LAT_DECDEGREE, &quot;)&quot;)) %&gt;%
+  filter(!is.na(END_LAT_DECDEGREE)) # Station 20 needs end lat and long included - this issue needs to be resolved. 
 
-trawl_event &lt;- bind_rows(trawl_cruise, trawl_station, trawl_trawl) %&gt;% 
-  select(eventID, parentEventID:decimalLongitude, type)
+trawl2020_linestring &lt;- obistools::calculate_centroid(trawl2020_coordinates$footprintWKT)
+trawl2020_linestring &lt;- cbind(trawl2020_coordinates, trawl2020_linestring) %&gt;%
+  select(eventID, footprintWKT, decimalLatitude, decimalLongitude, coordinateUncertaintyInMeters)
 
-# Re-order the Event Core:
-order &lt;- stringr::str_sort(trawl_event$eventID, numeric=TRUE)
-trawl_event &lt;- trawl_event[match(order, trawl_event$eventID),] %&gt;%
-  mutate(basisOfRecord = &quot;HumanObservation&quot;)
+trawl2020_trawl &lt;- trawl2020 %&gt;% 
+  select(eventID = trawl,
+         parentEventID = station,
+         eventDate,
+         year,
+         month,
+         day,
+         fieldNotes = PROBLEM_DESCRIPTION) %&gt;%
+  mutate(minimumDepthInMeters = 0, # trawl was at the surface
+         maximumDepthInMeters = pmax(trawl2020$`NET OPENING DEPTH (metres) - 15 min`,
+                                     trawl2020$`NET OPENING DEPTH (metres) - 30 min`,
+                                     trawl2020$`NET OPENING DEPTH (metres) - 45 min`,
+                                     trawl2020$`NET OPENING DEPTH (metres) - END`, na.rm = TRUE),
+         samplingProtocol = &quot;surface trawl&quot;, # if possible add DOI to paper here
+         locality = case_when(
+           trawl2020$LOCATION == &quot;GoA&quot; ~ &quot;Gulf of Alaska&quot;,
+           trawl2020$LOCATION == &quot;Canadian EEZ&quot; ~ &quot;Canadian EEZ&quot;),
+         locationID = case_when(
+           trawl2020$LOCATION == &quot;Canadian EEZ&quot; ~ &quot;http://marineregions.org/mrgid/8493&quot;)) %&gt;%
+  left_join(trawl2020_linestring, by = &quot;eventID&quot;) %&gt;% 
+  distinct(eventID, .keep_all = TRUE) %&gt;%
+    mutate(type = &quot;surface trawl&quot;)
+  
+trawl2020_sample &lt;- trawl2020_specimen %&gt;%
+  select(eventID = sample,
+         parentEventID = trawl) %&gt;%
+  distinct(eventID, .keep_all = TRUE) %&gt;%
+  mutate(type = &quot;individual sample&quot;)
 
-write_csv(trawl_event, here(&quot;Trawl&quot;, &quot;tidy_data&quot;, &quot;trawl_event.csv&quot;))
+trawl2020_event &lt;- bind_rows(trawl2020_project, 
+                             trawl2020_cruise,
+                             trawl2020_station,
+                             trawl2020_trawl,
+                             trawl2020_sample) 
+
+col_order &lt;- c(&quot;eventID&quot;, &quot;parentEventID&quot;, &quot;eventDate&quot;, &quot;year&quot;, &quot;month&quot;, &quot;day&quot;, &quot;decimalLatitude&quot;, &quot;decimalLongitude&quot;, &quot;footprintWKT&quot;, &quot;coordinateUncertaintyInMeters&quot;, &quot;minimumDepthInMeters&quot;, &quot;maximumDepthInMeters&quot;, &quot;samplingProtocol&quot;, &quot;locality&quot;, &quot;locationID&quot;, &quot;type&quot;, &quot;fieldNotes&quot;)
+trawl2020_event &lt;- trawl2020_event[, col_order]
+
+write_csv(trawl2020_event, here(&quot;Trawl&quot;, &quot;tidy_data&quot;, &quot;trawl2020_event.csv&quot;))
 drive_upload(here(&quot;Trawl&quot;, &quot;tidy_data&quot;, &quot;trawl_event.csv&quot;),
              path = &quot;&quot;,
              name = &quot;trawl_event.csv&quot;,
              overwrite = TRUE)</code></pre>
+<hr />
 </div>
 <div id="occurrence" class="section level2">
 <h2>Occurrence</h2>
-<p>As the trawl data consists of biotic data, an occurrence table has to be created as well, whereby unique species <code>occurrenceIDs</code> get linked to the <code>eventID</code>. As genus and species level were recorded in separate columns, these first get joined. A required column for the Occurrence table is the term, <code>occurrenceStatus</code>, which is used for presence/absence data. We initially considered creating a cruise-wide list of all unique species observed, and create “absent” records for each species not observed in a particular trawl (i.e., <code>PIECES</code> = 0). We decided not to do this for all species, and create absent records only for the five Pacific salmon species, because we did not want to interpolate the data to assume “truely” absentee status for species for which the trawls were not designed to catch (i.e., creating false negatives for species occurrence at a station).</p>
-<p>Next, <code>occurrenceID</code> - unique to each species at each station - and <code>scientificNameID</code> are populated. For the <code>scientificNameID</code>, we look up the species on the WoRMS website (<a href="http://www.marinespecies.org/" class="uri">http://www.marinespecies.org/</a>). It is important to take into account whether or not a species name has been “accepted” by WoRMS or not, and, should this not be the case, what is the correct name and species identifier.</p>
-<pre class="r"><code>trawl_sp_wrangle &lt;- trawl %&gt;%
-  mutate(Species = paste(FISH1, FISH2, sep = &quot; &quot;)) %&gt;% 
-  # For each trawl, note for each of these species whether it was present or absent:
-  complete(NUMBER, Species, fill = list(PIECES = 0)) %&gt;%
-  group_by(NUMBER) %&gt;% 
-  fill(trawl, .direction = &quot;downup&quot;) %&gt;% 
-  ungroup(NUMBER) %&gt;% 
-  # Add present or absent depending on whether &quot;Pieces &gt; 0&quot;
-  mutate(occurrenceStatus = ifelse(PIECES &gt; 0, &quot;present&quot;, &quot;absent&quot;)) %&gt;% # What to do if PIECES = NA?
+<p>As the trawl data consists of biotic data, an occurrence table has to be created as well, whereby unique <code>occurrenceIDs</code> get linked to the <code>eventID</code>. The <code>occurrenceID</code> is created from the <code>eventID</code>, and any measurements pertaining to the specific individual will be associated to that <code>occurrenceID</code> in the extended MeasurementOrFact Core.</p>
+<p>The Occurrence Core will consist of two tables merged, one from the aggregated (summary) catch data (<code>catch_final</code>), and one from the individual length and weight measurements. There will be unique <code>occurrenceIDs</code> related to the trawl layer in event Core. Measurements associated with this <code>occurrenceID</code> will be total species’ catch biomass. The <code>occurrenceID</code> for the aggregated catch data will have the format <code>IYS:GoA2020_Stn1:trawl:occ-1</code>. An additional layer in the event Core (sample) was created so that other unique <code>occurrenceIDs</code> can be linked to that layer, with <code>occurrenceIDs</code> having the format <code>IYS:GoA2020_Stn1:trawl:sample1:occ-1</code>. Measurements linked to these <code>occurrenceIDs</code> are individual length and biomass. Additionally, a column <code>occurrenceRemarks</code> will be included to indicate that that specific <code>occurrenceID</code> is a subset of the aggregated catch data. For discussion on how <code>occurrenceIDs</code> are linked to different layers, see <a href="https://github.com/iobis/env-data/issues/10">here</a>.</p>
+<p>A required column for the Occurrence table is the term, <code>occurrenceStatus</code>, which is used for presence/absence data. The package <code>worrms</code> is used to generate hierarchial taxonomic information on the species observed. For the <code>scientificNameID</code>, we look up the species on the WoRMS website (<a href="http://www.marinespecies.org/" class="uri">http://www.marinespecies.org/</a>).</p>
+<p>Finally, we can do a quick check to make sure that all the unique species are included in the trawl_occ dataframe. We need to make sure that the output is TRUE. If confirmed, the Occurrence table can be saved locally and in the correct Google Drive folder. We also need to make sure that if columns ‘SPECIES’ or ‘SPECIES (Description if needed)’ make mention of a lifestage, we need to include this in the occurrence Core.</p>
+<pre class="r"><code># First, let&#39;s create an occurrence table from the overall catch data.
+
+# - [ ] TO DO: Fix this part of code where assigning the lifeStage column. 
+trawl2020_allCatch &lt;- trawl2020_allCatch %&gt;% 
+  mutate(lifeStage = case_when(grepl(&quot;larvae&quot;, trawl2020_allCatch$SPECIES) ~ &quot;larvae&quot;),
+         lifeStage = case_when(grepl(&quot;larvae&quot;, trawl2020_allCatch$`SPECIES (Description if needed)`) ~ &quot;larvae&quot;),
+         lifeStage = case_when(grepl(&quot;eggs&quot;, trawl2020_allCatch$SPECIES) ~ &quot;eggs&quot;),
+         lifeStage = case_when(grepl(&quot;eggs&quot;, trawl2020_allCatch$`SPECIES (Description if needed)`) ~ &quot;eggs&quot;),
+         lifeStage = case_when(grepl(&quot;juv&quot;, trawl2020_allCatch$SPECIES) ~ &quot;juvenile&quot;),
+         lifeStage = case_when(grepl(&quot;juv&quot;, trawl2020_allCatch$`SPECIES (Description if needed)`) ~ &quot;juvenile&quot;),
+         lifeStage = case_when(grepl(&quot;egg&quot;, trawl2020_allCatch$SPECIES) ~ &quot;egg&quot;),
+         lifeStage = case_when(grepl(&quot;egg&quot;, trawl2020_allCatch$`SPECIES (Description if needed)`) ~ &quot;egg&quot;)) %&gt;%
+  rename(scientificname = SPECIES)
+
+trawl2020_allCatch_scientificnames &lt;- worrms::wm_records_names(unique(trawl2020_allCatch$scientificname)) %&gt;% bind_rows()
+trawl2020_allCatch_taxa &lt;- left_join(trawl2020_allCatch, trawl2020_allCatch_scientificnames, by = &quot;scientificname&quot;)
+
+# You&#39;ll notice that not all unique_taxa have associated taxonomic hierarchial information. Let&#39;s inspect these observations as they might be either misspelled, or a non-Latin name is provided. 
+unidentified_species &lt;- trawl2020_allCatch_taxa %&gt;% filter(is.na(AphiaID)) %&gt;% distinct(scientificname)
+
+# A total of 23 species could not be matched to a record within the WoRMS database. Most often this is due to spelling errors, the inclusion of &#39;.sp&#39;, or the lack of supplying a Latin name. I manually check these species in the WoRMS database and confirm with the data provider that the suggested species are the ones meant. These species will then be corrected in the trawl2020_allCatch_taxa data frame. 
+
+# First step, remove any  mentions of &#39;sp.&#39; or &#39;sp&#39;. Some species also have &#39;sp&#39; included in their Latin name so make sure you &quot;anchor&quot; the string you want replaced using \\b. 
+trawl2020_allCatch$identificationQualifier &lt;- ifelse(grepl(&quot;\\b sp.\\b|\\b sp\\b&quot;, trawl2020_allCatch$scientificname),
+                                                     &quot;sp. inc.&quot;, NA)
+trawl2020_allCatch$scientificname &lt;- gsub(&quot;\\b sp.\\b|\\b sp\\b|\\?&quot;, &quot;&quot;, trawl2020_allCatch$scientificname)
+
+# For the remaining species, use gsub to replace them with appropriate record in WoRMS. Again, confirm this with the data provider. 
+trawl2020_allCatch$scientificname &lt;- mgsub::mgsub(trawl2020_allCatch$scientificname,
+                         c(&quot;Paralichthydidae&quot;, &quot;Paralepidadae&quot;, &quot;Sergestes similus&quot;, &quot;Salps&quot;, &quot;Abraliopsis Felis&quot;,
+                           &quot;Euphausiid&quot;, &quot;Gooseneck barnacle&quot;, &quot;Chiroteuthis calix&quot;, &quot;Glycptocephalus zacharius&quot;,
+                           &quot;squid&quot;, &quot;Fish eggs&quot;, &quot;jellyfish&quot;, &quot;myctophiids&quot;, &quot;goose neck barnacle&quot;, &quot;gonatidae&quot;,
+                           &quot;Flatfish larvae&quot;, &quot;Ptereotrachea&quot;),
+                         c(&quot;Paralichthyidae&quot;, &quot;Paralepidapedon&quot;, &quot;Sergestes similis&quot;, &quot;Salpa&quot;, &quot;Abraliopsis felis&quot;,
+                           &quot;Euphausiidae&quot;, &quot;Pollicipes pollicipes&quot;, &quot;Chiroteuthis calyx&quot;, &quot;Glyptocephalus zachirus&quot;,
+                           &quot;Teuthida&quot;, &quot;Pisces&quot;, &quot;Cnidaria&quot;, &quot;Myctophidae&quot;, &quot;Pollicipes pollicipes&quot;, &quot;Gonatidae&quot;,
+                           &quot;Pleuronectiformes&quot;, &quot;Pterotrachea&quot;))
+
+# So now we can run worrms::wm_records_names again, and there should be no NA in the AphiaID column.
+trawl2020_allCatch_worms &lt;- worrms::wm_records_names(unique(trawl2020_allCatch$scientificname)) %&gt;% bind_rows()
+trawl2020_occ &lt;- left_join(trawl2020_allCatch, trawl2020_allCatch_worms, by = &quot;scientificname&quot;) %&gt;%
   rename(eventID = trawl,
-         scientificName = Species) %&gt;%
-  # Filter only for present species, with the exception of the 5 Pacific salmon species
-  filter(scientificName %in% c(&quot;Oncorhynchus gorbuscha&quot;,
-                               &quot;Oncorhynchus keta&quot;,
-                               &quot;Oncorhynchus kisutch&quot;,
-                               &quot;Oncorhynchus nerka&quot;,
-                               &quot;Oncorhynchus tschawytscha&quot;) |
-           occurrenceStatus == &quot;present&quot;) %&gt;% 
-  mutate(
-    occurrenceID = paste(&quot;IYS_GoA2019_occ&quot;, row_number(),sep = &quot;&quot;),
-    scientificNameID = case_when(
-      scientificName == &quot;Abraliopsis felis&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:341849&quot;,
-      scientificName == &quot;Aequorea sp.&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:116998&quot;,
-      scientificName == &quot;Anotopterus nikparini&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:272040&quot;,
-      scientificName == &quot;Aptocyclus ventricosus&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:254299&quot;,
-      scientificName == &quot;Aurelia labiata&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:287213&quot;,
-      scientificName == &quot;Aurelia limbata&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:158199&quot;,
-      scientificName == &quot;Belonella borealis&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:410406&quot;,
-      scientificName == &quot;Boreoteuthis borealis&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:342326&quot;,
-      # Different genus name to what was provided: Gonatopsis vs. Boreoteuthis
-      scientificName == &quot;Calycopsis sp.&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:117028&quot;,
-      scientificName == &quot;Chiroteuthis calyx&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:341796&quot;,
-      scientificName == &quot;Chrysaora melonaster&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:287209&quot;,
-      # Slightly different spelling of species name
-      scientificName == &quot;Corolla calceola&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:532663&quot;,
-      scientificName == &quot;Diaphus theta&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:272694&quot;,
-      scientificName == &quot;Gasterosteus aculeatus&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:126505&quot;,
-      scientificName == &quot;Gonatidae sp.&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:11743&quot;,
-      scientificName == &quot;Gonatus madokai&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:341858&quot;,
-      scientificName == &quot;Gonatus onyx&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:341859&quot;,
-      scientificName == &quot;Gonatus sp.&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:138036&quot;,
-      scientificName == &quot;Hormiphora cucumis&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:106382&quot;,
-      scientificName == &quot;Icichthys lockingtoni&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:279354&quot;,
-      scientificName == &quot;Japetella diaphana&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:138849&quot;,
-      scientificName == &quot;Lestidium ringens&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:272096&quot;,
-      # slightly different accepted name than what was recorded
-      scientificName == &quot;Lipolagus ochotensis&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:281374&quot;,
-      scientificName == &quot;Microstomus pacificus&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:274294&quot;,
-      scientificName == &quot;Moroteuthis robusta&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:410385&quot;,
-      # different genus name than what was recorded
-      scientificName == &quot;Oncorhynchus gorbuscha&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:127182&quot;,
-      scientificName == &quot;Oncorhynchus keta&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:127183&quot;,
-      scientificName == &quot;Oncorhynchus kisutch&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:127184&quot;,
-      scientificName == &quot;Oncorhynchus nerka&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:254569&quot;,
-      scientificName == &quot;Oncorhynchus tschawytscha&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:158075&quot;,
-      scientificName == &quot;Onychoteuthis borealijaponica&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:342069&quot;,
-      scientificName == &quot;Paralepididae gen. sp.&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:125447&quot;,
-      scientificName == &quot;Periphylla periphylla&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:135294&quot;,
-      scientificName == &quot;Phacellophora camtshchatica&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:135309&quot;,
-      # Slightly different spelling
-      scientificName == &quot;Salpa sp.&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:137233&quot;,
-      scientificName == &quot;Sebastes melanops&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:274817&quot;,
-      scientificName == &quot;Sergestes similis&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:514127&quot;,
-      # Different accepted genus name
-      scientificName == &quot;Siphonophora sp.&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:1371&quot;,
-      scientificName == &quot;Squalus acanthias&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:105923&quot;,
-      scientificName == &quot;Stenobrachius leucopsarus&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:254363&quot;,
-      scientificName == &quot;Symbolophorus californiense&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:272733&quot;,
-      # Slightly different species name spelling
-      scientificName == &quot;Tarletonbeania crenularis&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:282927&quot;,
-      scientificName == &quot;Thalassenchelys coheni&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:282952&quot;,
-      scientificName == &quot;Thetys vagina&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:137281&quot;,
-      scientificName == &quot;Thysanoessa spinifera&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:237874&quot;,
-      scientificName == &quot;Zaprora silenus&quot; ~ &quot;urn:lsid:marinespecies.org:taxname:254353&quot;
-      )
-    )
+         scientificNameAuthorship = authority,
+         taxonomicStatus = status,
+         taxonRank = rank,
+         scientificName = scientificname,
+         scientificNameID = lsid,
+         organismQuantity = CATCH_NUMBER) %&gt;%
+  mutate(occurrenceID = paste(eventID, &quot;occ&quot;, sep = &quot;:&quot;),
+         occurrenceID = paste(occurrenceID, row_number(), sep = &quot;-&quot;),
+         occurrenceStatus = &quot;present&quot;,
+         organismQuantity = round(organismQuantity),
+         organismQuantityType = &quot;individuals&quot;,
+         sex = NA) 
 
-# We will create a separate data frame for the proper occurrence table. The `trawl_sp_wrangle` data frame will be used in the next chunk to create the extended MeasurementOrFact extension.
-trawl_occ &lt;- trawl_sp_wrangle %&gt;% 
-  select(eventID, occurrenceID, scientificName, scientificNameID, occurrenceStatus) %&gt;% 
-  mutate(basisOfRecord = &quot;HumanObservation&quot;)</code></pre>
-<p>Finally, we just want to do a quick check to make sure that all the unique species are included in the trawl_occ dataframe, at each station (<code>eventID</code>)! We need to make sure that the output is TRUE. If confirmed, the Occurrence table can be saved locally and in the correct Google Drive folder.</p>
-<pre class="r"><code>check_spp &lt;- trawl_occ %&gt;% group_by(eventID) %&gt;%
-  summarise(count = n_distinct(scientificNameID)) 
+trawl2020_occ_fnl &lt;- trawl2020_occ %&gt;%
+  select(eventID, occurrenceID, occurrenceStatus, organismQuantity, organismQuantityType, 
+         scientificName, scientificNameID,
+         scientificNameAuthorship, taxonomicStatus, taxonRank, parentNameUsageID, kingdom, phylum, 
+         class, order, family, genus, lifeStage, sex)</code></pre>
+<p>So now we have created the first Occurrence table, which includes the overall catch data. In the trawl2020_allCatch dataframe, column <code>Length (N)</code> indicates how many individuals at each trawl were measured for their lengths. In the next section, we create a second occurrence table, with <code>occurrenceID</code>s created for each unique individual whose length has been measured. Where the <code>occurrenceID</code> in the previous chunk of code has the format of <code>IYS:GoA2020_Stn1:trawl:occ-1</code>, the <code>occurrenceID</code>s in the next section will have the format <code>IYS:GoA2020_Stn1:trawl:occ:sample-001</code>. A column will have to be added to indicate that the individual measurements are a subset of the overall catch at that station (<code>occurrenceRemarks</code>?). As this table pertains to the individual measurements of length and weight, we have to make sure that we change <code>organismQuantity</code> accordingly.</p>
+<pre class="r"><code>trawl2020_catch_ind &lt;- trawl2020_specimen %&gt;%
+  rename(eventID = sample,
+         scientificname = SPECIES) %&gt;%
+    mutate(`DEVELOPMENTAL STAGE` = case_when(grepl(&quot;larvae&quot;, trawl2020_catch_ind$scientificname) ~ &quot;larvae&quot;),
+           `DEVELOPMENTAL STAGE` = case_when(grepl(&quot;larvae&quot;, trawl2020_catch_ind$SPECIES_DESCRIPTION) ~ &quot;larvae&quot;),
+           `DEVELOPMENTAL STAGE` = case_when(grepl(&quot;larva&quot;, trawl2020_catch_ind$SPECIES_DESCRIPTION) ~ &quot;larva&quot;),
+           `DEVELOPMENTAL STAGE` = case_when(grepl(&quot;adult&quot;, trawl2020_catch_ind$SPECIES_DESCRIPTION) ~ &quot;adult&quot;))
 
-unique_spp &lt;- unique(trawl_sp_wrangle$scientificName)
-length(unique_spp)
+trawl2020_catch_ind_scientificnames &lt;- worrms::wm_records_names(unique(trawl2020_allCatch$scientificname)) %&gt;% bind_rows()
+trawl2020_catch_ind_taxa &lt;- left_join(trawl2020_catch_ind, trawl2020_catch_ind_scientificnames, by = &quot;scientificname&quot;)
 
-if(check_spp$count[]i == length(unique_spp)) {
-    print(&quot;TRUE&quot;)
-  } else {
-    print(&quot;FALSE&quot;)
-  }
+# You&#39;ll notice that not all unique_taxa have associated taxonomic hierarchial information. Let&#39;s inspect these observations as they might be either misspelled, or a non-Latin name is provided. 
+unidentified_species_ind &lt;- trawl2020_catch_ind_taxa %&gt;% filter(is.na(AphiaID)) %&gt;% distinct(scientificname)
 
-write_csv(trawl_occ, here(&quot;Trawl&quot;, &quot;tidy_data&quot;, &quot;trawl_occ.csv&quot;))
-drive_upload(here(&quot;Trawl&quot;, &quot;tidy_data&quot;, &quot;trawl_occ.csv&quot;),
-             path = &quot;https://drive.google.com/drive/folders/1MQ6XJQqnWk2puDaBTfHn7wXITjDSeLR7&quot;,
-             name = &quot;trawl_occ.csv&quot;,
-             overwrite = TRUE)</code></pre>
+# First step, remove any  mentions of &#39;sp.&#39; or &#39;sp&#39;. Some species also have &#39;sp&#39; included in their Latin name so make sure you &quot;anchor&quot; the string you want replaced using \\b. 
+trawl2020_catch_ind$identificationQualifier &lt;- ifelse(grepl(&quot;\\b sp.\\b&quot;, trawl2020_catch_ind$scientificname),
+                                                     &quot;sp. inc.&quot;, NA)
+trawl2020_catch_ind$occurrenceRemarks &lt;- ifelse(grepl(&quot;\\?&quot;, trawl2020_catch_ind$scientificname), &quot;ID not confirmed&quot;, NA)
+trawl2020_catch_ind$scientificname &lt;- gsub(&quot;\\b sp.\\b&quot;, &quot;&quot;, trawl2020_catch_ind$scientificname)
+
+# For the remaining species, use gsub to replace them with appropriate record in WoRMS. Again, confirm this with the data provider. 
+trawl2020_catch_ind$scientificname &lt;- mgsub::mgsub(trawl2020_catch_ind$scientificname,
+                         c(&quot;Abraliopsis Felis&quot;, &quot;Paralepididae&quot;, &quot;Oncorhynchus gorbusha&quot;, &quot;Phacellophoroa camtschatica&quot;,
+                           &quot;Chiroteuthis calix&quot;, &quot;Glycptocephalus zacharius&quot;, &quot;Unknown jelly&quot;, &quot;Flatfish larvae&quot;),
+                         c(&quot;Abraliopsis felis&quot;, &quot;Paralepidapedon&quot;, &quot;Oncorhynchus gorbuscha&quot;, &quot;Phacellophora camtschatica&quot;,
+                           &quot;Chiroteuthis calyx&quot;, &quot;Glyptocephalus zachirus&quot;, &quot;Cnidaria&quot;, &quot;Pleuronectiformes&quot;))
+
+# So now we can run worrms::wm_records_names again, and there should be no NA in the AphiaID column.
+trawl2020_catch_ind_worms &lt;- worrms::wm_records_names(unique(trawl2020_catch_ind$scientificname)) %&gt;% bind_rows()
+unid_species &lt;- trawl2020_catch_ind_worms %&gt;% filter(is.na(AphiaID)) %&gt;% distinct(scientificname)
+
+trawl2020_catch_ind_occ &lt;- left_join(trawl2020_catch_ind, trawl2020_catch_ind_worms, by = &quot;scientificname&quot;) %&gt;%
+  rename(scientificNameAuthorship = authority,
+         taxonomicStatus = status,
+         taxonRank = rank,
+         scientificName = scientificname,
+         scientificNameID = lsid,
+         lifeStage = `DEVELOPMENTAL STAGE`,
+         sex = SEX) %&gt;%
+  mutate(occurrenceID = paste(eventID, &quot;occ&quot;, sep = &quot;:&quot;),
+         occurrenceID = paste(occurrenceID, row_number(), sep = &quot;-&quot;),
+         occurrenceStatus = &quot;present&quot;,
+         organismQuantity = 1,
+         organismQuantityType = &quot;individual&quot;)
+
+trawl2020_catch_ind_fnl &lt;- trawl2020_catch_ind_occ %&gt;%
+  select(eventID, occurrenceID, occurrenceStatus, organismQuantity, organismQuantityType,
+         scientificName, scientificNameID,
+         scientificNameAuthorship, taxonomicStatus, taxonRank, parentNameUsageID, kingdom, phylum, 
+         class, order, family, genus, sex, lifeStage, occurrenceRemarks, identificationQualifier)
+
+# sex is recorded in numbers, transpose these: 1 = male, 2 = female, 3 = unclassified
+trawl2020_catch_ind_fnl &lt;- trawl2020_catch_ind_fnl %&gt;%
+  mutate(sex = case_when(
+    sex == &quot;1&quot; ~ &quot;male&quot;,
+    sex == &quot;2&quot; ~ &quot;female&quot;,
+    sex == &quot;3&quot; ~ &quot;unclassified&quot;
+  ))</code></pre>
+<p>To finalize the Occurrence Core, combine the two occurrence tables. I prefer to re-order it so that it visually makes sense to me. Then, save the Occurrence Core locally and in Google Drive.</p>
+<pre class="r"><code>trawl2020_Occurrence_ext &lt;- dplyr::bind_rows(trawl2020_occ_fnl, trawl2020_catch_ind_fnl)
+
+# To re-order the occurrenceID, use following code:
+order &lt;- stringr::str_sort(trawl2020_Occurrence_ext$occurrenceID, numeric=TRUE)
+trawl2020_Occurrence_ext &lt;- trawl2020_Occurrence_ext[match(order, trawl2020_Occurrence_ext$occurrenceID),]
+
+# Save the occurrence Core locally and in Google Drive:
+write_csv(trawl2020_Occurrence_ext, here(&quot;Trawl&quot;, &quot;tidy_data&quot;, &quot;trawl2020_occ_final.csv&quot;))</code></pre>
+<p>To quality control whether each species in the original specimen file has been accounted for in the final Occurrence Core, use the following chunk of code. We also have to check whether the unique species listed in the specimen file match the unique species listed in the overall catch file, where numbers have been aggregated.</p>
+<pre class="r"><code>trawl2020_event_occ &lt;- trawl2020_event_occ %&gt;% filter(!is.na(eventDate))
+
+obistools::plot_map_leaflet(trawl2020_event_occ) # Issue: Station 20 does not have lats and longs associated
+all(unique_trawl_species == unique(trawl2020_occ$scientificName)) # Answer should be TRUE</code></pre>
+<hr />
 </div>
 <div id="extended-measurementorfact-extension" class="section level2">
 <h2>Extended MeasurementOrFact Extension</h2>
-<p>Although there exist Darwin Core terms related to class <em>Occurrence</em> such as individualCount, organismQuantity, lifeStage, etc., OBIS recommends adding all measurements to the eMoF extension (De Pooter et al. 2007). There are three benefits of storing measurements in the eMoF extension instead of in the Occurrence core:</p>
-<ol style="list-style-type: decimal">
-<li>Individual counts and derived quantifications (abundance or biomass) can be captured without needing to create duplicate occurrence records</li>
-<li>The measurementTypeID field enables reference to external controlled vocabularies (e.g. NERC server), rather than maintaining a vocabulary within OBIS, and</li>
-<li>Allows an unlimited number of measurement parameters to be stored without altering table structure</li>
-</ol>
-<pre class="r"><code>trawl_emof &lt;- trawl_sp_wrangle %&gt;% 
-  filter(occurrenceStatus == &quot;present&quot;) %&gt;% 
-  mutate(LMIN = format(LMIN, digits = 2),
-         LMAX = format(LMAX, digits = 2),
-         PIECES = as.character(PIECES),
-         MASSCATCH = format(MASSCATCH, digits = 4)
-         ) %&gt;% 
-  pivot_longer(cols = Group:MASSCATCH, names_to = &quot;measurementType&quot;, values_to = &quot;measurementValue&quot;) %&gt;% 
+<p>We create a few measurements or fact tables initially - one for the measurements pertaining to the overall catch (catch_weight), and one with the measurements pertaining to selected individuals (individual length and weight). These tables will eventually be merged into the measurement or fact extension.</p>
+<p>Additionally, we need to create eMOF tables with measurements pertaining to the sampling event: trawl speed, etc. These come from the <code>trawl2020</code> dataset. Variables in the samplingEffort category are tow_speed, tow_duration, tow_distance and tow_direction. There is also data collected on bottom depth, every 15 minutes. We save these tables separatedly, and also combine them to form one final eMOF extension. Through the IPT, multiple eMOF extensions can be uploaded if preferred.</p>
+<pre class="r"><code>trawl_bottomdepth &lt;- trawl2020 %&gt;%
+  select(eventID = trawl,
+         `BOTTOM DEPTH (M) - 15 min`,
+         `BOTTOM DEPTH (M) - 30 min`,
+         `BOTTOM DEPTH (M) - 45 min`,
+         `BOTTOM DEPTH (M) - END`) %&gt;%
+  mutate_all(as.character) %&gt;%
+  pivot_longer(cols = `BOTTOM DEPTH (M) - 15 min`:`BOTTOM DEPTH (M) - END`,
+               names_to = &quot;measurementType&quot;,
+               values_to = &quot;measurementValue&quot;) %&gt;%
   mutate(measurementType = recode(measurementType,
-                                  &quot;Group&quot; = &quot;age class&quot;,
-                                  &quot;LMIN&quot; = &quot;minimum length&quot;,
-                                  &quot;LMAX&quot; = &quot;maximum length&quot;,
-                                  &quot;PIECES&quot; = &quot;number of individuals&quot;,
-                                  &quot;MASSCATCH&quot; = &quot;catch biomass&quot;
-                                  ),
+                                  `BOTTOM DEPTH (M) - 15 min` = &quot;bottom_depth_at_15_min&quot;,
+                                  `BOTTOM DEPTH (M) - 30 min` = &quot;bottom_depth_at_30_min&quot;,
+                                  `BOTTOM DEPTH (M) - 45 min` = &quot;bottom_depth_at_45_min&quot;,
+                                  `BOTTOM DEPTH (M) - END` = &quot;bottom_depth_at_end&quot;),
          measurementTypeID = case_when(
-           measurementType == &quot;minimum length&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P01/current/OBSMINLX/&quot;,
-           measurementType == &quot;maximum length&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P01/current/OBSMAXLX/&quot;,
-           measurementType == &quot;number of individuals&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/S06/current/S0600008/&quot;,
-           measurementType == &quot;catch biomass&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/S06/current/S0600088/&quot;
-           ),
-         measurementValue = recode(measurementValue,
-                                   &quot;(juv.)&quot; = &quot;juvenile&quot;,
-                                   &quot;(immature)&quot; = &quot;immature&quot;,
-                                   &quot;(mature)&quot; = &quot;mature&quot;
-                                   ),
-         measurementValueID = case_when(
-           measurementValue == &quot;juvenile&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/S11/current/S1127/&quot;,
-           measurementValue == &quot;immature&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/S11/current/S1171/&quot;,
-           measurementValue == &quot;mature&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/S11/current/S1116/&quot;
-           ),
+           measurementType == &quot;bottom_depth_at_15_min&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P07/current/CFSN0481/&quot;,
+           measurementType == &quot;bottom_depth_at_30_min&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P07/current/CFSN0481/&quot;,
+           measurementType == &quot;bottom_depth_at_45_min&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P07/current/CFSN0481/&quot;,
+           measurementType == &quot;bottom_depth_at_end&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P07/current/CFSN0481/&quot;),
+         # Perhaps this is better: http://vocab.nerc.ac.uk/collection/A05/current/EV_BATHY/
          measurementUnit = case_when(
-           measurementType == &quot;number of individuals&quot; ~ &quot;individuals&quot;,
-           measurementType == &quot;minimum length&quot; ~ &quot;cm&quot;,
-           measurementType == &quot;maximum length&quot; ~ &quot;cm&quot;,
-           measurementType == &quot;catch biomass&quot; ~ &quot;kg&quot;
-           ),
+           measurementType == &quot;bottom_depth_at_15_min&quot; ~ &quot;meters&quot;,
+           measurementType == &quot;bottom_depth_at_30_min&quot; ~ &quot;meters&quot;,
+           measurementType == &quot;bottom_depth_at_45_min&quot; ~ &quot;meters&quot;,
+           measurementType == &quot;bottom_depth_at_end&quot; ~ &quot;meters&quot;),
          measurementUnitID = case_when(
-           measurementUnit == &quot;individuals&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P06/current/UUUU/&quot;,
-           measurementUnit == &quot;cm&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P06/current/ULCM/&quot;,
-           measurementUnit == &quot;kg&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P06/current/KGXX/&quot;
-         )
-  ) %&gt;% 
-  select(eventID, 
-         occurrenceID, 
-         measurementType, 
-         measurementTypeID, 
-         measurementValue, 
-         measurementValueID,
-         measurementUnit,
-         measurementUnitID) %&gt;% 
-  drop_na(measurementValue)
+           measurementUnit == &quot;meters&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P06/current/ULAA/&quot;),
+         measurementValueID = NA,
+         measurementID = paste(eventID, measurementType, sep = &quot;:&quot;)) %&gt;%
+  select(eventID, measurementID, measurementType, measurementTypeID, measurementValue, measurementValueID,
+         measurementUnit, measurementUnitID)
 
-write_csv(trawl_emof, here(&quot;Trawl&quot;, &quot;tidy_data&quot;, &quot;trawl_eMoF.csv&quot;))
-drive_upload(here(&quot;Trawl&quot;, &quot;tidy_data&quot;, &quot;trawl_occ.csv&quot;),
-             path = &quot;https://drive.google.com/drive/folders/1MQ6XJQqnWk2puDaBTfHn7wXITjDSeLR7&quot;,
+# Save the bottom depth extension locally:
+write_csv(trawl_bottomdepth, here(&quot;Trawl&quot;, &quot;tidy_data&quot;, &quot;trawl2020_bottomdepth_emof.csv&quot;))</code></pre>
+<p>Measurements pertaining to the sampling effort:</p>
+<pre class="r"><code>samplingEffort &lt;- trawl2020 %&gt;%
+  select(eventID = trawl,
+         `DURATION OF TOW (min)`,
+         `DIRECTION OF SET (TRUE) - 15 min`,
+         `DIRECTION OF SET (TRUE) - 30 min`,
+         `DIRECTION OF SET (TRUE) - 45 min`, 
+         `DIRECTION OF SET (TRUE) - END`,
+         `SPEED (Kn) - 15 min`,
+         `SPEED (Kn) - 30 min`,
+         `SPEED (Kn) - 45 min`,
+         `SPEED (Kn) - END`,
+         `DISTANCE OF FISHING OPERATION (nm)`)%&gt;%
+  mutate_all(as.character) %&gt;%
+  pivot_longer(cols = `DURATION OF TOW (min)`:`DISTANCE OF FISHING OPERATION (nm)`,
+               names_to = &quot;measurementType&quot;,
+               values_to = &quot;measurementValue&quot;) %&gt;%
+  mutate(measurementType = recode(measurementType,
+         `DURATION OF TOW (min)` = &quot;tow_duration&quot;,
+         `DIRECTION OF SET (TRUE) - 15 min` = &quot;direction_of_set_at_15_min&quot;,
+         `DIRECTION OF SET (TRUE) - 30 min` = &quot;direction_of_set_at_30_min&quot;,
+         `DIRECTION OF SET (TRUE) - 45 min` = &quot;direction_of_set_at_45_min&quot;, 
+         `DIRECTION OF SET (TRUE) - END` = &quot;direction_of_set_at_end&quot;,
+         `SPEED (Kn) - 15 min` = &quot;vessel_speed_at_15_min&quot;,
+         `SPEED (Kn) - 30 min` = &quot;vessel_speed_at_30_min&quot;,
+         `SPEED (Kn) - 45 min` = &quot;vessel_speed_at_45_min&quot;,
+         `SPEED (Kn) - END` = &quot;vessel_speed_at_end&quot;,
+         `DISTANCE OF FISHING OPERATION (nm)` = &quot;tow_distance&quot;),
+         measurementTypeID = case_when(
+           measurementType == &quot;tow_duration&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P01/current/AZDRZZ01/&quot;,
+           measurementType == &quot;direction_of_set_at_15_min&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P07/current/CFSN0481/&quot;,
+           measurementType == &quot;direction_of_set_at_30_min&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P07/current/CFSN0481/&quot;,
+           measurementType == &quot;direction_of_set_at_45_min&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P07/current/CFSN0481/&quot;,
+           measurementType == &quot;direction_of_set_at_end&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P07/current/CFSN0481/&quot;,
+           measurementType == &quot;vessel_speed_at_15_min&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P01/current/TOWSPEED/&quot;,
+           measurementType == &quot;vessel_speed_at_30_min&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P01/current/TOWSPEED/&quot;,
+           measurementType == &quot;vessel_speed_at_45_min&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P01/current/TOWSPEED/&quot;,
+           measurementType == &quot;vessel_speed_at_end&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P01/current/TOWSPEED/&quot;,
+           measurementType == &quot;tow_distance&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P01/current/LENTRACK/&quot;),
+         measurementUnit = case_when(
+           measurementType == &quot;tow_duration&quot; ~ &quot;minutes&quot;,
+           measurementType == &quot;direction_of_set_at_15_min&quot; ~ &quot;degrees&quot;,
+           measurementType == &quot;direction_of_set_at_30_min&quot; ~ &quot;degrees&quot;,
+           measurementType == &quot;direction_of_set_at_45_min&quot; ~ &quot;degrees&quot;,
+           measurementType == &quot;direction_of_set_at_end&quot; ~ &quot;degrees&quot;,
+           measurementType == &quot;vessel_speed_at_15_min&quot; ~ &quot;knots&quot;,
+           measurementType == &quot;vessel_speed_at_30_min&quot; ~ &quot;knots&quot;,
+           measurementType == &quot;vessel_speed_at_45_min&quot; ~ &quot;knots&quot;,
+           measurementType == &quot;vessel_speed_at_end&quot; ~ &quot;knots&quot;,
+           measurementType == &quot;tow_distance&quot; ~ &quot;nautical miles&quot;),
+         measurementUnitID = case_when(
+           measurementUnit == &quot;minutes&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P06/current/UMIN/&quot;,
+           measurementUnit == &quot;degrees&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P06/current/UABB/&quot;,
+           measurementUnit == &quot;knots&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P06/current/UKNT/&quot;),
+         measurementValueID = NA,
+         measurementID = paste(eventID, measurementType, sep = &quot;:&quot;)
+         ) %&gt;%
+  select(eventID, measurementID, measurementType, measurementTypeID, measurementValue, measurementValueID,
+         measurementUnit, measurementUnitID)
+
+# Save the occurrence Core locally and in Google Drive:
+write_csv(samplingEffort, here(&quot;Trawl&quot;, &quot;tidy_data&quot;, &quot;trawl2020_samplingEffort_emof.csv&quot;))</code></pre>
+<p>And chunk of code to assign sampling instrument measurements/facts:</p>
+<pre class="r"><code>samplingInstrument &lt;- trawl2020 %&gt;%
+  select(eventID = trawl,
+         GEAR,
+         `NET OPENING WIDTH (M) - Wing tips`,
+         `NET OPENING WIDTH (M) - Wing tips - 30 min`,
+         `NET OPENING WIDTH (M) - Wing tips - 45 min`,
+         `NET OPENING WIDTH (M) - Wing tips - END`,
+         `NET OPENING WIDTH (M) - Doors`,
+         `NET OPENING WIDTH (M) - Doors - 30 min`,
+         `NET OPENING WIDTH (M) - Doors - 45 min`,
+         `NET OPENING WIDTH (M) - Doors - END`,
+         `NET OPENING DEPTH (metres) - 15 min`,
+         `NET OPENING DEPTH (metres) - 30 min`,
+         `NET OPENING DEPTH (metres) - 45 min`,
+         `NET OPENING DEPTH (metres) - END`) %&gt;%
+  mutate_all(as.character) %&gt;%
+  pivot_longer(cols = `GEAR`:`NET OPENING DEPTH (metres) - END`,
+               names_to = &quot;measurementType&quot;,
+               values_to = &quot;measurementValue&quot;) %&gt;%
+  mutate(measurementType = recode(measurementType,
+         GEAR = &quot;sampling_gear&quot;,
+         `HEADROPE DEPTH (M) - 15 min` = &quot;headrope_depth_15_min&quot;,
+         `HEADROPE DEPTH (M) - 30 min` = &quot;headrope_depth_30_min&quot;,
+         `HEADROPE DEPTH (M) - 45 min` = &quot;headrope_depth_45_min&quot;,
+         `HEADROPE DEPTH (M) - END` = &quot;headrope_depth_end&quot;,
+         `WARP DISTANCE (M) - 15 min` = &quot;warp_distance_15_min&quot;,
+         `WARP DISTANCE (M) - 30 min` = &quot;warp_distance_30_min&quot;,
+         `WARP DISTANCE (M) - 45 min` = &quot;warp_distance_45_min&quot;,
+         `WARP DISTANCE (M) - END` = &quot;warp_distance_end&quot;,
+         `NET OPENING WIDTH (M) - Wing tips` = &quot;net_opening_width_wings&quot;,
+         `NET OPENING WIDTH (M) - Wing tips - 30 min` = &quot;net_opening_width_wings_30_min&quot;,
+         `NET OPENING WIDTH (M) - Wing tips - 45 min` = &quot;net_opening_width_wings_45_min&quot;,
+         `NET OPENING WIDTH (M) - Wing tips - END` = &quot;net_opening_width_wings_end&quot;,
+         `NET OPENING WIDTH (M) - Doors` = &quot;net_opening_width_doors&quot;,
+         `NET OPENING WIDTH (M) - Doors - 30 min` = &quot;net_opening_width_doors_30_min&quot;,
+         `NET OPENING WIDTH (M) - Doors - 45 min` = &quot;net_opening_width_doors_45_min&quot;,
+         `NET OPENING WIDTH (M) - Doors - END` = &quot;net_opening_width_doors_end&quot;,
+         `NET OPENING DEPTH (metres) - 15 min` = &quot;net_opening_depth_15_min&quot;,
+         `NET OPENING DEPTH (metres) - 30 min` = &quot;net_opening_depth_30_min&quot;,
+         `NET OPENING DEPTH (metres) - 45 min` = &quot;net_opening_depth_45_min&quot;,
+         `NET OPENING DEPTH (metres) - END` = &quot;net_opening_depth_end&quot;),
+         measurementTypeID = case_when(
+           measurementType == &quot;sampling_gear&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/&quot;,
+           measurementType == &quot;net_opening_width_wings&quot; ~ &quot; &quot;,
+           measurementType == &quot;net_opening_width_wings_30_min&quot; ~ &quot; &quot;,
+           measurementType == &quot;net_opening_width_wings_45_min&quot; ~ &quot; &quot;,
+           measurementType == &quot;net_opening_width_wings_end&quot; ~ &quot; &quot;,
+           measurementType == &quot;headrope_depth_15_min&quot; ~ &quot; &quot;,
+           measurementType == &quot;headrope_depth_30_min&quot; ~ &quot; &quot;,
+           measurementType == &quot;headrope_depth_45_min&quot; ~ &quot; &quot;,
+           measurementType == &quot;headrope_depth_end&quot; ~ &quot; &quot;,
+           measurementType == &quot;warp_distance_15_min&quot; ~ &quot; &quot;,
+           measurementType == &quot;warp_distance_30_min&quot; ~ &quot; &quot;,
+           measurementType == &quot;warp_distance_45_min&quot; ~ &quot; &quot;,
+           measurementType == &quot;warp_distance_end&quot; ~ &quot; &quot;,
+           measurementType == &quot;net_opening_width_doors&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/Q01/current/Q0100014/&quot;,
+           measurementType == &quot;net_opening_width_doors_30_min&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/Q01/current/Q0100014/&quot;,
+           measurementType == &quot;net_opening_width_doors_45_min&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/Q01/current/Q0100014/&quot;,
+           measurementType == &quot;net_opening_width_doors_end&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/Q01/current/Q0100014/&quot;,
+           measurementType == &quot;net_opening_depth_15_min&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/&quot;,
+           measurementType == &quot;net_opening_depth_30_min&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/&quot;,
+           measurementType == &quot;net_opening_depth_45_min&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/&quot;,
+           measurementType == &quot;net_opening_depth_end&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/&quot;),
+         measurementUnit = case_when(
+           measurementType != &quot;sampling_gear&quot; ~ &quot;meters&quot;),
+         measurementUnitID = case_when(
+           measurementUnit == &quot;meters&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P06/current/ULAA/&quot;),
+         measurementValueID = case_when(
+           measurementType == &quot;sampling_gear&quot; ~ &quot; &quot;),
+         measurementID = paste(eventID, measurementType, sep = &quot;:&quot;)) %&gt;%
+  select(eventID, measurementID, measurementType, measurementTypeID, measurementValue, measurementValueID,
+         measurementUnit, measurementUnitID)
+
+# Save the occurrence Core locally and in Google Drive:
+write_csv(samplingInstrument, here(&quot;Trawl&quot;, &quot;tidy_data&quot;, &quot;trawl2020_samplingInstrument_emof.csv&quot;))</code></pre>
+<p>And a chunk of code to assign environmental conditions during the trawl:</p>
+<pre class="r"><code>trawl_conditions &lt;- trawl2020 %&gt;%
+  select(eventID = trawl,
+         `WAVE HEIGHT (m)`,
+         `SWELL HEIGHT (m)`, 
+         `SEA STATE DESCRIPTION`,
+         `TEMPERATURE @ NET (oC) - 15 min`,
+         `TEMPERATURE @ NET (oC) - 30 min`,
+         `TEMPERATURE @ NET (oC) - 45 min`,
+         `TEMPERATURE @ NET (oC) - END`,
+         `WIND DIRECTION (degrees)`,
+         `WIND SPEED (knots)`,
+         `CLOUD/WEATHER`) %&gt;%
+  mutate_all(as.character) %&gt;%
+  pivot_longer(cols = `WAVE HEIGHT (m)`:`CLOUD/WEATHER`,
+               names_to = &quot;measurementType&quot;,
+               values_to = &quot;measurementValue&quot;) %&gt;%
+  mutate(measurementType = recode(measurementType,
+                                  `WAVE HEIGHT (m)` = &quot;wave_height&quot;,
+                                  `SWELL HEIGHT (m)` = &quot;swell_height&quot;,
+                                  `SEA STATE DESCRIPTION` = &quot;sea_state_description&quot;,
+                                  `TEMPERATURE @ NET - 15 min` = &quot;temperature_at_net_15_min&quot;,
+                                  `TEMPERATURE @ NET - 30 min` = &quot;temperature_at_net_30_min&quot;,
+                                  `TEMPERATURE @ NET - 45 min` = &quot;temperature_at_net_45_min&quot;,
+                                  `TEMPERATURE @ NET - END` = &quot;temperature_at_net_end&quot;,
+                                  `WIND DIRECTION (degrees)` = &quot;wind_direction&quot;,
+                                  `WIND SPEED (knots)` = &quot;wind_speed&quot;,
+                                  `CLOUD/WEATHER` = &quot;weather_description&quot;),
+         measurementTypeID = case_when(
+           measurementType == &quot;wave_height&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P07/current/JNQS0CMX/&quot;,
+           measurementType == &quot;swell_height&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P09/current/SWHT/&quot;,
+           measurementType == &quot;sea_state_description&quot; ~ &quot; &quot;
+           measurementType == &quot;temperature_at_net_15_min&quot; ~ &quot; &quot;,
+           measurementType == &quot;temperature_at_net_30_min&quot; ~ &quot; &quot;,
+           measurementType == &quot;temperature_at_net_45_min&quot; ~ &quot; &quot;,
+           measurementType == &quot;temperature_at_net_end&quot; ~ &quot; &quot;,
+           measurementType == &quot;wind_direction&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/B39/current/relwinddir/&quot;,
+           measurementType == &quot;wind_speed&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P07/current/CFSN0038/&quot;,
+           measurementType == &quot;weather_description&quot; ~ &quot; &quot;),
+         measurementUnit = case_when(
+           measurementType == &quot;wave_height&quot; ~ &quot;meters&quot;,
+           measurementType == &quot;swell_height&quot; ~ &quot;meters&quot;,
+           measurementType == &quot;wind_direction&quot; ~ &quot;degrees&quot;,
+           measurementType == &quot;wind_speed&quot; ~ &quot;knots&quot;,
+           measurementType == &quot;temperature_at_net_15_min&quot; ~ &quot;degrees celsius&quot;,
+           measurementType == &quot;temperature_at_net_30_min&quot; ~ &quot;degrees celsius&quot;,
+           measurementType == &quot;temperature_at_net_45_min&quot; ~ &quot;degrees celsius&quot;,
+           measurementType == &quot;temperature_at_net_end&quot; ~ &quot;degrees celsius&quot;),
+         measurementUnitID = case_when(
+           measurementUnit == &quot;meters&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P06/current/ULAA/&quot;,
+           measurementUnit == &quot;degrees&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P06/current/UAAA/&quot;,
+           measurementUnit == &quot;knots&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P06/current/UKNT/&quot;,
+           measurementUnit == &quot;degrees celsius&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P06/current/UPAA/&quot;
+         ),
+         measurementValueID = NA,
+         measurementID = paste(eventID, measurementType, sep = &quot;:&quot;)) %&gt;% 
+  select(eventID, measurementID, measurementType, measurementTypeID, measurementValue, measurementValueID,
+         measurementUnit, measurementUnitID)
+
+# Save the occurrence Core locally and in Google Drive:
+write_csv(trawl_conditions, here(&quot;Trawl&quot;, &quot;tidy_data&quot;, &quot;trawl2020_conditions_emof.csv&quot;))</code></pre>
+<p>Next two eMOF extensions are created with measurements pertaining to overall species’ catch weight at each trawl, and individual length and weight measurements.</p>
+<p>count - total: <a href="http://vocab.nerc.ac.uk/collection/P01/current/OCOUNT01/" class="uri">http://vocab.nerc.ac.uk/collection/P01/current/OCOUNT01/</a></p>
+<pre class="r"><code>trawl2020_allcatch_measurement &lt;- trawl2020_occ %&gt;%
+  select(occurrenceID,
+         organismQuantity,
+         `CATCH_WEIGHT (KG)`) %&gt;%
+  mutate_all(as.character) %&gt;%
+  pivot_longer(cols = c(organismQuantity, `CATCH_WEIGHT (KG)`),
+               names_to = &quot;measurementType&quot;,
+               values_to = &quot;measurementValue&quot;)
+
+trawl2020_methods &lt;- trawl2020_occ %&gt;%
+  select(occurrenceID,
+         `COUNT_METHOD                 (Total, Volume est, Weight est)`,
+         WEIGHT_METHOD) %&gt;%
+  mutate_all(as.character) %&gt;%
+  pivot_longer(cols = c(`COUNT_METHOD                 (Total, Volume est, Weight est)`, WEIGHT_METHOD),
+                        values_to = &quot;measurementMethod&quot;) %&gt;%
+  select(measurementMethod)
+
+trawl2020_allcatch_emof &lt;- cbind(trawl2020_allcatch_measurement, trawl2020_methods) %&gt;% 
+  mutate(measurementType = recode(measurementType,
+                                  `CATCH_WEIGHT (KG)` = &quot;Total species biomass&quot;,
+                                  organismQuantity = &quot;count&quot;),
+         measurementID = case_when(
+           measurementType == &quot;count&quot; ~ paste(occurrenceID, &quot;count&quot;, sep = &quot;-&quot;),
+           measurementType == &quot;Total species biomass&quot; ~ paste(occurrenceID, &quot;biomass&quot;, sep = &quot;-&quot;)),
+         measurementTypeID = case_when(
+           measurementType == &quot;Total species biomass&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/S06/current/S0600088/&quot;,
+           measurementType == &quot;count&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P09/current/OCNT/&quot;),
+         # When possible there might be new terms created for counts done through visual estimation etc. 
+         measurementUnit = case_when(
+           measurementType == &quot;Total species biomass&quot; ~ &quot;kg&quot;,
+           measurementType == &quot;count&quot; ~ &quot;individuals&quot;),
+         measurementUnitID = case_when(
+           measurementUnit == &quot;kg&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P06/current/KGXX/&quot;,
+           measurementUnit == &quot;individuals&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P06/current/UUUU/&quot;)
+  ) %&gt;%
+  select(occurrenceID, measurementID, measurementType, measurementTypeID, measurementValue, measurementValueID,
+         measurementUnit, measurementUnitID, measurementMethod)</code></pre>
+<p>Next, create the measurementOrFact extension with length and weight measurements assigned to the individual specimens.</p>
+<pre class="r"><code>trawl2020_ind_emof &lt;- trawl2020_catch_ind_occ %&gt;%
+  select(occurrenceID,
+         `LENGTH (FORK) - mm`:`WEIGHT - ROUND (g)`) %&gt;%
+  mutate_all(as.character) %&gt;%
+  pivot_longer(cols = `LENGTH (FORK) - mm`:`WEIGHT - ROUND (g)`,
+               names_to = &quot;measurementType&quot;,
+               values_to = &quot;measurementValue&quot;) %&gt;%
+  mutate(measurementType = recode(measurementType,
+                                  `LENGTH (FORK) - mm` = &quot;Fork length&quot;,
+                                  `LENGTH (STANDARD) - mm` = &quot;Standard length&quot;,
+                                  `LENGTH (TOTAL)` = &quot;Total length&quot;,
+                                  `LENGTH (MANTLE) - cm` = &quot;Mantle length&quot;,
+                                  `WEIGHT - ROUND (g)` = &quot;weight&quot;),
+         measurementID = case_when(
+           measurementType == &quot;Fork length&quot; ~ paste(occurrenceID, &quot;fork_length&quot;, sep = &quot;-&quot;),
+           measurementType == &quot;Standard length&quot; ~ paste(occurrenceID, &quot;standard_length&quot;, sep = &quot;-&quot;),
+           measurementType == &quot;Total length&quot; ~ paste(occurrenceID, &quot;total_length&quot;, sep = &quot;-&quot;),
+           measurementType == &quot;Mantle length&quot; ~ paste(occurrenceID, &quot;mantle_length&quot;, sep = &quot;-&quot;),
+           measurementType == &quot;weight&quot; ~ paste(occurrenceID, &quot;weight&quot;, sep = &quot;-&quot;)),
+         measurementTypeID = case_when(
+           measurementType == &quot;Fork length&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P01/current/FL01XX01/&quot;,
+           measurementType == &quot;Standard length&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P01/current/SL01XX01/&quot;,
+           measurementType == &quot;Total length&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P01/current/TL01XX01/&quot;,
+           measurementType == &quot;Mantle length&quot; ~ &quot; &quot;,
+           measurementType == &quot;weight&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/S06/current/S0600088/&quot;),
+         measurementUnit = case_when(
+           measurementType == &quot;Fork length&quot; ~ &quot;millimeters&quot;,
+           measurementType == &quot;Standard length&quot; ~ &quot;millimeters&quot;,
+           measurementType == &quot;Total length&quot; ~ &quot;millimeters&quot;,
+           measurementType == &quot;Mantle length&quot; ~ &quot;centimeters&quot;,
+           measurementType == &quot;weight&quot; ~ &quot;grams&quot;),
+         measurementUnitID = case_when(
+           measurementUnit == &quot;millimeters&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P06/current/UXMM/&quot;,
+           measurementUnit == &quot;centimeters&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P06/current/ULCM/&quot;,
+           measurementUnit == &quot;grams&quot; ~ &quot;http://vocab.nerc.ac.uk/collection/P06/current/UGRM/&quot;
+  )) %&gt;%
+  mutate(measurementValueID = NA) %&gt;%
+  drop_na(measurementValue) %&gt;%
+  select(occurrenceID, measurementID, measurementType, measurementTypeID, measurementValue, measurementValueID,
+         measurementUnit, measurementUnitID)</code></pre>
+<p>Combine the two extended measurementOrFact extensions into a single eMOF extension, and save locally and in GoogleDrive:</p>
+<pre class="r"><code>trawl2020_eMOF &lt;- dplyr::bind_rows(trawl2020_allcatch_emof, trawl2020_ind_emof)
+
+# To combine all the extensions, use: 
+# trawl2020_all_emofs &lt;- dplyr::bind_rows(trawl_bottomdepth, samplingEffort, samplingInstrument, trawl_conditions, trawl2020_allcatch_emof, trawl2020_ind_emof)
+
+write_csv(trawl2020_eMOF, here(&quot;Trawl&quot;, &quot;tidy_data&quot;, &quot;trawl_eMOF.csv&quot;))
+drive_upload(here(&quot;Trawl&quot;, &quot;tidy_data&quot;, &quot;trawl_emof.csv&quot;),
+             path = &quot;https://drive.google.com/drive/folders/1ZbvwjD8odJr2SUKq6Z8zAwpLd6QeOOYC&quot;,
              name = &quot;trawl_eMoF.csv&quot;,
              overwrite = TRUE)</code></pre>
 </div>
