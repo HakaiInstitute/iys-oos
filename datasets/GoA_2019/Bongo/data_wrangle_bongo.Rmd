@@ -96,8 +96,6 @@ Dataframes are created for each unique `eventID` layer (cruise, station, cast), 
 
 No Bongo sets were conducted at station 51 and 52 due to bad weather, so no coordinates were collected (reflected as 'ND'). Therefore, these need to be removed before calculating the associated coordinateUncertaintyInMeters. However in the final event core they need to be added (to station level), along with associated fieldNotes/eventRemarks. 
 
-A bongo sampling instrument consists of two nets, and With the 2019 Bongo Zooplankton data, Net 1 was mainly used to analyze community composition and species abundance, whereas samples collected in Net 2 were used for fatty acid or isotope analysis. To this end, a single Event Core is created, but two separate However, some larger individuals from Net 1 were used both in the abundance study as well as fatty acid/isotope study.
-
 While samplingProtocol is not a required term, it is useful to give a description. Once/If a document or paper is published, the samplingProtocol can link to the DOI of the paper (preferred).
 
 ## Event Core
@@ -152,7 +150,8 @@ bongo_sample <- bongo %>%
   mutate(type = "bongo net sampleID")
 
 bongo_event <- bind_rows(bongo_project, bongo_cruise,bongo_station,bongo_cast, bongo_sample) %>% 
-  mutate(basisOfRecord = "HumanObservation", #should any sample from Net2 be PreservedSpecimen, and samples from Net 1 be "Human Observation"?
+  mutate(basisOfRecord = "HumanObservation", 
+         #should any sample from Net2 be PreservedSpecimen, and samples from Net 1 be "Human Observation"?
          geodeticDatum = "EPSG:4326")
 
 # To do: figure out way to flatten the event core. 
@@ -168,12 +167,13 @@ drive_upload(here("Bongo", "tidy_data", "bongo_event.csv"),
 
 ## Occurrence extension
 
-Two Occurrence tables will be created, as we're dealing with two separate datasets created from the same data collection event. One dataset includes dry weight measurements, whereas the other dataset contains species-specific (estimated) abundance at each sampling station, with sex and lifestage. From my understanding, samples in Net 1 from the bongo sampling instrument were typically fixed as a whole for community and abundance analysis. Zooplankton in Net 2 was used predominantly for isotope or fatty acid analysis. On occasion, some individuals from Net 1 were used in the isotope or fatty acid analysis, though unfortunately which individuals or sample_ids were used in both studies has not been accurately reported.   
+Two Occurrence tables will be created, as we're dealing with two separate datasets created from the same data collection event. One dataset includes dry weight and length measurements, whereas the other dataset contains species-specific (estimated) abundance at each sampling station, with sex and lifestage. From my understanding, samples in Net 1 from the bongo sampling instrument were typically fixed as a whole for community and abundance analysis. Zooplankton in Net 2 was used predominantly for isotope or fatty acid analysis. 
+
 An `occurrenceID` and `occurrenceStatus` will only be provided to data entries where species have been identified to a level for which we can find a WoRMS URN. So first we inspect all the unique input for the `species` column, and filter out the species that can _not_ be identified. Measurements of weight, length, and life stage will still be included, however they will linked directly to the `eventID` (the sample_id) rather than the `occurrenceID`. In other words, these data entries will not be included in the Occurrence extension!
 
-After internal discussion, it was opted to associate an `occurrenceID` to an entry as long as we can find a WoRMS taxon / URN, even if a species can only be identified up to a phylum or kingdom level. For entries where Species = `Size fraction`, will not have an Occurrence Core associated to it, because it is not possible to associate a URN from WoRMS to this class or group (`Zooplankton`). The same goes for entries where no common rank can be associated, such as `Jellyfish, radiolarian, chaetognath` and `Gelatinous`. For data entries where multiple groups are lumped together (i.e. "Jelly fish, radiolarian and chaetognath"), and a common taxonomic level can not be found, we have opted _not_ to split them into separate occurrenceIDs because it is not possible to associate any measurements to the entry.
+After internal discussion, it was opted to associate an `occurrenceID` to an entry as long as we can find a WoRMS taxon / URN, even if a species can only be identified up to a phylum or kingdom level. Entries where Species = `Size fraction`, will not have an occurrenceID associated to it, because it is not possible to associate a URN from WoRMS to this class or group (`Zooplankton`). The same goes for entries where no common rank can be associated, such as `Jellyfish, radiolarian, chaetognath` and `Gelatinous`. 
 
-**However, a new term might be introduced: `verbatimScientificName` (see [here](https://github.com/tdwg/dwc/issues/181)), in which case these data entries might be included under this column and consequently added to the Occurrence Core.**
+**However, a new term might be introduced to the Occurrence extension: `verbatimScientificName` (see [here](https://github.com/tdwg/dwc/issues/181)), in which case these data entries might be included under this column.**
 
 ***
 
@@ -254,12 +254,15 @@ no_worms_id_2 <- left_join(bongo2019_abun, bongo2019_worms_id, by = "scientificn
 # Merge this dataset back into original dataframe. First remove the column "genus" from bongo2019_abun, because otherwise this one is copied. 
 bongo2019_abun <- bongo2019_abun %>% select(-genus)
 bongo2019_abun <- left_join(bongo2019_abun, bongo2019_worms_id, by = "scientificname")
-bongo2019_taxa_abundance <- bongo2019_abun %>%
+bongo2019_abun <- bongo2019_abun %>%
   select(eventID = cast,
          scientificName = scientificname,
          scientificNameID = lsid,
          scientificAuthorityName = authority,
          individualCount = ind_counted,
+         ind_total,
+         abund_m3_flow_est,
+         abund_m3_depth_est,
          lifeStage = stage,
          sex,
          taxonRank = rank,
@@ -269,18 +272,19 @@ bongo2019_taxa_abundance <- bongo2019_abun %>%
   mutate(occurrenceID = paste(eventID, "zoop_occ", sep = ":"),
          occurrenceID = paste(occurrenceID, row_number(), sep = "-"))
 
+bongo2019_taxa_abundance <- bongo2019_abun %>% select(-c(ind_total, abund_m3_flow_est, abund_m3_depth_est))
 # Make sure the folder path exists already (e.g. ./Bongo/tidy_data)
 write_csv(bongo2019_taxa_abundance, here("Bongo", "tidy_data", "bongo2019_taxa_occ.csv"))
 ```
 
 To do: confirm that all unique species in the original dataset are represented in the bongo2019_taxa_abundance dataframe. 
-So now we've created the first Occurrence extension coming from the Zooplankton Bongo data, on community analysis / abundance estimates. This Occurrence extension will need to have an associated eMOF extension linked to it as well, which should include `sex`, `lifeStage`, and the various ways in which abundance or total number is estimated? i.e. `ind_total` = total number of individuals estimated in the entire sample, `abund_m3_flow_est` = total abundance estimates from the flow meter, and `abund_m3_depth_est` = total abundance of individuals estimated using the depth-estimated estimate. These terms might require new additions to controlled vocabulary. 
+So now we've created the first Occurrence extension coming from the Zooplankton data, on community analysis / abundance estimates. This Occurrence extension will need to have an associated eMOF extension linked to it as well, which should include `sex`, `lifeStage`, and the various ways in which abundance or total number is estimated? i.e. `ind_total` = total number of individuals estimated in the entire sample, `abund_m3_flow_est` = total abundance estimates from the flow meter, and `abund_m3_depth_est` = total abundance of individuals estimated using the depth-estimated estimate. These terms might require new additions to controlled vocabulary. 
 
 *** 
 
-The second Occurrence extension we create is on the data collected for the dry weight isotope and fatty acid analysis. This data is found in a different data set (`bongo`).  
+The second Occurrence extension we create is on the data collected for the dry weight isotope and fatty acid analysis. This data is found in a different data set (`bongo`). Though some larger individuals from Net 1 were used both in the abundance study as well as fatty acid/isotope study, these are _not_ included in the standardized data. The reason for this is that there is no way for us to determine which samples were removed from Net 1. The only information listed is whether or not the species came from Net 1.  
 
-**Important data limitation alert**: Some individuals from Net 1 were also used in the fatty acid / isotope analysis. These individuals have been **filtered out** of the data because we could not trace back exactly which individuals were used in both studies.
+**Important data limitation alert**: Some individuals from Net 1 were also used in the fatty acid / isotope analysis. These individuals have been **filtered out** of the data because we could not trace back exactly which individuals were used in both studies. While this has no consequences for presence/absence records in OBIS, the length/weight measurements associated to these records are not included in the standardized data.
 
 ``` {r bongo_occ_pre_wrangle, eval = FALSE}
 unique(bongo$species)
@@ -438,7 +442,7 @@ div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
 The assumption here is made that if a data entry has number > 1, but only a single associated length measurement, all individuals have the length reported.  
 </div>
 
-**To address these issues, a total of five different occurrence tables will be created, that eventually get merged to a single Occurrence Core! Reminder: in all these occurrence tables only data entries are included where species have been identified to species or genus level (so have an associated WoRMS URN), and will therefore have an associated occurrenceID and occurrenceStatus.**
+**To address these issues, a total of five different occurrence tables will be created, that eventually get merged to a single Occurrence extension! Reminder: in all these occurrence tables only data entries are included where species have been identified to species or genus level (so have an associated WoRMS URN), and will therefore have an associated occurrenceID and occurrenceStatus.**
 
 The five Occurrence tables that will be created are: 
 
@@ -563,7 +567,7 @@ bongo2019_occ5 <- bongo2019_occ5[ !(bongo2019_occ5$sample_id %in% bongo_petri$sa
          scientificName = species)
 ```
 
-To create the final occurrence extension, the five occurrence tables are joined. As individual measurements are associated to these data entries, an `occurrenceID` is created for them. Additionally, for each species the proper scientificNameID (WoRMS URN) is provided. This is a required term.
+To create the final occurrence extension, the five occurrence tables are joined. As individual measurements are associated to these data entries, an `occurrenceID` is created for them. 
 
 ``` {r bongo_combined_occ, eval = FALSE}
 bongo2019_occ_fnl <- rbind(bongo2019_occ1, bongo2019_occ2, bongo2019_occ3, bongo2019_occ4, bongo2019_occ5) 
@@ -616,9 +620,18 @@ preservation <- bongo_fnl %>% select(station, net, preservation)
 preservation$net <- as.numeric(preservation$net)
 bongo2019_occ_fnl <- left_join(bongo2019_occ_fnl, preservation, by = c("station", "net"))
 
-bongo2019_occ_core <- bongo2019_occ_fnl %>%
-  rename(Preparations = preservation) %>%
+bongo2019_occ_fnl <- bongo2019_occ_fnl %>%
+    rename(Preparations = preservation) %>%
+    mutate(occurrenceID = paste(eventID, "zoop_occ", sep = ":"),
+         occurrenceID = paste(occurrenceID, row_number(), sep = "-"),
+         occurrenceStatus = "present",
+         reproductiveCondition = NA)
+
+bongo2019_occ_core <- bongo2019_occ_fnl %>% 
   select(eventID, scientificName, 
+         occurrenceID,
+         occurrenceStatus,
+         reproductiveCondition,
          scientificNameID = lsid, 
          scientificAuthorityName = authority,
          individualCount = number,
@@ -627,13 +640,10 @@ bongo2019_occ_core <- bongo2019_occ_fnl %>%
          taxonomicStatus = status,
          sex,
          lifeStage,
-         kingdom, phylum, class, order, family, genus, Preparations, occurrenceRemarks) %>%
-  mutate(occurrenceID = paste(eventID, "zoop_occ", sep = ":"),
-         occurrenceID = paste(occurrenceID, row_number(), sep = "-"),
-         occurrenceStatus = "present")
+         kingdom, phylum, class, order, family, genus, Preparations, occurrenceRemarks)
 ```
 
-I change bongo_occ_fnl into a new dataframe (bongo2019_occ_core) because we're going to use the bongo_occ_fnl dataset in the eMoF table, but not all columns. This is also the reason why I add `occurrenceID` and `occurrenceStatus` separatedly at each occurrence extension, rather than all the way at the end when I combine the two extensions. I will need to link those measurements or facts to the specific `occurrenceID`, and if I add the `occurrenceID` only after I've merged the two tables, it'll be very difficult to filter. 
+I change bongo_occ_fnl into a new dataframe (bongo2019_occ_core) because we're going to use the bongo2019_occ_fnl dataset in the eMoF table, but not all columns. This is also the reason why I add `occurrenceID` and `occurrenceStatus` separatedly at each occurrence extension, rather than all the way at the end when I combine the two extensions. I will need to link those measurements or facts to the specific `occurrenceID`, and if I add the `occurrenceID` only after I've merged the two tables, it'll be very difficult to filter. 
 
 Next, the two occurrence extensions (1 - occurrences in Net 1 for the abundance / community composition study, 2 - occurrences in Net 2 for the isotope / fatty acid analysis) are combined, and saved. :
 
@@ -702,8 +712,7 @@ bongo_sampling <- bongo_fnl %>%
            measurementType == "depth_estimated_volume_filtered" ~ " ", 
            # perhaps: http://vocab.nerc.ac.uk/collection/P01/current/VOLWBSMP/ ?
            measurementType == "flowmeter_volume_filtered" ~ "http://vocab.nerc.ac.uk/collection/P09/current/VOLF/",
-           measurementType == "speed_tow" ~ "http://vocab.nerc.ac.uk/collection/P01/current/TOWSPEED/"
-         ),
+           measurementType == "speed_tow" ~ "http://vocab.nerc.ac.uk/collection/P01/current/TOWSPEED/"),
   measurementUnit = case_when(
     measurementType == "tow_distance" ~ "meter",
     measurementType == "depth_estimated_volume_filtered" ~ "cubic meter",
@@ -718,10 +727,10 @@ bongo_sampling <- bongo_fnl %>%
            measurementUnit, measurementUnitID)
 ```
 
-The bongo had a length of 3m, but I couldn't find any controlled vocabulary for sampling instrument length so I omitted this information from the code. For the sampling instrument
+The bongo had a length of 3m, but I couldn't find any controlled vocabulary for sampling instrument length so I omitted this information from the code. For the sampling instrument:
 
 ``` {r samplingInstrument, eval = FALSE}
-bongo_instrument <- bongo %>%
+bongo_instrument <- bongo_fnl %>%
   select(eventID = cast,
          gear) %>%
   mutate(bongo_mesh = 250,
@@ -752,15 +761,12 @@ bongo_instrument <- bongo_instrument %>%
 
 Though an occurrenceID was not created for each data entry, measurements can be linked either directly to the `eventID` or to the `occurrenceID`. The following measurements are linked to either the `eventID` or `occurrenceID`: `length_mm`, `length_type`, and `weight_mg`. 
 
-We first create the eMoF table that links directly to the `eventID`. First we have to filter for all the data entries for which no `occurrenceID` has been created. In other words, remove any rows (data entries) for which an `occurrenceID` has been created:
+We first create the eMoF table that links directly to the `eventID`. First we have to filter for all the data entries for which no `occurrenceID` has been created. In other words, the dataframe of unidentified_spp:
 
 ``` {r eMoF, eval = FALSE}
-bongo_occID <- bongo_occ_fnl %>% rename(sample = eventID)
-bongo_emof <- bongo[ !(bongo$sample %in% bongo_occID$sample), ]
-
 # Upon visual inspection of the bongo_emof dataset, this does include only data entries for species that have not been identified to a species or genus level, including the species that's only listed as 'size_fraction'. 
 
-bongo_emof <- bongo_emof %>%
+bongo_emof <- unidentified_spp %>%
   select(eventID = sample, 
          length = length_mm,
          weight = weight_mg,
@@ -769,8 +775,7 @@ bongo_emof <- bongo_emof %>%
   pivot_longer(cols = length:length_type,
                names_to = "measurementType",
                values_to = "measurementValue") %>%
-  mutate(
-    measurementID = case_when(
+  mutate(measurementID = case_when(
       measurementType == "length" ~ paste(eventID, "length", sep = ":"),
       measurementType == "length_type" ~ paste(eventID, "length_type", sep = ":"),
       measurementType == "weight" ~ paste(eventID, "weight", sep = ":")),
@@ -781,15 +786,14 @@ bongo_emof <- bongo_emof %>%
       measurementType == "weight" ~ "http://vocab.nerc.ac.uk/collection/S06/current/S0600087/"), 
     measurementUnit = case_when(
       measurementType == "length" ~ "mm",
-      measurementType == "weight" ~ "mg",
-    ), 
+      measurementType == "weight" ~ "mg"), 
     measurementUnitID = case_when(
       measurementUnit == "individuals" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UUUU/", 
       measurementUnit == "mm" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UXMM/",
       measurementUnit == "mg" ~ "http://vocab.nerc.ac.uk/collection/P06/current/MGRM/"))
 ```
 
-When the species or genus has been identified, the measurements are associated to the occurrenceID.  
+When the species or genus has been identified, the measurements are associated to the `occurrenceID`.  
 
 ``` {r, eval = FALSE}
 bongo_emof2 <- bongo2019_occ_fnl %>%
@@ -811,14 +815,14 @@ range <- bongo_emof2 %>%
   # bongo_emof2 needs to be replaced with a table that contains the occurrenceIDs!!
   filter(grepl("-", bongo_emof2$length)) %>%
   separate(length, c("minimumLength", "maximumLength")) %>%
-  mutate(length = " ")
+  mutate(length = NA)
 range$maximumLength <- gsub("mm", "", range$maximumLength) 
 
 # Remove any rows from bongo_emof2 where length_mm contains a range, add two dummy columns (minimumLength and maximumLength) and use rbind() to merge `range` with this newly created dataframe.
 
 temp <- bongo_emof2[ -grep("-", bongo_emof2$length), ] %>%
-  mutate(minimumLength = " ",
-         maximumLength = " ")
+  mutate(minimumLength = NA,
+         maximumLength = NA)
 
 bongo_emof2 <- rbind(range, temp)
 ```
@@ -852,8 +856,11 @@ bongo_emof2 <- bongo_emof2 %>%
       measurementType == "weight" ~ "milligram"),
     measurementUnitID = case_when(
       measurementUnit == "individuals" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UUUU/",
-      measurementUnit == "millimeters" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UXMM/",
+      measurementUnit == "millimeter" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UXMM/",
       measurementUnit == "milligram" ~ "http://vocab.nerc.ac.uk/collection/P06/current/MGRM/"))
+
+# There are fields under measurementValue that are "NA" or NA. These need to be removed from the eMOF extension.
+bongo_emof2 <- bongo_emof2 %>% filter(measurementValue != "NA") %>% drop_na(measurementValue)
 ```
 
 As there were also comments in the dataset, we have to make sure we include those in the measurementOrFact extension, as they might be important to the measurements. Additionally, as there is NERC vocabulary for the different length types in this dataset, we include this column in the measurementRemarks, alongside the original notes. 
@@ -875,64 +882,34 @@ bongo_measurementRemarks <-  bongo_measurementRemarks %>%
   select(measurementID, measurementRemarks)
 ```
 
-Finally, join all the tables together to form the measurementOrFact extension, and save it locally and on GoogleDrive: 
-
-``` {r bongo_measurementOrFact Core, eval = FALSE}
-bongo_measurementOrFact <- bind_rows(bongo_bottomdepth, bongo_sampling, 
-                                     bongo_instrument, bongo_emof, bongo_emof2) %>%
-  left_join(bongo_measurementRemarks) %>%
-  select(
-    eventID,
-    occurrenceID,
-    measurementID,
-    measurementType,
-    measurementTypeID,
-    measurementValue,
-    measurementValueID,
-    measurementUnit,
-    measurementUnitID,
-    measurementRemarks)
-
-# If you want to change the order of the eventID, use:
-bongo_measurementOrFact <- bongo_measurementOrFact[mixedorder(as.character(bongo_measurementOrFact$eventID)),]
-# I personally like this to QC my data manually. 
-
-# Make sure the folder path exists already (e.g. ./Bongo/tidy_data)
-write_csv(bongo_measurementOrFact, here("Bongo", "tidy_data", "bongo_emof.csv"))
-drive_upload(here("Bongo", "tidy_data", "bongo_emof.csv"),
-             path = "https://drive.google.com/drive/u/0/folders/1cAJP-DGSQZdRhrIYraX8MJXO-h_7qbn2",
-             name = "bongo_emof.csv",
-             overwrite = TRUE)
-```
-
-The second eMOF core we create is for the abundance / community analysis study, which is from the bongo2019_abun dataframe. Need to figure out whether individualCount and the total individualCount. 
+The second eMOF extension we create is for the abundance / community analysis study, which is from the bongo2019_abun dataframe. Need to figure out whether individualCount and the total individualCount. 
 
 ``` {r eMOF Bongo abundance, eval = FALSE}
 bongo_emof_abun <- bongo2019_abun %>%
   select(occurrenceID, 
-         stage, 
+         lifeStage, 
          sex, 
-         ind_counted:abund_m3_depth_est) %>%
+         individualCount:abund_m3_depth_est) %>%
   mutate_all(as.character) %>%
-  pivot_longer(cols = stage:abund_m3_depth_est,
+  pivot_longer(cols = lifeStage:abund_m3_depth_est,
                names_to = "measurementType",
                values_to = "measurementValue") %>%
   mutate(measurementID = case_when(
-      measurementType == "stage" ~ paste(occurrenceID, "stage", sep = ":"),
+      measurementType == "lifeStage" ~ paste(occurrenceID, "stage", sep = ":"),
       measurementType == "sex" ~ paste(occurrenceID, "sex", sep = ":"),
-      measurementType == "ind_counted" ~ paste(occurrenceID, "ind_counted", sep = ":"),
+      measurementType == "individualCount" ~ paste(occurrenceID, "ind_counted", sep = ":"),
       measurementType == "ind_total" ~ paste(occurrenceID, "ind_total", sep = ":"),
       measurementType == "abund_m3_flow_est" ~ paste(occurrenceID, "abund_flow", sep = ":"),
       measurementType == "abund_m3_depth_est" ~ paste(occurrenceID, "abund_depth", sep = ":")),
     measurementTypeID = case_when(
-      measurementType == "stage" ~ "http://vocab.nerc.ac.uk/collection/P01/current/LSTAGE01/",
+      measurementType == "lifeStage" ~ "http://vocab.nerc.ac.uk/collection/P01/current/LSTAGE01/",
       measurementType == "sex" ~ "http://vocab.nerc.ac.uk/collection/P01/current/ENTSEX01/",
-      measurementType == "ind_counted" ~ "http://vocab.nerc.ac.uk/collection/P01/current/OCOUNT01/",
+      measurementType == "individualCount" ~ "http://vocab.nerc.ac.uk/collection/P01/current/OCOUNT01/",
       measurementType == "ind_total" ~ "http://vocab.nerc.ac.uk/collection/P01/current/OCOUNT01/",
       measurementType == "abund_m3_flow_est" ~ "http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL01/",
       measurementType == "abund_m3_depth_est" ~ "http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL01/"), 
     measurementUnit = case_when(
-      measurementType == "ind_counted" ~ "individuals",
+      measurementType == "individualCount" ~ "individuals",
       measurementType == "ind_total" ~ "individuals",
       measurementType == "abund_m3_depth_est" ~ "individuals per cubic meter",
       measurementType == "abund_m3_flow_est" ~ "individuals per cubic meter"), 
@@ -964,11 +941,41 @@ bongo_emof_abun <- bongo2019_abun %>%
       measurementValue == "eudoxid" ~ " ",
       measurementValue == "gastrozoid" ~ " ",
       measurementValue == "gas float" ~ " ",
-      measurementValue == "<0.5mm|<1mm|1mm" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1152/"
-    ))
+      measurementValue == "<0.5mm|<1mm|1mm" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1152/"))
 
 # Make sure the folder path exists already (e.g. ./Bongo/tidy_data)
 write_csv(bongo_emof_abun, here("Bongo", "tidy_data", "bongo2019_emof_abun.csv"))
+```
+
+Finally, join all the tables together to form the measurementOrFact extension, and save it locally and on GoogleDrive: 
+
+``` {r bongo_measurementOrFact Core, eval = FALSE}
+bongo_measurementOrFact <- bind_rows(bongo_bottomdepth, bongo_sampling, 
+                                     bongo_instrument, bongo_emof, bongo_emof2,
+                                     bongo_emof_abun) %>%
+  left_join(bongo_measurementRemarks) %>%
+  select(
+    eventID,
+    occurrenceID,
+    measurementID,
+    measurementType,
+    measurementTypeID,
+    measurementValue,
+    measurementValueID,
+    measurementUnit,
+    measurementUnitID,
+    measurementRemarks)
+
+# If you want to change the order of the eventID, use:
+bongo_measurementOrFact <- bongo_measurementOrFact[mixedorder(as.character(bongo_measurementOrFact$eventID)),]
+# I personally like this to QC my data manually. 
+
+# Make sure the folder path exists already (e.g. ./Bongo/tidy_data)
+write_csv(bongo_measurementOrFact, here("Bongo", "tidy_data", "bongo_emof.csv"))
+drive_upload(here("Bongo", "tidy_data", "bongo_emof.csv"),
+             path = "https://drive.google.com/drive/u/0/folders/1cAJP-DGSQZdRhrIYraX8MJXO-h_7qbn2",
+             name = "bongo_emof.csv",
+             overwrite = TRUE)
 ```
 
 To visualize the sampling stations in a map (first ensure that decimalLongitude and decimalLatitude are numeric):
