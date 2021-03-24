@@ -298,6 +298,32 @@ bongo2019_taxa <- bongo %>% filter(!(species %in% c("Size fraction", "Chaetognat
 unidentified_spp <- bongo %>% filter(species %in% c("Size fraction", "Chaetognath & Ctenophore", "Jelly mass",
                                                     "Jellyfish, radiolarian, chaetognath", "Gelatinous", 
                                                     "Ctenophore / jellyfish"))
+```
+
+Length and weight measurements associated with unidentified species will eventually also be added to the eMOF extension, however these will be linked to the eventIDs. As such, we have to manually change records where length is reported in a range (e.g. 16-20mm) or in an approximation (>4mm). Additionally, we add occurrenceRemarks to the records where number is reported as ~3 or >3, to indicate the uncertainty in count. 
+
+``` {r intermezzo, eval = FALSE}
+unidentified_spp$minimumLength <- NA
+unidentified_spp$maximumLength <- NA
+unidentified_spp$number <- as.character(unidentified_spp$number)
+unidentified_spp$minimumLength <- ifelse(grepl(">4mm", unidentified_spp$length_mm), "4", unidentified_spp$minimumLength)
+unidentified_spp$minimumLength <- ifelse(grepl("16-20mm", unidentified_spp$length_mm), "16", unidentified_spp$minimumLength)
+unidentified_spp$maximumLength <- ifelse(grepl("16-20mm", unidentified_spp$length_mm), "20", unidentified_spp$maximumLength)
+unidentified_spp$measurementRemarks <- ifelse(grepl(">4mm", unidentified_spp$length_mm), 
+                                             "Count represents a minimum recorded value", NA)
+unidentified_spp$length_mm <- ifelse(grepl(">4mm", unidentified_spp$length_mm), NA, unidentified_spp$length_mm) 
+unidentified_spp$length_mm <- ifelse(grepl("16-20mm", unidentified_spp$length_mm), NA, unidentified_spp$length_mm)
+
+unidentified_spp$measurementRemarks <- ifelse(grepl(">3", unidentified_spp$number),
+                                              "Count represents a minimum recorded value",
+                                              unidentified_spp$measurementRemarks)
+unidentified_spp$measurementRemarks <- ifelse(grepl("~3", unidentified_spp$number),
+                                              "Count represents approximate value", 
+                                              unidentified_spp$measurementRemarks)
+unidentified_spp$number <- ifelse(grepl(">3|~3", unidentified_spp$number), "3", unidentified_spp$number)
+```
+
+```{r, eval = FALSE}
 
 # Some species reflect a lifestage rather than a species, and for these records the lifestage in a separate column:
 bongo2019_taxa <- bongo2019_taxa %>%
@@ -685,9 +711,9 @@ bongo_bottomdepth <- bongo %>%
   mutate(measurementTypeID = case_when(
     measurementType == "seafloor depth" ~ "http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/"),
         measurementUnit = case_when(
-    measurementType == "seafloor depth" ~ "m"),
+    measurementType == "seafloor depth" ~ "meter"),
         measurementUnitID = case_when(
-    measurementUnit == "m" ~ "http://vocab.nerc.ac.uk/collection/P06/current/ULAA/")) %>%
+    measurementUnit == "meter" ~ "http://vocab.nerc.ac.uk/collection/P06/current/ULAA/")) %>%
   select(eventID, measurementID, measurementType, measurementTypeID, measurementValue, 
          measurementUnit, measurementUnitID)
 ```
@@ -759,38 +785,56 @@ bongo_instrument <- bongo_instrument %>%
          measurementValueID, measurementUnit, measurementUnitID)
 ```
 
+Save measurements and facts related to the sampling effort and instrument in a separate eMOF extension:
+
+``` {r, eval = FALSE}
+bongo_samplingmethod <- bind_rows(bongo_bottomdepth, bongo_sampling, 
+                                     bongo_instrument)
+write_csv(bongo_samplingmethod, here("Bongo", "tidy_data", "bongo2019_emof_samplingmethod.csv"))
+```
 Though an occurrenceID was not created for each data entry, measurements can be linked either directly to the `eventID` or to the `occurrenceID`. The following measurements are linked to either the `eventID` or `occurrenceID`: `length_mm`, `length_type`, and `weight_mg`. 
 
 We first create the eMoF table that links directly to the `eventID`. First we have to filter for all the data entries for which no `occurrenceID` has been created. In other words, the dataframe of unidentified_spp:
 
 ``` {r eMoF, eval = FALSE}
 # Upon visual inspection of the bongo_emof dataset, this does include only data entries for species that have not been identified to a species or genus level, including the species that's only listed as 'size_fraction'. 
-
 bongo_emof <- unidentified_spp %>%
   select(eventID = sample, 
          length = length_mm,
+         individualCount = number,
+         minimumLength,
+         maximumLength,
          weight = weight_mg,
-         length_type) %>%
+         length_type, measurementRemarks) %>%
   mutate_all(as.character) %>%
   pivot_longer(cols = length:length_type,
                names_to = "measurementType",
                values_to = "measurementValue") %>%
   mutate(measurementID = case_when(
       measurementType == "length" ~ paste(eventID, "length", sep = ":"),
+      measurementType == "individualCount" ~ paste(eventID, "count", sep = ":"),
       measurementType == "length_type" ~ paste(eventID, "length_type", sep = ":"),
-      measurementType == "weight" ~ paste(eventID, "weight", sep = ":")),
+      measurementType == "weight" ~ paste(eventID, "weight", sep = ":"),
+      measurementType == "minimumLength" ~ paste(eventID, "minLength", sep = ":"),
+      measurementType == "maximumLength" ~ paste(eventID, "maxLength", sep = ":")),
     measurementTypeID = case_when(
       measurementType == "length" ~ "http://vocab.nerc.ac.uk/collection/S06/current/S0600015/",
       # I want to check if maybe there is a better Controlled Vocab for body size
+      measurementType == "individualCount" ~ "http://vocab.nerc.ac.uk/collection/P01/current/OCOUNT01/",
       measurementType == "length_type" ~ "http://vocab.nerc.ac.uk/collection/P01/current/OBSINDLX/",
+      measurementType == "minimumLength" ~ "http://vocab.nerc.ac.uk/collection/P01/current/OBSMINLX/",
+      measurementType == "maximumLength" ~ "http://vocab.nerc.ac.uk/collection/P01/current/OBSMAXLX/",
       measurementType == "weight" ~ "http://vocab.nerc.ac.uk/collection/S06/current/S0600087/"), 
     measurementUnit = case_when(
-      measurementType == "length" ~ "mm",
-      measurementType == "weight" ~ "mg"), 
+      measurementType == "length" ~ "millimeter",
+      measurementType == "individualCount" ~ "individuals",
+      measurementType == "minimumLength" ~ "millimeter",
+      measurementType == "maximumLength" ~ "millimeter",
+      measurementType == "weight" ~ "milligram"), 
     measurementUnitID = case_when(
       measurementUnit == "individuals" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UUUU/", 
-      measurementUnit == "mm" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UXMM/",
-      measurementUnit == "mg" ~ "http://vocab.nerc.ac.uk/collection/P06/current/MGRM/"))
+      measurementUnit == "millimeter" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UXMM/",
+      measurementUnit == "milligram" ~ "http://vocab.nerc.ac.uk/collection/P06/current/MGRM/"))
 ```
 
 When the species or genus has been identified, the measurements are associated to the `occurrenceID`.  
@@ -812,7 +856,6 @@ Within this dataframe, there are still the data entries that have a length measu
 
 ``` {r, eval = FALSE}
 range <- bongo_emof2 %>%
-  # bongo_emof2 needs to be replaced with a table that contains the occurrenceIDs!!
   filter(grepl("-", bongo_emof2$length)) %>%
   separate(length, c("minimumLength", "maximumLength")) %>%
   mutate(length = NA)
@@ -825,6 +868,15 @@ temp <- bongo_emof2[ -grep("-", bongo_emof2$length), ] %>%
          maximumLength = NA)
 
 bongo_emof2 <- rbind(range, temp)
+
+# In this dataframe, there are reported numbers that indicate a minimum number counted (i.e. >1). This will be reported in measurementRemarks:
+bongo_emof2$measurementRemarks <- ifelse(grepl(">", bongo_emof2$individualCount), "Count value represents a minimum", NA)
+bongo_emof2$individualCount <- gsub(">", "", bongo_emof2$individualCount)
+
+# Additionally, there are reported values under "length" that indicate a minimum length (i.e. >4mm):
+bongo_emof2$minimumLength <- ifelse(grepl(">4mm", bongo_emof2$length), "4", bongo_emof2$minimumLength)
+bongo_emof2$minimumLength <- ifelse(grepl(">2mm", bongo_emof2$length), "2", bongo_emof2$minimumLength)
+bongo_emof2$length <- gsub(">", NA, bongo_emof2$length)
 ```
 
 So now we have a dataframe where:
@@ -866,7 +918,7 @@ bongo_emof2 <- bongo_emof2 %>% filter(measurementValue != "NA") %>% drop_na(meas
 As there were also comments in the dataset, we have to make sure we include those in the measurementOrFact extension, as they might be important to the measurements. Additionally, as there is NERC vocabulary for the different length types in this dataset, we include this column in the measurementRemarks, alongside the original notes. 
 
 ``` {r measurementRemarks, eval = FALSE}
-bongo_measurementRemarks <- bongo %>%
+bongo_measurementRemarks <- bongo2019_taxa %>%
   select(eventID = sample, length_type, notes)
 bongo_measurementRemarks <- bongo_measurementRemarks %>%
   mutate(notes = paste(notes, "Length type", sep = ". "),
@@ -874,12 +926,17 @@ bongo_measurementRemarks <- bongo_measurementRemarks %>%
 
 # As not all data entries had a comment, some were left with NA. This string needs to be removed.
 bongo_measurementRemarks$notes <- gsub("NA. ", "", bongo_measurementRemarks$notes)
-bongo_measurementRemarks <-  bongo_measurementRemarks %>%
-  select(eventID, notes) %>% 
-  pivot_longer(cols = notes, values_to = "measurementRemarks") %>%
-  mutate(measurementID = case_when(
-    name == "notes" ~ paste(eventID, "notes", sep = ":"))) %>%
-  select(measurementID, measurementRemarks)
+bongo_measurementRemarks <- bongo_measurementRemarks %>%
+  rename(measurementRemarks = notes) %>%
+  select(-length_type) %>%
+  distinct()
+
+# Save measurements (eMOF) related to the length and weight measurements:
+bongo_study1 <- bind_rows(bongo_emof, bongo_emof2)  
+bongo_study1 <- merge(bongo_study1, bongo_measurementRemarks,
+                      by = c("eventID", "measurementRemarks"), all = T)
+
+write_csv(bongo_study1, here("Bongo", "tidy_data", "bongo2019_emof_study1.csv"))
 ```
 
 The second eMOF extension we create is for the abundance / community analysis study, which is from the bongo2019_abun dataframe. Need to figure out whether individualCount and the total individualCount. 
@@ -944,7 +1001,7 @@ bongo_emof_abun <- bongo2019_abun %>%
       measurementValue == "<0.5mm|<1mm|1mm" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1152/"))
 
 # Make sure the folder path exists already (e.g. ./Bongo/tidy_data)
-write_csv(bongo_emof_abun, here("Bongo", "tidy_data", "bongo2019_emof_abun.csv"))
+write_csv(bongo_emof_abun, here("Bongo", "tidy_data", "bongo2019_emof_study2.csv"))
 ```
 
 Finally, join all the tables together to form the measurementOrFact extension, and save it locally and on GoogleDrive: 
@@ -952,8 +1009,9 @@ Finally, join all the tables together to form the measurementOrFact extension, a
 ``` {r bongo_measurementOrFact Core, eval = FALSE}
 bongo_measurementOrFact <- bind_rows(bongo_bottomdepth, bongo_sampling, 
                                      bongo_instrument, bongo_emof, bongo_emof2,
-                                     bongo_emof_abun) %>%
-  left_join(bongo_measurementRemarks) %>%
+                                     bongo_emof_abun)
+bongo_measurementOrFact <- merge(bongo_measurementOrFact, bongo_measurementRemarks,
+                                 by = c("eventID", "measurementRemarks"), all = T) %>%
   select(
     eventID,
     occurrenceID,
@@ -964,11 +1022,19 @@ bongo_measurementOrFact <- bind_rows(bongo_bottomdepth, bongo_sampling,
     measurementValueID,
     measurementUnit,
     measurementUnitID,
-    measurementRemarks)
+    measurementRemarks) %>% distinct()
 
 # If you want to change the order of the eventID, use:
 bongo_measurementOrFact <- bongo_measurementOrFact[mixedorder(as.character(bongo_measurementOrFact$eventID)),]
-# I personally like this to QC my data manually. 
+
+# After manual inspection of the bongo_measurementOrFact extension: 
+# remove rows where measurementValue is NA or NA: 
+bongo_measurementOrFact <- bongo_measurementOrFact[!(bongo_measurementOrFact$measurementValue == "NA") | 
+                                                   !(bongo_measurementOrFact$measurementValue == "ND"),]
+
+# If measurementValue is NA AND measurementRemarks is NA, these rows need to be omitted as well:
+bongo_measurementOrFact <- bongo_measurementOrFact[!with(bongo_measurementOrFact, is.na(measurementValue) & 
+                                                           is.na(measurementRemarks)),]
 
 # Make sure the folder path exists already (e.g. ./Bongo/tidy_data)
 write_csv(bongo_measurementOrFact, here("Bongo", "tidy_data", "bongo_emof.csv"))
