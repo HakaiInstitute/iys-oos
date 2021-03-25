@@ -900,7 +900,19 @@ bongo_emof2 <- bongo_emof2 %>%
     measurementUnitID = case_when(
       measurementUnit == "individuals" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UUUU/",
       measurementUnit == "millimeter" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UXMM/",
-      measurementUnit == "milligram" ~ "http://vocab.nerc.ac.uk/collection/P06/current/MGRM/"))
+      measurementUnit == "milligram" ~ "http://vocab.nerc.ac.uk/collection/P06/current/MGRM/"),
+    measurementValueID = case_when(
+      measurementValue == "Solitary" ~ " ",
+      measurementValue == "Crab zoea" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1137/",
+      measurementValue == "2.0" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S117/",
+      measurementValue == "CV" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1112/",
+      measurementValue == "Larvae" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1128/",
+      measurementValue == "juvenile" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1127/",
+      measurementValue == "adult" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1116/",
+      measurementValue == "Veliger" ~ " ",
+      measurementValue == "Hydromedusae" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1126/",
+      measurementValue == "female" ~ "http://vocab.nerc.ac.uk/collection/S10/current/S102/"
+    ))
 
 # There are fields under measurementValue that are "NA" or NA. These need to be removed from the eMOF extension.
 bongo_emof2 <- bongo_emof2 %>% filter(measurementValue != "NA") %>% drop_na(measurementValue)
