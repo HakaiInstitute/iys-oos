@@ -5,21 +5,21 @@ IYS:GoA2019_Stn1,sampling station,IYS:GoA2019,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,H
 IYS:GoA2019_Stn2,sampling station,IYS:GoA2019,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
 IYS:GoA2019_Stn3,sampling station,IYS:GoA2019,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
 IYS:GoA2019_Stn4,sampling station,IYS:GoA2019,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
-IYS:GoA2019_Stn5,sampling station,IYS:GoA2019,"Flow out was written '4600259', assuming extra '0' was a typo",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
+IYS:GoA2019_Stn5,sampling station,IYS:GoA2019,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
 IYS:GoA2019_Stn6,sampling station,IYS:GoA2019,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
 IYS:GoA2019_Stn7,sampling station,IYS:GoA2019,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
-IYS:GoA2019_Stn8,sampling station,IYS:GoA2019,Lots of phytoplankton,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
+IYS:GoA2019_Stn8,sampling station,IYS:GoA2019,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
 IYS:GoA2019_Stn9,sampling station,IYS:GoA2019,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
 IYS:GoA2019_Stn10,sampling station,IYS:GoA2019,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
-IYS:GoA2019_Stn11,sampling station,IYS:GoA2019,Crustaceans (especially copepods and krill) were really damaged,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
+IYS:GoA2019_Stn11,sampling station,IYS:GoA2019,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
 IYS:GoA2019_Stn12,sampling station,IYS:GoA2019,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
-IYS:GoA2019_Stn13,sampling station,IYS:GoA2019,"Label says 10x N. cristatus, 2x S. similis, 2x T. spinifera removed from sample; cruisebook says that these flowmeter values were from the SF/frozen bongo, but this was on sample label",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
-IYS:GoA2019_Stn14,sampling station,IYS:GoA2019,Label says 13 Neocalanus sp. C5 removed,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
-IYS:GoA2019_Stn15,sampling station,IYS:GoA2019,"Label said year was 2018, typo",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
-IYS:GoA2019_Stn16,sampling station,IYS:GoA2019,Conflicting dates on lid and label (25 vs 26) - likely 26,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
-IYS:GoA2019_Stn17,sampling station,IYS:GoA2019,Assuming full sample,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
+IYS:GoA2019_Stn13,sampling station,IYS:GoA2019,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
+IYS:GoA2019_Stn14,sampling station,IYS:GoA2019,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
+IYS:GoA2019_Stn15,sampling station,IYS:GoA2019,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
+IYS:GoA2019_Stn16,sampling station,IYS:GoA2019,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
+IYS:GoA2019_Stn17,sampling station,IYS:GoA2019,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
 IYS:GoA2019_Stn18,sampling station,IYS:GoA2019,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
-IYS:GoA2019_Stn19,sampling station,IYS:GoA2019,Label says Beroe sp. (75mm) removed,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
+IYS:GoA2019_Stn19,sampling station,IYS:GoA2019,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
 IYS:GoA2019_Stn20,sampling station,IYS:GoA2019,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
 IYS:GoA2019_Stn21,sampling station,IYS:GoA2019,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
 IYS:GoA2019_Stn22,sampling station,IYS:GoA2019,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
@@ -32,35 +32,35 @@ IYS:GoA2019_Stn28,sampling station,IYS:GoA2019,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,
 IYS:GoA2019_Stn29,sampling station,IYS:GoA2019,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
 IYS:GoA2019_Stn30,sampling station,IYS:GoA2019,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
 IYS:GoA2019_Stn31,sampling station,IYS:GoA2019,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
-IYS:GoA2019_Stn32,sampling station,IYS:GoA2019,Label says flowmeter jammed; tons of larvacean housing/phytoplankton,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
-IYS:GoA2019_Stn33,sampling station,IYS:GoA2019,Label says 6 salps removed,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
+IYS:GoA2019_Stn32,sampling station,IYS:GoA2019,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
+IYS:GoA2019_Stn33,sampling station,IYS:GoA2019,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
 IYS:GoA2019_Stn34,sampling station,IYS:GoA2019,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
 IYS:GoA2019_Stn35,sampling station,IYS:GoA2019,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
-IYS:GoA2019_Stn39,sampling station,IYS:GoA2019,Label says 9 N. cristatus C5 removed for SP (not in metadata),NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
+IYS:GoA2019_Stn39,sampling station,IYS:GoA2019,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
 IYS:GoA2019_Stn36,sampling station,IYS:GoA2019,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
 IYS:GoA2019_Stn37,sampling station,IYS:GoA2019,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
 IYS:GoA2019_Stn38,sampling station,IYS:GoA2019,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
 IYS:GoA2019_Stn40,sampling station,IYS:GoA2019,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
-IYS:GoA2019_Stn41,sampling station,IYS:GoA2019,Label says 9 N. cristatus C5 removed for SP (not in metadata),NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
-IYS:GoA2019_Stn42,sampling station,IYS:GoA2019,Label says 6 N. cristatus C5 removed for SP (not in metadata),NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
-IYS:GoA2019_Stn43,sampling station,IYS:GoA2019,Label says 9 N. cristatus C5 removed for SP (not in metadata),NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
+IYS:GoA2019_Stn41,sampling station,IYS:GoA2019,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
+IYS:GoA2019_Stn42,sampling station,IYS:GoA2019,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
+IYS:GoA2019_Stn43,sampling station,IYS:GoA2019,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
 IYS:GoA2019_Stn44,sampling station,IYS:GoA2019,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
-IYS:GoA2019_Stn45,sampling station,IYS:GoA2019,Label says 9 N. cristatus C5 removed for SP (not in metadata),NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
-IYS:GoA2019_Stn46,sampling station,IYS:GoA2019,Tons of larvacean housing,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
-IYS:GoA2019_Stn47,sampling station,IYS:GoA2019,Tons of larvacean housing,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
+IYS:GoA2019_Stn45,sampling station,IYS:GoA2019,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
+IYS:GoA2019_Stn46,sampling station,IYS:GoA2019,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
+IYS:GoA2019_Stn47,sampling station,IYS:GoA2019,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
 IYS:GoA2019_Stn48,sampling station,IYS:GoA2019,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
 IYS:GoA2019_Stn49,sampling station,IYS:GoA2019,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
 IYS:GoA2019_Stn50,sampling station,IYS:GoA2019,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
 IYS:GoA2019_Stn51,sampling station,IYS:GoA2019,Bongo cancelled because of weather,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
 IYS:GoA2019_Stn52,sampling station,IYS:GoA2019,Bongo cancelled because of weather,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
 IYS:GoA2019_Stn53,sampling station,IYS:GoA2019,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
-IYS:GoA2019_Stn54,sampling station,IYS:GoA2019,Label says 12mm Primno pacifica removed (not in metadata),NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
+IYS:GoA2019_Stn54,sampling station,IYS:GoA2019,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
 IYS:GoA2019_Stn55,sampling station,IYS:GoA2019,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
-IYS:GoA2019_Stn56,sampling station,IYS:GoA2019,Conflicting dates on lid and label (lid says 13/02/19) - likely March,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
+IYS:GoA2019_Stn56,sampling station,IYS:GoA2019,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
 IYS:GoA2019_Stn57,sampling station,IYS:GoA2019,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
-IYS:GoA2019_Stn58,sampling station,IYS:GoA2019,Pneumatophore siphonophores observed in sample but none in subsample,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
+IYS:GoA2019_Stn58,sampling station,IYS:GoA2019,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
 IYS:GoA2019_Stn59,sampling station,IYS:GoA2019,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
-IYS:GoA2019_Stn60,sampling station,IYS:GoA2019,Tons of larvacean housing,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
+IYS:GoA2019_Stn60,sampling station,IYS:GoA2019,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,HumanObservation,EPSG:4326
 IYS:GoA2019_Stn1:bongo:Net1,bongo net cast,IYS:GoA2019_Stn1,cast,2019-02-18T21:30:00Z,2019,2,18,48.301166666666667,-128.52266666666668,250,250,POINT  ( -128.52266666666668   48.301166666666667 ),0,HumanObservation,EPSG:4326
 IYS:GoA2019_Stn1:bongo:Net2,bongo net cast,IYS:GoA2019_Stn1,cast,2019-02-18T21:30:00Z,2019,2,18,48.301166666666667,-128.52266666666668,250,250,POINT  ( -128.52266666666668   48.301166666666667 ),0,HumanObservation,EPSG:4326
 IYS:GoA2019_Stn2:bongo:Net1,bongo net cast,IYS:GoA2019_Stn2,cast,2019-02-19T07:05:00Z,2019,2,19,48.18333333333333,-129.91666666666666,250,250,POINT  ( -129.91666666666666   48.18333333333333 ),0,HumanObservation,EPSG:4326

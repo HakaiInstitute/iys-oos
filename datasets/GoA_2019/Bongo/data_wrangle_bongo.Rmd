@@ -80,16 +80,6 @@ bongo_fnl <- read_excel(here("Bongo", "raw_data",
 bongo_fnl$year <- as.numeric(format(as.Date(bongo_fnl$dateTime), "%Y"))
 bongo_fnl$month <- as.numeric(format(as.Date(bongo_fnl$dateTime), "%m"))
 bongo_fnl$day <- as.numeric(format(as.Date(bongo_fnl$dateTime), "%d"))
-
-bongo_eventRemarks <- read_excel(here("Bongo", "raw_data",
-                                      "IYS zooplankton taxonomy sample metadata 20210115.xlsx"), sheet = "Metadata") %>%
-  mutate(project = "IYS",
-         cruise = paste(project, "GoA2019", sep = ":"),
-         station = paste(cruise, Station, sep = "_Stn")) %>%
-  rename(eventRemarks = Notes) %>%
-  filter(Cruise == "IYS 2019") %>%
-  select(eventID = station, 
-         eventRemarks) 
 ```
 
 Dataframes are created for each unique `eventID` layer (cruise, station, cast), with unique associated columns. Eventually, the data frames get joined, and the event table gets saved locally and in Google Drive. A visual diagram of the structure of the Bongo dataset is provided [here](https://app.diagrams.net/#G1YG5AVLwawocrr18XwbZG-1mDwwcc4ewM). For the Event Core, most of the information for the unique layers can come from the `bongo_fnl` dataframe, whereas information pertaining specifically to the sample_ids will have to come from the `bongo` dataframe. 
@@ -115,12 +105,12 @@ bongo_cruise <- bongo_fnl %>%
 bongo_station <- bongo_fnl %>%
   select(eventID = station,
          parentEventID = cruise) %>%
-  mutate(type = "sampling station")
-
-bongo_station <- full_join(bongo_station, bongo_eventRemarks, by = "eventID") %>%
-  distinct(eventID, .keep_all = TRUE) %>% 
-  mutate(eventRemarks = ifelse(eventID == "IYS:GoA2019_Stn51", "Bongo cancelled because of weather", eventRemarks),
-         eventRemarks = ifelse(eventID == "IYS:GoA2019_Stn52", "Bongo cancelled because of weather", eventRemarks))
+  mutate(type = "sampling station") %>%
+  distinct(eventID, .keep_all = TRUE)
+bongo_station <- bongo_station %>%
+  mutate(eventRemarks = ifelse(grepl("IYS:GoA2019_Stn51", bongo_station$eventID), "Bongo cancelled because of weather", 
+                               ifelse(grepl("IYS:GoA2019_Stn52", bongo_station$eventID), "Bongo cancelled because of weather",
+                                      NA)))
 
 bongo_cast <- bongo_fnl %>%
   select(eventID = cast,
@@ -792,6 +782,7 @@ bongo_samplingmethod <- bind_rows(bongo_bottomdepth, bongo_sampling,
                                      bongo_instrument)
 write_csv(bongo_samplingmethod, here("Bongo", "tidy_data", "bongo2019_emof_samplingmethod.csv"))
 ```
+
 Though an occurrenceID was not created for each data entry, measurements can be linked either directly to the `eventID` or to the `occurrenceID`. The following measurements are linked to either the `eventID` or `occurrenceID`: `length_mm`, `length_type`, and `weight_mg`. 
 
 We first create the eMoF table that links directly to the `eventID`. First we have to filter for all the data entries for which no `occurrenceID` has been created. In other words, the dataframe of unidentified_spp:
