@@ -47,34 +47,40 @@ Current problem: Multiple individuals of the same species were caught in a singl
 
 </div>
 
+**Solution:** After contacting Aleksey Somov (TINRO), he mentioned that salmon were divided by species and size grouped (10 cm). Hence, if a row or record indicates that multiple stomachs were analyzed, these stomachs belonged to salmonids in the same size group. 
+
 ``` {r data wrangle, eval = FALSE}
-salmon <- read_excel(here("datasets", "GoA_2019", "Salmon Diet", "raw_data", 
+salmon <- read_excel(here("Salmon Diet", "raw_data", 
                        "GoA_fish diets_cleaned.xlsx"), 
                   sheet = "Diets_clean") %>%
   janitor::clean_names() %>%
   mutate(project = "IYS",
-         cruise = paste(project, "GoA2019", sep = "_"),
+         cruise = paste(project, "GoA2019", sep = ":"),
          station = paste(cruise, trawl, sep="_Stn"),
-         trawl = paste(station, "trawl1", sep=":")
+         trawl = paste(station, "trawl", sep=":")
   )
 ```
 
-No metadata is mentioned in the Salmon Diet data as to when and where the trawls took place. To connect coordinates, date and time to the `eventIDs` this information is taken from the Fish Trawl Abundance or Bridgelog datasheet. Right now I am saving both these files in the Salmon Diet folder, but once all folders and scripts have been QC'd the location/time can be read straight from the Trawl-specific folder. For now, I'm afraid it would cause confusion when committing/pushing to GitHub, as I do not have a finalized version of these datasheets yet. 
+No metadata is mentioned in the Salmon Diet data as to when and where the trawls took place. To connect coordinates, date and time to the `eventIDs` this information is taken from the Fish Trawl Abundance or Bridgelog datasheet.  
 
 ``` {r salmon_datetime, eval = FALSE}
-drive_download(file = "https://docs.google.com/spreadsheets/d/1rtT6L5WSi_UiiXfoS95wnDqA8loc959T/edit#gid=668595086", 
+drive_download(file = "https://docs.google.com/spreadsheets/d/1Teh8Lcj3vCxocB2HPso19XYrZvCUspFt/edit#gid=1038314498", 
                path = here::here("Salmon Diet", "raw_data", 
-                                 "2019_GoA_Fish_data_Hakai.xlsx"),
+                                 "2019_GoA_Metadata.xlsx"),
                overwrite = TRUE)
 
-trawl <- read_excel(here("datasets", "GoA_2019", "Salmon Diet", "raw_data", 
-                         "2019_GoA_Fish_data_Hakai.xlsx")) %>%
-  mutate(eventDate = format_iso_8601(as.POSIXct(UTC_start)),
-         eventDate = str_replace(eventDate, "\\+00:00", "Z")) %>%
-  mutate(station = paste("GoA2019", NUMBER, sep = "_Stn"))
+trawl <- read_excel(here("Salmon Diet", "raw_data", 
+                         "2019_GoA_Metadata.xlsx"), sheet = "BRIDGE_LOG_FINAL") %>%
+  mutate(eventDate = as.Date(EVENT_DATE, format = "%Y-%m-%d")) %>%
+  mutate(project = "IYS",
+         cruise = paste(project, "GoA2019", sep = ":"),
+         station = paste(cruise, TOW_NUMBER, sep = "_Stn"),
+         trawl = paste(station, "trawl", sep = ":"))
 ```
 
-**Please note that the date and coordinates could change as the trawl data is not finalized.** From an NPAFC document () we gather that the trawling was conducted at surface level, to a depth of 30 meters (confirm!). 
+***
+
+Creating the Event Core:
 
 ``` {r salmondiet_event, eval = FALSE}
 salmon_project <- salmon %>%
@@ -91,103 +97,50 @@ salmon_station <- salmon %>%
          parentEventID = cruise) %>% 
   distinct(eventID, .keep_all = TRUE) 
 
+# From the bridgelog data get the trawl coordinates. First convert the end longitude to negatives:
+trawl <- trawl %>% mutate(END_LONGITUDE_DD = END_LONGITUDE_DD * -1)
+trawl2019_coordinates <- trawl %>%
+  select(eventID = trawl,
+         eventDate,
+         START_LATITUDE_DD,
+         longitude,
+         END_LATITUDE_DD,
+         END_LONGITUDE_DD) %>%
+  mutate(footprintWKT = paste("LINESTRING (", longitude, START_LATITUDE_DD, ",", 
+                              END_LONGITUDE_DD, END_LATITUDE_DD, ")"))
+
+trawl2019_linestring <- obistools::calculate_centroid(trawl2019_coordinates$footprintWKT)
+trawl2019_linestring <- cbind(trawl2019_coordinates, trawl2019_linestring) %>%
+  select(eventID, eventDate, footprintWKT, decimalLatitude, decimalLongitude, coordinateUncertaintyInMeters)
+
 # Join date and coordinates to trawl. Remember that the date and coordinates are not from the Salmon Diet data sheet, but from the trawl data sheet. Minimum and maximum depth of the trawl be included here as well if the information becomes available. 
 salmon_trawl <- salmon %>%
-  left_join(select(
-    trawl,
-    station,
-    eventDate,
-    X,
-    Y
-  )) %>%
-  dplyr::rename(eventID = trawl, 
-                parentEventID = station,
-                decimalLatitude = Y,
-                decimalLongitude = X) %>%
-  mutate(minimumDepthInMeters = 0,
-         maximumDepthInMeters = 30,
-         eventRemarks = "trawl") %>%
-  distinct()
+  rename(eventID = trawl) %>%
+    left_join(trawl2019_linestring, by = "eventID") %>%
+  distinct(eventID, .keep_all = TRUE) %>%
+  select(eventID,
+         parentEventID = station,
+         eventDate, footprintWKT, decimalLatitude, decimalLongitude, coordinateUncertaintyInMeters)
 
-salmon_trawl <- salmon_trawl %>%
-  mutate(footprintWKT = " ")
-salmon_trawl$footprintWKT <- paste0("POINT (", salmon_trawl$decimalLongitude, " ",
-                                     salmon_trawl$decimalLatitude, ")")
-
-# The following bit of code is only necessary if we include salmon individuals in the Event Core, as a layer. 
-
-predator <- salmon_trawl %>%
-  mutate(eventID = paste(eventID, species, sep = ":")) %>%
-  distinct()
-
-predator$id <- " "
-
-for(i in unique(predator$eventID)) {
-  predator$id[predator$eventID == i] <- seq_len(sum(predator$eventID == i))
-}
-
-predator$eventID <- paste(predator$eventID, predator$id, sep = ":")
-
-prey <- predator %>%
-  select(-digested_food) %>%
-  pivot_longer(cols = boreoteuthis_borealis:mictostomus_pacificus,
-               names_to = "prey", 
-               values_to = "presence")
-prey <- prey[!is.na(prey$presence), ] 
-
-for(i in unique(prey$eventID)) {
-  prey$id[prey$eventID == i] <- seq_len(sum(prey$eventID == i))
-}
-
-prey$prey_id <- paste0("pr", prey$id)
-
-spp_occ <- full_join(predator, prey)
-
-salmon_sample <- spp_occ %>%
-  dplyr::select(eventID,
-                parentEventID,
-                eventDate,
-                decimalLatitude,
-                decimalLongitude
-                ) 
-
-#salmon_sample <- salmon_sample %>% dplyr::select(-decimalLatitude, -decimalLongitude)
-
-#coordinates <- obistools::calculate_centroid(salmon_sample$footprintWKT)
-#salmon_sample <- cbind(salmon_sample, coordinates)
-
-# The Salmon Diet data does not include information as to at what depths the trawls were conducted. Currently I believe this information is also not present in the general Trawl data. Should this information become available it should be connected to the general trawl information, along with info such as: volume water filter, speed at which the vessel was traveling during trawl, starting & finish lat/longs of trawl.
-```
-
-***
-
-<style>
-div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 10px;}
-</style>
-<div class = "blue">
-The current dilemma I have is that there is no unique `sampleID` associated with each data entry in the salmon diet data. This makes it difficult to properly structure the dataset. The option we can have chosen is the following:
-
-We connect the stomach content (prey) to the `occurrenceID` of the salmon individual through the `associatedTaxa` column. In doing so, we combine two occurrence tables within a single Occurrence Core.
-</div>
-
-Currently the data is reformatted data is structured as shown in **option A**. However, the data standardization is an evolving process so the structure might change. 
-
-***
-
-``` {r, eval = FALSE}
-
-# If we treat every salmon entry for which the stomach has been removed and examined as a sampling event, we essentially treat the salmon like a sampling instrument of their direct surroundings! 
+# maximum depth can be calculated from the bridgelog data: 
+maximumDepth <- trawl %>% select(eventID = trawl, maximumDepthInMeters = MOUTH_OPENING_WIDTH)
+salmon_trawl <- left_join(salmon_trawl, maximumDepth, by = "eventID") %>%
+    mutate(minimumDepthInMeters = 0) 
 
 # To connect them all together: 
-salmon_event <- bind_rows(salmon_cruise,salmon_station,salmon_trawl) %>%
+salmondiet_event <- bind_rows(salmon_project, salmon_cruise, salmon_station, salmon_trawl) %>%
   dplyr::select(eventID, parentEventID, eventDate, decimalLatitude, decimalLongitude, footprintWKT,
-                minimumDepthInMeters, maximumDepthInMeters, eventRemarks) %>%
+                minimumDepthInMeters, maximumDepthInMeters) %>%
   mutate(type = "HumanObservation",
          geodeticDatum = "EPSG:4326",
          samplingProtocol = " ")
 
+salmondiet_event$year <- as.numeric(format(as.Date(salmondiet_event$eventDate), "%Y"))
+salmondiet_event$month <- as.numeric(format(as.Date(salmondiet_event$eventDate), "%m"))
+salmondiet_event$day <- as.numeric(format(as.Date(salmondiet_event$eventDate), "%d"))
+
 # Make sure the folder path exists already (e.g. ./Salmon Diet/tidy_data)
-write_csv(salmon_event, here("Salmon Diet", "tidy_data", "salmon_event.csv"))
+write_csv(salmondiet_event, here("Salmon Diet", "tidy_data", "salmondiet_event.csv"))
 drive_upload(here("Salmon Diet", "tidy_data", "salmon_event.csv"),
              path = "https://drive.google.com/drive/u/0/folders/1pGd2cuvdb25QX7CGm2wC81Emh5O-LdbR",
              name = "salmon_event.csv",
