@@ -156,86 +156,151 @@ div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 10px;}
 How do the scientists know which individual the stomach content belong to, asides from their data?
 </div>
 
-The Occurrence core connected to each salmon stomach examined consists of the occurrences of prey species consumed by the salmon species at each station. The measurement attached to these unique occurrences is the mass (g) of each prey species consumed. Each prey species will receive their own unique URN from [WoRMS](http://www.marinespecies.org/), if identified.
+**Answer**: They can't. Stomach contents of given species/size groups are combined and analyzed together, which allows to process samples rapidly. In 2019 and 2020 they did group analysis of stomach but did not physically mix the content. They put the food from different stomachs of each size group on a tray individually in separate piles. Once the prey composition was assessed, they put the individual piles of food into labelled zip-bags. Individual stomach analysis is perhaps done somewhere in a Canadian lab?
 
-As all the prey species are listed as columns, we first have to investigate all the unique prey species consumed, as these will get their associated WoRMS URN. There is also a column `digested_food` which will not have an associated URN, as it likely reflects unidentified prey species consumed -- this will have to be confirmed! This column will get added as a measurement linking directly to the salmon (Event Core). 
+The Occurrence extension connected to each record consists of the occurrences of prey species consumed by the salmon species from each size class (10cm) at each station. The measurement attached to these unique records is the mass (g) of each prey species consumed. Each prey species will receive their own unique URN from [WoRMS](http://www.marinespecies.org/), if identified.
 
-``` {r prey_occurrence, eval = FALSE}
-# Create prey_id for each prey species in the stomach:
-prey_occ <- prey %>%
-  dplyr::select(eventID, prey, presence) %>%
-  dplyr::rename(scientificName = prey) %>%
+First, we create a table for the predator records (salmon). We will create pred_ids as at some stations there are multiple records of a single species. The difference in these records is the size of the salmon, which are grouped by 10cm size class. Each salmon record within a station will have a unique number attached to it. 
+
+``` {r predator occurrence, eval = FALSE}
+predator <- salmon %>%
+  rename(eventID = trawl) %>%
+  distinct()
+
+predator$pred_id <- " "
+for(i in unique(predator$eventID)) {
+  predator$pred_id[predator$eventID == i] <- seq_len(sum(predator$eventID == i))
+}
+
+# Fix a slight misspelling:
+predator$species <- gsub("tschawytscha", "tshawytscha", predator$species)
+predator_taxa <- worrms::wm_records_names(unique(predator$species)) %>% bind_rows()
+
+predator_occ <- predator %>%
+  select(eventID, species, n_stomachs, pred_id) %>%
+  rename(scientificname = species) %>%
   mutate(occurrenceStatus = "present",
-         occurrenceID = paste(eventID, prey$prey_id, sep = "-"))
+         occurrenceID = paste(eventID, scientificname, sep = ":"),
+         occurrenceID = paste(occurrenceID, pred_id, sep = ":"),
+         occurrenceID = paste(occurrenceID, "p", sep = "-"))
 
-# Perhaps as first step, create new column with correct scientific names. match_taxa from obistools unfortunately cannot be used as some taxa have been abbreviated and contain underscores, making it impossible for the package to accurately search for their records within WoRMS. 
-
-prey_species <- unique(prey_occ$scientificName)
-prey_species_scientificnames <- worrms::wm_records_names(prey_species, marine_only = FALSE)
-prey_species_scientificnames <- dplyr::bind_rows(prey_species_scientificnames)
-
-# Some species are not properly recorded in the dataset (i.e. th_longipes) and therefore are not recognized by the package. Of these species, we create a vector, with the proper names, and run this through the package as well. 
-
-prey_species_scientificnames_manual <- data.frame(scientificName = c("Euphausia pacifica",
-                                                                     "Hyperia",
-                                                                     "Thysanoessa spinifera",
-                                                                     "Thysanoessa inspinata",
-                                                                     "Thysanoessa longipes",
-                                                                     "Vanadis",
-                                                                     "Hormiphora cucumis",
-                                                                     "Microstomus pacificus"))
-
-prey_species_scientificnames_manual <- worrms::wm_records_names(prey_species_scientificnames_manual$scientificName)
-prey_species_scientificnames_manual <- dplyr::bind_rows(prey_species_scientificnames_manual) %>% 
-  filter(status == "accepted")
-
-prey_taxa <- rbind(prey_species_scientificnames, prey_species_scientificnames_manual)
-
-# prey_taxa dataframe contains all the taxonomic information on the prey species consumed. However, given that the scientific names differs in spelling often to what has been recorded in the original data (prey_species), the two dataframes cannot be linked. Therefore, cumbersome, I create a new column within prey_species with the correct spelling. This can also be done in the dataframe directly. 
-
-prey_data <- prey_occ %>%
-  mutate(scientificname = case_when(
-    scientificName == "pisces" ~ "Pisces",
-    scientificName == "tomopteris" ~ "Tomopteris",
-    scientificName == "chuneola_major" ~ "Chuneola major",
-    scientificName == "sergestes_pacificus" ~ "Sergestes pacificus",
-    scientificName == "e_pacifica" ~ "Euphausia pacifica",
-    scientificName == "tarletonbeania_crenularis" ~ "Tarletonbeania crenularis",
-    scientificName == "hyperia_sp" ~ "Hyperia",
-    scientificName == "clione_limacina" ~ "Clione limacina",
-    scientificName == "th_spinifera" ~ "Thysanoessa spinifera",
-    scientificName == "themisto_pacifica" ~ "Themisto pacifica",
-    scientificName == "coelenterata" ~ "Coelenterata",
-    scientificName == "boreoteuthis_borealis" ~ "Boreoteuthis borealis",
-    scientificName == "clio_pyramidata" ~ "Clio pyramidata", 
-    scientificName == "neocalanus_cristatus" ~ "Neocalanus cristatus",
-    scientificName == "limacina_helicina" ~ "Limacina helicina",
-    scientificName == "vanadis_sp" ~ "Vanadis",
-    scientificName == "sagitta_elegans" ~ "Sagitta elegans",
-    scientificName == "salpa_aspera" ~ "Salpa aspera",
-    scientificName == "cyclosalpa" ~ "Cyclosalpa", 
-    scientificName == "th_longipes" ~ "Thysanoessa longipes",
-    scientificName == "primno_macropa" ~ "Primno macropa",
-    scientificName == "chormiphora_cucumis" ~ "Hormiphora cucumis",
-    scientificName == "symbolophorus_californiensis" ~ "Symbolophorus californiensis",
-    scientificName == "okutania_anonycha" ~ "Okutania anonycha",
-    scientificName == "cephalopoda" ~ "Cephalopoda",
-    scientificName == "phronima_sedentaria" ~ "Phronima sedentaria",
-    scientificName == "oikopleura" ~ "Oikopleura",
-    scientificName == "isopoda" ~ "Isopoda",
-    scientificName == "th_inspinata" ~ "Thysanoessa inspinata",
-    scientificName == "mictostomus_pacificus" ~ "Microstomus pacificus"
-  ))
-
-all_prey_data <- left_join(prey_data, prey_taxa, by = "scientificname") %>%
-  select(eventID, occurrenceID, occurrenceStatus, scientificname, lsid, authority, status, rank, parentNameUsageID,
-         kingdom, phylum, class, order, family, genus) %>%
+predator_occ <- left_join(predator_occ, predator_taxa, by = "scientificname") %>%
   rename(scientificName = scientificname,
+         scientificNameID = lsid,
+         organismQuantity = n_stomachs,
          scientificNameAuthorship = authority,
          taxonomicStatus = status,
-         taxonomicRank = rank,
-         scientificNameID = lsid) %>%
-  mutate(basisOfRecord = "HumanObservation")
+         taxonomicRank = rank) %>%
+  mutate(basisOfRecord = "HumanObservation",
+         organismQuantityType = "stomachs") %>%
+  select(eventID, occurrenceID, occurrenceStatus, organismQuantity, organismQuantityType, scientificName, scientificNameID,
+         scientificNameAuthorship, taxonomicStatus, taxonomicRank, kingdom, phylum, class, order, family, genus,
+         basisOfRecord)
+```
+
+
+Next, we create an occurrence table for the prey species (stomach content). As all the prey species are listed as columns, we first have to investigate all the unique prey species consumed, as these will get their associated WoRMS URN. There is also a column `digested_food` which will not have an associated URN, as it reflects unidentified prey species consumed. As there are often multiple species found within the stomach content of a species, we assign these unique identifiers as well (prey_id). They will eventually be linked to the salmon record (with its own unique pred_id):
+
+``` {r prey_occurrence, eval = FALSE}
+prey <- predator %>%
+  select(-digested_food) %>%
+  pivot_longer(cols = boreoteuthis_borealis:mictostomus_pacificus,
+               names_to = "name", 
+               values_to = "presence")
+prey <- prey[!is.na(prey$presence), ] %>%
+  group_by(eventID, species)
+
+for(i in unique(prey$eventID)) {
+  prey$prey_id[prey$eventID == i] <- seq_len(sum(prey$eventID == i))
+}
+
+prey$prey_id <- paste0("pr", prey$prey_id)
+
+# Records that contain _sp will need an identificationQualifier before having this removed from the record:
+prey$identificationQualifier <- ifelse(grepl("_sp", prey$name), "sp. inc.", NA)
+
+prey_occ <- prey %>%
+  mutate(scientificname = case_when(
+    name == "e_pacifica" ~ "Euphausia pacifica",
+    name == "th_spinifera" ~ "Thysanoessa spinifera",
+    name == "th_inspinata" ~ "Thysanoessa inspinata",
+    name == "th_longipes" ~ "Thysanoessa longipes",
+    name == "chormiphora_cucumis" ~ "Hormiphora cucumis",
+    name == "mictostomus_pacificus" ~ "Microstomus pacificus",
+    name == "sergestes_pacificus" ~ "Sergestes pacificus",
+    name == "hyperia_sp" ~ "Hyperia",
+    name == "vanadis_sp" ~ "Vanadis",
+    name == "pisces" ~ "Pisces",
+    name == "tomopteris" ~ "Tomopteris",
+    name == "chuneola_major" ~ "Chuneola major",
+    name == "tarletonbeania_crenularis" ~ "Tarletonbeania crenularis",
+    name == "clione_limacina" ~ "Clione limacina",
+    name == "themisto_pacifica" ~ "Themisto pacifica",
+    name == "coelenterata" ~ "Coelenterata",
+    name == "boreoteuthis_borealis" ~ "Boreoteuthis borealis",
+    name == "clio_pyramidata" ~ "Clio pyramidata", 
+    name == "neocalanus_cristatus" ~ "Neocalanus cristatus",
+    name == "limacina_helicina" ~ "Limacina helicina",
+    name == "sagitta_elegans" ~ "Sagitta elegans",
+    name == "salpa_aspera" ~ "Salpa aspera",
+    name == "cyclosalpa" ~ "Cyclosalpa", 
+    name == "primno_macropa" ~ "Primno macropa",
+    name == "symbolophorus_californiensis" ~ "Symbolophorus californiensis",
+    name == "okutania_anonycha" ~ "Okutania anonycha",
+    name == "cephalopoda" ~ "Cephalopoda",
+    name == "phronima_sedentaria" ~ "Phronima sedentaria",
+    name == "oikopleura" ~ "Oikopleura",
+    name == "isopoda" ~ "Isopoda"
+  ))
+
+prey_species <- worrms::wm_records_names(unique(prey_occ$scientificname, marine_only = FALSE)) %>% bind_rows()
+
+# For reasons unknown to me it can't find Sergestes pacificus (AphiaID: 585590), and duplicates a record for Hyperia. Therefore, I have to make some changes manually: 
+prey_species <- prey_species %>% filter(AphiaID != 835292)
+sergestes_pacificus <- worrms::wm_record(id = 585590)
+prey_species <- rbind(prey_species, sergestes_pacificus)
+
+salmondiet_prey_2019 <- left_join(prey_occ, prey_species, by = "scientificname") %>%
+  select(eventID, 
+        species,
+        scientificName = scientificname, 
+        scientificNameID = lsid, 
+        scientificNameAuthorship = authority, 
+        taxonomicStatus = status, 
+        taxonomicRank = rank, 
+        kingdom, phylum, class, order, family, genus, pred_id, prey_id) %>%
+  mutate(basisOfRecord = "HumanObservation") %>%
+  mutate(occurrenceStatus = "present",
+         occurrenceID = paste(eventID, species, sep = ":"),
+         occurrenceID = paste(occurrenceID, pred_id, sep = ":"),
+         occurrenceID = paste(occurrenceID, prey_id, sep = "-")) %>%
+  select(-prey_id)
+```
+
+Finally, we combine the two occurrence tables, and add a column `associatedTaxa` to indicate that some species were found in the stomach content of another occurrence record (relating to the salmon). Finally, we save the occurrence extension locally and in GoogleDrive. 
+
+``` {r combine occurrence tables, eval = FALSE}
+diet2019_occ <- full_join(predator_occ, salmondiet_prey_2019)
+
+# See if there are any duplicates in occurrenceID:
+duplicates <- diet_data_occ %>% janitor::get_dupes(occurrenceID) 
+
+# To reorder the eventID, use the following code:
+order <- stringr::str_sort(diet2019_occ$occurrenceID, numeric=TRUE)
+diet2019_occ <- diet2019_occ[match(order, diet2019_occ$occurrenceID),]
+
+# Join the event and the occurrence core:
+diet2019_occ$associatedTaxa <- " "
+diet2019_occ$associatedTaxa <- ifelse(grepl("pr", diet2019_occ$occurrenceID), 
+paste('"prey of"', " : ", '"', diet2019_occ$eventID, ":", diet2019_occ$species, ":", diet2019_occ$pred_id, 
+      "-p", '"', sep = ""), "")
+
+diet2019_occ <- diet2019_occ %>%
+  select(eventID, occurrenceID, occurrenceStatus, scientificName, scientificNameID, organismQuantity, organismQuantityType,
+         scientificNameAuthorship, taxonomicRank, taxonomicStatus, kingdom, phylum, class, order, family, genus,
+         basisOfRecord, associatedTaxa)
+
+write_csv(diet2019_occ, here("Salmon Diet", "tidy_data", "diet2019_occ.csv"))
 
 # Make sure the folder path exists already (e.g. ./Salmon Diet/tidy_data)
 write_csv(all_prey_data, here("Salmon Diet", "tidy_data", "salmon_prey_occ.csv"))
@@ -245,118 +310,64 @@ drive_upload(here("Salmon Diet", "tidy_data", "salmon_prey_occ.csv"),
              overwrite = TRUE)
 ```
 
-If we choose option B then the following chunk of code is also needed to create the Occurrence Core specifically for the salmon caught and whose stomach contents have been examined. Somehow through binding rows it duplicates some - I am unsure why. As a result, I've occassionally used distinct() to make sure only unique rows are provided.  
+# measurementOrFact extension
 
-``` {r salmon_occ, eval = FALSE}
-predator$occurrenceID <- paste(predator$eventID, "p", sep = "-")
+We have one salmon diet occurrence extension, where salmon occurrences and their stomach content are linked through the column `associatedTaxa`. In our measurementOrFact extension there is information linked to the salmon records (fork length, mass, number of stomachs analyzed, total food mass, GFI and CFI), and information related to the species-specific weight in the stomach content. From conversation with the data provider, we have learned that salmon were grouped in size classes (10cm). Additionally, if the number of stomachs analyzed is greater than 1, the fork length and mass are the _mean_. 
 
-predator_occ <- predator %>%
-  dplyr::select(eventID, occurrenceID, species,
-                n_stomachs) %>%
-  dplyr::mutate(occurrenceStatus = "present",
-                organismQuantityType = "stomachs") %>%
-  dplyr::rename(scientificname = species,
-                organismQuantity = n_stomachs)
-
-predator_taxa <- unique(predator_occ$scientificname)
-
-# Oncorhynchus tshawytscha was misspelled, so this has to be fixed in both the predator_taxa and predator_occ dataframes:
-predator_occ$scientificname <- gsub("tschawytscha", "tshawytscha", predator_occ$scientificname)
-predator_taxa <- gsub("tschawytscha", "tshawytscha", predator_taxa)
-predator_taxa <- worrms::wm_records_names(predator_taxa)
-predator_taxa <- dplyr::bind_rows(predator_taxa)
-
-predator_occ <- left_join(predator_occ, predator_taxa, by = "scientificname") %>%
-  select(eventID, occurrenceID, occurrenceStatus, valid_name, lsid, organismQuantity, organismQuantityType,
-         authority, status, rank, parentNameUsageID, kingdom, phylum, class, order, family, genus) %>%
-  rename(scientificName = valid_name,
-         scientificNameID = lsid,
-         scientificNameAuthorship = authority,
-         taxonomicStatus = status,
-         taxonomicRank = rank) %>%
-  mutate(basisOfRecord = "HumanObservation")
-
-# Join the two occurrence tables:
-diet_data_occ <- full_join(all_prey_data, predator_occ)
-
-# See if there are any duplicates in occurrenceID:
-duplicates <- diet_data_occ %>% janitor::get_dupes(occurrenceID) # No duplicate combinations found of: occurrenceID
-
-# To reorder the eventID, use the following code:
-order <- stringr::str_sort(diet_data_occ$occurrenceID, numeric=TRUE)
-diet_data_occ <- diet_data_occ[match(order, diet_data_occ$occurrenceID),]
-
-write_csv(diet_data_occ, here("Salmon Diet", "tidy_data", "diet_data_occ.csv"))
-
-# Join the event and the occurrence core:
-salmondiet_event_occ <- left_join(salmon_event, diet_data_occ)
-salmondiet_event_occ$associatedTaxa <- " "
-salmondiet_event_occ$associatedTaxa <- ifelse(grepl("pr", salmondiet_event_occ$occurrenceID), 
-paste('"prey of"', " : ", '"', salmondiet_event_occ$eventID, "-p", '"', sep = ""), "")
-salmondiet_event_occ <- salmondiet_event_occ %>%
-  mutate(institutionCode = " ",
-         collectionCode = " ",
-         catalogNumber = " ",
-         preparations = " ") %>%
-  distinct() # Had to apply distinct() because somehow the occurrenceID got duplicates for the samples. 
-
-write_csv(salmondiet_event_occ, here("Salmon Diet", "tidy_data", "salmondiet_event_occ.csv"))
-
-# Make sure the folder path exists already (e.g. ./Salmon Diet/tidy_data)
-write_csv(salmon_spp_occ, here("Salmon Diet", "tidy_data", "salmon_spp_occ.csv"))
-drive_upload(here("Salmon Diet", "tidy_data", "salmon_spp_occ.csv"),
-             path = "https://drive.google.com/drive/u/0/folders/1pGd2cuvdb25QX7CGm2wC81Emh5O-LdbR",
-             name = "salmon_spp_occ.csv",
-             overwrite = TRUE)
-```
-
-# measurementOrFact Core
-
-So even though we (currently) have one Occurrence Core for Salmon Diet data, there are two measurement Or Fact tables, one linking directly to the salmon (Event) and the other linking to the stomach content (prey occurrence). Let's start with the first extended measurement Or Fact Core, where we associate measurements of `fork length`, `mass`, `food mass`, `gut fullness index (GFI)`, `N stomachs`, `CFI` and possibly `digested food (unidentified)` to the salmon examined. 
-
-To do: make sure that the measurementID contains also the number associated to the salmon individual (i.e. Oncorhynchus nerka:1), because as sometimes multiple species within a specific trawl have had their stomach content examined, it should be clear from the measurementID which individual e.g. forklegtn or mass is assigned to. 
+**Current data limitation: I don't know where to assign the digested food (unidentified) to, and consequently have not included this in the measurementOrFact table**. 
 
 ``` {r, eval = FALSE}
 salmon_spp_measurement <- predator %>%
   select(eventID,
+         species,
+         n_stomachs,
+         pred_id,
          fl_cm:cfi_percent_adj,
          digested_food) %>%
+  mutate(occurrenceID = paste(eventID, species, sep = ":"),
+         occurrenceID = paste(occurrenceID, pred_id, sep = ":"),
+         occurrenceID = paste(occurrenceID, "p", sep = "-")) %>%
   pivot_longer(cols = fl_cm:digested_food, 
                names_to = "measurementType",
                values_to = "measurementValue") %>%
-  mutate(measurementID = paste(eventID, "p", sep = "-")) %>%
   mutate(measurementType = case_when(
-           measurementType == "fl_cm" ~ "Forklength",
-           measurementType == "mass_g" ~ "Mass",
-           measurementType == "food_mass_g" ~ "Mass stomach content",
+           (measurementType == "fl_cm" & n_stomachs > 1) ~ "Mean Forklength",
+           (measurementType == "fl_cm" & n_stomachs == 1) ~ "Forklength",
+           (measurementType == "mass_g" & n_stomachs > 1) ~ "Mean Mass",
+           (measurementType == "mass_g" & n_stomachs == 1) ~ "Mass",
+           measurementType == "food_mass_g" ~ "Total mass stomach content",
            measurementType == "gfi_percent" ~ "Gut Fullness Index (GFI)",
            measurementType == "n_stomachs" ~ "Stomachs examined",
            measurementType == "cfi_percent_adj" ~ "Comparative Feeding Index (CFI)",
            measurementType == "digested_food" ~ "Mass digested food (unidentified)"),
-    measurementID = paste(measurementID, measurementType, sep = ":"),
+    measurementID = paste(occurrenceID, measurementType, sep = "-"),
     measurementTypeID = case_when(
     measurementType == "Forklength" ~ "http://vocab.nerc.ac.uk/collection/P01/current/FL01XX01/",
+    measurementType == "Mean Forklength" ~ " ",
     measurementType == "Mass" ~ "http://vocab.nerc.ac.uk/collection/P24/current/NMASS/",
-    measurementType == "Mass stomach content" ~ "http://vocab.nerc.ac.uk/collection/P24/current/NMASS/",
+    measurementType == "Mean Mass" ~ " ",
+    measurementType == "Total mass stomach content" ~ "http://vocab.nerc.ac.uk/collection/P24/current/NMASS/",
     measurementType == "Gut Fullness Index (GFI)" ~ " ",
     measurementType == "Stomachs examined" ~ " ",
     measurementType == "Comparative Feeding Index (CFI)" ~ " ",
     measurementType == "Mass digested food (unidentified)" ~ "http://vocab.nerc.ac.uk/collection/P24/current/NMASS/"),
          measurementUnit = case_when(
-    measurementType == "Forklength" ~ "cm",
-    measurementType == "Mass" ~ "g",
-    measurementType == "Mass stomach content" ~ "g",
+    measurementType == "Forklength" ~ "centimeter",
+    measurementType == "Mean Forklength" ~ "centimeter",
+    measurementType == "Mass" ~ "gram",
+    measurementType == "Mean Mass" ~ "gram",
+    measurementType == "Mass stomach content" ~ "gram",
     measurementType == "Gut Fullness Index (GFI)" ~ "percent",
     measurementType == "Stomachs examined" ~ "stomachs",
     # This seems off to me - want to find a better alternative.
     measurementType == "Comparative Feeding Index (CFI)" ~ "percent",
-    measurementType == "Mass digested food (unidentified)" ~ "g"),
+    measurementType == "Mass digested food (unidentified)" ~ "gram"),
          measurementUnitID = case_when(
-    measurementUnit == "cm" ~ "http://vocab.nerc.ac.uk/collection/P06/current/ULCM/",
-    measurementUnit == "g" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UGRM/",
+    measurementUnit == "centimeter" ~ "http://vocab.nerc.ac.uk/collection/P06/current/ULCM/",
+    measurementUnit == "gram" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UGRM/",
     measurementUnit == "percent" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UPCT/",
     measurementUnit == "stomachs" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UUUU/")) %>%
-  select(measurementID, measurementType, measurementTypeID,
+  select(occurrenceID, measurementID, measurementType, measurementTypeID,
          measurementValue, measurementUnit, measurementUnitID)
 
 # Write up csv file and upload to Google Drive folder
@@ -367,33 +378,31 @@ drive_upload(here("Salmon Diet", "tidy_data", "salmon_spp_measurement.csv"),
              overwrite = TRUE)
 ```
 
-The second measurement Or Fact table will be created for the stomach content of the salmon species examined. The measurements associated to this Occurrence Core is `mass digested prey species`. First we filter out all the entries of species that were not recorded within a stomach (i.e., where measurementValue = NA)
+The second measurement Or Fact table will be created for the stomach content of the salmon species examined. The measurements associated to these records are `mass digested prey species`. First we filter out all the entries of species that were not recorded within a stomach (i.e., where measurementValue = NA)
 
 ``` {r, eval = FALSE}
 salmon_prey_measurement <- prey_occ %>%
-  select(occurrenceID, 
-         scientificName,
+  select(eventID, 
+         species,
+         pred_id,
+         prey_id,
          presence) %>%
+  mutate(occurrenceID = paste(eventID, species, sep = ":"),
+         occurrenceID = paste(occurrenceID, pred_id, sep = ":"),
+         occurrenceID = paste(occurrenceID, prey_id, sep = "-")) %>%
   dplyr::rename(measurementValue = presence) %>%
-  mutate(measurementType = "Mass",
+  mutate(measurementType = "Mass digested prey",
          measurementID = paste(occurrenceID, measurementType, sep =":"),
          measurementTypeID = case_when(
-          measurementType == "Mass" ~ "http://vocab.nerc.ac.uk/collection/P24/current/NMASS/"), 
-         measurementUnit = "g",
+         measurementType == "Mass digested prey" ~ "http://vocab.nerc.ac.uk/collection/P24/current/NMASS/"), 
+         measurementUnit = "gram",
          measurementUnitID = case_when(
-         measurementUnit == "g" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UGRM/"
-  )) %>%
-  select(measurementID, measurementType, measurementValue, measurementUnit, measurementUnitID)
-
-# Write up csv file and upload to Google Drive folder
-write_csv(salmon_prey_measurement, here("Salmon Diet", "tidy_data", "salmon_prey_measurement.csv"))
-drive_upload(here("Salmon Diet", "tidy_data", "salmon_prey_measurement.csv"),
-             path = "https://drive.google.com/drive/u/0/folders/1pGd2cuvdb25QX7CGm2wC81Emh5O-LdbR",
-             name = "salmon_prey_eMoF.csv",
-             overwrite = TRUE)
+         measurementUnit == "gram" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UGRM/")) %>%
+  select(occurrenceID, measurementID, measurementType, measurementTypeID, 
+         measurementValue, measurementUnit, measurementUnitID)
 ```
 
-Finally, we combine the two eMOF cores 
+Finally, we combine the two eMOF tables into a single eMOF extension, and save locally and on GoogleDrive: 
 
 ``` {r emof_all, eval = FALSE}
 IYS2019_salmondiet_emof <- plyr::rbind.fill(salmon_spp_measurement, salmon_prey_measurement)
