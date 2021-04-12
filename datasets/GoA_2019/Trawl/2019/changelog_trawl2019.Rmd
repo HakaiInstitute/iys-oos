@@ -1,0 +1,22 @@
+---
+title: "changelog_trawl2019"
+author: "Tim van der Stap"
+date: "4/8/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This document outlines all the changes made to the original Processed Data, to facilitate standardization of data. The original Processed Data is still in Google Drive. 
+
+Changes made in the 2019_GoA_Fish_Trawl_catchdata file: 
+
+*  (мол.) is removed from the `species` column. 
+
+Changes made in the 2019_GoA_Fish_Specimen_data file:
+
+* неполов. is removed from the `species` column.
+* сегол. is removed from the `species` column.
+* полов. is removed from the `species` column. 
