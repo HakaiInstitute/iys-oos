@@ -14,6 +14,7 @@ This document outlines all the changes made to the original Processed Data, to f
 Changes made in the 2019_GoA_Fish_Trawl_catchdata file: 
 
 *  (мол.) is removed from the `species` column. 
+* The column `SEA_STATE_ID` reflects the wave height, according to the metadata sheet. In this column, зыбь is replaced with its English translation 'swell'.
 
 Changes made in the 2019_GoA_Fish_Specimen_data file:
 

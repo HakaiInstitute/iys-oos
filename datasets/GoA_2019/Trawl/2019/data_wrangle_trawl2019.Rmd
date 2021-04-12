@@ -304,3 +304,261 @@ obistools::plot_map_leaflet(trawl2019_event_occ) # Issue: Station 20 does not ha
 
 ***
 
+## extended MeasurementOrFact (eMOF) Extension
+
+We create a few measurements or fact tables initially - one for the measurements pertaining to the overall catch (catch_weight), and one with the measurements pertaining to selected individuals (individual length and weight). These tables will eventually be merged into a single measurement or fact extension. 
+
+Additionally, we need to create eMOF tables with measurements pertaining to the sampling event: trawl speed, etc. These come from the `trawl2019` dataset. Variables in the samplingEffort category are tow_speed, tow_duration, tow_distance and tow_direction. There is also data collected on bottom depth, every 15 minutes. We save these tables separately, and also combine them to form one final eMOF extension. Through the IPT, multiple eMOF extensions can be uploaded if preferred. 
+
+```{r bottomdepth, eval = FALSE}
+trawl2019_bottomdepth <- trawl2019 %>%
+  select(eventID = trawl,
+         BOTTOM_DEPTH_START_METERS,
+         BOTTOM_DEPTH_END_METERS) %>%
+  mutate_all(as.character) %>%
+  pivot_longer(cols = BOTTOM_DEPTH_START_METERS:BOTTOM_DEPTH_END_METERS,
+               names_to = "measurementType",
+               values_to = "measurementValue") %>%
+  mutate(measurementType = recode(measurementType,
+                                  BOTTOM_DEPTH_START_METERS = "bottom_depth_trawl_start",
+                                  BOTTOM_DEPTH_END_METERS = "bottom_depth_trawl_finish"),
+         measurementTypeID = case_when(
+           measurementType == "bottom_depth_trawl_start" ~ "http://vocab.nerc.ac.uk/collection/P07/current/CFSN0481/",
+           measurementType == "bottom_depth_trawl_finish" ~ "http://vocab.nerc.ac.uk/collection/P07/current/CFSN0481/"),
+         # Perhaps this is better: http://vocab.nerc.ac.uk/collection/A05/current/EV_BATHY/
+         measurementUnit = case_when(
+           measurementType == "bottom_depth_trawl_start" ~ "meters",
+           measurementType == "bottom_depth_trawl_finish" ~ "meters"),
+         measurementUnitID = case_when(
+           measurementUnit == "meters" ~ "http://vocab.nerc.ac.uk/collection/P06/current/ULAA/"),
+         measurementValueID = NA,
+         measurementID = paste(eventID, measurementType, sep = ":")) %>%
+  select(eventID, measurementID, measurementType, measurementTypeID, measurementValue, measurementValueID,
+         measurementUnit, measurementUnitID)
+# Save the bottom depth extension locally:
+write_csv(trawl_bottomdepth, here("Trawl", "tidy_data", "trawl2020_bottomdepth_emof.csv"))
+```
+
+Measurements pertaining to the sampling effort: 
+
+```{r samplingEffort, eval = FALSE}
+trawl2019_samplingEffort <- trawl2019 %>%
+  select(eventID = trawl,
+         TOW_DURATION,
+         SPEED,
+         DISTANCE_TRAVELLED,
+         BEARING) %>%
+  mutate(TOW_DURATION = round(TOW_DURATION * 60)) %>%
+  mutate_all(as.character) %>%
+  pivot_longer(cols = TOW_DURATION:BEARING,
+               names_to = "measurementType",
+               values_to = "measurementValue") %>%
+  mutate(measurementType = recode(measurementType,
+         TOW_DURATION = "tow_duration",
+         BEARING = "direction_of_set",
+         SPEED = "vessel_speed",
+         DISTANCE_TRAVELLED = "tow_distance"),
+         measurementTypeID = case_when(
+           measurementType == "tow_duration" ~ "http://vocab.nerc.ac.uk/collection/P01/current/AZDRZZ01/",
+           measurementType == "direction_of_set" ~ "http://vocab.nerc.ac.uk/collection/P07/current/CFSN0481/",
+           measurementType == "vessel_speed" ~ "http://vocab.nerc.ac.uk/collection/P01/current/TOWSPEED/",
+           measurementType == "tow_distance" ~ "http://vocab.nerc.ac.uk/collection/P01/current/LENTRACK/"),
+         measurementUnit = case_when(
+           measurementType == "tow_duration" ~ "minutes",
+           measurementType == "direction_of_set" ~ "degrees",
+           measurementType == "vessel_speed" ~ "knots",
+           measurementType == "tow_distance" ~ "nautical miles"),
+         measurementUnitID = case_when(
+           measurementUnit == "minutes" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UMIN/",
+           measurementUnit == "degrees" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UABB/",
+           measurementUnit == "knots" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UKNT/",
+           measurementUnit == "nautical miles" ~ " "),
+         measurementValueID = NA,
+         measurementID = paste(eventID, measurementType, sep = ":")) %>%
+  select(eventID, measurementID, measurementType, measurementTypeID, measurementValue, measurementValueID,
+         measurementUnit, measurementUnitID)
+
+# Save the extended measurementOrFact extension locally and in Google Drive:
+write_csv(trawl2019_samplingEffort, here("Trawl", "tidy_data", "trawl2020_samplingEffort_emof.csv"))
+```
+
+And chunk of code to assign sampling instrument measurements/facts:
+
+```{r samplingInstrument, eval = FALSE}
+trawl2019_samplingInstrument <- trawl2019 %>%
+  select(eventID = trawl,
+         GEAR_CODE,
+         MOUTH_OPENING_WIDTH,
+         MOUTH_OPENING_HEIGHT) %>%
+  mutate_all(as.character) %>%
+  pivot_longer(cols = GEAR_CODE:MOUTH_OPENING_HEIGHT,
+               names_to = "measurementType",
+               values_to = "measurementValue") %>%
+  mutate(measurementType = recode(measurementType,
+         GEAR_CODE = "sampling_gear",
+         MOUTH_OPENING_WIDTH = "net_opening_width",
+         MOUTH_OPENING_HEIGHT = "net_opening_height"),
+         measurementTypeID = case_when(
+           measurementType == "sampling_gear" ~ "http://vocab.nerc.ac.uk/collection/Q01/current/Q0100002/",
+           measurementType == "net_opening_width" ~ "http://vocab.nerc.ac.uk/collection/Q01/current/Q0100014/",
+           measurementType == "net_opening_height" ~ "http://vocab.nerc.ac.uk/collection/Q01/current/Q0100013/"),
+         measurementUnit = case_when(
+           measurementType != "sampling_gear" ~ "meters"),
+         measurementUnitID = case_when(
+           measurementUnit == "meters" ~ "http://vocab.nerc.ac.uk/collection/P06/current/ULAA/"),
+         measurementValueID = case_when(
+           measurementType == "sampling_gear" ~ " "),
+         measurementID = paste(eventID, measurementType, sep = ":")) %>%
+  select(eventID, measurementID, measurementType, measurementTypeID, measurementValue, measurementValueID,
+         measurementUnit, measurementUnitID)
+
+# Save the extended measurementOrFact extension locally and in Google Drive:
+write_csv(trawl2019_samplingInstrument, here("Trawl", "tidy_data", "trawl2020_samplingInstrument_emof.csv"))
+```
+
+And a chunk of code to assign environmental conditions during the trawl:
+
+```{r environmental conditions, eval = FALSE}
+trawl2019_conditions <- trawl2019 %>%
+  select(eventID = trawl,
+         WIND_DIRECTION,
+         WIND_SPEED,
+         SEA_STATE_ID,
+         WATER_TEMPERATURE) %>%
+  mutate(SWELL_HEIGHT = ifelse(grepl("swell", trawl2019_conditions$SEA_STATE_ID), trawl2019_conditions$SEA_STATE_ID, NA),
+         SWELL_HEIGHT = gsub("swell ", "", trawl2019_conditions$SWELL_HEIGHT),
+         SEA_STATE_ID = ifelse(grepl("swell", trawl2019_conditions$SEA_STATE_ID), NA, trawl2019_conditions$SEA_STATE_ID)) %>%
+  mutate_all(as.character) %>%
+  pivot_longer(cols = WIND_DIRECTION:SWELL_HEIGHT,
+               names_to = "measurementType",
+               values_to = "measurementValue") %>%
+  mutate(measurementType = recode(measurementType,
+                                  SEA_STATE_ID = "wave_height",
+                                  WATER_TEMPERATURE = "water_temperature",
+                                  WIND_DIRECTION = "wind_direction",
+                                  WIND_SPEED = "wind_speed",
+                                  SWELL_HEIGHT = "swell_height"),
+         measurementTypeID = case_when(
+           measurementType == "wave_height" ~ "http://vocab.nerc.ac.uk/collection/P07/current/JNQS0CMX/",
+           measurementType == "swell_height" ~ "http://vocab.nerc.ac.uk/collection/P09/current/SWHT/",
+           measurementType == "water_temperature" ~ "http://vocab.nerc.ac.uk/collection/P01/current/TEMPPR01/",
+           measurementType == "wind_direction" ~ "http://vocab.nerc.ac.uk/collection/B39/current/relwinddir/",
+           measurementType == "wind_speed" ~ "http://vocab.nerc.ac.uk/collection/P07/current/CFSN0038/"),
+         measurementUnit = case_when(
+           measurementType == "wave_height" ~ "meters",
+           measurementType == "swell_height" ~ "meters",
+           measurementType == "wind_direction" ~ "degrees",
+           measurementType == "wind_speed" ~ "knots",
+           measurementType == "water_temperature" ~ "degrees celsius"),
+         measurementUnitID = case_when(
+           measurementUnit == "meters" ~ "http://vocab.nerc.ac.uk/collection/P06/current/ULAA/",
+           measurementUnit == "degrees" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UAAA/",
+           measurementUnit == "knots" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UKNT/",
+           measurementUnit == "degrees celsius" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UPAA/"),
+         measurementValueID = NA,
+         measurementID = paste(eventID, measurementType, sep = ":")) %>% 
+  drop_na(measurementValue) %>%
+  select(eventID, measurementID, measurementType, measurementTypeID, measurementValue, measurementValueID,
+         measurementUnit, measurementUnitID)
+  
+
+# Save the extended measurementOrFact extension locally and in Google Drive:
+write_csv(trawl_conditions, here("Trawl", "tidy_data", "trawl2020_conditions_emof.csv"))
+```
+
+Next two eMOF extensions are created with measurements pertaining to overall species' catch weight at each trawl, and individual length and weight measurements.
+
+```{r eMoF}
+trawl2019_allcatch_measurement <- trawl2019_occ %>%
+  select(occurrenceID,
+         organismQuantity,
+         Mass_net) %>%
+  mutate_all(as.character) %>%
+  pivot_longer(cols = c(organismQuantity, Mass_net),
+               names_to = "measurementType",
+               values_to = "measurementValue") %>%
+  mutate(measurementType = recode(measurementType,
+                                  Mass_net = "Total species biomass in net",
+                                  organismQuantity = "individualCount"),
+         measurementID = case_when(
+           measurementType == "individualCount" ~ paste(occurrenceID, "individualCount", sep = "-"),
+           measurementType == "Total species biomass in net" ~ paste(occurrenceID, "biomass", sep = "-")),
+         measurementTypeID = case_when(
+           measurementType == "Total species biomass in net" ~ "http://vocab.nerc.ac.uk/collection/S06/current/S0600088/",
+           measurementType == "individualCount" ~ "http://vocab.nerc.ac.uk/collection/P01/current/OCOUNT01/"),
+         measurementUnit = case_when(
+           measurementType == "Total species biomass in net" ~ "kilogram",
+           measurementType == "individualCount" ~ "individuals"),
+         measurementUnitID = case_when(
+           measurementUnit == "kilogram" ~ "http://vocab.nerc.ac.uk/collection/P06/current/KGXX/",
+           measurementUnit == "individuals" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UUUU/"),
+         measurementValueID = NA) %>%
+  select(occurrenceID, measurementID, measurementType, measurementTypeID, measurementValue, measurementValueID,
+         measurementUnit, measurementUnitID)
+```
+
+Next, create the measurementOrFact extension with length and weight measurements assigned to the _individual_ specimens. Some changes here are made in the Processed Data: The `SEX_CODE` covers both sex (male, female, unknown) and lifestage (J - which is juvenile? or should it be i for immature?)
+
+- [ ] TO DO: Ask Chrys Neville which species were measured what way (total, fork, mantle length). 
+- [ ] TO DO: Ask Chrys what `SEX_CODE` = 3 represents.
+- [ ] TO DO: Ask Chrys what `SEX_CODE` = 'j' represents - juvenile? Or should it be i for immature (see metadata sheet)?
+
+``` {r}
+trawl2019_ind_emof <- trawl2019_catch_ind_occ %>%
+  select(occurrenceID,
+         LENGTH, `STANDARD LENGTH`, SEX_CODE, `WEIGHT - TOTAL`) %>%
+  mutate(lifeStage = ifelse(grepl("3|J", trawl2019_ind_emof$SEX_CODE), trawl2019_ind_emof$SEX_CODE, NA),
+         SEX_CODE = gsub("3|J", NA, trawl2019_ind_emof$SEX_CODE)) %>%
+  mutate_all(as.character) %>%
+  pivot_longer(cols = LENGTH:`WEIGHT - TOTAL`,
+               names_to = "measurementType",
+               values_to = "measurementValue") %>%
+  mutate(measurementType = recode(measurementType,
+                                  LENGTH = "species length",
+                                  `STANDARD LENGTH` = "Standard length",
+                                  SEX_CODE = "sex",
+                                  `WEIGHT - TOTAL` = "total weight"),
+         measurementID = case_when(
+           measurementType == "species length" ~ paste(occurrenceID, "species_length", sep = "-"),
+           measurementType == "Standard length" ~ paste(occurrenceID, "standard_length", sep = "-"),
+           measurementType == "sex" ~ paste(occurrenceID, "sex", sep = "-"),
+           measurementType == "lifeStage" ~ paste(occurrenceID, "lifeStage", sep = "-"),
+           measurementType == "total weight" ~ paste(occurrenceID, "total_weight", sep = "-")),
+         measurementTypeID = case_when(
+           measurementType == "species length" ~ "http://vocab.nerc.ac.uk/collection/P01/current/OBSINDLX/",
+           measurementType == "Standard length" ~ "http://vocab.nerc.ac.uk/collection/P01/current/SL01XX01/",
+           measurementType == "sex" ~ " ",
+           measurementType == "lifeStage" ~ " ",
+           measurementType == "total weight" ~ "http://vocab.nerc.ac.uk/collection/S06/current/S0600088/"),
+         measurementUnit = case_when(
+           measurementType == "species length" ~ "millimeters",
+           measurementType == "Standard length" ~ "millimeters",
+           measurementType == "total weight" ~ "grams"),
+         measurementUnitID = case_when(
+           measurementUnit == "millimeters" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UXMM/",
+           measurementUnit == "centimeters" ~ "http://vocab.nerc.ac.uk/collection/P06/current/ULCM/",
+           measurementUnit == "grams" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UGRM/"),
+         measurementValueID = case_when(
+           measurementValue == "F" ~ " ",
+           measurementValue == "M" ~ " ",
+           measurementValue == "N" ~ " ",
+           measurementValue == "J" ~ " ",
+           measurementValue == "3" ~ " ")) %>%
+  mutate(measurementValueID = NA) %>%
+  drop_na(measurementValue) %>%
+  select(occurrenceID, measurementID, measurementType, measurementTypeID, measurementValue, measurementValueID,
+         measurementUnit, measurementUnitID)
+```
+
+Combine the two extended measurementOrFact extensions into a single eMOF extension, and save locally and in GoogleDrive:
+
+``` {r}
+trawl2020_eMOF <- dplyr::bind_rows(trawl2020_allcatch_emof, trawl2020_ind_emof)
+# To combine all the extensions, use: 
+# trawl2020_all_emofs <- dplyr::bind_rows(trawl_bottomdepth, samplingEffort, samplingInstrument, trawl_conditions, trawl2020_allcatch_emof, trawl2020_ind_emof)
+write_csv(trawl2020_eMOF, here("Trawl", "tidy_data", "trawl_eMOF.csv"))
+drive_upload(here("Trawl", "tidy_data", "trawl_emof.csv"),
+             path = "https://drive.google.com/drive/folders/1ZbvwjD8odJr2SUKq6Z8zAwpLd6QeOOYC",
+             name = "trawl_eMoF.csv",
+             overwrite = TRUE)
+```
