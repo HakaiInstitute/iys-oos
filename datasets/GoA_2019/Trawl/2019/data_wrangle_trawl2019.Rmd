@@ -162,11 +162,13 @@ drive_upload(here("Trawl", "2019", "tidy_data", "trawl2019_event.csv"),
 
 As the trawl data consists of biotic data, an occurrence extension table is created, whereby unique `occurrenceIDs` get linked to the `eventID`. The `occurrenceID` is created from the `eventID`, and any measurements pertaining to the specific individual will be associated to that `occurrenceID` in the extended MeasurementOrFact (eMOF) extension.
 
-The Occurrence extension will consist of two tables merged, one from the aggregated (summary) catch data (`catch_final`), and one from the individual length and weight measurements. There will be unique `occurrenceIDs` related to the trawl layer in event Core. Measurements associated with this `occurrenceID` will be total species' catch biomass. The `occurrenceID` for the aggregated catch data will have the format `IYS:GoA2019_Stn1:trawl:occ-1`. An additional layer in the event Core (sample) was created so that other unique `occurrenceIDs` can be linked to that layer, with `occurrenceIDs` having the format `IYS:GoA2019_Stn1:trawl:sample1:occ-1`. Measurements linked to these `occurrenceIDs` are individual length and biomass. Additionally, a column `occurrenceRemarks` will be included to indicate that that specific `occurrenceID` is a subset of the aggregated catch data. For discussion on how `occurrenceIDs` are linked to different layers, see [here](https://github.com/iobis/env-data/issues/10).
+The Occurrence extension will consist of two tables merged, one from the aggregated (summary) catch data (`catch_final`), and one from the individual length and weight measurements. There will be unique `occurrenceIDs` related to the trawl layer in event Core. Measurements associated with this `occurrenceID` will be total species' catch biomass. The `occurrenceID` for the aggregated catch data will have the format `IYS:GoA2019_Stn1:trawl:occ-1`. An additional layer in the event Core (sample) was created so that other unique `occurrenceIDs` can be linked to that layer, with `occurrenceIDs` having the format `IYS:GoA2019_Stn1:trawl:sample1:occ-1`. Measurements linked to these `occurrenceIDs` are individual length and biomass. For a diagram on the relational database structure, see [here](https://lucid.app/lucidchart/a1d199b4-ef42-45fc-a384-273925fef7d7/edit?page=0_0#). Additionally, a column `occurrenceRemarks` will be included to indicate that that specific `occurrenceID` is a subset of the aggregated catch data. For discussion on how `occurrenceIDs` are linked to different layers, see [here](https://github.com/iobis/env-data/issues/10).
 
-A required column for the Occurrence table is the term, `occurrenceStatus`, which is used for presence/absence data. The package `worrms` is used to generate hierarchial taxonomic information on the species observed. For the `scientificNameID`, we look up the species on the WoRMS website (http://www.marinespecies.org/). 
+A required column for the Occurrence table is the term, `occurrenceStatus`, which is used to determine presence/absence of data. The package `worrms` is used to generate hierarchical taxonomic information on the species observed. For the `scientificNameID`, we look up the species on the WoRMS website (http://www.marinespecies.org/). 
 
 Finally, we can do a quick check to make sure that all the unique species are included in the trawl_occ dataframe. We need to make sure that the output is TRUE. If confirmed, the Occurrence table can be saved locally and in the correct Google Drive folder. We also need to make sure that if columns 'SPECIES' or 'SPECIES (Description if needed)' make mention of a lifestage, or sex, we need to include this in the occurrence extension. 
+
+The column `species` in DwC terms is refered to as the `specificEpithet`.
 
 ``` {r trawl2020_occ, eval = FALSE}
 # First, let's create an occurrence table from the overall catch data.
@@ -177,6 +179,7 @@ trawl2019_allCatch <- trawl2019_allCatch %>%
 trawl2019_allCatch$identificationQualifier <- ifelse(grepl("\\b sp.\\b|\\b sp\\b", trawl2019_allCatch$scientificname),
                                                      "sp. inc.", NA)
 trawl2019_allCatch$scientificname <- gsub("\\b sp.\\b|\\b sp\\b", "", trawl2019_allCatch$scientificname)
+trawl2019_allCatch$species <- gsub("sp.|sp", NA, trawl2019_allCatch$species)
          
 trawl2019_allCatch_sn <- worrms::wm_records_names(unique(trawl2019_allCatch$scientificname)) %>% bind_rows()
 trawl2019_allCatch_taxa <- left_join(trawl2019_allCatch, trawl2019_allCatch_sn, by = "scientificname")
@@ -203,6 +206,7 @@ trawl2019_allCatch$scientificname <- gsub("NA Siphonophora", "Siphonophora", tra
 trawl2019_allCatch_worms <- worrms::wm_records_names(unique(trawl2019_allCatch$scientificname)) %>% bind_rows()
 trawl2019_occ <- left_join(trawl2019_allCatch, trawl2019_allCatch_worms, by = "scientificname") %>%
   rename(eventID = trawl,
+         specificEpithet = species,
          scientificNameAuthorship = authority,
          taxonomicStatus = status,
          taxonRank = rank,
@@ -220,7 +224,7 @@ trawl2019_occ <- left_join(trawl2019_allCatch, trawl2019_allCatch_worms, by = "s
 # By joining those two dataframes, the column 'genus' is duplicated. Make sure to select the proper genus column, the one generated from the worrms package: 
 trawl2019_occ_fnl <- trawl2019_occ %>%
   select(eventID, occurrenceID, occurrenceStatus, organismQuantity, organismQuantityType, 
-         scientificName, scientificNameID, identificationQualifier,
+         specificEpithet, scientificName, scientificNameID, identificationQualifier,
          scientificNameAuthorship, taxonomicStatus, taxonRank, kingdom, phylum, 
          class, order, family, genus.y, lifeStage, sex)
 
@@ -463,7 +467,7 @@ trawl2019_conditions <- trawl2019 %>%
   
 
 # Save the extended measurementOrFact extension locally and in Google Drive:
-write_csv(trawl_conditions, here("Trawl", "tidy_data", "trawl2020_conditions_emof.csv"))
+write_csv(trawl2019_conditions, here("Trawl", "tidy_data", "trawl2019_conditions_emof.csv"))
 ```
 
 Next two eMOF extensions are created with measurements pertaining to overall species' catch weight at each trawl, and individual length and weight measurements.
