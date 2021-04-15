@@ -276,7 +276,7 @@ trawl2019_catch_ind_fnl <- trawl2019_catch_ind_occ %>%
          class, order, family, genus.y, occurrenceRemarks, identificationQualifier,
          SEX_CODE)
 
-# sex and maturity is recorded in the SEX_CODE column: 
+# sex and lifestage is recorded in the SEX_CODE column: 
 trawl2019_catch_ind_fnl <- trawl2019_catch_ind_fnl %>%
   mutate(sex = case_when(
     SEX_CODE == "M" ~ "male",
