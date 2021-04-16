@@ -670,6 +670,9 @@ bongo2019_occ_ext <- bongo2019_occ_fnl %>%
          sex,
          lifeStage,
          kingdom, phylum, class, order, family, genus, Preparations, occurrenceRemarks)
+
+# For review purposes, save this file separate from the other occurrence tables:
+write_csv(bongo2019_occ_ext, here("Bongo", "tidy_data", "bongo2019_occ_Net2.csv"))
 ```
 
 I change bongo_occ_fnl into a new dataframe (bongo2019_occ_ext) because we're going to use the bongo2019_occ_fnl dataset in the eMoF table, but not all columns. This is also the reason why I add `occurrenceID` and `occurrenceStatus` separately at each occurrence extension, rather than all the way at the end when I combine the two extensions. I will need to link those measurements or facts to the specific `occurrenceID`, and if I add the `occurrenceID` only after I've merged the two tables, it'll be very difficult to filter. 
@@ -841,7 +844,7 @@ bongo_emof <- unidentified_spp %>%
       measurementUnit == "milligram" ~ "http://vocab.nerc.ac.uk/collection/P06/current/MGRM/"))
 ```
 
-When the species or genus has been identified, the measurements are associated to the `occurrenceID`.  
+When the species or genus has been identified, the measurements are associated to the `occurrenceID`. This will be included in a second eMOF extension (emof2):  
 
 ``` {r, eval = FALSE}
 bongo_emof2 <- bongo2019_occ_fnl %>%
@@ -931,7 +934,7 @@ bongo_emof2 <- bongo_emof2 %>%
 bongo_emof2 <- bongo_emof2 %>% filter(measurementValue != "NA") 
 ```
 
-As there were also comments in the dataset, we have to make sure we include those in the measurementOrFact extension, as they might be important to the measurements. Additionally, as there is NERC vocabulary for the different length types in this dataset, we include this column in the measurementRemarks, alongside the original notes. 
+As there were also comments in the dataset, we have to make sure we include those in the measurementOrFact extension, as they might be important to the measurements. Additionally, as there is no NERC vocabulary for the different length types in this dataset, we include this column in the measurementRemarks, alongside the original notes. 
 
 ``` {r measurementRemarks, eval = FALSE}
 bongo_measurementRemarks <- bongo2019_taxa %>%
@@ -948,14 +951,16 @@ bongo_measurementRemarks <- bongo_measurementRemarks %>%
   distinct()
 
 # Save measurements (eMOF) related to the length and weight measurements:
-bongo_study1 <- bind_rows(bongo_emof, bongo_emof2)  
-bongo_study1 <- merge(bongo_study1, bongo_measurementRemarks,
+bongo2019_net2_emof <- bind_rows(bongo_emof, bongo_emof2)  
+bongo2019_net2_emof <- merge(bongo2019_net2_emof, bongo_measurementRemarks,
                       by = c("eventID", "measurementRemarks"), all = T)
 
-write_csv(bongo_study1, here("Bongo", "tidy_data", "bongo2019_emof_study1.csv"))
+write_csv(bongo2019_net2_emof, here("Bongo", "tidy_data", "bongo2019_emof_Net2.csv"))
 ```
 
-The second eMOF extension we create is for the abundance / community analysis study, which is from the bongo2019_abun dataframe. Need to figure out whether individualCount and the total individualCount. 
+The second eMOF extension we create is for the abundance / community analysis study, which is from the `bongo2019_abun` dataframe. Need to figure out whether to use the individualCount or the total count. Additionally, perhaps associated to an abundance estimate we need to assign whether this was estimated by flowmeter or depth-estimate, under _measurementMethod_. 
+
+- [ ] TO DO: Add _measurementMethod_ to abundances estimated by those methods. 
 
 ``` {r eMOF Bongo abundance, eval = FALSE}
 bongo_emof_abun <- bongo2019_abun %>%
@@ -1017,7 +1022,7 @@ bongo_emof_abun <- bongo2019_abun %>%
       measurementValue == "<0.5mm|<1mm|1mm" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1152/"))
 
 # Make sure the folder path exists already (e.g. ./Bongo/tidy_data)
-write_csv(bongo_emof_abun, here("Bongo", "tidy_data", "bongo2019_emof_study2.csv"))
+write_csv(bongo_emof_abun, here("Bongo", "tidy_data", "bongo2019_emof_Net1.csv"))
 ```
 
 Finally, join all the tables together to form the measurementOrFact extension, and save it locally and on GoogleDrive: 
