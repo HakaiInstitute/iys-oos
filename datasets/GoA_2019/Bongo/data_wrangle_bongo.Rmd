@@ -798,7 +798,6 @@ bongo_emof2 <- bongo2019_occ_fnl %>%
          individualCount = number,
          length = length_mm,
          weight = weight_mg,
-         length_type, 
          lifeStage,
          sex,
          reproductiveCondition) %>%
@@ -864,12 +863,15 @@ bongo_emof2 <- rbind(sieve, temp2)
 
 So now we have a dataframe where:
     * Species have been identified to a species or genus level
-    * Length measurement ranges have been split up into columns of minimumLength and maximumLength.
+    * Length measurement ranges have been split up into columns of minimumLength and maximumLengt where applicable.
+    
+To fit this into DwC format, all columns but 'measurementRemarks' need to be pivotted to fit a long format:
 
 ``` {r, eval = FALSE}
 bongo_emof2 <- bongo_emof2 %>%
   mutate_all(as.character) %>%
-  pivot_longer(cols = individualCount:length, 
+  pivot_longer(cols = c(individualCount, maximumLength, weight, lifeStage, sex, 
+                        reproductiveCondition, minimumLength, maximumLength, length),
                names_to = "measurementType",
                values_to = "measurementValue") %>%
   mutate(measurementID = paste(eventID, measurementType, sep = ":"),
@@ -881,7 +883,6 @@ bongo_emof2 <- bongo_emof2 %>%
       measurementType == "reproductiveCondition" ~ "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000021/",
       measurementType == "maximumLength" ~ "http://vocab.nerc.ac.uk/collection/P01/current/OBSMAXLX/",
       measurementType == "minimumLength" ~ "http://vocab.nerc.ac.uk/collection/P01/current/OBSMINLX/",
-      measurementType == "length_type" ~ "http://vocab.nerc.ac.uk/collection/P01/current/OBSINDLX/",
       measurementType == "weight" ~ "http://vocab.nerc.ac.uk/collection/S06/current/S0600253/"), 
     measurementUnit = case_when(
       measurementType == "individualCount" ~ "individuals",
@@ -911,7 +912,7 @@ bongo_emof2 <- bongo_emof2 %>% filter(!is.na(measurementValue)) %>% filter(measu
   filter(measurementValue != "TBD")
 ```
 
-As there were also comments in the dataset, we have to make sure we include those in the measurementOrFact extension, as they might be important to the measurements. Additionally, as there is no NERC vocabulary for the different length types in this dataset, we include this column in the measurementRemarks, alongside the original notes. 
+As there were also comments in the dataset, we have to make sure we include those in the measurementOrFact extension, as they might be important to the measurements. Additionally, as there is no NERC vocabulary for the different length types in this dataset, we include this column in the measurementRemarks, alongside the original notes. However, ideally I'd like length type information to only be included to the length, minimumLength or maximumLength measurement.  
 
 ``` {r measurementRemarks, eval = FALSE}
 bongo_measurementRemarks <- bongo2019_taxa %>%
