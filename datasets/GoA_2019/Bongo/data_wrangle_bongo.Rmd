@@ -937,8 +937,6 @@ write_csv(bongo2019_net2_emof, here("Bongo", "tidy_data", "bongo2019_emof_Net2.c
 
 The second eMOF extension we create is for the abundance / community analysis study, which is from the `bongo2019_abun` dataframe. Need to figure out whether to use the individualCount or the total count. Additionally, perhaps associated to an abundance estimate we need to assign whether this was estimated by flowmeter or depth-estimate, under _measurementMethod_. 
 
-- [ ] TO DO: Add _measurementMethod_ to abundances estimated by those methods. 
-
 ``` {r eMOF Bongo abundance, eval = FALSE}
 bongo_emof_abun <- bongo2019_abun %>%
   select(occurrenceID, 
@@ -956,6 +954,11 @@ bongo_emof_abun <- bongo2019_abun %>%
       measurementType == "ind_total" ~ paste(occurrenceID, "ind_total", sep = ":"),
       measurementType == "abund_m3_flow_est" ~ paste(occurrenceID, "abund_flow", sep = ":"),
       measurementType == "abund_m3_depth_est" ~ paste(occurrenceID, "abund_depth", sep = ":")),
+    measurementMethod = case_when(
+      measurementType == "individualCount" ~ "Number of individuals observed in sample",
+      measurementType == "ind_total" ~ "Number of individuals observed in sample expanded to total sample volume",
+      measurementType == "abund_m3_flow_est" ~ "Abundance estimated from flowmeter volume estimate",
+      measurementType == "abund_m3_depth_est" ~ "Abundance estimated from depth estimated volume"),
     measurementTypeID = case_when(
       measurementType == "lifeStage" ~ "http://vocab.nerc.ac.uk/collection/P01/current/LSTAGE01/",
       measurementType == "sex" ~ "http://vocab.nerc.ac.uk/collection/P01/current/ENTSEX01/",
