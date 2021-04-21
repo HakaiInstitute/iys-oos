@@ -82,7 +82,7 @@ bongo_fnl$month <- as.numeric(format(as.Date(bongo_fnl$dateTime), "%m"))
 bongo_fnl$day <- as.numeric(format(as.Date(bongo_fnl$dateTime), "%d"))
 ```
 
-Dataframes are created for each unique `eventID` layer (cruise, station, cast, sample), with unique associated columns. Eventually, the data frames get joined, and the event Core gets saved locally and in Google Drive. A visual diagram of the structure of the Bongo dataset is provided [here](https://app.diagrams.net/#G1YG5AVLwawocrr18XwbZG-1mDwwcc4ewM). For the Event Core, most of the information for the unique layers can come from the `bongo_fnl` dataframe, whereas information pertaining specifically to the sample_ids will have to come from the `bongo` dataframe. 
+Dataframes are created for each unique `eventID` layer (cruise, station, cast, sample), with unique associated columns. Eventually, the data frames get joined, and the event Core gets saved locally and in Google Drive. A visual diagram of the structure of the Bongo dataset is provided [here](https://lucid.app/lucidchart/71f5b051-7eae-4ad6-94b0-f4234037cb62/edit?beaconFlowId=3DD847BF3F2E52DA&page=0_0#). For the Event Core, most of the information for the unique layers can come from the `bongo_fnl` dataframe, whereas information pertaining specifically to the sample_ids will have to come from the `bongo` dataframe. 
 
 No Bongo sets were conducted at station 51 and 52 due to bad weather, so no coordinates were collected (reflected as 'ND'). Therefore, these need to be removed before calculating the associated coordinateUncertaintyInMeters. However in the final event Core they need to be added (to station level), along with associated fieldNotes/eventRemarks. 
 
@@ -141,9 +141,7 @@ bongo_sample <- bongo %>%
   mutate(type = "bongo net sampleID")
 
 bongo_event <- bind_rows(bongo_project, bongo_cruise, bongo_station, bongo_cast, bongo_sample) %>% 
-  mutate(basisOfRecord = "HumanObservation", 
-         #should any sample from Net2 be PreservedSpecimen, and samples from Net 1 be "Human Observation"?
-         geodeticDatum = "EPSG:4326")
+  mutate(geodeticDatum = "EPSG:4326")
 
 # To do: figure out way to flatten the event core. 
 bongo_event <- obistools::flatten_event(bongo_event)
@@ -667,7 +665,9 @@ I change bongo_occ_fnl into a new dataframe (bongo2019_occ_ext) because we're go
 Next, the two occurrence extensions (1 - occurrences in Net 1 for the abundance / community composition study, 2 - occurrences in Net 2 for the isotope / fatty acid analysis) are combined, and saved:
 
 ```{r bongo2019 occ full, eval = FALSE}
-bongo2019_zoo_ext <- plyr::rbind.fill(bongo2019_taxa_abundance, bongo2019_occ_ext) 
+bongo2019_zoo_ext <- plyr::rbind.fill(bongo2019_taxa_abundance, bongo2019_occ_ext)  %>%
+ mutate(basisOfRecord = "HumanObservation") 
+         #should any sample from Net2 be PreservedSpecimen, and samples from Net 1 be "Human Observation"?
 
 # Check for duplicated occurrenceIDs:
 bongo2019_zoo_ext %>% janitor::get_dupes(occurrenceID) # Should be none!
@@ -684,9 +684,7 @@ drive_upload(here("Bongo", "tidy_data", "bongo_occ.csv"),
 
 ## extended measurementOrFact (eMOF) extension
 
-In our extended measurementOrFact table(s), we associate the measurements to either the `eventID` (if species does not have an associated WoRMS URN), or the `occurrenceID` (if species has WoRMS URN). Measurements or facts pertaining to the sampling event will be linked to the `event` layer. 
-
-As a first step though, we associate the _seafloor depth_, _sampleSizeValue_ and _sampleSizeUnit_ to the cast. There is still debate on whether the sampleSizeValue and sampleSizeUnit need to be included, as we are essentially recording metadata in the data. Do note that that this extension is for measurements and _facts_, and these Bongo net details are _facts_ linked to the Event. For the time being therefore, this information is recorded in this extension. 
+In our extended measurementOrFact table(s), we associate sampling measurements and effort to either `eventID`, and biometric measurements to the `occurrenceID`. 
 
 ``` {r bongo_bottomdepth, eval = FALSE}
 bongo_bottomdepth <- bongo %>% 
@@ -786,13 +784,10 @@ bongo_samplingmethod <- bind_rows(bongo_bottomdepth, bongo_sampling,
 write_csv(bongo_samplingmethod, here("Bongo", "tidy_data", "bongo2019_emof_samplingmethod.csv"))
 ```
 
-Though an occurrenceID was not created for each data entry, measurements can be linked either directly to the `eventID` or to the `occurrenceID`. The following measurements are linked to either the `eventID` or `occurrenceID`: `length_mm`, `length_type`, and `weight_mg`. 
-
-
-When the species or genus has been identified, the measurements are associated to the `occurrenceID`. This will be included in a second eMOF extension (emof2):  
+Biometric measurements are associated to the `occurrenceID`: 
 
 ``` {r, eval = FALSE}
-bongo_emof2 <- bongo2019_occ_fnl %>%
+bongo_emof <- bongo2019_occ_fnl %>%
   select(eventID, occurrenceID,
          scientificName,
          individualCount = number,
@@ -804,37 +799,37 @@ bongo_emof2 <- bongo2019_occ_fnl %>%
   mutate_all(as.character)
 ```
 
-Within this dataframe, there are still the data entries that have a length measurements associated to them that's a range (i.e., 15 - 17mm). For these `occurrenceID`s we want to split this column into two, with minimumLength and maximumLength. Afterwards, that dataframe can be merged back in with bongo_emof2. 
+Within this dataframe, there are still the data entries that have a length measurements associated to them that's a range (i.e., 15 - 17mm). For these `occurrenceID`s we want to split this column into two, with minimumLength and maximumLength. Afterwards, that dataframe can be merged back in with bongo_emof. 
 
 ``` {r, eval = FALSE}
-range <- bongo_emof2 %>%
-  filter(grepl("-", bongo_emof2$length)) %>%
+range <- bongo_emof %>%
+  filter(grepl("-", bongo_emof$length)) %>%
   separate(length, c("minimumLength", "maximumLength")) %>%
   mutate(length = NA)
 range$maximumLength <- gsub("mm", "", range$maximumLength) 
 
 # Remove any rows from bongo_emof2 where length_mm contains a range, add two dummy columns (minimumLength and maximumLength) and use rbind() to merge `range` with this newly created dataframe.
 
-temp <- bongo_emof2[ -grep("-", bongo_emof2$length), ] %>%
+temp <- bongo_emof[ -grep("-", bongo_emof$length), ] %>%
   mutate(minimumLength = NA,
          maximumLength = NA)
 
-bongo_emof2 <- rbind(range, temp)
+bongo_emof <- rbind(range, temp)
 
 # In this dataframe there are reported numbers that indicate a minimum number counted (i.e. >1). This will be reported in measurementRemarks:
-bongo_emof2$measurementRemarks <- ifelse(grepl(">", bongo_emof2$individualCount), "Count value represents a minimum", NA)
-bongo_emof2$individualCount <- gsub(">", "", bongo_emof2$individualCount)
+bongo_emof$measurementRemarks <- ifelse(grepl(">", bongo_emof$individualCount), "Count value represents a minimum", NA)
+bongo_emof$individualCount <- gsub(">", "", bongo_emof$individualCount)
 
 # Additionally, there are reported values under "length" that indicate a minimum length (i.e. >4mm):
-bongo_emof2$minimumLength <- ifelse(grepl(">4mm", bongo_emof2$length), "4", bongo_emof2$minimumLength)
-bongo_emof2$minimumLength <- ifelse(grepl(">2mm", bongo_emof2$length), "2", bongo_emof2$minimumLength)
-bongo_emof2$length <- gsub(">", NA, bongo_emof2$length)
+bongo_emof$minimumLength <- ifelse(grepl(">4mm", bongo_emof$length), "4", bongo_emof$minimumLength)
+bongo_emof$minimumLength <- ifelse(grepl(">2mm", bongo_emof$length), "2", bongo_emof$minimumLength)
+bongo_emof$length <- gsub(">", NA, bongo_emof$length)
 ```
 
 Furthermore, for observations of Animalia where length is measured, this represents a minimum length value. These are organisms that were filtered out using a specific sieve. These sieves were 4.0, 2.0, 1.0, 0.5 and 0.25. Therefore, if a length of 0.25 is reported, this is the minimum length, and the maximum length of that species will be 0.5 (any bigger and it would have been filtered out by the larger sieve size). 
 
 ``` {r, eval = FALSE}
-sieve <- bongo_emof2 %>%
+sieve <- bongo_emof %>%
   filter(scientificName == "Animalia" & !is.na(length))
 
 sieve1 <- sieve %>%
@@ -857,8 +852,8 @@ sieve2 <- sieve %>%
 sieve <- rbind(sieve1, sieve2)
 sieve_occs <- sieve$occurrenceID
 
-temp2 <- bongo_emof2[ !bongo_emof2$occurrenceID %in% sieve_occs,]
-bongo_emof2 <- rbind(sieve, temp2)
+temp2 <- bongo_emof[ !bongo_emof$occurrenceID %in% sieve_occs,]
+bongo_emof <- rbind(sieve, temp2)
 ```
 
 So now we have a dataframe where:
@@ -868,7 +863,7 @@ So now we have a dataframe where:
 To fit this into DwC format, all columns but 'measurementRemarks' need to be pivotted to fit a long format:
 
 ``` {r, eval = FALSE}
-bongo_emof2 <- bongo_emof2 %>%
+bongo_emof <- bongo_emof %>%
   mutate_all(as.character) %>%
   pivot_longer(cols = c(individualCount, maximumLength, weight, lifeStage, sex, 
                         reproductiveCondition, minimumLength, maximumLength, length),
@@ -908,7 +903,7 @@ bongo_emof2 <- bongo_emof2 %>%
     ))
 
 # There are fields under measurementValue that are "NA" or NA. These need to be removed from the eMOF extension. Additionally, a lot of weight measurements are "TBD". I have filtered out these rows as well. 
-bongo_emof2 <- bongo_emof2 %>% filter(!is.na(measurementValue)) %>% filter(measurementValue != "NA") %>%
+bongo_emof <- bongo_emof %>% filter(!is.na(measurementValue)) %>% filter(measurementValue != "NA") %>%
   filter(measurementValue != "TBD")
 ```
 
@@ -929,7 +924,7 @@ bongo_measurementRemarks <- bongo_measurementRemarks %>%
   distinct()
 
 # Save measurements (eMOF) related to the length and weight measurements:
-bongo2019_net2_emof <- merge(bongo_emof2, bongo_measurementRemarks,
+bongo2019_net2_emof <- merge(bongo_emof, bongo_measurementRemarks,
                       by = c("eventID"), all = T)
 
 write_csv(bongo2019_net2_emof, here("Bongo", "tidy_data", "bongo2019_emof_Net2.csv"))
@@ -1009,29 +1004,16 @@ Finally, join all the tables together to form the measurementOrFact extension, a
 
 ``` {r bongo_measurementOrFact Core, eval = FALSE}
 bongo_measurementOrFact <- bind_rows(bongo_bottomdepth, bongo_sampling, 
-                                     bongo_instrument, bongo_emof, bongo_emof2,
+                                     bongo_instrument, bongo_emof,
                                      bongo_emof_abun)
 bongo_measurementOrFact <- merge(bongo_measurementOrFact, bongo_measurementRemarks,
                                  by = c("eventID", "measurementRemarks"), all = T) %>%
-  select(
-    eventID,
-    occurrenceID,
-    measurementID,
-    measurementType,
-    measurementTypeID,
-    measurementValue,
-    measurementValueID,
-    measurementUnit,
-    measurementUnitID,
-    measurementRemarks) %>% distinct()
+  select(eventID, occurrenceID, measurementID, measurementType, measurementTypeID, measurementValue,
+        measurementValueID, measurementUnit, measurementUnitID, measurementRemarks) %>% 
+    distinct()
 
 # If you want to change the order of the eventID, use:
 bongo_measurementOrFact <- bongo_measurementOrFact[mixedorder(as.character(bongo_measurementOrFact$eventID)),]
-
-# After manual inspection of the bongo_measurementOrFact extension: 
-# remove rows where measurementValue is NA or NA: 
-bongo_measurementOrFact <- bongo_measurementOrFact[!(bongo_measurementOrFact$measurementValue == "NA") | 
-                                                   !(bongo_measurementOrFact$measurementValue == "ND"),]
 
 # If measurementValue is NA AND measurementRemarks is NA, these rows need to be omitted as well:
 bongo_measurementOrFact <- bongo_measurementOrFact[!with(bongo_measurementOrFact, is.na(measurementValue) & 
