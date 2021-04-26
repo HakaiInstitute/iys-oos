@@ -40,7 +40,7 @@ trawl2019 <- read_excel(here("Trawl", "2019", "raw_data",
 trawl2019$END_DEPLOYMENT_TIME <- substr(as.POSIXct(sprintf("%04.0f", trawl2019$END_DEPLOYMENT_TIME), format = "%H%M"), 12, 16)
 trawl2019$BEGIN_RETRIEVAL_TIME <- substr(as.POSIXct(sprintf("%04.0f", trawl2019$BEGIN_RETRIEVAL_TIME), format = "%H%M"), 12, 16)
 
-# Not sure if the following code is the most efficient:
+# Need to tidy up the following lines of code:
 trawl2019 <- trawl2019 %>%
   mutate(eventDate_start = paste(EVENT_DATE_START, END_DEPLOYMENT_TIME),
          eventDate_start = str_replace(eventDate_start, " ", "T"),
@@ -80,7 +80,7 @@ trawl2019_specimen <- read_excel(here("Trawl", "2019", "raw_data", "2019_GoA_Fis
 
 ## Event Core 
 
-Next, dataframes are created for each unique `eventID` layer, with unique associated columns. Eventually, the data frames get joined, and the eventCore gets saved locally and in Google Drive. The column `eventRemarks` is not a required column, but includes descriptive information pertaining to any issues that arose during the setting of the trawl net. 
+Next, dataframes are created for each unique `eventID` layer, with unique associated columns. Eventually, the data frames get joined, and the Event Core gets saved locally and in Google Drive. The column `type` is not a required column, but includes descriptive information pertaining to any issues that arose during the setting of the trawl net. 
 
 ``` {r trawl_event, eval = FALSE}
 trawl2019_project <- trawl2019 %>%
@@ -100,7 +100,8 @@ trawl2019_station <- trawl2019 %>%
   distinct(eventID, .keep_all = TRUE) %>%
   mutate(type = "station")
 
-# The coordinates associated to the trawl need to be presented in a LINESTRING:
+# The coordinates associated to the trawl need to be presented in a LINESTRING.
+# END_LONGITUDE_DD needs to be inverted (has to be between -180 and 180, inclusive). 
 trawl2019_coordinates <- trawl2019 %>%
   select(eventID = trawl,
          START_LATITUDE_DD,
@@ -125,7 +126,7 @@ trawl2019_trawl <- trawl2019 %>%
          fieldNotes = PROBLEM_DESCRIPTION) %>%
   mutate(minimumDepthInMeters = 0, # trawl was at the surface
          maximumDepthInMeters = max(trawl2019$MOUTH_OPENING_WIDTH),
-         samplingProtocol = "surface trawl", # if possible add DOI to paper here
+         samplingProtocol = "surface trawl", # when available add DOI to paper here
          locality = case_when(
            trawl2019$EVENT_SUB_TYPE == "Can EEZ" ~ "Canadian EEZ"),
          locationID = case_when(
@@ -162,17 +163,15 @@ drive_upload(here("Trawl", "2019", "tidy_data", "trawl2019_event.csv"),
 
 ## Occurrence
 
-As the trawl data consists of biotic data, an occurrence extension table is created, whereby unique `occurrenceIDs` get linked to the `eventID`. The `occurrenceID` is created from the `eventID`, and any measurements pertaining to the overall catch _or_ specific individual will be associated to that `occurrenceID` in the extended MeasurementOrFact (eMOF) extension.
+As the trawl data consists of biotic data, an occurrence extension table is created, whereby unique `occurrenceIDs` get linked to the `eventID`. The `occurrenceID` is created from, and nested under, the `eventID`, and any measurements pertaining to the overall catch _or_ specific individual will be associated to that `occurrenceID` in the extended MeasurementOrFact (eMOF) extension.
 
-The Occurrence extension will consist of two tables merged, one from the aggregated (summary) catch data (`catch_final`), and one from the individual length and weight measurements. There will be unique `occurrenceIDs` related to the trawl layer in Event Core. Measurements associated with this `occurrenceID` will be total species' catch biomass and total number caught. The `occurrenceID` for the aggregated catch data will have the format `IYS:GoA2019_Stn1:trawl:occ-1`. An additional layer in the Event Core (sample) was created so that other unique `occurrenceIDs` can be linked to that layer, with `occurrenceIDs` having the format `IYS:GoA2019_Stn1:trawl:sample1:occ-1`. Measurements linked to these `occurrenceIDs` are individual length and weight. For a diagram on the relational database structure, see [here](https://lucid.app/lucidchart/a1d199b4-ef42-45fc-a384-273925fef7d7/edit?page=0_0#). Additionally, a column `occurrenceRemarks` will be included to indicate that that specific `occurrenceID` is a subset of the aggregated catch data. 
+The Occurrence extension will consist of two tables merged, one from the aggregated (summary) catch data (`catch_final`), and one from the individual length and weight measurements. There will be unique `occurrenceIDs` associated to the trawl layer in Event Core. Measurements associated with this `occurrenceID` will be total species' catch biomass and total number caught. The `occurrenceID` for the aggregated catch data will have the format `IYS:GoA2019_Stn1:trawl:occ-1`. An additional layer in the Event Core (sample) was created so that other unique `occurrenceIDs` can be linked to that layer, with `occurrenceIDs` having the format `IYS:GoA2019_Stn1:trawl:sample:1:occ-1`. Measurements linked to these `occurrenceIDs` are individual length and weight. Once more data becomes available for individual fish specimen, these will be added at a later stage. For a diagram on the relational database structure, see [here](https://lucid.app/lucidchart/a1d199b4-ef42-45fc-a384-273925fef7d7/edit?page=0_0#). Additionally, a column `occurrenceRemarks` will be included to indicate that that specific `occurrenceID` is a subset of the aggregated catch data. 
 
 For discussion on how `occurrenceIDs` are linked to different layers, see [here](https://github.com/iobis/env-data/issues/10).
 
 A required column for the Occurrence extension is the term, `occurrenceStatus`, which is used to determine presence/absence of data. The package `worrms` is used to generate hierarchical taxonomic information on the species observed. For the `scientificNameID`, we look up the species on the WoRMS website (http://www.marinespecies.org/). 
 
-Finally, we can do a quick check to make sure that all the unique species are included in the trawl_occ dataframe. We need to make sure that the output is TRUE. If confirmed, the Occurrence extension can be saved locally and in the correct Google Drive folder. We also need to make sure that _if_ columns 'SPECIES' or 'SPECIES (Description if needed)' make mention of a lifestage, or sex, we need to include this in the occurrence extension under separate columns. 
-
-The column `species` in DwC terms is referred to as the `specificEpithet`.
+Finally, we can do a quick check to make sure that all the unique species are included in the Occurrence extension dataframe. Once confirmed that all species listed and recorded in the original Processed Data are also included in the Standardized Data, the Occurrence extension can be saved locally and in the correct Google Drive folder. We also need to make sure that _if_ columns 'SPECIES' or 'SPECIES (Description if needed)' make mention of a lifestage, or sex, we need to include this in the occurrence extension under separate columns. Please be aware that the column `species` in DwC terms is referred to as the `specificEpithet`.
 
 ``` {r trawl2020_occ, eval = FALSE}
 trawl2019_allCatch <- trawl2019_allCatch %>% 
@@ -193,7 +192,7 @@ unidentified_species <- trawl2019_allCatch_taxa %>% filter(is.na(AphiaID)) %>% d
 
 A total of 6 species could not be matched to a record within the WoRMS database. Most often this is due to spelling errors, the inclusion of '.sp', or the lack of supplying a Latin name. I manually check these species in the WoRMS database and confirm with the data provider that the suggested species are the ones meant. These species will then be corrected in the trawl2019_allCatch_taxa data frame. 
 
-- [ ] TO DO: Confirm corrections with Chrys Neville. 
+- [ ] TO DO: Confirm corrections below with Chrys Neville. 
 
 ``` {r trawl2020_occ cont, eval = FALSE}
 trawl2019_allCatch$scientificname <- gsub("Phacellophora camtshchatica", "Phacellophora camtschatica", 
@@ -228,7 +227,7 @@ trawl2019_occ_fnl <- trawl2019_occ %>%
          class, order, family, genus.y, lifeStage, sex)
 ```
 
-So now we have created the first Occurrence extension table, which comes from the overall catch data. In the trawl2019_allCatch dataframe, column `Length (N)` indicates how many individuals at each trawl were measured for their lengths. In the next section, we create a second occurrence extension table, with `occurrenceID`s created for each unique individual whose length has been measured. A column will have to be added to indicate that the individual measurements are a subset of the overall catch at that station (`occurrenceRemarks`?). 
+So now we have created the first Occurrence extension table, which comes from the overall catch data. Please note that this extension does _not_ include information on count, this will be added in the extended MeasurementOrFact (eMOF) extension. In the next section, we create a second occurrence extension table, with `occurrenceID`s created for each unique individual whose length has been measured. This information will come from the `2019_GoA_Fish_Speciment_data.xlsx` file. A column will have to be added to indicate that the individual measurements are a subset of the overall catch at that station (`occurrenceRemarks`). 
 
 ``` {r occ_species, eval = FALSE}
 trawl2019_catch_ind <- trawl2019_specimen %>%
@@ -245,7 +244,7 @@ trawl2019_catch_ind$identificationQualifier <- ifelse(grepl("\\b sp.\\b|\\b sp. 
                                                      "sp. inc.", NA)
 trawl2019_catch_ind$scientificname <- gsub("\\b sp.\\b|\\b sp. 1\\b", "", trawl2019_catch_ind$scientificname)
 
-
+# Make minor adjustments to recorded species name to ensure match with WoRMS database:
 trawl2019_catch_ind$scientificname <- gsub("Moroteuthis robusta", "Moroteuthis robustus", trawl2019_catch_ind$scientificname)
 trawl2019_catch_ind$scientificname <- gsub("Chrysaora melonaster", "Chrysaora melanaster", trawl2019_catch_ind$scientificname)
 
@@ -270,7 +269,7 @@ trawl2019_catch_ind_fnl <- trawl2019_catch_ind_occ %>%
          class, order, family, genus.y, occurrenceRemarks, identificationQualifier,
          SEX_CODE)
 
-# sex and lifestage is recorded in the SEX_CODE column: 
+# sex and lifestage is recorded in the SEX_CODE column - information in this column needs to be split out in separate columns matching DwC terminology: 
 trawl2019_catch_ind_fnl <- trawl2019_catch_ind_fnl %>%
   mutate(sex = case_when(
     SEX_CODE == "M" ~ "male",
@@ -310,7 +309,23 @@ obistools::plot_map_leaflet(trawl2019_event_occ) # Issue: Station 20 does not ha
 
 We create a few measurements or fact tables initially - one for the measurements pertaining to the overall catch (catch_weight and total catch numbers), and one with the measurements pertaining to selected individuals (individual length and weight). These tables will eventually be merged into a single extended measurementOrFact (eMOF) extension. 
 
-Additionally, we need to create eMOF tables with measurements pertaining to the sampling event: tow speed, etc. These come from the `trawl2019` dataset. Variables in the samplingEffort category are `tow_speed`, `tow_duration`, `tow_distance` and `tow_direction`. There is also data collected on bottom depth, every 15 minutes. We save these tables separately, and also combine them to form one final eMOF extension. Through the IPT, multiple eMOF extensions can be uploaded if preferred. 
+Additionally, we need to create eMOF tables with measurements pertaining to the sampling event: tow speed, etc. These come from the `trawl2019` dataset. Variables in the samplingEffort category are `tow_speed`, `tow_duration`, `tow_distance` and `tow_direction`. There is also data collected on bottom depth, every 15 minutes. We save these tables separately, and also combine them to form one final eMOF extension. Through the IPT, multiple eMOF extensions can be uploaded if preferred. Including them all in a single extension might make it too big. 
+
+Following the [trawl diagram](https://lucid.app/lucidchart/02b19f65-6072-4633-b4a8-ea1557fdf51a/edit?page=0_0#), information on the research vessel gets added to the `cruise` layer in the Event Core:
+
+``` {r research_vessel, eval = FALSE}
+trawl2019_rv <- trawl2019 %>%
+  select(eventID = cruise) %>%
+  mutate_all(as.character) %>%
+  mutate(measurementType = "Research Vessel",
+         measurementTypeID = "http://vocab.nerc.ac.uk/collection/L06/current/31/",
+         measurementValue = "R/V Prof. Kaganovskiy",
+         measurementValueID = "http://vocab.nerc.ac.uk/collection/C17/current/90ZH/",
+         measurementUnit = NA,
+         measurementUnitID = NA) %>% distinct()
+```
+
+Next, information on the bottom depth throughout the trawl is added: 
 
 ```{r bottomdepth, eval = FALSE}
 trawl2019_bottomdepth <- trawl2019 %>%
