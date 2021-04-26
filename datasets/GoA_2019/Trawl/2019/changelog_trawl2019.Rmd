@@ -9,12 +9,23 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-This document outlines all the changes made to the original Processed Data, to facilitate standardization of data. The original Processed Data is still in Google Drive. 
+# CHANGELOG
 
-Changes made in the 2019_GoA_Fish_Trawl_catchdata file: 
+All notable changes to this project will be documented in this file. This document outlines all the changes made to the original Processed Data file (`2019_GoA_Fish_Trawl_catchdata`), to facilitate standardization of data. The original Processed Data is still in Google Drive, [here](). The standardization script also includes changes made to the Processed Data to facilitate publication of the Standardized Data to the Ocean Biodiversity Information System (OBIS), however those changes were _not_ made to the original Processed Data file and can be determined from the .Rmd file.  
+
+### Changes to 2019_GoA_Fish_Trawl_catchdata 
 
 *  (мол.) is removed from the `species` column. 
 * The column `SEA_STATE_ID` reflects the wave height, according to the metadata sheet. In this column, зыбь is replaced with its English translation 'swell'.
+* For Tow_number 19, the EVENT_DATE is Feb 28. I need to confirm with the data provider (Chrys Neville) that this the day that the trawl net was retrieved (at 00:02), but it was deployed on February 27. 
+
+### Added
+
+* Two columns were added: `eventDate_trawl_start` and `eventDate_trawl_finish`. The reason for this is that originally only one column (`EVENT_DATE`) was used to provide the date of trawl. However, some trawls were done at night and carried over into the following day. To facilitate standardization to ISO-8601 format, `eventDate_trawl_start` and `eventDate_trawl_finish` were included. 
+
+### Data Limitations
+
+The `CATCH_FINAL` sheet includes columns for adult and juveniles. However, this information is not included in the occurrence extension within the Standardized Data because it appears the only distinction made is whether the catch data includes adults or juveniles (y), and it is not specific to taxonomic occurrence. 
 
 Changes made in the 2019_GoA_Fish_Specimen_data file:
 
