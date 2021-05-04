@@ -40,14 +40,14 @@ trawl2019 <- read_excel(here("Trawl", "2019", "raw_data",
 trawl2019$END_DEPLOYMENT_TIME <- substr(as.POSIXct(sprintf("%04.0f", trawl2019$END_DEPLOYMENT_TIME), format = "%H%M"), 12, 16)
 trawl2019$BEGIN_RETRIEVAL_TIME <- substr(as.POSIXct(sprintf("%04.0f", trawl2019$BEGIN_RETRIEVAL_TIME), format = "%H%M"), 12, 16)
 
-# Need to tidy up the following lines of code:
+# Additionally, the vessel time is recorded in 'Vladivostok' according to the metadata tab. This has to be converted to UTC.  
 trawl2019 <- trawl2019 %>%
-  mutate(eventDate_start = paste(EVENT_DATE_START, END_DEPLOYMENT_TIME),
-         eventDate_start = str_replace(eventDate_start, " ", "T"),
-         eventDate_start = paste0(eventDate_start, "Z"),
-         eventDate_finish = paste(EVENT_DATE_FINISH, BEGIN_RETRIEVAL_TIME),
-         eventDate_finish = str_replace(eventDate_finish, " ", "T"),
-         eventDate_finish = paste0(eventDate_finish, "Z"),
+  mutate(eventDate_start = format_iso_8601(as.POSIXct(paste(EVENT_DATE_START, END_DEPLOYMENT_TIME),
+                                                      tz = "Asia/Vladivostok")),
+         eventDate_start = str_replace(eventDate_start, "\\+00:00", "Z"),
+         eventDate_finish = format_iso_8601(as.POSIXct(paste(EVENT_DATE_FINISH, BEGIN_RETRIEVAL_TIME),
+                                                       tz = "Asia/Vladivostok")),
+         eventDate_finish = str_replace(eventDate_finish, "\\+00:00", "Z"),
          eventDate = paste(eventDate_start, eventDate_finish, sep = "/"),
          project = "IYS",
          cruise = paste(project, "GoA2019", sep = ":"), 
@@ -73,7 +73,7 @@ trawl2019_specimen <- read_excel(here("Trawl", "2019", "raw_data", "2019_GoA_Fis
          station = paste(cruise, TOW_NUMBER, sep = "_Stn"),
          trawl = paste(station, "trawl", sep = ":"),
          sample = paste(trawl, "sample", sep = ":"),
-         sample = paste(sample, row_number(), sep = ":"))
+         sample = paste(sample, row_number(), sep = ""))
 ```
 
 ***
@@ -165,15 +165,17 @@ drive_upload(here("Trawl", "2019", "tidy_data", "trawl2019_event.csv"),
 
 As the trawl data consists of biotic data, an occurrence extension table is created, whereby unique `occurrenceIDs` get linked to the `eventID`. The `occurrenceID` is created from, and nested under, the `eventID`, and any measurements pertaining to the overall catch _or_ specific individual will be associated to that `occurrenceID` in the extended MeasurementOrFact (eMOF) extension.
 
-The Occurrence extension will consist of two tables merged, one from the aggregated (summary) catch data (`catch_final`), and one from the individual length and weight measurements. There will be unique `occurrenceIDs` associated to the trawl layer in Event Core. Measurements associated with this `occurrenceID` will be total species' catch biomass and total number caught. The `occurrenceID` for the aggregated catch data will have the format `IYS:GoA2019_Stn1:trawl:occ-1`. An additional layer in the Event Core (sample) was created so that other unique `occurrenceIDs` can be linked to that layer, with `occurrenceIDs` having the format `IYS:GoA2019_Stn1:trawl:sample:1:occ-1`. Measurements linked to these `occurrenceIDs` are individual length and weight. Once more data becomes available for individual fish specimen, these will be added at a later stage. For a diagram on the relational database structure, see [here](https://lucid.app/lucidchart/a1d199b4-ef42-45fc-a384-273925fef7d7/edit?page=0_0#). Additionally, a column `occurrenceRemarks` will be included to indicate that that specific `occurrenceID` is a subset of the aggregated catch data. 
+The Occurrence extension will consist of two tables merged, one from the aggregated (summary) catch data (`catch_final`), and one from the individual length and weight measurements. There will be unique `occurrenceIDs` associated to the trawl layer in Event Core. Measurements associated with this `occurrenceID` will be total species' catch biomass and total number caught. The `occurrenceID` for the aggregated catch data will have the format `IYS:GoA2019_Stn1:trawl:occ-1`. An additional layer in the Event Core (sample) was created so that other unique `occurrenceIDs` can be linked to the individual level, with `occurrenceIDs` having the format `IYS:GoA2019_Stn1:trawl:sample1:occ-1`. Measurements linked to these `occurrenceIDs` are individual length and weight. Once more data becomes available for individual fish specimen, these will be added at a later stage. For a diagram on the relational database structure, see [here](https://lucid.app/lucidchart/02b19f65-6072-4633-b4a8-ea1557fdf51a/edit?page=0_0#).
+
+Additionally, a `resourceRelationship` extension will be created that will allow data users to understand that some `occurrenceID`s will be a subset ('located within') of the aggregated data. 
 
 For discussion on how `occurrenceIDs` are linked to different layers, see [here](https://github.com/iobis/env-data/issues/10).
 
-A required column for the Occurrence extension is the term, `occurrenceStatus`, which is used to determine presence/absence of data. The package `worrms` is used to generate hierarchical taxonomic information on the species observed. For the `scientificNameID`, we look up the species on the WoRMS website (http://www.marinespecies.org/). 
+A required term (column) for the Occurrence extension is `occurrenceStatus`, which is used to define presence/absence of a taxonomic record. The package `worrms` is used to generate hierarchical taxonomic information on the species observed. For the `scientificNameID`, the package pulls the Life Science Identifier (LSID) from the WoRMS database (http://www.marinespecies.org/). 
 
 Finally, we can do a quick check to make sure that all the unique species are included in the Occurrence extension dataframe. Once confirmed that all species listed and recorded in the original Processed Data are also included in the Standardized Data, the Occurrence extension can be saved locally and in the correct Google Drive folder. We also need to make sure that _if_ columns 'SPECIES' or 'SPECIES (Description if needed)' make mention of a lifestage, or sex, we need to include this in the occurrence extension under separate columns. Please be aware that the column `species` in DwC terms is referred to as the `specificEpithet`.
 
-``` {r trawl2020_occ, eval = FALSE}
+``` {r trawl2019_occ, eval = FALSE}
 trawl2019_allCatch <- trawl2019_allCatch %>% 
   mutate(scientificname = paste(genus, species, sep = " "))
 
@@ -181,7 +183,7 @@ trawl2019_allCatch <- trawl2019_allCatch %>%
 trawl2019_allCatch$identificationQualifier <- ifelse(grepl("\\b sp.\\b|\\b sp\\b", trawl2019_allCatch$scientificname),
                                                      "sp. inc.", NA)
 trawl2019_allCatch$scientificname <- gsub("\\b sp.\\b|\\b sp\\b", "", trawl2019_allCatch$scientificname)
-trawl2019_allCatch$species <- gsub("sp.|sp", NA, trawl2019_allCatch$species)
+trawl2019_allCatch$species <- gsub("\\bsp.\\b|\\bsp\\b", NA, trawl2019_allCatch$species)
          
 trawl2019_allCatch_sn <- worrms::wm_records_names(unique(trawl2019_allCatch$scientificname)) %>% bind_rows()
 trawl2019_allCatch_taxa <- left_join(trawl2019_allCatch, trawl2019_allCatch_sn, by = "scientificname")
@@ -194,7 +196,7 @@ A total of 6 species could not be matched to a record within the WoRMS database.
 
 - [ ] TO DO: Confirm corrections below with Chrys Neville. 
 
-``` {r trawl2020_occ cont, eval = FALSE}
+``` {r trawl2019_occ cont, eval = FALSE}
 trawl2019_allCatch$scientificname <- gsub("Phacellophora camtshchatica", "Phacellophora camtschatica", 
                                           trawl2019_allCatch$scientificname)
 trawl2019_allCatch$scientificname <- gsub("Ctenephores", "Ctenophora", trawl2019_allCatch$scientificname)
@@ -212,7 +214,8 @@ trawl2019_occ <- left_join(trawl2019_allCatch, trawl2019_allCatch_worms, by = "s
          taxonomicStatus = status,
          taxonRank = rank,
          scientificName = scientificname,
-         scientificNameID = lsid) %>%
+         scientificNameID = lsid,
+         individualCount = `CATCH_COUNT (pieces)(**includes Russian expansion for some species)`) %>%
   mutate(occurrenceID = paste(eventID, "occ", sep = ":"),
          occurrenceID = paste(occurrenceID, row_number(), sep = "-"),
          occurrenceStatus = "present",
@@ -222,12 +225,14 @@ trawl2019_occ <- left_join(trawl2019_allCatch, trawl2019_allCatch_worms, by = "s
 # By joining those two dataframes, the column 'genus' is duplicated. Make sure to select the proper genus column, the one generated from the worrms package: 
 trawl2019_occ_fnl <- trawl2019_occ %>%
   select(eventID, occurrenceID, occurrenceStatus,
-         specificEpithet, scientificName, scientificNameID, identificationQualifier,
-         scientificNameAuthorship, taxonomicStatus, taxonRank, kingdom, phylum, 
-         class, order, family, genus.y, lifeStage, sex)
+         specificEpithet, scientificName, scientificNameID, individualCount,
+         identificationQualifier, scientificNameAuthorship, taxonomicStatus, 
+         taxonRank, kingdom, phylum, class, order, family, genus.y, lifeStage, sex)
 ```
 
-So now we have created the first Occurrence extension table, which comes from the overall catch data. Please note that this extension does _not_ include information on count, this will be added in the extended MeasurementOrFact (eMOF) extension. In the next section, we create a second occurrence extension table, with `occurrenceID`s created for each unique individual whose length has been measured. This information will come from the `2019_GoA_Fish_Speciment_data.xlsx` file. A column will have to be added to indicate that the individual measurements are a subset of the overall catch at that station (`occurrenceRemarks`). 
+So now we have created the first Occurrence extension table, which comes from the overall catch data. Please note that this extension does _not_ include information on count, this will be added in the extended MeasurementOrFact (eMOF) extension. In the next section, we create a second occurrence extension table, with `occurrenceID`s created for each unique individual whose length has been measured. This information will come from the `2019_GoA_Fish_Speciment_data.xlsx` file. 
+
+Once the Occurrence extensions are combined, a column will have to be added to indicate that the individual taxonomic records (as presented in the `trawl2019_catch_ind` dataframe) are a subset of the overall catch at that station. We will use the column `occurrenceRemarks` for this.  
 
 ``` {r occ_species, eval = FALSE}
 trawl2019_catch_ind <- trawl2019_specimen %>%
@@ -248,6 +253,8 @@ trawl2019_catch_ind$scientificname <- gsub("\\b sp.\\b|\\b sp. 1\\b", "", trawl2
 trawl2019_catch_ind$scientificname <- gsub("Moroteuthis robusta", "Moroteuthis robustus", trawl2019_catch_ind$scientificname)
 trawl2019_catch_ind$scientificname <- gsub("Chrysaora melonaster", "Chrysaora melanaster", trawl2019_catch_ind$scientificname)
 
+trawl2019_catch_ind$specificEpithet <- stringr::word(trawl2019_catch_ind$scientificname, 2)
+
 # So now we can run worrms::wm_records_names again, and there should be no NA in the AphiaID column.
 trawl2019_catch_ind_worms <- worrms::wm_records_names(unique(trawl2019_catch_ind$scientificname)) %>% bind_rows()
 
@@ -257,17 +264,15 @@ trawl2019_catch_ind_occ <- left_join(trawl2019_catch_ind, trawl2019_catch_ind_wo
          taxonRank = rank,
          scientificName = scientificname,
          scientificNameID = lsid) %>%
-  mutate(occurrenceID = paste(eventID, "occ", sep = ":"),
-         occurrenceID = paste(occurrenceID, row_number(), sep = "-"),
+  mutate(occurrenceID = paste(eventID, "occ", sep = "-"),
          occurrenceStatus = "present",
-         occurrenceRemarks = NA)
+         individualCount = 1)
 
 # By joining those two dataframes, the column 'genus' is duplicated. Make sure to select the proper genus column, the one generated from the worrms package: 
 trawl2019_catch_ind_fnl <- trawl2019_catch_ind_occ %>%
-  select(eventID, occurrenceID, occurrenceStatus, scientificName, scientificNameID,
-         scientificNameAuthorship, taxonomicStatus, taxonRank, kingdom, phylum, 
-         class, order, family, genus.y, occurrenceRemarks, identificationQualifier,
-         SEX_CODE)
+  select(eventID, occurrenceID, occurrenceStatus, scientificName, scientificNameID, individualCount,
+         specificEpithet, scientificNameAuthorship, taxonomicStatus, taxonRank, kingdom, phylum, 
+         class, order, family, genus.y, identificationQualifier, SEX_CODE)
 
 # sex and lifestage is recorded in the SEX_CODE column - information in this column needs to be split out in separate columns matching DwC terminology: 
 trawl2019_catch_ind_fnl <- trawl2019_catch_ind_fnl %>%
@@ -294,13 +299,6 @@ trawl2019_occ_ext <- trawl2019_occ_ext[match(order, trawl2019_occ_ext$occurrence
 
 # Save the occurrence Core locally and in Google Drive:
 write_csv(trawl2019_occ_ext, here("Trawl","2019", "tidy_data", "trawl2019_occ_final.csv"))
-```
-
-To quality control whether each species in the original specimen file has been accounted for in the final, combined occurrence extension, use the following chunk of code. We also have to check whether the unique species listed in the specimen file match the unique species listed in the overall catch file, where numbers have been aggregated. 
-
-``` {r trawl2020_occ_check}
-trawl2019_event_occ <- trawl2019_event %>% filter(!is.na(eventDate))
-obistools::plot_map_leaflet(trawl2019_event_occ) # Issue: Station 20 does not have lats and longs associated
 ```
 
 ***
@@ -340,9 +338,8 @@ trawl2019_bottomdepth <- trawl2019 %>%
                                   BOTTOM_DEPTH_START_METERS = "bottom_depth_trawl_start",
                                   BOTTOM_DEPTH_END_METERS = "bottom_depth_trawl_finish"),
          measurementTypeID = case_when(
-           measurementType == "bottom_depth_trawl_start" ~ "http://vocab.nerc.ac.uk/collection/P07/current/CFSN0481/",
-           measurementType == "bottom_depth_trawl_finish" ~ "http://vocab.nerc.ac.uk/collection/P07/current/CFSN0481/"),
-         # Perhaps this is better: http://vocab.nerc.ac.uk/collection/A05/current/EV_BATHY/
+           measurementType == "bottom_depth_trawl_start" ~ "http://vocab.nerc.ac.uk/collection/A05/current/EV_BATHY/",
+           measurementType == "bottom_depth_trawl_finish" ~ "http://vocab.nerc.ac.uk/collection/A05/current/EV_BATHY/"),
          measurementUnit = "meters"),
          measurementUnitID = case_when(
            measurementUnit == "meters" ~ "http://vocab.nerc.ac.uk/collection/P06/current/ULAA/"),
@@ -486,28 +483,51 @@ Next two eMOF extensions are created with measurements pertaining to overall spe
 ```{r eMoF}
 trawl2019_allcatch_measurement <- trawl2019_occ %>%
   select(occurrenceID,
-         organismQuantity,
-         Mass_net) %>%
+         individualCount,
+         Mass_net,
+         `length min (lmin)`,
+         `length max (lmax)`,
+         `age group ( for salmon 5= juv, 4 immature, 3 mature, 0 unknown)`) %>%
   mutate_all(as.character) %>%
-  pivot_longer(cols = c(organismQuantity, Mass_net),
+  pivot_longer(cols = individualCount:`age group ( for salmon 5= juv, 4 immature, 3 mature, 0 unknown)`,
                names_to = "measurementType",
                values_to = "measurementValue") %>%
   mutate(measurementType = recode(measurementType,
                                   Mass_net = "Total species biomass in net",
-                                  organismQuantity = "individualCount"),
+                                  `length min (lmin)` = "length_min",
+                                  `length max (lmax)` = "length_max",
+                                  `age group ( for salmon 5= juv, 4 immature, 3 mature, 0 unknown)` = "age_group"),
          measurementID = case_when(
            measurementType == "individualCount" ~ paste(occurrenceID, "individualCount", sep = "-"),
-           measurementType == "Total species biomass in net" ~ paste(occurrenceID, "biomass", sep = "-")),
+           measurementType == "Total species biomass in net" ~ paste(occurrenceID, "biomass", sep = "-"),
+           measurementType == "length_min" ~ paste(occurrenceID, "length_min", sep = "-"),
+           measurementType == "length_max" ~ paste(occurrenceID, "length_max", sep = "-"),
+           measurementType == "age_group" ~ paste(occurrenceID, "age_group", sep = "-")),
          measurementTypeID = case_when(
            measurementType == "Total species biomass in net" ~ "http://vocab.nerc.ac.uk/collection/S06/current/S0600088/",
-           measurementType == "individualCount" ~ "http://vocab.nerc.ac.uk/collection/P01/current/OCOUNT01/"),
+           measurementType == "individualCount" ~ "http://vocab.nerc.ac.uk/collection/P01/current/OCOUNT01/",
+           measurementType == "length_min" ~ "http://vocab.nerc.ac.uk/collection/P01/current/OBSMINLX/",
+           measurementType == "length_max" ~ "http://vocab.nerc.ac.uk/collection/P01/current/OBSMAXLX/",
+           measurementType == "age_group" ~ "http://vocab.nerc.ac.uk/collection/P01/current/LSTAGE01/"),
          measurementUnit = case_when(
            measurementType == "Total species biomass in net" ~ "kilogram",
-           measurementType == "individualCount" ~ "individuals"),
+           measurementType == "individualCount" ~ "individuals",
+           measurementType == "length_min" ~ "centimeters",
+           measurementType == "length_max" ~ "centimeters"),
          measurementUnitID = case_when(
            measurementUnit == "kilogram" ~ "http://vocab.nerc.ac.uk/collection/P06/current/KGXX/",
-           measurementUnit == "individuals" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UUUU/"),
-         measurementValueID = NA) %>%
+           measurementUnit == "individuals" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UUUU/",
+           measurementUnit == "centimeters" ~ "http://vocab.nerc.ac.uk/collection/P06/current/ULCM/"),
+         measurementValueID = case_when(
+           measurementValue == "0" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1131/",
+           measurementValue == "1" ~ " ",
+           measurementValue == "3" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1116/",
+           measurementValue == "4" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1171/",
+           measurementValue == "5" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1127/",
+           measurementValue == "3,4" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1145/",
+           measurementValue == "3,4,5" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1145/",
+           measurementValue == "4,5" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1127/"
+         )) %>%
   select(occurrenceID, measurementID, measurementType, measurementTypeID, measurementValue, measurementValueID,
          measurementUnit, measurementUnitID)
 ```
@@ -515,8 +535,6 @@ trawl2019_allcatch_measurement <- trawl2019_occ %>%
 Next, create the measurementOrFact extension with length and weight measurements assigned to the _individual_ specimens. Some changes here are made in the Processed Data: The `SEX_CODE` covers both sex (male, female, unknown) and lifestage (J - which is juvenile? or should it be i for immature?)
 
 - [ ] TO DO: Ask Chrys Neville which species were measured what way (total, fork, mantle length). 
-- [ ] TO DO: Ask Chrys what `SEX_CODE` = 3 represents.
-- [ ] TO DO: Ask Chrys what `SEX_CODE` = 'j' represents - juvenile? Or should it be i for immature (see metadata sheet)?
 
 ``` {r}
 trawl2019_ind_emof <- trawl2019_catch_ind_occ %>%
@@ -542,8 +560,8 @@ trawl2019_ind_emof <- trawl2019_catch_ind_occ %>%
          measurementTypeID = case_when(
            measurementType == "species length" ~ "http://vocab.nerc.ac.uk/collection/P01/current/OBSINDLX/",
            measurementType == "Standard length" ~ "http://vocab.nerc.ac.uk/collection/P01/current/SL01XX01/",
-           measurementType == "sex" ~ " ",
-           measurementType == "lifeStage" ~ " ",
+           measurementType == "sex" ~ "http://vocab.nerc.ac.uk/collection/P01/current/ENTSEX01/",
+           measurementType == "lifeStage" ~ "http://vocab.nerc.ac.uk/collection/P01/current/LSTAGE01/",
            measurementType == "total weight" ~ "http://vocab.nerc.ac.uk/collection/S06/current/S0600088/"),
          measurementUnit = case_when(
            measurementType == "species length" ~ "millimeters",
@@ -551,14 +569,14 @@ trawl2019_ind_emof <- trawl2019_catch_ind_occ %>%
            measurementType == "total weight" ~ "grams"),
          measurementUnitID = case_when(
            measurementUnit == "millimeters" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UXMM/",
-           measurementUnit == "centimeters" ~ "http://vocab.nerc.ac.uk/collection/P06/current/ULCM/",
            measurementUnit == "grams" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UGRM/"),
          measurementValueID = case_when(
-           measurementValue == "F" ~ " ",
-           measurementValue == "M" ~ " ",
-           measurementValue == "N" ~ " ",
-           measurementValue == "J" ~ " ",
-           measurementValue == "3" ~ " ")) %>%
+           measurementValue == "F" ~ "http://vocab.nerc.ac.uk/collection/S10/current/S102/"
+           measurementValue == "M" ~ "http://vocab.nerc.ac.uk/collection/S10/current/S103/",
+           measurementValue == "N" ~ "http://vocab.nerc.ac.uk/collection/S10/current/S104/",
+           measurementValue == "J" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1127/",
+           measurementValue == "3" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1116/")) %>%
+  # Assuming the "3" stands for mature, similar to description for catch_final data. 
   mutate(measurementValueID = NA) %>%
   drop_na(measurementValue) %>%
   select(occurrenceID, measurementID, measurementType, measurementTypeID, measurementValue, measurementValueID,
