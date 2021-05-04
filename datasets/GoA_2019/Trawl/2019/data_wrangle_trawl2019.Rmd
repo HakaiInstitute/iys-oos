@@ -206,7 +206,8 @@ trawl2019_allCatch$scientificname <- gsub("Paralepididae gen. sp. 1", "Paralepid
 trawl2019_allCatch$scientificname <- gsub("NA Siphonophora", "Siphonophora", trawl2019_allCatch$scientificname)
   
 # So now we can run worrms::wm_records_names again, and there should be no NA in the AphiaID column.
-trawl2019_allCatch_worms <- worrms::wm_records_names(unique(trawl2019_allCatch$scientificname)) %>% bind_rows()
+trawl2019_allCatch_worms <- worrms::wm_records_names(unique(trawl2019_allCatch$scientificname)) %>% bind_rows() %>%
+  filter(AphiaID != "163921")
 trawl2019_occ <- left_join(trawl2019_allCatch, trawl2019_allCatch_worms, by = "scientificname") %>%
   rename(eventID = trawl,
          specificEpithet = species,
