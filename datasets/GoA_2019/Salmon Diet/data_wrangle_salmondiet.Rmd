@@ -57,8 +57,7 @@ salmon <- read_excel(here("Salmon Diet", "raw_data",
   mutate(project = "IYS",
          cruise = paste(project, "GoA2019", sep = ":"),
          station = paste(cruise, trawl, sep="_Stn"),
-         trawl = paste(station, "trawl", sep=":")
-  )
+         trawl = paste(station, "trawl", sep=":"))
 ```
 
 No metadata is mentioned in the Salmon Diet data as to when and where the trawls took place. To connect coordinates, date and time to the `eventIDs` this information is taken from the Fish Trawl Abundance or Bridgelog datasheet.  
@@ -131,8 +130,7 @@ salmon_trawl <- left_join(salmon_trawl, maximumDepth, by = "eventID") %>%
 salmondiet_event <- bind_rows(salmon_project, salmon_cruise, salmon_station, salmon_trawl) %>%
   dplyr::select(eventID, parentEventID, eventDate, decimalLatitude, decimalLongitude, footprintWKT,
                 minimumDepthInMeters, maximumDepthInMeters) %>%
-  mutate(type = "HumanObservation",
-         geodeticDatum = "EPSG:4326",
+  mutate(geodeticDatum = "EPSG:4326",
          samplingProtocol = " ")
 
 salmondiet_event$year <- as.numeric(format(as.Date(salmondiet_event$eventDate), "%Y"))
@@ -198,7 +196,6 @@ predator_occ <- left_join(predator_occ, predator_taxa, by = "scientificname") %>
          basisOfRecord)
 ```
 
-
 Next, we create an occurrence table for the prey species (stomach content). As all the prey species are listed as columns, we first have to investigate all the unique prey species consumed, as these will get their associated WoRMS URN. There is also a column `digested_food` which will not have an associated URN, as it reflects unidentified prey species consumed. As there are often multiple species found within the stomach content of a species, we assign these unique identifiers as well (prey_id). They will eventually be linked to the salmon record (with its own unique pred_id):
 
 ``` {r prey_occurrence, eval = FALSE}
@@ -250,8 +247,7 @@ prey_occ <- prey %>%
     name == "cephalopoda" ~ "Cephalopoda",
     name == "phronima_sedentaria" ~ "Phronima sedentaria",
     name == "oikopleura" ~ "Oikopleura",
-    name == "isopoda" ~ "Isopoda"
-  ))
+    name == "isopoda" ~ "Isopoda"))
 
 prey_species <- worrms::wm_records_names(unique(prey_occ$scientificname, marine_only = FALSE)) %>% bind_rows()
 
@@ -288,33 +284,51 @@ duplicates <- diet_data_occ %>% janitor::get_dupes(occurrenceID)
 # To reorder the eventID, use the following code:
 order <- stringr::str_sort(diet2019_occ$occurrenceID, numeric=TRUE)
 diet2019_occ <- diet2019_occ[match(order, diet2019_occ$occurrenceID),]
+```
 
+Create a resourceRelationship extension, and save locally:
+
+``` {r salmondiet_resourceRelationship, eval = FALSE}
+salmondiet_resourceRelationship <- diet2019_occ %>%
+  select(occurrenceID) %>%
+  mutate(relatedResourceID = ifelse(grepl("-pr", diet2019_occ$occurrenceID), diet2019_occ$occurrenceID, NA),
+         resourceID = ifelse(grepl("-pr", diet2019_occ$occurrenceID), gsub("pr.*", "p", diet2019_occ$occurrenceID), NA),
+         relationshipOfResource = ifelse(!is.na(relatedResourceID), "located within", NA)) %>%
+  drop_na() %>%
+  mutate(resourceRelationshipID = paste(resourceID, "rr", sep = ":"),
+         ID = sprintf("%03d", row_number()),
+         resourceRelationshipID = paste(resourceRelationshipID, ID, sep = "-")) %>%
+  select(resourceRelationshipID, resourceID, relationshipOfResource, relatedResourceID)
+
+write_csv(salmondiet_resourceRelationship, here("Salmon Diet", "tidy_data", "salmondiet__resourceRelationship.csv"))
+```
+
+And add `associatedTaxa` and `associatedOccurrence` to the Occurrence extension, and save locally: 
+
+``` {r associatedTaxa, eval = FALSE}
 # Join the event and the occurrence core:
-diet2019_occ$associatedTaxa <- " "
-diet2019_occ$associatedTaxa <- ifelse(grepl("pr", diet2019_occ$occurrenceID), 
-paste('"prey of"', " : ", '"', diet2019_occ$eventID, ":", diet2019_occ$species, ":", diet2019_occ$pred_id, 
-      "-p", '"', sep = ""), "")
+diet2019_occ <- diet2019_occ %>%
+  mutate(associatedTaxa = ifelse(grepl("pr", diet2019_occ$occurrenceID), 
+                          paste('"prey of"',  " : ", '"',diet2019_occ$species,'"', sep = ""), NA),
+         associatedOccurrence = ifelse(grepl("-pr", diet2019_occ$occurrenceID), 
+                                       paste('"prey of"', " : ", '"', diet2019_occ$eventID, ":", diet2019_occ$species, ":", diet2019_occ$pred_id, "-p", '"', sep = ""), ""))
 
 diet2019_occ <- diet2019_occ %>%
   select(eventID, occurrenceID, occurrenceStatus, scientificName, scientificNameID, organismQuantity, organismQuantityType,
          scientificNameAuthorship, taxonomicRank, taxonomicStatus, kingdom, phylum, class, order, family, genus,
-         basisOfRecord, associatedTaxa)
-
-write_csv(diet2019_occ, here("Salmon Diet", "tidy_data", "diet2019_occ.csv"))
+         basisOfRecord, associatedTaxa, associatedOccurrence)
 
 # Make sure the folder path exists already (e.g. ./Salmon Diet/tidy_data)
-write_csv(all_prey_data, here("Salmon Diet", "tidy_data", "salmon_prey_occ.csv"))
-drive_upload(here("Salmon Diet", "tidy_data", "salmon_prey_occ.csv"),
+write_csv(diet2019_occ, here("Salmon Diet", "tidy_data", "diet2019_occ.csv"))
+drive_upload(here("Salmon Diet", "tidy_data", "diet2019_occ.csv"),
              path = "https://drive.google.com/drive/u/0/folders/1pGd2cuvdb25QX7CGm2wC81Emh5O-LdbR",
-             name = "salmon_prey_occ.csv",
+             name = "diet2019_occ.csv",
              overwrite = TRUE)
 ```
 
 # measurementOrFact extension
 
-We have one salmon diet occurrence extension, where salmon occurrences and their stomach content are linked through the column `associatedTaxa`. In our measurementOrFact extension there is information linked to the salmon records (fork length, mass, number of stomachs analyzed, total food mass, GFI and CFI), and information related to the species-specific weight in the stomach content. From conversation with the data provider, we have learned that salmon were grouped in size classes (10cm). Additionally, if the number of stomachs analyzed is greater than 1, the fork length and mass are the _mean_. 
-
-**Current data limitation: I don't know where to assign the digested food (unidentified) to, and consequently have not included this in the measurementOrFact table**. 
+In our measurementOrFact extension there is information linked to the salmon records (fork length, mass, number of stomachs analyzed, total food mass, GFI and CFI), and information related to the species-specific weight in the stomach content. From conversation with the data provider, we have learned that salmon were grouped in size classes (10cm). Additionally, if the number of stomachs analyzed is greater than 1, the fork length and mass are the _mean_. 
 
 ``` {r, eval = FALSE}
 salmon_spp_measurement <- predator %>%
