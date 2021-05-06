@@ -35,20 +35,30 @@ drive_download("https://docs.google.com/spreadsheets/d/1mhvdnETRNwaDEgvRoxYl8HKL
 No metadata is mentioned in the Pathogen data as to when and where the salmon were caught (i.e. when trawls took place). To connect the coordinates and time to the eventIDs, this information is taken from the trawl datasheet. Right now I am saving both these files in the Pathogen folder, but once all folders and scripts have been QC'd the location/time can be read straight from the Trawl-specific folder. For now, I'm afraid it would cause confusion when committing/pushing to GitHub. 
 
 ``` {r salmon_datetime, eval = FALSE}
-drive_download(file = "https://docs.google.com/spreadsheets/d/1rtT6L5WSi_UiiXfoS95wnDqA8loc959T/edit#gid=668595086", 
-               path = here::here("Pathogen", "raw_data", 
-                                 "2019_GoA_Fish_data_Hakai.xlsx"),
+drive_download(file = "https://docs.google.com/spreadsheets/d/1Teh8Lcj3vCxocB2HPso19XYrZvCUspFt/edit#gid=1038314498", 
+               path = here::here("Pathogen", "raw_data", "2019_GoA_Fish_Trawl_catchdata.xlsx"),
                overwrite = TRUE)
 
-trawl <- read_excel(here("Pathogen", "raw_data", "2019_GoA_Fish_data_Hakai.xlsx")) %>%
-  mutate(eventDate = format_iso_8601(as.POSIXct(UTC_start)),
-         eventDate = str_replace(eventDate, "\\+00:00", "Z")) %>%
-  mutate(project = "IYS",
-         cruise = paste(project, "GoA2019", sep = ":"),
-         station = paste(cruise, NUMBER, sep = "_Stn"))
-```
+trawl <- read_excel(here("Trawl", "2019", "raw_data", "2019_GoA_Fish_Trawl_catchdata.xlsx"), sheet = "BRIDGE_LOG_FINAL")
 
-**Please note that the date and coordinates could change as the trawl data is not finalized.** 
+# Time is recorded numerically (1037 instead of 10:37), so need to change these columns:
+trawl$END_DEPLOYMENT_TIME <- substr(as.POSIXct(sprintf("%04.0f", trawl$END_DEPLOYMENT_TIME), format = "%H%M"), 12, 16)
+trawl$BEGIN_RETRIEVAL_TIME <- substr(as.POSIXct(sprintf("%04.0f", trawl$BEGIN_RETRIEVAL_TIME), format = "%H%M"), 12, 16)
+
+# Additionally, the vessel time is recorded in 'Vladivostok' according to the metadata tab. This has to be converted to UTC.  
+trawl <- trawl %>%
+  mutate(eventDate_start = format_iso_8601(as.POSIXct(paste(EVENT_DATE_START, END_DEPLOYMENT_TIME),
+                                                      tz = "Asia/Vladivostok")),
+         eventDate_start = str_replace(eventDate_start, "\\+00:00", "Z"),
+         eventDate_finish = format_iso_8601(as.POSIXct(paste(EVENT_DATE_FINISH, BEGIN_RETRIEVAL_TIME),
+                                                       tz = "Asia/Vladivostok")),
+         eventDate_finish = str_replace(eventDate_finish, "\\+00:00", "Z"),
+         eventDate = paste(eventDate_start, eventDate_finish, sep = "/"),
+         project = "IYS",
+         cruise = paste(project, "GoA2019", sep = ":"), 
+         station = paste(cruise, TOW_NUMBER, sep="_Stn"),
+         trawl = paste(station, "trawl", sep=":"))
+```
 
 Read in the dataset from your local drive, and combine the data into one dataframe. The data file `Pathogen_info.xlsx` expands on the abbreviations used in the pathogen data file, and will be joined in at a later stage.  
 
@@ -87,27 +97,28 @@ pathogen_station <- pathogen %>%
          parentEventID = cruise) %>% 
   distinct(eventID, .keep_all = TRUE) 
 
-# Join date and coordinates to trawl. Remember that the date and coordinates are not from the Pathogen data sheet, but from the trawl data sheet. Minimum and maximum depth of the trawl be included here as well if the information becomes available. 
-pathogen_trawl <- pathogen %>%
-  left_join(select(
-    trawl,
-    station,
-    UTC_start,
-    X,
-    Y
-  )) %>%
+trawl2019_coordinates <- trawl %>%
   select(eventID = trawl,
-         parentEventID = station,
-         eventDate = UTC_start,
-         Y,
-         X) %>%
-  distinct(eventID, .keep_all = TRUE) %>%
-  mutate(footprintWKT = paste0("POINT(",X, " ", Y,")"))
+         START_LATITUDE_DD,
+         longitude,
+         END_LATITUDE_DD,
+         END_LONGITUDE_DD) %>%
+  mutate(END_LONGITUDE_DD = END_LONGITUDE_DD * -1,
+         footprintWKT = paste("LINESTRING (", longitude, START_LATITUDE_DD, ",", 
+                              END_LONGITUDE_DD, END_LATITUDE_DD, ")")) 
 
-# The Pathogen data does not include information as to at what depths the trawls were conducted. This information will have to come from the general Trawl data. Should this information become available it should be connected to the general trawl information, along with info such as: speed at which the vessel was traveling during trawl, starting & finish lat/longs of trawl.
+trawl2019_linestring <- obistools::calculate_centroid(trawl2019_coordinates$footprintWKT)
+trawl2019_linestring <- cbind(trawl2019_coordinates, trawl2019_linestring) %>%
+  select(eventID, footprintWKT, decimalLatitude, decimalLongitude, coordinateUncertaintyInMeters)
 
-coordinates <- obistools::calculate_centroid(pathogen_trawl$footprintWKT)
-pathogen_trawl <- cbind(pathogen_trawl, coordinates) %>% select(-c(X,Y))
+pathogen_trawl <- pathogen %>%
+  select(eventID = trawl,
+         parentEventID = station) %>%
+  left_join(trawl2019_linestring, by = "eventID") %>%
+  distinct(eventID, .keep_all = TRUE) 
+
+# Somehow the stations are all shuffled, re-order them:
+
 
 # To connect them all together: 
 pathogen_event <- bind_rows(pathogen_project,
@@ -160,7 +171,8 @@ pathogen_salmon_spp <- left_join(pathogen_salmon_spp, pathogen_salmon_scientific
          occurrenceID = paste(eventID, Sample, sep = ":")) %>%
   select(eventID, Sample, occurrenceID, scientificName, scientificNameID, vernacularName, occurrenceStatus,
          parentNameUsageID, taxonomicStatus, scientificNameAuthorship, kingdom, phylum, class, order, 
-         family, genus, taxonRank)
+         family, genus, taxonRank) %>%
+  mutate(specificEpithet = stringr::word(pathogen_salmon_spp$scientificName, 2))
   # Please note, we keep the "Sample" in here for now as we'll use it to construct our occurrenceIDs at a later stage. 
 ```
 
@@ -209,10 +221,11 @@ pathogen_taxa <- left_join(pathogen_occ, pathogen_taxa_scientificnames, by = "sc
          occurrenceID = paste(eventID, Sample, sep = ":"),
          occurrenceID = paste(occurrenceID, "p", sep = ":"),
          occurrenceID = paste(occurrenceID, `Assay name`, sep = ":")) %>%
-  select(eventID, Sample, occurrenceID, scientificName, scientificNameID, vernacularName, occurrenceStatus, parentNameUsageID, taxonomicStatus, scientificNameAuthorship, kingdom, phylum, class, order, family, genus, taxonRank)
+  select(eventID, Sample, occurrenceID, scientificName, scientificNameID, vernacularName, occurrenceStatus, parentNameUsageID, taxonomicStatus, scientificNameAuthorship, kingdom, phylum, class, order, family, genus, taxonRank) %>%
+  mutate(specificEpithet = NA)
 ```
 
-Perhaps we still have to wait for is new additions being made in the WoRMS registry to include the parasites, viruses or bacteria. Once this is done, we need to combine the occurrence tables of salmonids and pathogens, and create a column `associatedTaxa` and `associatedOccurrence` to indicate that the pathogens were found on or in the salmonid individual (i.e. linking it to the occurrenceID and to the salmon individual): 
+Perhaps we still have to wait for is new additions being made in the WoRMS registry to include the parasites, viruses or bacteria. Once this is done, we need to combine the occurrence tables of salmonids and pathogens. In addition to this, we have to indicate that the pathogens were found on the salmonids. To do this, we do two things (for now): 1) create an `resourceRelationship` extension and 2) include columns `associatedTaxa` and `associatedOccurrence` in the Occurrence extension to indicate that the pathogens were found on or in the salmonid individual (i.e. linking it to the occurrenceID and to the salmon individual): 
 
 ``` {r pathogen_occ_final, eval = FALSE}
 pathogen_occ <- rbind(pathogen_salmon_spp, pathogen_taxa)
@@ -225,7 +238,28 @@ pathogen_occ <- pathogen_occ %>%
   group_by(eventID) %>%
   fill(vernacularName) %>%
   ungroup(eventID)
+```
 
+The resourceRelationship extension, saved locally:
+
+``` {r resourceRelationship, eval = FALSE}
+pathogen_resourceRelationship <- pathogen_occ %>%
+  select(occurrenceID, temp_Sample) %>%
+  mutate(relatedResourceID = ifelse(grepl(":p:", pathogen_occ$occurrenceID), pathogen_occ$occurrenceID, NA),
+         resourceID = temp_Sample,
+         relationshipOfResource = ifelse(!is.na(relatedResourceID), "host of", NA)) %>%
+  drop_na() %>%
+  mutate(resourceRelationshipID = paste(resourceID, "rr", sep = ":"),
+         ID = sprintf("%03d", row_number()),
+         resourceRelationshipID = paste(resourceRelationshipID, ID, sep = "-")) %>%
+  select(resourceRelationshipID, resourceID, relationshipOfResource, relatedResourceID)
+
+write_csv(pathogen_resourceRelationship, here("Pathogen", "tidy_data", "pathogen_resourceRelationship.csv"))
+```
+
+And include the columns `associatedTaxa` and `associatedOccurrence` to the Occurrence extension: 
+
+``` {r pathogen_associatedTaxa, eval = FALSE}
 pathogen_occ <- pathogen_occ %>%
   mutate(associatedTaxa = ifelse(grepl(":p:", pathogen_occ$occurrenceID),
                                  paste0('"Pathogen found on"', " : ", '"', vernacularName, '"', sep = " "), ""),
@@ -248,7 +282,6 @@ drive_upload(here("Pathogen", "tidy_data", "pathogen_spp_occ.csv"),
              overwrite = TRUE)
 ```
 
-Currently the final version of the dates, times and spatial coordinates is not available (will be in the Fish Trawl Abundance data). Once we have that data, along with the additions made to the WoRMS registry, we can finalize the 2019 IYS Pathogen Data. 
 ***
 
 **The following section is optional as I'm not sure whether it makes sense to add an eMOF extension with relative Ct-values**
