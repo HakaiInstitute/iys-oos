@@ -876,7 +876,7 @@ bongo_emof <- bongo_emof %>%
       measurementType == "reproductiveCondition" ~ "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000021/",
       measurementType == "maximumLength" ~ "http://vocab.nerc.ac.uk/collection/P01/current/OBSMAXLX/",
       measurementType == "minimumLength" ~ "http://vocab.nerc.ac.uk/collection/P01/current/OBSMINLX/",
-      measurementType == "weight" ~ "http://vocab.nerc.ac.uk/collection/S06/current/S0600253/"), 
+      measurementType == "weight" ~ "http://vocab.nerc.ac.uk/collection/S06/current/S0600148/"), 
     measurementUnit = case_when(
       measurementType == "individualCount" ~ "individuals",
       measurementType == "length" ~ "millimeter",
