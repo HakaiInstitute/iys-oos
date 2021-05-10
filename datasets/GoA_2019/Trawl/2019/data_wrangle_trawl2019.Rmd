@@ -540,7 +540,9 @@ Next, create the measurementOrFact extension with length and weight measurements
 ``` {r}
 trawl2019_ind_emof <- trawl2019_catch_ind_occ %>%
   select(occurrenceID,
-         LENGTH, `STANDARD LENGTH`, SEX_CODE, `WEIGHT - TOTAL`) %>%
+         LENGTH, `STANDARD LENGTH`, SEX_CODE, `WEIGHT - TOTAL`,
+         `LENGTH GONADd (niG-GL-LEN)`, `WIDTH GONAD (NID-GI-WID)`,
+         `liver weight (MPECH)`, `gonad weight (MGON)`) %>%
   mutate(lifeStage = ifelse(grepl("3|J", trawl2019_ind_emof$SEX_CODE), trawl2019_ind_emof$SEX_CODE, NA),
          SEX_CODE = gsub("3|J", NA, trawl2019_ind_emof$SEX_CODE)) %>%
   mutate_all(as.character) %>%
@@ -551,22 +553,38 @@ trawl2019_ind_emof <- trawl2019_catch_ind_occ %>%
                                   LENGTH = "species length",
                                   `STANDARD LENGTH` = "Standard length",
                                   SEX_CODE = "sex",
-                                  `WEIGHT - TOTAL` = "total weight"),
+                                  `WEIGHT - TOTAL` = "total weight",
+                                  `LENGTH GONADd (niG-GL-LEN)` = "length_gonad",
+                                  `WIDTH GONAD (NID-GI-LEN)` = "width_gonad",
+                                  `liver weight (MPECH)` = "liver_weight",
+                                  `gonad weight (MGON)` = "gonad_weight"),
          measurementID = case_when(
            measurementType == "species length" ~ paste(occurrenceID, "species_length", sep = "-"),
            measurementType == "Standard length" ~ paste(occurrenceID, "standard_length", sep = "-"),
            measurementType == "sex" ~ paste(occurrenceID, "sex", sep = "-"),
            measurementType == "lifeStage" ~ paste(occurrenceID, "lifeStage", sep = "-"),
-           measurementType == "total weight" ~ paste(occurrenceID, "total_weight", sep = "-")),
+           measurementType == "total weight" ~ paste(occurrenceID, "total_weight", sep = "-"),
+           measurementType == "length_gonad" ~ paste(occurrenceID, "length_gonad", sep = "-"),
+           measurementType == "width_gonad" ~ paste(occurrenceID, "width_gonad", sep = "-"),
+           measurementType == "liver_weight" ~ paste(occurrenceID, "liver_weight", sep = "-"),
+           measurementType == "gonad_weight" ~ paste(occurrenceID, "gonad_weight", sep = "-")),
          measurementTypeID = case_when(
            measurementType == "species length" ~ "http://vocab.nerc.ac.uk/collection/P01/current/OBSINDLX/",
            measurementType == "Standard length" ~ "http://vocab.nerc.ac.uk/collection/P01/current/SL01XX01/",
            measurementType == "sex" ~ "http://vocab.nerc.ac.uk/collection/P01/current/ENTSEX01/",
            measurementType == "lifeStage" ~ "http://vocab.nerc.ac.uk/collection/P01/current/LSTAGE01/",
-           measurementType == "total weight" ~ "http://vocab.nerc.ac.uk/collection/S06/current/S0600088/"),
+           measurementType == "total weight" ~ "http://vocab.nerc.ac.uk/collection/S06/current/S0600088/",
+           measurementType == "length_gonad" ~ " ",
+           measurementType == "width_gonad" ~ " ",
+           measurementType == "liver_weight" ~ " ",
+           measurementType == "gonad_weight" ~ " "),
          measurementUnit = case_when(
            measurementType == "species length" ~ "millimeters",
            measurementType == "Standard length" ~ "millimeters",
+           measurementType == "length_gonad" ~ "millimeters",
+           measurementType == "width_gonad" ~ "millimeters",
+           measurementType == "liver_weight" ~ "grams",
+           measurementType == "gonad_weight" ~ "grams",
            measurementType == "total weight" ~ "grams"),
          measurementUnitID = case_when(
            measurementUnit == "millimeters" ~ "http://vocab.nerc.ac.uk/collection/P06/current/UXMM/",
