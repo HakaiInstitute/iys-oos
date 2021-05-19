@@ -1,0 +1,646 @@
+measurementID,measurementType,measurementTypeID,measurementValue,measurementUnit,measurementUnitID,eventID,measurementValueID
+IYS:GoA2019_Stn1:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,2300,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn2:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,2550,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn3:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,4100,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn4:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,4100,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn5:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,4100,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn6:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,4200,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn7:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,4200,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn8:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,4500,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn9:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,4500,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn10:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,4600,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn11:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,4700,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn12:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,4800,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn13:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,4800,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn14:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,4200,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn15:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,4400,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn16:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,4200,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn17:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,3320,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn18:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,4150,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn19:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,4000,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn20:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,4000,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn21:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,4000,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn22:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,3800,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn23:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,3800,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn24:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,3380,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn25:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,4000,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn26:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,4120,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn27:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,4100,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn28:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,4000,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn29:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,4000,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn30:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,3700,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn31:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,4500,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn32:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,4500,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn33:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,4000,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn34:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,4000,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn35:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,4170,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn36:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,3900,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn37:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,4000,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn38:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,2800,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn39:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,4000,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn40:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,3900,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn41:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,3900,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn42:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,3850,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn43:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,3900,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn44:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,4200,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn45:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,4200,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn46:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,4300,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn47:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,4200,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn48:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,4000,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn49:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,3900,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn50:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,3600,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn51:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,3800,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn52:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,3800,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn53:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,4600,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn54:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,3600,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn55:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,3900,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn56:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,3900,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn57:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,3220,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn58:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,3900,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn59:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,4050,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn60:juday:depth,seafloor depth,http://vocab.nerc.ac.uk/collection/C00/current/SCILOG/,3800,meter,http://vocab.nerc.ac.uk/collection/P06/current/ULAA/,NA,NA
+IYS:GoA2019_Stn1:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn1:juday,NA
+IYS:GoA2019_Stn1:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn1:juday,NA
+IYS:GoA2019_Stn1:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn1:juday,NA
+IYS:GoA2019_Stn1:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn1:juday, 
+IYS:GoA2019_Stn1:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn1:juday,NA
+IYS:GoA2019_Stn2:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn2:juday,NA
+IYS:GoA2019_Stn2:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn2:juday,NA
+IYS:GoA2019_Stn2:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn2:juday,NA
+IYS:GoA2019_Stn2:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn2:juday, 
+IYS:GoA2019_Stn2:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn2:juday,NA
+IYS:GoA2019_Stn3:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn3:juday,NA
+IYS:GoA2019_Stn3:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn3:juday,NA
+IYS:GoA2019_Stn3:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn3:juday,NA
+IYS:GoA2019_Stn3:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn3:juday, 
+IYS:GoA2019_Stn3:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn3:juday,NA
+IYS:GoA2019_Stn4:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn4:juday,NA
+IYS:GoA2019_Stn4:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn4:juday,NA
+IYS:GoA2019_Stn4:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn4:juday,NA
+IYS:GoA2019_Stn4:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn4:juday, 
+IYS:GoA2019_Stn4:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn4:juday,NA
+IYS:GoA2019_Stn5:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn5:juday,NA
+IYS:GoA2019_Stn5:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn5:juday,NA
+IYS:GoA2019_Stn5:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn5:juday,NA
+IYS:GoA2019_Stn5:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn5:juday, 
+IYS:GoA2019_Stn5:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn5:juday,NA
+IYS:GoA2019_Stn6:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn6:juday,NA
+IYS:GoA2019_Stn6:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn6:juday,NA
+IYS:GoA2019_Stn6:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn6:juday,NA
+IYS:GoA2019_Stn6:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn6:juday, 
+IYS:GoA2019_Stn6:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn6:juday,NA
+IYS:GoA2019_Stn7:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn7:juday,NA
+IYS:GoA2019_Stn7:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn7:juday,NA
+IYS:GoA2019_Stn7:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn7:juday,NA
+IYS:GoA2019_Stn7:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn7:juday, 
+IYS:GoA2019_Stn7:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn7:juday,NA
+IYS:GoA2019_Stn8:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn8:juday,NA
+IYS:GoA2019_Stn8:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn8:juday,NA
+IYS:GoA2019_Stn8:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn8:juday,NA
+IYS:GoA2019_Stn8:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn8:juday, 
+IYS:GoA2019_Stn8:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn8:juday,NA
+IYS:GoA2019_Stn9:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn9:juday,NA
+IYS:GoA2019_Stn9:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn9:juday,NA
+IYS:GoA2019_Stn9:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn9:juday,NA
+IYS:GoA2019_Stn9:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn9:juday, 
+IYS:GoA2019_Stn9:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn9:juday,NA
+IYS:GoA2019_Stn10:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn10:juday,NA
+IYS:GoA2019_Stn10:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn10:juday,NA
+IYS:GoA2019_Stn10:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn10:juday,NA
+IYS:GoA2019_Stn10:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn10:juday, 
+IYS:GoA2019_Stn10:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn10:juday,NA
+IYS:GoA2019_Stn11:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn11:juday,NA
+IYS:GoA2019_Stn11:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn11:juday,NA
+IYS:GoA2019_Stn11:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn11:juday,NA
+IYS:GoA2019_Stn11:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn11:juday, 
+IYS:GoA2019_Stn11:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn11:juday,NA
+IYS:GoA2019_Stn12:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn12:juday,NA
+IYS:GoA2019_Stn12:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn12:juday,NA
+IYS:GoA2019_Stn12:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn12:juday,NA
+IYS:GoA2019_Stn12:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn12:juday, 
+IYS:GoA2019_Stn12:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn12:juday,NA
+IYS:GoA2019_Stn13:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn13:juday,NA
+IYS:GoA2019_Stn13:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn13:juday,NA
+IYS:GoA2019_Stn13:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn13:juday,NA
+IYS:GoA2019_Stn13:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn13:juday, 
+IYS:GoA2019_Stn13:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn13:juday,NA
+IYS:GoA2019_Stn14:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn14:juday,NA
+IYS:GoA2019_Stn14:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn14:juday,NA
+IYS:GoA2019_Stn14:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn14:juday,NA
+IYS:GoA2019_Stn14:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn14:juday, 
+IYS:GoA2019_Stn14:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn14:juday,NA
+IYS:GoA2019_Stn15:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn15:juday,NA
+IYS:GoA2019_Stn15:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn15:juday,NA
+IYS:GoA2019_Stn15:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn15:juday,NA
+IYS:GoA2019_Stn15:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn15:juday, 
+IYS:GoA2019_Stn15:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn15:juday,NA
+IYS:GoA2019_Stn16:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn16:juday,NA
+IYS:GoA2019_Stn16:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn16:juday,NA
+IYS:GoA2019_Stn16:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn16:juday,NA
+IYS:GoA2019_Stn16:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn16:juday, 
+IYS:GoA2019_Stn16:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn16:juday,NA
+IYS:GoA2019_Stn17:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn17:juday,NA
+IYS:GoA2019_Stn17:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn17:juday,NA
+IYS:GoA2019_Stn17:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn17:juday,NA
+IYS:GoA2019_Stn17:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn17:juday, 
+IYS:GoA2019_Stn17:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn17:juday,NA
+IYS:GoA2019_Stn18:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn18:juday,NA
+IYS:GoA2019_Stn18:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn18:juday,NA
+IYS:GoA2019_Stn18:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn18:juday,NA
+IYS:GoA2019_Stn18:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn18:juday, 
+IYS:GoA2019_Stn18:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn18:juday,NA
+IYS:GoA2019_Stn19:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn19:juday,NA
+IYS:GoA2019_Stn19:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn19:juday,NA
+IYS:GoA2019_Stn19:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn19:juday,NA
+IYS:GoA2019_Stn19:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn19:juday, 
+IYS:GoA2019_Stn19:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn19:juday,NA
+IYS:GoA2019_Stn20:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn20:juday,NA
+IYS:GoA2019_Stn20:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn20:juday,NA
+IYS:GoA2019_Stn20:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn20:juday,NA
+IYS:GoA2019_Stn20:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn20:juday, 
+IYS:GoA2019_Stn20:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn20:juday,NA
+IYS:GoA2019_Stn21:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn21:juday,NA
+IYS:GoA2019_Stn21:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn21:juday,NA
+IYS:GoA2019_Stn21:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn21:juday,NA
+IYS:GoA2019_Stn21:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn21:juday, 
+IYS:GoA2019_Stn21:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn21:juday,NA
+IYS:GoA2019_Stn22:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn22:juday,NA
+IYS:GoA2019_Stn22:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn22:juday,NA
+IYS:GoA2019_Stn22:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn22:juday,NA
+IYS:GoA2019_Stn22:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn22:juday, 
+IYS:GoA2019_Stn22:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn22:juday,NA
+IYS:GoA2019_Stn23:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn23:juday,NA
+IYS:GoA2019_Stn23:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn23:juday,NA
+IYS:GoA2019_Stn23:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn23:juday,NA
+IYS:GoA2019_Stn23:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn23:juday, 
+IYS:GoA2019_Stn23:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn23:juday,NA
+IYS:GoA2019_Stn24:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn24:juday,NA
+IYS:GoA2019_Stn24:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn24:juday,NA
+IYS:GoA2019_Stn24:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn24:juday,NA
+IYS:GoA2019_Stn24:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn24:juday, 
+IYS:GoA2019_Stn24:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn24:juday,NA
+IYS:GoA2019_Stn25:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn25:juday,NA
+IYS:GoA2019_Stn25:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn25:juday,NA
+IYS:GoA2019_Stn25:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn25:juday,NA
+IYS:GoA2019_Stn25:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn25:juday, 
+IYS:GoA2019_Stn25:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn25:juday,NA
+IYS:GoA2019_Stn26:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn26:juday,NA
+IYS:GoA2019_Stn26:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn26:juday,NA
+IYS:GoA2019_Stn26:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn26:juday,NA
+IYS:GoA2019_Stn26:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn26:juday, 
+IYS:GoA2019_Stn26:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn26:juday,NA
+IYS:GoA2019_Stn27:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn27:juday,NA
+IYS:GoA2019_Stn27:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn27:juday,NA
+IYS:GoA2019_Stn27:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn27:juday,NA
+IYS:GoA2019_Stn27:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn27:juday, 
+IYS:GoA2019_Stn27:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn27:juday,NA
+IYS:GoA2019_Stn28:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn28:juday,NA
+IYS:GoA2019_Stn28:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn28:juday,NA
+IYS:GoA2019_Stn28:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn28:juday,NA
+IYS:GoA2019_Stn28:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn28:juday, 
+IYS:GoA2019_Stn28:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn28:juday,NA
+IYS:GoA2019_Stn29:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn29:juday,NA
+IYS:GoA2019_Stn29:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn29:juday,NA
+IYS:GoA2019_Stn29:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn29:juday,NA
+IYS:GoA2019_Stn29:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn29:juday, 
+IYS:GoA2019_Stn29:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn29:juday,NA
+IYS:GoA2019_Stn30:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn30:juday,NA
+IYS:GoA2019_Stn30:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn30:juday,NA
+IYS:GoA2019_Stn30:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn30:juday,NA
+IYS:GoA2019_Stn30:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn30:juday, 
+IYS:GoA2019_Stn30:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn30:juday,NA
+IYS:GoA2019_Stn31:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn31:juday,NA
+IYS:GoA2019_Stn31:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn31:juday,NA
+IYS:GoA2019_Stn31:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn31:juday,NA
+IYS:GoA2019_Stn31:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn31:juday, 
+IYS:GoA2019_Stn31:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn31:juday,NA
+IYS:GoA2019_Stn32:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn32:juday,NA
+IYS:GoA2019_Stn32:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn32:juday,NA
+IYS:GoA2019_Stn32:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn32:juday,NA
+IYS:GoA2019_Stn32:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn32:juday, 
+IYS:GoA2019_Stn32:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn32:juday,NA
+IYS:GoA2019_Stn33:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn33:juday,NA
+IYS:GoA2019_Stn33:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn33:juday,NA
+IYS:GoA2019_Stn33:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn33:juday,NA
+IYS:GoA2019_Stn33:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn33:juday, 
+IYS:GoA2019_Stn33:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn33:juday,NA
+IYS:GoA2019_Stn34:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn34:juday,NA
+IYS:GoA2019_Stn34:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn34:juday,NA
+IYS:GoA2019_Stn34:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn34:juday,NA
+IYS:GoA2019_Stn34:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn34:juday, 
+IYS:GoA2019_Stn34:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn34:juday,NA
+IYS:GoA2019_Stn35:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn35:juday,NA
+IYS:GoA2019_Stn35:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn35:juday,NA
+IYS:GoA2019_Stn35:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn35:juday,NA
+IYS:GoA2019_Stn35:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn35:juday, 
+IYS:GoA2019_Stn35:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn35:juday,NA
+IYS:GoA2019_Stn36:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn36:juday,NA
+IYS:GoA2019_Stn36:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn36:juday,NA
+IYS:GoA2019_Stn36:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn36:juday,NA
+IYS:GoA2019_Stn36:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn36:juday, 
+IYS:GoA2019_Stn36:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn36:juday,NA
+IYS:GoA2019_Stn37:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn37:juday,NA
+IYS:GoA2019_Stn37:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn37:juday,NA
+IYS:GoA2019_Stn37:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn37:juday,NA
+IYS:GoA2019_Stn37:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn37:juday, 
+IYS:GoA2019_Stn37:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn37:juday,NA
+IYS:GoA2019_Stn38:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn38:juday,NA
+IYS:GoA2019_Stn38:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn38:juday,NA
+IYS:GoA2019_Stn38:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn38:juday,NA
+IYS:GoA2019_Stn38:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn38:juday, 
+IYS:GoA2019_Stn38:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn38:juday,NA
+IYS:GoA2019_Stn39:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn39:juday,NA
+IYS:GoA2019_Stn39:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn39:juday,NA
+IYS:GoA2019_Stn39:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn39:juday,NA
+IYS:GoA2019_Stn39:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn39:juday, 
+IYS:GoA2019_Stn39:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn39:juday,NA
+IYS:GoA2019_Stn40:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn40:juday,NA
+IYS:GoA2019_Stn40:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn40:juday,NA
+IYS:GoA2019_Stn40:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn40:juday,NA
+IYS:GoA2019_Stn40:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn40:juday, 
+IYS:GoA2019_Stn40:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn40:juday,NA
+IYS:GoA2019_Stn41:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn41:juday,NA
+IYS:GoA2019_Stn41:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn41:juday,NA
+IYS:GoA2019_Stn41:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn41:juday,NA
+IYS:GoA2019_Stn41:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn41:juday, 
+IYS:GoA2019_Stn41:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn41:juday,NA
+IYS:GoA2019_Stn42:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn42:juday,NA
+IYS:GoA2019_Stn42:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn42:juday,NA
+IYS:GoA2019_Stn42:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn42:juday,NA
+IYS:GoA2019_Stn42:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn42:juday, 
+IYS:GoA2019_Stn42:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn42:juday,NA
+IYS:GoA2019_Stn43:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn43:juday,NA
+IYS:GoA2019_Stn43:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn43:juday,NA
+IYS:GoA2019_Stn43:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn43:juday,NA
+IYS:GoA2019_Stn43:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn43:juday, 
+IYS:GoA2019_Stn43:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn43:juday,NA
+IYS:GoA2019_Stn44:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn44:juday,NA
+IYS:GoA2019_Stn44:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn44:juday,NA
+IYS:GoA2019_Stn44:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn44:juday,NA
+IYS:GoA2019_Stn44:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn44:juday, 
+IYS:GoA2019_Stn44:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn44:juday,NA
+IYS:GoA2019_Stn45:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn45:juday,NA
+IYS:GoA2019_Stn45:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn45:juday,NA
+IYS:GoA2019_Stn45:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn45:juday,NA
+IYS:GoA2019_Stn45:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn45:juday, 
+IYS:GoA2019_Stn45:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn45:juday,NA
+IYS:GoA2019_Stn46:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn46:juday,NA
+IYS:GoA2019_Stn46:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn46:juday,NA
+IYS:GoA2019_Stn46:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn46:juday,NA
+IYS:GoA2019_Stn46:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn46:juday, 
+IYS:GoA2019_Stn46:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn46:juday,NA
+IYS:GoA2019_Stn47:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn47:juday,NA
+IYS:GoA2019_Stn47:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn47:juday,NA
+IYS:GoA2019_Stn47:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn47:juday,NA
+IYS:GoA2019_Stn47:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn47:juday, 
+IYS:GoA2019_Stn47:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn47:juday,NA
+IYS:GoA2019_Stn48:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn48:juday,NA
+IYS:GoA2019_Stn48:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn48:juday,NA
+IYS:GoA2019_Stn48:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn48:juday,NA
+IYS:GoA2019_Stn48:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn48:juday, 
+IYS:GoA2019_Stn48:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn48:juday,NA
+IYS:GoA2019_Stn49:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn49:juday,NA
+IYS:GoA2019_Stn49:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn49:juday,NA
+IYS:GoA2019_Stn49:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn49:juday,NA
+IYS:GoA2019_Stn49:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn49:juday, 
+IYS:GoA2019_Stn49:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn49:juday,NA
+IYS:GoA2019_Stn50:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn50:juday,NA
+IYS:GoA2019_Stn50:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn50:juday,NA
+IYS:GoA2019_Stn50:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn50:juday,NA
+IYS:GoA2019_Stn50:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn50:juday, 
+IYS:GoA2019_Stn50:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn50:juday,NA
+IYS:GoA2019_Stn51:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn51:juday,NA
+IYS:GoA2019_Stn51:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn51:juday,NA
+IYS:GoA2019_Stn51:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn51:juday,NA
+IYS:GoA2019_Stn51:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn51:juday, 
+IYS:GoA2019_Stn51:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn51:juday,NA
+IYS:GoA2019_Stn52:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn52:juday,NA
+IYS:GoA2019_Stn52:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn52:juday,NA
+IYS:GoA2019_Stn52:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn52:juday,NA
+IYS:GoA2019_Stn52:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn52:juday, 
+IYS:GoA2019_Stn52:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn52:juday,NA
+IYS:GoA2019_Stn53:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn53:juday,NA
+IYS:GoA2019_Stn53:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn53:juday,NA
+IYS:GoA2019_Stn53:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn53:juday,NA
+IYS:GoA2019_Stn53:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn53:juday, 
+IYS:GoA2019_Stn53:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn53:juday,NA
+IYS:GoA2019_Stn54:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn54:juday,NA
+IYS:GoA2019_Stn54:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn54:juday,NA
+IYS:GoA2019_Stn54:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn54:juday,NA
+IYS:GoA2019_Stn54:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn54:juday, 
+IYS:GoA2019_Stn54:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn54:juday,NA
+IYS:GoA2019_Stn55:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn55:juday,NA
+IYS:GoA2019_Stn55:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn55:juday,NA
+IYS:GoA2019_Stn55:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn55:juday,NA
+IYS:GoA2019_Stn55:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn55:juday, 
+IYS:GoA2019_Stn55:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn55:juday,NA
+IYS:GoA2019_Stn56:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn56:juday,NA
+IYS:GoA2019_Stn56:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn56:juday,NA
+IYS:GoA2019_Stn56:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn56:juday,NA
+IYS:GoA2019_Stn56:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn56:juday, 
+IYS:GoA2019_Stn56:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn56:juday,NA
+IYS:GoA2019_Stn57:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn57:juday,NA
+IYS:GoA2019_Stn57:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn57:juday,NA
+IYS:GoA2019_Stn57:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn57:juday,NA
+IYS:GoA2019_Stn57:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn57:juday, 
+IYS:GoA2019_Stn57:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn57:juday,NA
+IYS:GoA2019_Stn58:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn58:juday,NA
+IYS:GoA2019_Stn58:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn58:juday,NA
+IYS:GoA2019_Stn58:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn58:juday,NA
+IYS:GoA2019_Stn58:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn58:juday, 
+IYS:GoA2019_Stn58:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn58:juday,NA
+IYS:GoA2019_Stn59:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn59:juday,NA
+IYS:GoA2019_Stn59:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn59:juday,NA
+IYS:GoA2019_Stn59:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn59:juday,NA
+IYS:GoA2019_Stn59:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn59:juday, 
+IYS:GoA2019_Stn59:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn59:juday,NA
+IYS:GoA2019_Stn60:juday:volume_filtered,volume_filtered, ,20,cubic meter, ,IYS:GoA2019_Stn60:juday,NA
+IYS:GoA2019_Stn60:juday:mesh_size,mesh_size, , ,microns, ,IYS:GoA2019_Stn60:juday,NA
+IYS:GoA2019_Stn60:juday:net_opening,net_opening, , , ,NA,IYS:GoA2019_Stn60:juday,NA
+IYS:GoA2019_Stn60:juday:gear_type,gear_type, ,Juday Net,NA,NA,IYS:GoA2019_Stn60:juday, 
+IYS:GoA2019_Stn60:juday:tow_speed,tow_speed, , , ,NA,IYS:GoA2019_Stn60:juday,NA
+IYS:GoA2019_Stn1:juday:jocc:1-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,44.47,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn1:juday:jocc:2-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,1.275,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn1:juday:jocc:3-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,105.467,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn1:juday:jocc:4-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.2,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn2:juday:jocc:5-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,112.65125,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn2:juday:jocc:6-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.175,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn2:juday:jocc:7-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.315,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn2:juday:jocc:8-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,397.4,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn2:juday:jocc:9-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,1.64,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn3:juday:jocc:10-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,57.67875,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn3:juday:jocc:11-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,6.235,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn3:juday:jocc:12-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.135,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn3:juday:jocc:13-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,60.075,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn3:juday:jocc:14-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,10.78,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn4:juday:jocc:15-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,105.77375,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn4:juday:jocc:16-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,20.675,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn4:juday:jocc:17-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,14.31,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn5:juday:jocc:18-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,132.12625,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn5:juday:jocc:19-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.41,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn5:juday:jocc:20-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,1.08,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn5:juday:jocc:21-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,31.525,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn5:juday:jocc:22-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,5.34,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn6:juday:jocc:23-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,54.535,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn6:juday:jocc:24-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.2,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn6:juday:jocc:25-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.4,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn6:juday:jocc:26-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.9,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn6:juday:jocc:27-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,32.325,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn6:juday:jocc:28-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,1.74,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn7:juday:jocc:29-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,85.055,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn7:juday:jocc:30-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.07,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn7:juday:jocc:31-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.48,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn7:juday:jocc:32-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,1.125,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn7:juday:jocc:33-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,114.275,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn7:juday:jocc:34-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,3.08,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn8:juday:jocc:35-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,61.815,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn8:juday:jocc:36-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.175,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn8:juday:jocc:37-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,1.15,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn8:juday:jocc:38-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.81,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn8:juday:jocc:39-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,679.7,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn8:juday:jocc:40-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,19,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn9:juday:jocc:41-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,33.95625,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn9:juday:jocc:42-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.37,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn9:juday:jocc:43-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,1.46,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn9:juday:jocc:44-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,1.08,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn9:juday:jocc:45-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,97.225,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn9:juday:jocc:46-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,6.16,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn10:juday:jocc:47-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,29.35375,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn10:juday:jocc:48-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,4.035,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn10:juday:jocc:49-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,5.94,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn10:juday:jocc:50-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,100.9,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn10:juday:jocc:51-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.77,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn11:juday:jocc:52-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,36.86875,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn11:juday:jocc:53-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,11.325,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn11:juday:jocc:54-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.5,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn11:juday:jocc:55-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,3.325,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn12:juday:jocc:56-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,46.89375,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn12:juday:jocc:57-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,1.08,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn12:juday:jocc:58-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,28.55,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn13:juday:jocc:59-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,87.71375,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn13:juday:jocc:60-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,6,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn13:juday:jocc:61-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,23,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn14:juday:jocc:62-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,74.14375,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn14:juday:jocc:63-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,30,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn14:juday:jocc:64-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.51,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn14:juday:jocc:65-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,32.425,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn14:juday:jocc:66-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,6.06,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn15:juday:jocc:67-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,85.8425,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn15:juday:jocc:68-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,29.9,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn15:juday:jocc:69-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,6.83,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn16:juday:jocc:70-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,136.55875,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn16:juday:jocc:71-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,58.9,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn16:juday:jocc:72-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,5.23,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn16:juday:jocc:73-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,35.2,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn17:juday:jocc:74-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,24.81,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn17:juday:jocc:75-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,25.5,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn17:juday:jocc:76-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.32,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn17:juday:jocc:77-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,32.275,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn17:juday:jocc:78-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,1.54,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn18:juday:jocc:79-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,22.9725,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn18:juday:jocc:80-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,29.5,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn18:juday:jocc:81-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.16,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn18:juday:jocc:82-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,28.05,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn19:juday:jocc:83-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,73.12925,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn19:juday:jocc:84-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,4.25,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn19:juday:jocc:85-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,1.55,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn19:juday:jocc:86-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,1.68,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn19:juday:jocc:87-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,27.4,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn19:juday:jocc:88-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,2.26,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn20:juday:jocc:89-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,33.3625,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn20:juday:jocc:90-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,11.325,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn20:juday:jocc:91-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.32,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn20:juday:jocc:92-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,21.925,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn20:juday:jocc:93-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,3.28,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn21:juday:jocc:94-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,48.65125,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn21:juday:jocc:95-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.32,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn21:juday:jocc:96-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.36,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn21:juday:jocc:97-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,9.3,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn22:juday:jocc:98-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,43.36625,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn22:juday:jocc:99-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,44.75,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn22:juday:jocc:100-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,13,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn22:juday:jocc:101-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.135,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn22:juday:jocc:102-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,14.925,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn22:juday:jocc:103-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.77,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn23:juday:jocc:104-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,27.855,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn23:juday:jocc:105-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.035,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn23:juday:jocc:106-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,1.585,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn23:juday:jocc:107-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.27,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn24:juday:jocc:108-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,63.0275,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn24:juday:jocc:109-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.9,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn24:juday:jocc:110-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,18.8,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn24:juday:jocc:111-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,3.8,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn25:juday:jocc:112-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,53.845,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn25:juday:jocc:113-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,24.925,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn25:juday:jocc:114-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.35,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn25:juday:jocc:115-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.27,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn25:juday:jocc:116-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,7,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn26:juday:jocc:117-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,78.46,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn26:juday:jocc:118-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,12,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn26:juday:jocc:119-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.885,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn26:juday:jocc:120-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.72,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn26:juday:jocc:121-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,41.45,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn26:juday:jocc:122-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,8.37,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn27:juday:jocc:123-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,78.58125,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn27:juday:jocc:124-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,6,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn27:juday:jocc:125-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,5.11,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn27:juday:jocc:126-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,86.85,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn27:juday:jocc:127-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,2.31,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn28:juday:jocc:128-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,102.89375,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn28:juday:jocc:129-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.2,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn28:juday:jocc:130-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.54,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn28:juday:jocc:131-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,17.875,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn28:juday:jocc:132-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,3.08,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn29:juday:jocc:133-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,122.14375,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn29:juday:jocc:134-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,38.7,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn29:juday:jocc:135-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,1.41,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn29:juday:jocc:136-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,7.7,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn29:juday:jocc:137-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,4.52,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn30:juday:jocc:138-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,43.16125,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn30:juday:jocc:139-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.54,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn30:juday:jocc:140-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,87.625,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn30:juday:jocc:141-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,1.54,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn31:juday:jocc:142-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,106.2675,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn31:juday:jocc:143-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,6,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn31:juday:jocc:144-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.16,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn31:juday:jocc:145-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,1.395,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn31:juday:jocc:146-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,17.5,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn32:juday:jocc:147-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,91.62,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn32:juday:jocc:148-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,29.325,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn32:juday:jocc:149-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.35,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn32:juday:jocc:150-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,1.08,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn32:juday:jocc:151-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,102.475,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn32:juday:jocc:152-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,11.3,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn33:juday:jocc:153-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,95.56125,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn33:juday:jocc:154-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.16,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn33:juday:jocc:155-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.81,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn33:juday:jocc:156-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,10.15,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn33:juday:jocc:157-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,7.7,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn34:juday:jocc:158-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,70.1925,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn34:juday:jocc:159-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,29.4,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn34:juday:jocc:160-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,1.635,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn34:juday:jocc:161-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,3.24,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn34:juday:jocc:162-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,76.125,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn34:juday:jocc:163-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,1.54,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn35:juday:jocc:164-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,117.83375,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn35:juday:jocc:165-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.16,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn35:juday:jocc:166-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,37.75,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn35:juday:jocc:167-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,3.08,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn36:juday:jocc:168-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,74.84,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn36:juday:jocc:169-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,2.03,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn36:juday:jocc:170-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,1.08,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn36:juday:jocc:171-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,48.95,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn36:juday:jocc:172-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,9.04,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn37:juday:jocc:173-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,75.30875,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn37:juday:jocc:174-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,12,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn37:juday:jocc:175-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,7.5,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn38:juday:jocc:176-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,119.52375,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn38:juday:jocc:177-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.315,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn38:juday:jocc:178-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,29.25,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn38:juday:jocc:179-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,2.31,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn39:juday:jocc:180-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,81.065,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn39:juday:jocc:181-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.4,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn39:juday:jocc:182-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.27,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn39:juday:jocc:183-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,78.275,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn39:juday:jocc:184-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,3.8,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn40:juday:jocc:185-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,133.58625,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn40:juday:jocc:186-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,4.25,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn40:juday:jocc:187-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.4,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn40:juday:jocc:188-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.27,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn40:juday:jocc:189-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,52.275,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn40:juday:jocc:190-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.2,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn41:juday:jocc:191-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,104.8175,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn41:juday:jocc:192-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,3.015,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn41:juday:jocc:193-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,10.675,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn41:juday:jocc:194-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,20.39,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn42:juday:jocc:195-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,62.77,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn42:juday:jocc:196-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.885,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn42:juday:jocc:197-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,1.35,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn42:juday:jocc:198-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,86.6,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn42:juday:jocc:199-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,23.42,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn43:juday:jocc:200-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,74.7725,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn43:juday:jocc:201-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,12,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn43:juday:jocc:202-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.12,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn43:juday:jocc:203-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,2.7,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn43:juday:jocc:204-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,15.8,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn43:juday:jocc:205-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,9.14,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn44:juday:jocc:206-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,60.6075,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn44:juday:jocc:207-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.35,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn44:juday:jocc:208-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,2.49,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn44:juday:jocc:209-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,82.525,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn44:juday:jocc:210-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,10.63,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn45:juday:jocc:211-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,157.80375,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn45:juday:jocc:212-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.48,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn45:juday:jocc:213-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,2.43,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn45:juday:jocc:214-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,33.425,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn45:juday:jocc:215-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,7.6,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn46:juday:jocc:216-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,162.91,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn46:juday:jocc:217-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,3.725,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn46:juday:jocc:218-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.64,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn46:juday:jocc:219-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,30.15,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn47:juday:jocc:220-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,283.25125,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn47:juday:jocc:221-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,1.35,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn47:juday:jocc:222-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,50.4,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn47:juday:jocc:223-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,29.38,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn48:juday:jocc:224-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,131.0475,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn48:juday:jocc:225-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,17.395,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn48:juday:jocc:226-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,2.43,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn48:juday:jocc:227-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,29.4,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn48:juday:jocc:228-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,3.08,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn49:juday:jocc:229-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,91.35625,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn49:juday:jocc:230-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,17.56,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn49:juday:jocc:231-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,2.815,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn49:juday:jocc:232-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,1.44,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn49:juday:jocc:233-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,37.6,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn49:juday:jocc:234-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,28.76,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn50:juday:jocc:235-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,43.06,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn50:juday:jocc:236-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.035,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn50:juday:jocc:237-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.855,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn50:juday:jocc:238-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,24.275,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn50:juday:jocc:239-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,8.32,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn51:juday:jocc:240-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,60.6085,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn51:juday:jocc:241-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.27,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn51:juday:jocc:242-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,17.2,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn51:juday:jocc:243-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,1.54,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn52:juday:jocc:244-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,74.90275,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn52:juday:jocc:245-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.2,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn52:juday:jocc:246-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,1.995,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn52:juday:jocc:247-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,64.15,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn52:juday:jocc:248-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,15.92,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn53:juday:jocc:249-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,65.5,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn53:juday:jocc:250-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.945,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn53:juday:jocc:251-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,7,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn54:juday:jocc:252-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,60.095,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn54:juday:jocc:253-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,11.325,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn54:juday:jocc:254-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.35,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn54:juday:jocc:255-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.855,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn54:juday:jocc:256-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,4.375,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn54:juday:jocc:257-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,4.52,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn55:juday:jocc:258-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,58.405,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn55:juday:jocc:259-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,3.75,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn55:juday:jocc:260-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.585,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn55:juday:jocc:261-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,16.45,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn55:juday:jocc:262-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,1.54,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn56:juday:jocc:263-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,66.21775,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn56:juday:jocc:264-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.65,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn56:juday:jocc:265-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.62,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn56:juday:jocc:266-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,19.15,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn56:juday:jocc:267-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,8.32,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn57:juday:jocc:268-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,89.45475,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn57:juday:jocc:269-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,3.335,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn57:juday:jocc:270-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,16.4,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn57:juday:jocc:271-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,19.72,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn58:juday:jocc:272-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,66.9795,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn58:juday:jocc:273-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.035,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn58:juday:jocc:274-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.15,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn58:juday:jocc:275-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,18.025,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn58:juday:jocc:276-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,6.83,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn59:juday:jocc:277-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,126.90625,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn59:juday:jocc:278-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,59.535,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn59:juday:jocc:279-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,0.81,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn59:juday:jocc:280-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,24.25,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn59:juday:jocc:281-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,20.44,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn60:juday:jocc:282-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,41.24875,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn60:juday:jocc:283-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,22.535,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn60:juday:jocc:284-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,15.65,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
+IYS:GoA2019_Stn60:juday:jocc:285-biomass,biomass,http://vocab.nerc.ac.uk/collection/P01/current/SDBIOL04/,15.82,milligrams per cubic meter,http://vocab.nerc.ac.uk/collection/P06/current/UMMC/,NA,NA
