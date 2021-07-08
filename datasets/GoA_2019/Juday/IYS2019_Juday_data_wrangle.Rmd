@@ -388,7 +388,7 @@ juday2019_emof <- juday2019_emof %>%
       measurementValue == "Larvae" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1128/",
       measurementValue == "Eggs" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1122/",
       measurementValue == "Caliptopis" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1118/")) %>%
-  select(eventID, measurementID, measurementType, measurementTypeID,
+  select(eventID, occurrenceID, measurementID, measurementType, measurementTypeID,
          measurementValue, measurementUnit, measurementUnitID)
 
 # Combine the two extended measurement or fact tables into a single core, re-order if preferred and save locally:
@@ -397,6 +397,7 @@ juday2019_emof_fnl <- plyr::rbind.fill(juday_bottomdepth, juday2019_samplingEffo
 # If interested in re-ordering:
 order <- stringr::str_sort(juday2019_emof_fnl$measurementID)
 juday2019_emof_fnl <- juday2019_emof_fnl[match(order, juday2019_emof_fnl$measurementID),]
+juday2019_emof_fnl <- juday2019_emof_fnl %>% distinct(measurementID, .keep_all = TRUE)
 
 # Make sure the folder path exists already (e.g. ./Juday/tidy_data)
 write_csv(juday2019_emof_fnl, here("Juday", "tidy_data", "juday2019_emof.csv"))
