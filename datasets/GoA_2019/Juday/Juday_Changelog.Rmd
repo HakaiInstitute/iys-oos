@@ -14,4 +14,20 @@ Juday Summarized Data 2019:
 
 - row 2 [currently blank] is removed from the working file. 
 
+- And additional tab is added to the Working File (`Species_corrected`) that show the changes made to species' scientific names to ensure that these taxa can be found in the WoRMS database (eg. Beroe sp. cannot be found but Beroe can). Some minor spelling errors were corrected. For all scientific names, the corrected names have been verified by [Evgeny?].
+
 - in column D (Day/Night), I've replaced the Russian symbols with either day or night, where д = d (day), and н = n (night).
+
+- In the size_mm column, some values showed up as larger numerical values in the eMOF. Consequently, I have added decimal points to reflect the integers. Specifically, the following changes were made:
+* 0,8-1 --> 0,8-1,0
+* 0,5-1 --> 0,5-1,0
+* 0,4-1 --> 0,4-1,0
+* 1,6-2 --> 1,6-2,0
+* 2,1-4 --> 2,1-4,0
+* 2-3 --> 2,0-3,0
+* 5-8 --> 5,0-8,0
+* 5-10 --> 5,0-10,0
+* 4-5 --> 4,0-5,0
+* 6-10 --> 6,0-10,0
+* 5-6 --> 5,0-6,0
+* 4,-4,5 --> 4,0-4,5
