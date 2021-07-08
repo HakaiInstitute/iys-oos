@@ -332,20 +332,33 @@ juday2019_emof <- rbind(juday_emof_sizerange, juday_emof_sizefix)
 # Fiddling around with lengths, ranges and special characters:
 juday2019_emof$length_minimum <- gsub(",", ".", juday2019_emof$length_minimum)
 juday2019_emof$length_maximum <- gsub(",", ".", juday2019_emof$length_maximum)
-juday2019_emof$length_maximum <- ifelse(grepl("[<]", juday2019_emof$length_minimum), 
-                                        juday2019_emof$length_minimum, juday2019_emof$length_maximum)
-juday2019_emof$length_minimum <- ifelse(grepl("[<]", juday2019_emof$length_minimum), NA, juday2019_emof$length_minimum)
-juday2019_emof$length_maximum <- gsub("[<]", "", juday2019_emof$length_maximum)
 
+# Currently the size_mm contains values that include > or < characters. Eg. >10 would need to be recorded as: length_minimum = 10. The following lines of code ensure that the values that include > or < are entered in their correct respective column and that the value is removed from the size_mm column: 
+juday2019_emof$length_maximum <- ifelse(grepl("[<]", juday2019_emof$size_mm), 
+                                        juday2019_emof$size_mm, juday2019_emof$length_maximum)
+juday2019_emof$length_minimum <- ifelse(grepl("[<]", juday2019_emof$size_mm), NA, juday2019_emof$length_minimum)
+
+juday2019_emof$length_maximum <- ifelse(grepl("[>]", juday2019_emof$size_mm), NA, juday2019_emof$length_maximum)
+juday2019_emof$length_minimum <- ifelse(grepl("[>]", juday2019_emof$size_mm), juday2019_emof$size_mm, NA)
+
+juday2019_emof$length_maximum <- gsub("[<]", "", juday2019_emof$length_maximum)
+juday2019_emof$length_minimum <- gsub("[>]", "", juday2019_emof$length_minimum)
+juday2019_emof$size_mm <- ifelse(grepl("[<]|[>]", juday2019_emof$size_mm), NA, juday2019_emof$size_mm)
+
+# The 2019 Juday eMOF extension: 
 juday2019_emof <- juday2019_emof %>%
   mutate_all(as.character) %>%
-  pivot_longer(cols = length_minimum:ind_per_cubic_meter_corr,
+  pivot_longer(cols = length_minimum:size_mm,
                names_to = "measurementType",
                values_to = "measurementValue") %>%
   mutate(measurementID = paste(eventID, measurementType, sep = ":")) %>%
-  filter(!is.na(measurementValue)) %>%
-  mutate(measurementType = case_when(
-    measurementType == "coefficient" ~ "taxa-specific coefficient value used to determine the corrected individuals per cubic meter and mass per cubic meter")) %>%
+  filter(!is.na(measurementValue))
+
+# As I don't believe there is controlled vocabulary for the 'coefficient' column, I think it's best to reword this column to provide better understanding for data users: 
+juday2019_emof$measurementType <- gsub("coefficient", "taxa-specific coefficient value used to determine the corrected individuals per cubic meter and mass per cubic meter", juday2019_emof$measurementType)
+
+# The other columns get controlled vocab assigned:
+juday2019_emof <- juday2019_emof %>%
   mutate(measurementTypeID = case_when(
     measurementType == "length_minimum" ~ "http://vocab.nerc.ac.uk/collection/P01/current/OBSMINLX/",
     measurementType == "length_maximum" ~ "http://vocab.nerc.ac.uk/collection/P01/current/OBSMAXLX/",
@@ -375,12 +388,11 @@ juday2019_emof <- juday2019_emof %>%
       measurementValue == "Larvae" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1128/",
       measurementValue == "Eggs" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1122/",
       measurementValue == "Caliptopis" ~ "http://vocab.nerc.ac.uk/collection/S11/current/S1118/")) %>%
-  select(measurementID, measurementType, measurementTypeID,
+  select(eventID, measurementID, measurementType, measurementTypeID,
          measurementValue, measurementUnit, measurementUnitID)
 
 # Combine the two extended measurement or fact tables into a single core, re-order if preferred and save locally:
-juday2019_emof_fnl <- plyr::rbind.fill(juday_bottomdepth, juday2019_samplingEffort, juday2019_emof) %>%
-  drop_na(., measurementValue)
+juday2019_emof_fnl <- plyr::rbind.fill(juday_bottomdepth, juday2019_samplingEffort, juday2019_emof) 
 
 # If interested in re-ordering:
 order <- stringr::str_sort(juday2019_emof_fnl$measurementID)
