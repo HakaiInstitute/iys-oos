@@ -70,6 +70,7 @@ juday_station <- juday %>%
          parentEventID = cruise) %>% 
   distinct(eventID, .keep_all = TRUE) 
 
+# For the cast, please note that the longitude was recorded as latitude in the original file, and the latitude recorded as the longitude! Cross-referencing with station coordinates from other datasets confirms this. 
 juday_cast <- juday %>%
   select(eventID = cast,
          parentEventID = station,
@@ -77,13 +78,13 @@ juday_cast <- juday %>%
          year,
          month,
          day,
-         decimalLatitude = Latitude_DecDeg,
-         decimalLongitude = Longitude_DecDeg,
+         decimalLatitude = Longitude_DecDeg,
+         decimalLongitude = Latitude_DecDeg,
          minimumDepthInMeters = Sampling_depth,
          maximumDepthInMeters = Sampling_depth,
          eventRemarks = Day_Night,
          waterBody) %>%
-  mutate(decimalLongitude = decimalLongitude - 360) %>%
+  mutate(decimalLongitude = -decimalLongitude) %>%
   distinct(eventID, .keep_all = TRUE) 
 
 # To connect them all together: 
@@ -95,6 +96,17 @@ juday_event_summary <- bind_rows(juday_project,
 # Make sure the folder path exists already (e.g. ./Salmon Diet/tidy_data)
 write_csv(juday_event_summary, here("Juday", "tidy_data", "juday_event_summary.csv"))
 ```
+
+Always good to check the station coordinates. To visualize the sampling stations in a map:
+
+``` {r juday_visualizations, eval = FALSE}
+juday_leaflet <- obistools::plot_map_leaflet(juday_event_summary)
+juday_map <- obistools::plot_map(juday_event_summary, zoom = TRUE)
+```
+
+Looking at the sampling stations in the map, it seems there is 1 station for which the coordinates might be off, or would need to be confirmed. 
+
+- [ ] See which station coordinates seem off. 
 
 ## Occurrence Extension 2019 Juday Data
 
